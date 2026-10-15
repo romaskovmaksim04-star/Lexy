@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Персональный план — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C; --white:#fff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font:400 16px/1.5 var(--body);
+  color:var(--ink); background:var(--mist);
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+  display:flex; flex-direction:column;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+
+/* ---------- HEADER ---------- */
+.top{
+  position:sticky; top:0; z-index:10;
+  background:rgba(247,245,252,.92);
+  backdrop-filter:blur(10px);
+  padding-top:env(safe-area-inset-top,0px);
+}
+.top .bar{
+  max-width:720px; margin:0 auto;
+  display:flex; align-items:center; gap:12px;
+  padding:12px 20px;
+}
+.back{
+  width:38px; height:38px; flex:none;
+  display:grid; place-items:center;
+  border-radius:50%;
+  transition:background .2s;
+}
+.back:hover{background:var(--peach)}
+.back svg{width:18px; height:18px}
+.counter{
+  font:600 14px var(--body); color:var(--soft);
+  min-width:44px;
+}
+.logo{
+  margin:0 auto;
+  display:flex; align-items:center; gap:8px;
+  font:800 20px var(--display); letter-spacing:-.03em;
+}
+.logo svg{width:26px; height:30px}
+
+/* language switcher */
+.lang-wrap{position:relative}
+.lang-btn{
+  display:flex; align-items:center; gap:6px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1.5px solid var(--line);
+  background:#fff;
+  font:600 13px var(--body);
+  color:var(--ink);
+  transition:border-color .2s, background .2s;
+}
+.lang-btn:hover{border-color:var(--fire); background:#FFF8F3}
+.lang-btn svg{width:14px; height:14px; transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{
+  position:absolute; top:calc(100% + 8px); right:0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:0 20px 40px -22px rgba(27,20,51,.5);
+  padding:6px;
+  min-width:140px;
+  opacity:0; transform:translateY(-6px); pointer-events:none;
+  transition:opacity .2s, transform .2s;
+  z-index:20;
+}
+.lang-wrap.open .lang-menu{opacity:1; transform:none; pointer-events:auto}
+.lang-item{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  font:600 14px var(--body);
+  text-align:left;
+  transition:background .15s;
+}
+.lang-item:hover{background:var(--peach)}
+.lang-item .flag{font-size:16px}
+.lang-item.on{color:var(--fire); background:#FFF3EC}
+.lang-item.on::after{content:"✓"; margin-left:auto; font-weight:700}
+
+.progress{
+  height:3px; background:var(--line);
+  overflow:hidden;
+}
+.progress i{
+  display:block; height:100%; width:0%;
+  background:linear-gradient(90deg,var(--fire2),var(--fire));
+  transition:width .5s cubic-bezier(.3,.9,.3,1);
+}
+
+/* ---------- MAIN ---------- */
+main{
+  flex:1;
+  display:flex; align-items:center; justify-content:center;
+  padding:36px 20px 80px;
+}
+.screen{
+  width:100%; max-width:560px;
+  display:none;
+  animation:fadeUp .5s both;
+}
+.screen.on{display:block}
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(16px)}
+  to{opacity:1; transform:none}
+}
+
+h1{
+  font:700 clamp(22px,5vw,30px)/1.2 var(--display);
+  letter-spacing:-.02em;
+  margin-bottom:8px;
+}
+.sub{
+  color:var(--soft); font-size:15px;
+  margin-bottom:24px;
+}
+
+/* ---------- BENEFIT BADGES ---------- */
+.badges{
+  display:flex; flex-wrap:wrap; gap:8px;
+  margin-bottom:22px;
+}
+.badge{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font:600 12.5px var(--body);
+  color:var(--ink);
+  transition:border-color .2s, transform .15s;
+}
+.badge:hover{border-color:var(--fire); transform:translateY(-1px)}
+.badge .dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--fire);
+}
+
+/* ---------- OPTIONS ---------- */
+.opts{
+  display:grid; gap:12px;
+  grid-template-columns:1fr 1fr;
+}
+.opts.one{grid-template-columns:1fr}
+.opts.three{grid-template-columns:1fr}
+.opt{
+  text-align:left;
+  display:flex; align-items:center; gap:14px;
+  padding:18px;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:18px;
+  transition:border-color .2s, transform .15s, box-shadow .2s, background .2s;
+  min-height:76px;
+}
+.opt:hover{
+  border-color:#C9BEE0;
+  transform:translateY(-2px);
+  box-shadow:0 16px 30px -22px rgba(27,20,51,.55);
+}
+.opt .ic{
+  width:42px; height:42px; flex:none;
+  border-radius:12px;
+  background:var(--peach);
+  display:grid; place-items:center;
+  font-size:20px;
+  transition:background .2s;
+}
+.opt .tx b{
+  display:block;
+  font:700 15px var(--body);
+  margin-bottom:2px;
+}
+.opt .tx small{
+  color:var(--soft); font-size:12.5px; line-height:1.3;
+  display:block;
+}
+.opt.sel{
+  border-color:var(--fire);
+  background:#FFF8F3;
+  box-shadow:0 10px 24px -18px rgba(255,90,31,.9);
+}
+.opt.sel .ic{background:#FFD9C5}
+
+/* ---------- SPLASH ---------- */
+.splash{text-align:center}
+.ring{
+  width:150px; height:150px; margin:0 auto 26px;
+  position:relative;
+}
+.ring svg{transform:rotate(-90deg); width:100%; height:100%}
+.ring .bg{fill:none; stroke:var(--line); stroke-width:10}
+.ring .fg{
+  fill:none; stroke:var(--fire); stroke-width:10;
+  stroke-linecap:round;
+  stroke-dasharray:408;
+  stroke-dashoffset:408;
+  transition:stroke-dashoffset .4s ease;
+}
+.ring b{
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  font:800 34px var(--display); letter-spacing:-.04em;
+}
+.big-text{
+  font:800 clamp(24px,5vw,34px)/1.15 var(--display);
+  letter-spacing:-.03em;
+  margin:14px 0 10px;
+}
+.big-text em{font-style:normal; color:var(--fire)}
+.counter-line{
+  font:700 15px var(--body);
+  color:var(--soft);
+  margin:22px 0 8px;
+}
+.counter-line b{
+  font:800 26px var(--display);
+  color:var(--fire);
+  letter-spacing:-.03em;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+/* ---------- REVIEW ---------- */
+.review{
+  margin:26px auto 0;
+  max-width:460px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px 20px;
+  text-align:left;
+  display:flex; gap:14px;
+  align-items:flex-start;
+}
+.review .av{
+  width:42px; height:42px; border-radius:50%;
+  background:linear-gradient(135deg,var(--fire2),var(--fire));
+  flex:none;
+  display:grid; place-items:center;
+  color:#fff; font:800 16px var(--display);
+}
+.review .body{flex:1; min-width:0}
+.review .body b{
+  font:700 14px var(--body);
+  display:block;
+  margin-bottom:2px;
+}
+.review .body .tag{
+  display:inline-block;
+  font:700 12px var(--display);
+  color:var(--ok);
+  background:#DDF6EC;
+  padding:2px 8px;
+  border-radius:999px;
+  margin-bottom:8px;
+}
+.review .body p{
+  font-size:13.5px;
+  color:var(--soft);
+  line-height:1.45;
+}
+.review .stars{
+  color:#FFB400;
+  font-size:13px;
+  letter-spacing:2px;
+}
+
+/* ---------- SUMMARY (redesigned) ---------- */
+.summary-card{
+  position:relative;
+  background:
+    radial-gradient(120% 120% at 0% 0%, #FFF1E8 0%, transparent 45%),
+    radial-gradient(120% 120% at 100% 100%, #F1E8FF 0%, transparent 50%),
+    #fff;
+  border:1.5px solid var(--line);
+  border-radius:26px;
+  padding:26px 22px 20px;
+  margin-bottom:26px;
+  overflow:hidden;
+}
+.summary-card::before{
+  content:"";
+  position:absolute;
+  top:-40px; right:-40px;
+  width:160px; height:160px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,154,10,.22), transparent 65%);
+  pointer-events:none;
+}
+.summary-head{
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:18px;
+}
+.summary-head .ic{
+  width:44px; height:44px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--fire2),var(--fire));
+  display:grid; place-items:center;
+  font-size:22px;
+  box-shadow:0 12px 24px -14px rgba(255,90,31,.9);
+}
+.summary-head b{
+  display:block;
+  font:800 17px var(--display);
+  letter-spacing:-.02em;
+}
+.summary-head span{
+  display:block;
+  font:500 12.5px var(--body);
+  color:var(--soft);
+  margin-top:2px;
+}
+.summary-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  position:relative;
+  z-index:1;
+}
+.summary-item{
+  background:rgba(255,255,255,.75);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px 14px 13px;
+  transition:border-color .2s, transform .15s;
+}
+.summary-item:hover{border-color:var(--fire); transform:translateY(-2px)}
+.summary-item .k{
+  display:flex; align-items:center; gap:6px;
+  font:600 11.5px var(--body);
+  color:var(--soft);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:6px;
+}
+.summary-item .k i{
+  font-style:normal;
+  font-size:14px;
+}
+.summary-item .v{
+  font:800 17px var(--display);
+  letter-spacing:-.02em;
+  color:var(--ink);
+  line-height:1.15;
+}
+.summary-item .v em{
+  font-style:normal;
+  color:var(--fire);
+}
+
+/* ---------- TIMELINE ---------- */
+.timeline{
+  margin:8px 0 26px;
+  display:grid;
+  gap:0;
+}
+.tl-item{
+  display:flex; gap:16px;
+  padding:14px 0;
+  position:relative;
+}
+.tl-item::before{
+  content:"";
+  position:absolute;
+  left:11px; top:34px; bottom:-4px;
+  width:2px;
+  background:var(--line);
+}
+.tl-item:last-child::before{display:none}
+.tl-item .dot{
+  width:24px; height:24px; flex:none;
+  border-radius:50%;
+  border:2px solid var(--fire);
+  background:#fff;
+  display:grid; place-items:center;
+  margin-top:2px;
+}
+.tl-item .dot i{
+  width:8px; height:8px; border-radius:50%;
+  background:var(--fire);
+}
+.tl-item:nth-child(1) .dot{border-color:#FFB400}
+.tl-item:nth-child(1) .dot i{background:#FFB400}
+.tl-item:nth-child(2) .dot{border-color:#7B5CFF}
+.tl-item:nth-child(2) .dot i{background:#7B5CFF}
+.tl-item:nth-child(3) .dot{border-color:#1FC28B}
+.tl-item:nth-child(3) .dot i{background:#1FC28B}
+.tl-item .tx b{
+  font:700 15px var(--body);
+  display:block; margin-bottom:3px;
+}
+.tl-item .tx p{
+  font-size:13.5px;
+  color:var(--soft);
+  line-height:1.45;
+}
+
+/* ---------- INCLUDES ---------- */
+.inc{
+  display:grid; gap:14px;
+  margin-bottom:28px;
+}
+.inc-item{
+  display:flex; gap:14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+}
+.inc-item .ic{
+  width:40px; height:40px; flex:none;
+  border-radius:12px;
+  background:var(--peach);
+  display:grid; place-items:center;
+  font-size:19px;
+}
+.inc-item .tx b{
+  font:700 14.5px var(--body);
+  display:block; margin-bottom:3px;
+}
+.inc-item .tx p{
+  font-size:13px;
+  color:var(--soft);
+  line-height:1.45;
+}
+.inc-item.green{background:#F1FBF6; border-color:#C8EAD7}
+.inc-item.green .ic{background:#DDF6EC}
+
+/* ---------- WHEEL ---------- */
+.wheel-wrap{text-align:center; padding:14px 0 6px}
+.wheel{
+  width:min(80vw,300px);
+  margin:20px auto 8px;
+  position:relative;
+}
+.wheel svg{width:100%; height:auto; display:block}
+.wheel .pointer{
+  position:absolute;
+  top:-10px; left:50%;
+  transform:translateX(-50%);
+  width:0; height:0;
+  border-left:10px solid transparent;
+  border-right:10px solid transparent;
+  border-top:16px solid var(--ink);
+  z-index:2;
+}
+
+/* ---------- WON ---------- */
+.won{
+  position:relative;
+  margin-top:22px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:26px 22px;
+  text-align:center;
+  animation:pop .5s cubic-bezier(.3,1.4,.5,1) both;
+}
+@keyframes pop{
+  from{opacity:0; transform:scale(.85)}
+  to{opacity:1; transform:none}
+}
+.won .emoji{font-size:34px; margin-bottom:6px}
+.won h3{
+  font:800 20px var(--display);
+  letter-spacing:-.02em;
+  margin-bottom:10px;
+}
+.won .label{font-size:13px; color:var(--soft); margin-bottom:4px}
+.won .val{
+  font:800 36px var(--display);
+  color:var(--fire);
+  letter-spacing:-.04em;
+  margin-bottom:4px;
+}
+.won .note{font-size:12.5px; color:var(--soft); margin-bottom:20px}
+
+/* ---------- FINAL ---------- */
+.field{position:relative; margin-bottom:12px}
+.field input{
+  width:100%;
+  font:500 15px var(--body);
+  padding:18px 16px;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:16px;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+.field input:focus{
+  border-color:var(--fire);
+  box-shadow:0 0 0 4px rgba(255,90,31,.12);
+}
+.field input::placeholder{color:#B5AEC9}
+.bonus{
+  display:flex; align-items:center; gap:12px;
+  background:#FFF8F3;
+  border:1px dashed #FFC2A1;
+  border-radius:14px;
+  padding:14px 16px;
+  font-size:13.5px;
+  color:var(--ink);
+  margin-bottom:16px;
+}
+.bonus span:first-child{font-size:20px}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  display:block; width:100%;
+  padding:18px;
+  border-radius:16px;
+  background:var(--fire);
+  color:#fff;
+  font:700 15px var(--body);
+  letter-spacing:.02em;
+  text-align:center;
+  transition:transform .15s, box-shadow .2s, opacity .2s;
+  box-shadow:0 12px 26px -12px rgba(255,90,31,.75);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.99)}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:none}
+.legal{
+  font-size:11.5px;
+  color:var(--soft);
+  text-align:center;
+  margin-top:16px;
+  line-height:1.5;
+}
+.legal a{text-decoration:underline; text-underline-offset:2px}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:520px){
+  .opts{grid-template-columns:1fr}
+  .top .bar{padding:12px 14px; gap:8px}
+  .logo{font-size:18px}
+  .logo svg{width:22px; height:26px}
+  main{padding:24px 16px 60px}
+  .summary-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="top">
+  <div class="bar">
+    <button class="back" id="back" aria-label="Назад" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="counter" id="counter"></span>
+    <a class="logo" href="#" aria-label="Lexy">
+      <svg viewBox="0 0 100 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0">
+            <stop offset="0" stop-color="#FF4E1A"/>
+            <stop offset="1" stop-color="#FF9A0A"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/>
+        <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/>
+        <ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/>
+        <ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
+        <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/>
+      </svg>
+      Lexy
+    </a>
+
+    <!-- language switcher -->
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn" aria-haspopup="listbox">
+        <span id="curFlag">🇷🇺</span>
+        <span id="curLang">RU</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="lang-menu" role="listbox" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
+  </div>
+  <div class="progress"><i id="bar"></i></div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+  <!-- ===== Q0: цель ===== -->
+  <section class="screen on" data-step="0">
+    <h1 data-i18n="q0_h">С чего начнём?</h1>
+    <p class="sub" data-i18n="q0_s">Выбери, что тебе ближе — подстроим программу под тебя.</p>
+
+    <div class="badges">
+      <span class="badge"><span class="dot"></span><span data-i18n="b_ai">Лучший ИИ для анализа</span></span>
+      <span class="badge"><span class="dot"></span><span data-i18n="b_free">Бесплатный старт</span></span>
+    </div>
+
+    <div class="opts one" data-name="goal">
+      <button class="opt" data-value="english">
+        <span class="ic">💬</span>
+        <span class="tx">
+          <b data-i18n="q0_o1_t">Подтянуть английский</b>
+          <small data-i18n="q0_o1_s">Разговор, слова, аудирование — без привязки к экзамену</small>
+        </span>
+      </button>
+      <button class="opt" data-value="ielts">
+        <span class="ic">🎓</span>
+        <span class="tx">
+          <b data-i18n="q0_o2_t">Готовиться к IELTS</b>
+          <small data-i18n="q0_o2_s">План под нужный балл и все четыре секции</small>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== Q1: формат ===== -->
+  <section class="screen" data-step="1">
+    <h1 data-i18n="q1_h">Какой формат тебе нужен?</h1>
+    <p class="sub" data-i18n="q1_s">Выбери вариант — потом сможешь изменить в настройках.</p>
+    <div class="opts" data-name="format">
+      <button class="opt" data-value="academic">
+        <span class="ic">🎓</span>
+        <span class="tx">
+          <b data-i18n="q1_o1_t">Academic</b>
+          <small data-i18n="q1_o1_s">Для поступления в университет</small>
+        </span>
+      </button>
+      <button class="opt" data-value="general">
+        <span class="ic">💼</span>
+        <span class="tx">
+          <b data-i18n="q1_o2_t">General Training</b>
+          <small data-i18n="q1_o2_s">Для работы и иммиграции</small>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== Q2: балл ===== -->
+  <section class="screen" data-step="2">
+    <h1 data-i18n="q2_h">Какой балл тебе нужен?</h1>
+    <p class="sub" data-i18n="q2_s">Выбери свою цель по IELTS band.</p>
+    <div class="opts" data-name="target">
+      <button class="opt" data-value="5.5"><span class="tx"><b>5.5</b></span></button>
+      <button class="opt" data-value="6.0"><span class="tx"><b>6.0</b></span></button>
+      <button class="opt" data-value="6.5"><span class="tx"><b>6.5</b></span></button>
+      <button class="opt" data-value="7.0"><span class="tx"><b>7.0</b></span></button>
+      <button class="opt" data-value="7.5"><span class="tx"><b>7.5</b></span></button>
+      <button class="opt" data-value="8.0"><span class="tx"><b>8.0</b></span></button>
+      <button class="opt" data-value="8.5"><span class="tx"><b>8.5</b></span></button>
+      <button class="opt" data-value="9.0"><span class="tx"><b>9.0</b></span></button>
+    </div>
+  </section>
+
+  <!-- ===== Q3: слабый навык ===== -->
+  <section class="screen" data-step="3">
+    <h1 data-i18n="q3_h">Какой навык прокачать в первую очередь?</h1>
+    <p class="sub" data-i18n="q3_s">Вокруг него построим план.</p>
+
+    <div class="badges">
+      <span class="badge"><span class="dot"></span><span data-i18n="b_analysis">ИИ-анализ ошибок</span></span>
+      <span class="badge"><span class="dot"></span><span data-i18n="b_personal">Персонально под тебя</span></span>
+    </div>
+
+    <div class="opts" data-name="weak">
+      <button class="opt" data-value="reading"><span class="ic">📖</span><span class="tx"><b data-i18n="q3_o1">Чтение</b></span></button>
+      <button class="opt" data-value="listening"><span class="ic">🎧</span><span class="tx"><b data-i18n="q3_o2">Аудирование</b></span></button>
+      <button class="opt" data-value="writing"><span class="ic">✏️</span><span class="tx"><b data-i18n="q3_o3">Письмо</b></span></button>
+      <button class="opt" data-value="speaking"><span class="ic">🎤</span><span class="tx"><b data-i18n="q3_o4">Говорение</b></span></button>
+    </div>
+  </section>
+
+  <!-- ===== Q4: срок ===== -->
+  <section class="screen" data-step="4">
+    <h1 data-i18n="q4_h">Когда планируешь сдать?</h1>
+    <p class="sub" data-i18n="q4_s">Так расставим нагрузку по неделям.</p>
+    <div class="opts" data-name="when">
+      <button class="opt" data-value="1m"><span class="tx"><b data-i18n="q4_o1">Меньше месяца</b></span></button>
+      <button class="opt" data-value="1-3m"><span class="tx"><b data-i18n="q4_o2">1–3 месяца</b></span></button>
+      <button class="opt" data-value="3-6m"><span class="tx"><b data-i18n="q4_o3">3–6 месяцев</b></span></button>
+      <button class="opt" data-value="no-date"><span class="tx"><b data-i18n="q4_o4">Пока без даты</b></span></button>
+    </div>
+  </section>
+
+  <!-- ===== Q5: первый раз ===== -->
+  <section class="screen" data-step="5">
+    <h1 data-i18n="q5_h">Это твой первый IELTS?</h1>
+    <p class="sub" data-i18n="q5_s">От этого зависит стартовый блок программы.</p>
+
+    <div class="badges">
+      <span class="badge"><span class="dot"></span><span data-i18n="b_experts">Создано экспертами 8.0+</span></span>
+      <span class="badge"><span class="dot"></span><span data-i18n="b_verified">Верифицированный ИИ</span></span>
+    </div>
+
+    <div class="opts three" data-name="first">
+      <button class="opt" data-value="yes"><span class="tx"><b data-i18n="q5_o1">Да, в первый раз</b></span></button>
+      <button class="opt" data-value="mock"><span class="tx"><b data-i18n="q5_o2">Уже делал пробный тест</b></span></button>
+      <button class="opt" data-value="real"><span class="tx"><b data-i18n="q5_o3">Уже сдавал реальный экзамен</b></span></button>
+    </div>
+  </section>
+
+  <!-- ===== Q6: время в день ===== -->
+  <section class="screen" data-step="6">
+    <h1 data-i18n="q6_h">Сколько времени в день готов уделять?</h1>
+    <p class="sub" data-i18n="q6_s">Не переживай — потом можно увеличить.</p>
+    <div class="opts" data-name="daily">
+      <button class="opt" data-value="15m"><span class="tx"><b data-i18n="q6_o1_t">15 минут</b><small data-i18n="q6_o1_s">Быстрые упражнения</small></span></button>
+      <button class="opt" data-value="30m"><span class="tx"><b data-i18n="q6_o2_t">30 минут</b><small data-i18n="q6_o2_s">Одна секция за раз</small></span></button>
+      <button class="opt" data-value="1h"><span class="tx"><b data-i18n="q6_o3_t">1 час</b><small data-i18n="q6_o3_s">Полноценная практика</small></span></button>
+      <button class="opt" data-value="2h"><span class="tx"><b data-i18n="q6_o4_t">2+ часа</b><small data-i18n="q6_o4_s">Интенсивная подготовка</small></span></button>
+    </div>
+  </section>
+
+  <!-- ===== Q7: беспокоит ===== -->
+  <section class="screen" data-step="7">
+    <h1 data-i18n="q7_h">Что беспокоит больше всего?</h1>
+    <p class="sub" data-i18n="q7_s">Будь честен — это поможет настроить план.</p>
+    <div class="opts" data-name="worry">
+      <button class="opt" data-value="fail"><span class="ic">😰</span><span class="tx"><b data-i18n="q7_o1">Завалить экзамен</b></span></button>
+      <button class="opt" data-value="money"><span class="ic">💸</span><span class="tx"><b data-i18n="q7_o2">Потратить деньги зря</b></span></button>
+      <button class="opt" data-value="time"><span class="ic">⏳</span><span class="tx"><b data-i18n="q7_o3">Не хватит времени</b></span></button>
+      <button class="opt" data-value="confidence"><span class="ic">🤔</span><span class="tx"><b data-i18n="q7_o4">Нет уверенности в себе</b></span></button>
+    </div>
+  </section>
+
+  <!-- ===== SPLASH ===== -->
+  <section class="screen splash" data-step="splash">
+    <div class="ring">
+      <svg viewBox="0 0 150 150">
+        <circle class="bg" cx="75" cy="75" r="65"/>
+        <circle class="fg" id="ring" cx="75" cy="75" r="65"/>
+      </svg>
+      <b id="pct">0%</b>
+    </div>
+    <h2 class="big-text">
+      <span data-i18n="splash_h1">Собираем твой</span>
+      <em data-i18n="splash_h2">персональный план</em>…
+    </h2>
+    <p class="sub" style="margin-bottom:0" data-i18n="splash_s">Учитываем цель, сроки и слабые места.</p>
+
+    <p class="counter-line"><b>446 273+</b> <span data-i18n="splash_people">человек уже выбрали Lexy</span></p>
+
+    <div class="review">
+      <span class="av">А</span>
+      <div class="body">
+        <b data-i18n="rev_name">Аружан</b>
+        <span class="tag">6.0 → 7.5</span>
+        <p data-i18n="rev_text">«Не верила, что смогу за 2 месяца — а теперь учусь в Sapienza. Спасибо Lexy!»</p>
+        <div class="stars" style="margin-top:6px">★★★★★</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SUMMARY ===== -->
+  <section class="screen" data-step="summary">
+    <h1 data-i18n="sum_h">Мы уже знаем, что тебе нужно</h1>
+    <p class="sub" data-i18n="sum_s">Проверь — и идём дальше.</p>
+
+    <div class="summary-card">
+      <div class="summary-head">
+        <span class="ic">✨</span>
+        <div>
+          <b data-i18n="sum_title">Твой персональный профиль</b>
+          <span data-i18n="sum_sub">На основе твоих ответов</span>
+        </div>
+      </div>
+      <div class="summary-grid" id="summary"></div>
+    </div>
+
+    <button class="btn" data-next data-i18n="btn_continue">Продолжить</button>
+  </section>
+
+  <!-- ===== TIMELINE ===== -->
+  <section class="screen" data-step="timeline">
+    <h1 data-i18n="tl_h">Что тебя ждёт</h1>
+    <p class="sub" data-i18n="tl_s">Примерные ориентиры по дням.</p>
+
+    <div class="badges">
+      <span class="badge"><span class="dot"></span><span data-i18n="b_method">Научный метод</span></span>
+      <span class="badge"><span class="dot"></span><span data-i18n="b_feedback">Мгновенный фидбек</span></span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <span class="dot"><i></i></span>
+        <div class="tx"><b data-i18n="tl_d1">1 день</b><p data-i18n="tl_t1">Точка старта: определяем текущий уровень и сильные стороны.</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="dot"><i></i></span>
+        <div class="tx"><b data-i18n="tl_d2">3 дня</b><p data-i18n="tl_t2">Формат: разбираем структуру всех частей и ловушки экзамена.</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="dot"><i></i></span>
+        <div class="tx"><b data-i18n="tl_d3">7 дней</b><p data-i18n="tl_t3">Прокачка: устраняем пробелы и оттачиваем стратегии решения.</p></div>
+      </div>
+      <div class="tl-item">
+        <span class="dot"><i></i></span>
+        <div class="tx"><b data-i18n="tl_d4">14 дней</b><p data-i18n="tl_t4">Рост балла: заметные улучшения в Writing и Speaking на практике.</p></div>
+      </div>
+    </div>
+    <button class="btn" data-next data-i18n="btn_continue">Продолжить</button>
+  </section>
+
+  <!-- ===== INCLUDES ===== -->
+  <section class="screen" data-step="includes">
+    <h1 data-i18n="inc_h">Твой план включает:</h1>
+    <p class="sub" data-i18n="inc_s">Всё, чтобы прийти к цели.</p>
+
+    <div class="inc">
+      <div class="inc-item">
+        <span class="ic">📚</span>
+        <div class="tx">
+          <b data-i18n="inc_1_t">300 полноценных пробных IELTS-тестов</b>
+          <p data-i18n="inc_1_s">По всем секциям экзамена. Тренируйся в условиях, максимально близких к реальному IELTS.</p>
+        </div>
+      </div>
+      <div class="inc-item">
+        <span class="ic">🗺️</span>
+        <div class="tx">
+          <b data-i18n="inc_2_t">Пошаговый план до твоего целевого балла</b>
+          <p data-i18n="inc_2_s">Персональная стратегия на каждый день — точно знаешь, что делать, чтобы прийти к цели.</p>
+        </div>
+      </div>
+      <div class="inc-item">
+        <span class="ic">🤖</span>
+        <div class="tx">
+          <b data-i18n="inc_3_t">ИИ-экзаменатор для Writing и Speaking</b>
+          <p data-i18n="inc_3_s">Детальный разбор ошибок, оценка по критериям IELTS и рекомендации, как поднять свой band.</p>
+        </div>
+      </div>
+      <div class="inc-item green">
+        <span class="ic">🛡️</span>
+        <div class="tx">
+          <b data-i18n="inc_4_t">Гарантия результата</b>
+          <p data-i18n="inc_4_s">Если не получите прогресс — вернём деньги и оплатим пересдачу.</p>
+        </div>
+      </div>
+    </div>
+    <button class="btn" data-next data-i18n="btn_continue">Продолжить</button>
+  </section>
+
+  <!-- ===== WHEEL ===== -->
+  <section class="screen wheel-wrap" data-step="wheel">
+    <h1 style="text-align:center">
+      <span data-i18n="wheel_h1">Крути &amp; открой свой</span><br>
+      <em style="color:var(--fire);font-style:normal" data-i18n="wheel_h2">персональный план</em>
+    </h1>
+    <p class="sub" style="text-align:center" data-i18n="wheel_s">Не упусти шанс подготовиться к IELTS с персональным предложением 🎁</p>
+    <div class="wheel">
+      <span class="pointer"></span>
+      <svg viewBox="0 0 300 300" id="wheel">
+        <g id="wheelG"></g>
+      </svg>
+    </div>
+    <button class="btn" id="spin" style="max-width:300px;margin:18px auto 0" data-i18n="wheel_btn">Крутить</button>
+  </section>
+
+  <!-- ===== WON ===== -->
+  <section class="screen" data-step="won">
+    <div class="won">
+      <div class="emoji">🎉</div>
+      <h3 data-i18n="won_h">Ура! Ты выиграл(а) скидку</h3>
+      <div class="label" data-i18n="won_l">Твой бонус</div>
+      <div class="val" id="prizeVal">50%</div>
+      <div class="note" data-i18n="won_n">Скидка применится автоматически при регистрации</div>
+      <button class="btn" data-next data-i18n="won_btn">Забрать скидку</button>
+    </div>
+  </section>
+
+  <!-- ===== FINAL ===== -->
+  <section class="screen" data-step="final">
+    <h1 data-i18n="fin_h">Твой план готов!</h1>
+    <p class="sub" data-i18n="fin_s">Введи email, чтобы получить его и бонусный набор.</p>
+    <div class="field">
+      <input type="email" id="email" placeholder="email@example.com" autocomplete="email">
+    </div>
+    <div class="bonus">
+      <span>🎁</span>
+      <span data-i18n="fin_bonus">Убедись, что email верный — не упусти свой бонус</span>
+    </div>
+    <button class="btn" id="finish" disabled data-i18n="fin_btn">Получить бонусный набор</button>
+    <p class="legal" data-i18n-html="fin_legal">
+      Нажимая кнопку, ты соглашаешься с
+      <a href="#">условиями</a>, <a href="#">политикой конфиденциальности</a>
+      и <a href="#">политикой возврата</a>.
+    </p>
+  </section>
+
+  <!-- ===== DONE ===== -->
+  <section class="screen" data-step="done">
+    <div class="won">
+      <div class="emoji">✅</div>
+      <h3 data-i18n="done_h">План отправлен!</h3>
+      <div class="note" style="margin-bottom:0" data-i18n="done_n">Проверь почту — там твой персональный план и бонусный набор.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  /* ============ i18n ============ */
+  var I18N = {
+    ru: {
+      q0_h:"С чего начнём?", q0_s:"Выбери, что тебе ближе — подстроим программу под тебя.",
+      q0_o1_t:"Подтянуть английский", q0_o1_s:"Разговор, слова, аудирование — без привязки к экзамену",
+      q0_o2_t:"Готовиться к IELTS", q0_o2_s:"План под нужный балл и все четыре секции",
+      q1_h:"Какой формат тебе нужен?", q1_s:"Выбери вариант — потом сможешь изменить в настройках.",
+      q1_o1_t:"Academic", q1_o1_s:"Для поступления в университет",
+      q1_o2_t:"General Training", q1_o2_s:"Для работы и иммиграции",
+      q2_h:"Какой балл тебе нужен?", q2_s:"Выбери свою цель по IELTS band.",
+      q3_h:"Какой навык прокачать в первую очередь?", q3_s:"Вокруг него построим план.",
+      q3_o1:"Чтение", q3_o2:"Аудирование", q3_o3:"Письмо", q3_o4:"Говорение",
+      q4_h:"Когда планируешь сдать?", q4_s:"Так расставим нагрузку по неделям.",
+      q4_o1:"Меньше месяца", q4_o2:"1–3 месяца", q4_o3:"3–6 месяцев", q4_o4:"Пока без даты",
+      q5_h:"Это твой первый IELTS?", q5_s:"От этого зависит стартовый блок программы.",
+      q5_o1:"Да, в первый раз", q5_o2:"Уже делал пробный тест", q5_o3:"Уже сдавал реальный экзамен",
+      q6_h:"Сколько времени в день готов уделять?", q6_s:"Не переживай — потом можно увеличить.",
+      q6_o1_t:"15 минут", q6_o1_s:"Быстрые упражнения",
+      q6_o2_t:"30 минут", q6_o2_s:"Одна секция за раз",
+      q6_o3_t:"1 час", q6_o3_s:"Полноценная практика",
+      q6_o4_t:"2+ часа", q6_o4_s:"Интенсивная подготовка",
+      q7_h:"Что беспокоит больше всего?", q7_s:"Будь честен — это поможет настроить план.",
+      q7_o1:"Завалить экзамен", q7_o2:"Потратить деньги зря", q7_o3:"Не хватит времени", q7_o4:"Нет уверенности в себе",
+      splash_h1:"Собираем твой", splash_h2:"персональный план",
+      splash_s:"Учитываем цель, сроки и слабые места.",
+      splash_people:"человек уже выбрали Lexy",
+      rev_name:"Аружан", rev_text:"«Не верила, что смогу за 2 месяца — а теперь учусь в Sapienza. Спасибо Lexy!»",
+      sum_h:"Мы уже знаем, что тебе нужно", sum_s:"Проверь — и идём дальше.",
+      sum_title:"Твой персональный профиль", sum_sub:"На основе твоих ответов",
+      tl_h:"Что тебя ждёт", tl_s:"Примерные ориентиры по дням.",
+      tl_d1:"1 день", tl_t1:"Точка старта: определяем текущий уровень и сильные стороны.",
+      tl_d2:"3 дня", tl_t2:"Формат: разбираем структуру всех частей и ловушки экзамена.",
+      tl_d3:"7 дней", tl_t3:"Прокачка: устраняем пробелы и оттачиваем стратегии решения.",
+      tl_d4:"14 дней", tl_t4:"Рост балла: заметные улучшения в Writing и Speaking на практике.",
+      inc_h:"Твой план включает:", inc_s:"Всё, чтобы прийти к цели.",
+      inc_1_t:"300 полноценных пробных IELTS-тестов", inc_1_s:"По всем секциям экзамена. Тренируйся в условиях, максимально близких к реальному IELTS.",
+      inc_2_t:"Пошаговый план до твоего целевого балла", inc_2_s:"Персональная стратегия на каждый день — точно знаешь, что делать, чтобы прийти к цели.",
+      inc_3_t:"ИИ-экзаменатор для Writing и Speaking", inc_3_s:"Детальный разбор ошибок, оценка по критериям IELTS и рекомендации, как поднять свой band.",
+      inc_4_t:"Гарантия результата", inc_4_s:"Если не получите прогресс — вернём деньги и оплатим пересдачу.",
+      wheel_h1:"Крути & открой свой", wheel_h2:"персональный план",
+      wheel_s:"Не упусти шанс подготовиться к IELTS с персональным предложением 🎁",
+      wheel_btn:"Крутить",
+      won_h:"Ура! Ты выиграл(а) скидку", won_l:"Твой бонус", won_n:"Скидка применится автоматически при регистрации", won_btn:"Забрать скидку",
+      fin_h:"Твой план готов!", fin_s:"Введи email, чтобы получить его и бонусный набор.",
+      fin_bonus:"Убедись, что email верный — не упусти свой бонус",
+      fin_btn:"Получить бонусный набор",
+      fin_legal:'Нажимая кнопку, ты соглашаешься с <a href="#">условиями</a>, <a href="#">политикой конфиденциальности</a> и <a href="#">политикой возврата</a>.',
+      done_h:"План отправлен!", done_n:"Проверь почту — там твой персональный план и бонусный набор.",
+      btn_continue:"Продолжить",
+      b_ai:"Лучший ИИ для анализа", b_free:"Бесплатный старт",
+      b_analysis:"ИИ-анализ ошибок", b_personal:"Персонально под тебя",
+      b_experts:"Создано экспертами 8.0+", b_verified:"Верифицированный ИИ",
+      b_method:"Научный метод", b_feedback:"Мгновенный фидбек",
+      labels:{
+        goal:"Цель", format:"Формат", target:"Целевой балл", weak:"Слабый навык",
+        when:"Срок", first:"Опыт", daily:"Время в день"
+      },
+      vals:{
+        goal:{english:"Подтянуть английский", ielts:"Подготовка к IELTS"},
+        format:{academic:"Academic", general:"General Training"},
+        when:{"1m":"Меньше месяца","1-3m":"1–3 месяца","3-6m":"3–6 месяцев","no-date":"Без даты"},
+        first:{yes:"Первый раз", mock:"Пробный тест", real:"Реальный экзамен"},
+        daily:{"15m":"15 минут в день","30m":"30 минут в день","1h":"1 час в день","2h":"2+ часа в день"},
+        weak:{reading:"Чтение", listening:"Аудирование", writing:"Письмо", speaking:"Говорение"},
+        worry:{fail:"Завалить экзамен", money:"Деньги зря", time:"Мало времени", confidence:"Уверенность"}
+      }
+    },
+    en: {
+      q0_h:"Where shall we start?", q0_s:"Pick what fits you best — we'll tailor the program.",
+      q0_o1_t:"Improve my English", q0_o1_s:"Speaking, vocabulary, listening — no exam pressure",
+      q0_o2_t:"Prepare for IELTS", q0_o2_s:"A plan for your target band and all four sections",
+      q1_h:"Which format do you need?", q1_s:"Pick one — you can change it later in settings.",
+      q1_o1_t:"Academic", q1_o1_s:"For university admission",
+      q1_o2_t:"General Training", q1_o2_s:"For work and immigration",
+      q2_h:"What band do you need?", q2_s:"Choose your IELTS target band.",
+      q3_h:"Which skill to boost first?", q3_s:"We'll build the plan around it.",
+      q3_o1:"Reading", q3_o2:"Listening", q3_o3:"Writing", q3_o4:"Speaking",
+      q4_h:"When are you taking the exam?", q4_s:"We'll spread the load over weeks.",
+      q4_o1:"Less than a month", q4_o2:"1–3 months", q4_o3:"3–6 months", q4_o4:"No date yet",
+      q5_h:"Is this your first IELTS?", q5_s:"It changes the starting block of your program.",
+      q5_o1:"Yes, first time", q5_o2:"I've done a mock test", q5_o3:"I've taken the real exam",
+      q6_h:"How much time per day?", q6_s:"Don't worry — you can increase later.",
+      q6_o1_t:"15 minutes", q6_o1_s:"Quick exercises",
+      q6_o2_t:"30 minutes", q6_o2_s:"One section at a time",
+      q6_o3_t:"1 hour", q6_o3_s:"Full practice",
+      q6_o4_t:"2+ hours", q6_o4_s:"Intensive prep",
+      q7_h:"What worries you the most?", q7_s:"Be honest — it helps us tailor the plan.",
+      q7_o1:"Failing the exam", q7_o2:"Wasting money", q7_o3:"Not enough time", q7_o4:"Lack of confidence",
+      splash_h1:"Building your", splash_h2:"personal plan",
+      splash_s:"Taking into account goal, timeline and weak spots.",
+      splash_people:"people already chose Lexy",
+      rev_name:"Aruzhan", rev_text:"“Didn't believe I could do it in 2 months — now I study at Sapienza. Thanks Lexy!”",
+      sum_h:"We already know what you need", sum_s:"Check it — and let's continue.",
+      sum_title:"Your personal profile", sum_sub:"Based on your answers",
+      tl_h:"What to expect", tl_s:"Rough milestones by day.",
+      tl_d1:"Day 1", tl_t1:"Start point: we determine your current level and strengths.",
+      tl_d2:"Day 3", tl_t2:"Format: we break down every section and exam traps.",
+      tl_d3:"Day 7", tl_t3:"Boost: fix gaps and sharpen your solving strategies.",
+      tl_d4:"Day 14", tl_t4:"Score growth: visible improvement in Writing and Speaking.",
+      inc_h:"Your plan includes:", inc_s:"Everything you need to reach the goal.",
+      inc_1_t:"300 full IELTS mock tests", inc_1_s:"Across all exam sections. Practice under conditions as close to the real IELTS as possible.",
+      inc_2_t:"Step-by-step plan to your target band", inc_2_s:"A personal strategy for every day — you always know what to do next.",
+      inc_3_t:"AI examiner for Writing and Speaking", inc_3_s:"Detailed error breakdown, IELTS criteria scoring and tips to raise your band.",
+      inc_4_t:"Result guarantee", inc_4_s:"If you don't make progress — we refund and pay for your retake.",
+      wheel_h1:"Spin & unlock your", wheel_h2:"personal plan",
+      wheel_s:"Don't miss your chance to prepare for IELTS with a personal offer 🎁",
+      wheel_btn:"Spin",
+      won_h:"Yay! You won a discount", won_l:"Your bonus", won_n:"Applied automatically at signup", won_btn:"Claim discount",
+      fin_h:"Your plan is ready!", fin_s:"Enter your email to get it and the bonus pack.",
+      fin_bonus:"Make sure the email is correct — don't miss your bonus",
+      fin_btn:"Get the bonus pack",
+      fin_legal:'By clicking, you agree to the <a href="#">terms</a>, <a href="#">privacy policy</a> and <a href="#">refund policy</a>.',
+      done_h:"Plan sent!", done_n:"Check your inbox — your personal plan and bonus pack are there.",
+      btn_continue:"Continue",
+      b_ai:"Best AI for analysis", b_free:"Free start",
+      b_analysis:"AI error analysis", b_personal:"Personalized for you",
+      b_experts:"Built by 8.0+ experts", b_verified:"Verified AI",
+      b_method:"Science-based method", b_feedback:"Instant feedback",
+      labels:{goal:"Goal", format:"Format", target:"Target band", weak:"Weak skill", when:"Timeline", first:"Experience", daily:"Daily time"},
+      vals:{
+        goal:{english:"Improve English", ielts:"IELTS preparation"},
+        format:{academic:"Academic", general:"General Training"},
+        when:{"1m":"Less than a month","1-3m":"1–3 months","3-6m":"3–6 months","no-date":"No date"},
+        first:{yes:"First time", mock:"Mock test", real:"Real exam"},
+        daily:{"15m":"15 min/day","30m":"30 min/day","1h":"1 hour/day","2h":"2+ hours/day"},
+        weak:{reading:"Reading", listening:"Listening", writing:"Writing", speaking:"Speaking"},
+        worry:{fail:"Failing", money:"Wasting money", time:"Not enough time", confidence:"Confidence"}
+      }
+    },
+    kz: {
+      q0_h:"Неден бастаймыз?", q0_s:"Өзіңе жақынын таңда — бағдарламаны сен үшін бейімдейміз.",
+      q0_o1_t:"Ағылшын тілін жетілдіру", q0_o1_s:"Сөйлеу, сөздік, тыңдау — емтихансыз",
+      q0_o2_t:"IELTS-ке дайындық", q0_o2_s:"Мақсатты балға және барлық төрт секцияға жоспар",
+      q1_h:"Саған қандай формат керек?", q1_s:"Бірін таңда — кейін параметрлерде өзгерте аласың.",
+      q1_o1_t:"Academic", q1_o1_s:"Университетке түсу үшін",
+      q1_o2_t:"General Training", q1_o2_s:"Жұмыс және иммиграция үшін",
+      q2_h:"Саған қандай балл керек?", q2_s:"IELTS бойынша мақсатты балды таңда.",
+      q3_h:"Алдымен қай дағдыны шыңдаймыз?", q3_s:"Жоспарды соның айналасында құрамыз.",
+      q3_o1:"Оқу", q3_o2:"Тыңдау", q3_o3:"Жазу", q3_o4:"Сөйлеу",
+      q4_h:"Қашан тапсырмақсың?", q4_s:"Жүктемені апталарға бөлеміз.",
+      q4_o1:"Бір айдан аз", q4_o2:"1–3 ай", q4_o3:"3–6 ай", q4_o4:"Әзірге күнсіз",
+      q5_h:"Бұл сенің бірінші IELTS-ің бе?", q5_s:"Бағдарламаның бастапқы блогы осыған байланысты.",
+      q5_o1:"Иә, бірінші рет", q5_o2:"Сынақ тест тапсырдым", q5_o3:"Нақты емтихан тапсырдым",
+      q6_h:"Күніне қанша уақыт бөлесің?", q6_s:"Уайымдама — кейін көбейтуге болады.",
+      q6_o1_t:"15 минут", q6_o1_s:"Жылдам жаттығулар",
+      q6_o2_t:"30 минут", q6_o2_s:"Бір секция",
+      q6_o3_t:"1 сағат", q6_o3_s:"Толық жаттығу",
+      q6_o4_t:"2+ сағат", q6_o4_s:"Қарқынды дайындық",
+      q7_h:"Сені не көбірек алаңдатады?", q7_s:"Адал бол — жоспарды дұрыс құруға көмектеседі.",
+      q7_o1:"Емтиханнан құлау", q7_o2:"Ақшаны босқа жұмсау", q7_o3:"Уақыт жетпейді", q7_o4:"Өзіме сенім жоқ",
+      splash_h1:"Сенің", splash_h2:"жеке жоспарыңды құрып жатырмыз",
+      splash_s:"Мақсат, мерзім және әлсіз тұстарды ескереміз.",
+      splash_people:"адам Lexy-ді таңдады",
+      rev_name:"Аружан", rev_text:"«2 айда тапсырамын деп сенбедім — қазір Sapienza-да оқимын. Рақмет, Lexy!»",
+      sum_h:"Біз саған не керегін білеміз", sum_s:"Тексер — және әрі қарай жүреміз.",
+      sum_title:"Жеке профилің", sum_sub:"Жауаптарың негізінде",
+      tl_h:"Сені не күтеді", tl_s:"Күндер бойынша шамамен бағдар.",
+      tl_d1:"1-күн", tl_t1:"Бастау нүктесі: ағымдағы деңгей мен күшті жақтарды анықтаймыз.",
+      tl_d2:"3-күн", tl_t2:"Формат: барлық бөліктердің құрылымы мен емтихан тұзақтарын талдаймыз.",
+      tl_d3:"7-күн", tl_t3:"Шыңдау: олқылықтарды жойып, шешу стратегияларын жетілдіреміз.",
+      tl_d4:"14-күн", tl_t4:"Балл өсімі: Writing және Speaking-те байқаларлық жақсару.",
+      inc_h:"Жоспарың мыналарды қамтиды:", inc_s:"Мақсатқа жету үшін қажеттінің бәрі.",
+      inc_1_t:"300 толық IELTS сынақ тесті", inc_1_s:"Барлық секциялар бойынша. Нақты IELTS-ке барынша жақын жағдайда жаттық.",
+      inc_2_t:"Мақсатты балға дейінгі қадамдық жоспар", inc_2_s:"Күн сайынғы жеке стратегия — не істеу керегін нақты білесің.",
+      inc_3_t:"Writing және Speaking үшін AI-емтихан алушы", inc_3_s:"Қателерді егжей-тегжейлі талдау, IELTS критерийлері бойынша баға және band-ды көтеру бойынша кеңестер.",
+      inc_4_t:"Нәтиже кепілдігі", inc_4_s:"Прогресс болмаса — ақшаңды қайтарамыз және қайта тапсыруды төлейміз.",
+      wheel_h1:"Айналдыр & аш", wheel_h2:"жеке жоспарыңды",
+      wheel_s:"IELTS-ке жеке ұсыныспен дайындалу мүмкіндігін жіберіп алма 🎁",
+      wheel_btn:"Айналдыру",
+      won_h:"Ура! Жеңілдік ұтып алдың", won_l:"Сенің бонусың", won_n:"Тіркелу кезінде автоматты түрде қолданылады", won_btn:"Жеңілдікті алу",
+      fin_h:"Жоспарың дайын!", fin_s:"Оны және бонустық жинақты алу үшін email енгіз.",
+      fin_bonus:"Email дұрыс екеніне көз жеткіз — бонусты жіберіп алма",
+      fin_btn:"Бонустық жинақты алу",
+      fin_legal:'Батырманы басу арқылы сен <a href="#">шарттармен</a>, <a href="#">құпиялылық саясатымен</a> және <a href="#">қайтару саясатымен</a> келісесің.',
+      done_h:"Жоспар жіберілді!", done_n:"Поштаңды тексер — жеке жоспарың мен бонустық жинағың сонда.",
+      btn_continue:"Жалғастыру",
+      b_ai:"Талдауға арналған үздік AI", b_free:"Тегін бастау",
+      b_analysis:"AI қате талдауы", b_personal:"Саған жеке",
+      b_experts:"8.0+ сарапшылар жасаған", b_verified:"Верификацияланған AI",
+      b_method:"Ғылыми әдіс", b_feedback:"Жедел фидбек",
+      labels:{goal:"Мақсат", format:"Формат", target:"Мақсатты балл", weak:"Әлсіз дағды", when:"Мерзім", first:"Тәжірибе", daily:"Күнделікті уақыт"},
+      vals:{
+        goal:{english:"Ағылшынды жетілдіру", ielts:"IELTS-ке дайындық"},
+        format:{academic:"Academic", general:"General Training"},
+        when:{"1m":"Бір айдан аз","1-3m":"1–3 ай","3-6m":"3–6 ай","no-date":"Күнсіз"},
+        first:{yes:"Бірінші рет", mock:"Сынақ тест", real:"Нақты емтихан"},
+        daily:{"15m":"15 минут/күн","30m":"30 минут/күн","1h":"1 сағат/күн","2h":"2+ сағат/күн"},
+        weak:{reading:"Оқу", listening:"Тыңдау", writing:"Жазу", speaking:"Сөйлеу"},
+        worry:{fail:"Құлау", money:"Ақша босқа", time:"Уақыт жетпейді", confidence:"Сенімсіздік"}
+      }
+    },
+    uz: {
+      q0_h:"Nimadan boshlaymiz?", q0_s:"O'zingga mosini tanla — dasturni senga moslashtiramiz.",
+      q0_o1_t:"Ingliz tilini yaxshilash", q0_o1_s:"Gapirish, so'z boyligi, tinglash — imtihonsiz",
+      q0_o2_t:"IELTSga tayyorlanish", q0_o2_s:"Maqsad balli va barcha to'rt bo'lim uchun reja",
+      q1_h:"Senga qaysi format kerak?", q1_s:"Birini tanla — keyin sozlamalarda o'zgartira olasan.",
+      q1_o1_t:"Academic", q1_o1_s:"Universitetga kirish uchun",
+      q1_o2_t:"General Training", q1_o2_s:"Ish va immigratsiya uchun",
+      q2_h:"Senga qaysi ball kerak?", q2_s:"IELTS bo'yicha maqsad ballni tanla.",
+      q3_h:"Avval qaysi ko'nikmani oshiramiz?", q3_s:"Reja shu atrofida quriladi.",
+      q3_o1:"O'qish", q3_o2:"Tinglash", q3_o3:"Yozish", q3_o4:"Gapirish",
+      q4_h:"Qachon topshirmoqchisan?", q4_s:"Yuklamani haftalarga bo'lamiz.",
+      q4_o1:"Bir oydan kam", q4_o2:"1–3 oy", q4_o3:"3–6 oy", q4_o4:"Hozircha sanasiz",
+      q5_h:"Bu sening birinchi IELTSingmi?", q5_s:"Dasturning boshlang'ich bloki shunga bog'liq.",
+      q5_o1:"Ha, birinchi marta", q5_o2:"Sinov testini o'tkazdim", q5_o3:"Haqiqiy imtihonni topshirdim",
+      q6_h:"Kuniga qancha vaqt ajratasan?", q6_s:"Xavotir olma — keyin oshirsa bo'ladi.",
+      q6_o1_t:"15 daqiqa", q6_o1_s:"Tez mashqlar",
+      q6_o2_t:"30 daqiqa", q6_o2_s:"Bitta bo'lim",
+      q6_o3_t:"1 soat", q6_o3_s:"To'liq mashq",
+      q6_o4_t:"2+ soat", q6_o4_s:"Intensiv tayyorgarlik",
+      q7_h:"Seni eng ko'p nima xavotirga soladi?", q7_s:"Halol bo'l — rejani to'g'ri qurishga yordam beradi.",
+      q7_o1:"Imtihondan yiqilish", q7_o2:"Pulni behuda sarflash", q7_o3:"Vaqt yetmaydi", q7_o4:"O'zimga ishonch yo'q",
+      splash_h1:"Sening", splash_h2:"shaxsiy rejangni yig'amiz",
+      splash_s:"Maqsad, muddat va zaif joylarni hisobga olamiz.",
+      splash_people:"kishi Lexyni tanladi",
+      rev_name:"Arujan", rev_text:"«2 oyda topshiraman deb ishonmadim — hozir Sapienzada o'qiyman. Rahmat, Lexy!»",
+      sum_h:"Biz senga nima kerakligini bilamiz", sum_s:"Tekshir — va davom etamiz.",
+      sum_title:"Shaxsiy profiling", sum_sub:"Javoblaring asosida",
+      tl_h:"Seni nima kutadi", tl_s:"Kunlar bo'yicha taxminiy yo'nalish.",
+      tl_d1:"1-kun", tl_t1:"Boshlanish nuqtasi: hozirgi daraja va kuchli tomonlarni aniqlaymiz.",
+      tl_d2:"3-kun", tl_t2:"Format: barcha bo'limlar tuzilishi va imtihon tuzoqlarini tahlil qilamiz.",
+      tl_d3:"7-kun", tl_t3:"Kuchaytirish: bo'shliqlarni yopamiz va yechish strategiyalarini charxlaymiz.",
+      tl_d4:"14-kun", tl_t4:"Ball o'sishi: Writing va Speakingda sezilarli yaxshilanish.",
+      inc_h:"Rejang quyidagilarni o'z ichiga oladi:", inc_s:"Maqsadga yetish uchun hamma narsa.",
+      inc_1_t:"300 ta to'liq IELTS sinov testi", inc_1_s:"Barcha bo'limlar bo'yicha. Haqiqiy IELTSga iloji boricha yaqin sharoitda mashq qil.",
+      inc_2_t:"Maqsad ballgacha qadam-baqadam reja", inc_2_s:"Har kun uchun shaxsiy strategiya — nima qilishni aniq bilasan.",
+      inc_3_t:"Writing va Speaking uchun AI-ekspert", inc_3_s:"Xatolarni batafsil tahlil qilish, IELTS mezonlari bo'yicha baho va bandni oshirish bo'yicha tavsiyalar.",
+      inc_4_t:"Natija kafolati", inc_4_s:"Progress bo'lmasa — pulni qaytaramiz va qayta topshirishni to'laymiz.",
+      wheel_h1:"Aylantir & och", wheel_h2:"shaxsiy rejangni",
+      wheel_s:"IELTSga shaxsiy taklif bilan tayyorlanish imkoniyatini boy berma 🎁",
+      wheel_btn:"Aylantirish",
+      won_h:"Ura! Chegirma yutding", won_l:"Sening bonus", won_n:"Ro'yxatdan o'tishda avtomatik qo'llanadi", won_btn:"Chegirmani olish",
+      fin_h:"Rejang tayyor!", fin_s:"Uni va bonus to'plamini olish uchun emailni kirit.",
+      fin_bonus:"Email to'g'riligiga ishonch hosil qil — bonusingni boy berma",
+      fin_btn:"Bonus to'plamini olish",
+      fin_legal:'Tugmani bosish orqali sen <a href="#">shartlar</a>, <a href="#">maxfiylik siyosati</a> va <a href="#">qaytarish siyosati</a>ga rozilik bildirasan.',
+      done_h:"Reja yuborildi!", done_n:"Pochtangni tekshir — shaxsiy rejang va bonus to'plaming u yerda.",
+      btn_continue:"Davom etish",
+      b_ai:"Tahlil uchun eng yaxshi AI", b_free:"Bepul start",
+      b_analysis:"AI xatolar tahlili", b_personal:"Senga moslashtirilgan",
+      b_experts:"8.0+ ekspertlar tomonidan", b_verified:"Tasdiqlangan AI",
+      b_method:"Ilmiy metod", b_feedback:"Tezkor fikr-mulohaza",
+      labels:{goal:"Maqsad", format:"Format", target:"Maqsad ball", weak:"Zaif ko'nikma", when:"Muddat", first:"Tajriba", daily:"Kunlik vaqt"},
+      vals:{
+        goal:{english:"Inglizni yaxshilash", ielts:"IELTSga tayyorgarlik"},
+        format:{academic:"Academic", general:"General Training"},
+        when:{"1m":"Bir oydan kam","1-3m":"1–3 oy","3-6m":"3–6 oy","no-date":"Sanasiz"},
+        first:{yes:"Birinchi marta", mock:"Sinov test", real:"Haqiqiy imtihon"},
+        daily:{"15m":"15 daqiqa/kun","30m":"30 daqiqa/kun","1h":"1 soat/kun","2h":"2+ soat/kun"},
+        weak:{reading:"O'qish", listening:"Tinglash", writing:"Yozish", speaking:"Gapirish"},
+        worry:{fail:"Yiqilish", money:"Pul behuda", time:"Vaqt yetmaydi", confidence:"Ishonchsizlik"}
+      }
+    }
+  };
+
+  var currentLang = 'ru';
+  var answers = {};
+
+  function applyLang(lang){
+    currentLang = lang;
+    var t = I18N[lang];
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(t[key] != null) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-html');
+      if(t[key] != null) el.innerHTML = t[key];
+    });
+    // обновить summary, если уже отрисован
+    if(document.getElementById('summary').children.length){
+      renderSummary();
+    }
+    // обновить селект языка
+    document.querySelectorAll('.lang-item').forEach(function(b){
+      b.classList.toggle('on', b.dataset.lang === lang);
+    });
+    var meta = {ru:['🇷🇺','RU'], en:['🇬🇧','EN'], kz:['🇰🇿','KZ'], uz:['🇺🇿','UZ']};
+    document.getElementById('curFlag').textContent = meta[lang][0];
+    document.getElementById('curLang').textContent = meta[lang][1];
+    document.documentElement.lang = lang;
+  }
+
+  // language switcher behavior
+  var langWrap = document.getElementById('langWrap');
+  document.getElementById('langBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    langWrap.classList.toggle('open');
+  });
+  document.querySelectorAll('.lang-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      applyLang(b.dataset.lang);
+      langWrap.classList.remove('open');
+    });
+  });
+  document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
+
+  /* ============ NAVIGATION ============ */
+  var screens = document.querySelectorAll('.screen');
+  var bar = document.getElementById('bar');
+  var counter = document.getElementById('counter');
+  var backBtn = document.getElementById('back');
+  var visibleSteps = [0,1,2,3,4,5,6,7,'splash','summary','timeline','includes','wheel','won','final','done'];
+  var history = [];
+
+  function showStep(step, push){
+    screens.forEach(function(s){
+      s.classList.toggle('on', String(s.dataset.step) === String(step));
+    });
+    if(push !== false && history[history.length-1] !== step) history.push(step);
+
+    var i = visibleSteps.indexOf(step);
+    if(typeof step === 'number'){
+      counter.textContent = (step+1) + ' / 8';
+      bar.style.width = ((step+1)/8*100) + '%';
+      backBtn.hidden = step === 0;
+    } else {
+      counter.textContent = '';
+      var pct = Math.round((i+1)/visibleSteps.length*100);
+      bar.style.width = pct + '%';
+      backBtn.hidden = (step === 'done');
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.querySelectorAll('.opts').forEach(function(group){
+    var name = group.dataset.name;
+    group.querySelectorAll('.opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        group.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('sel'); });
+        btn.classList.add('sel');
+        answers[name] = btn.dataset.value;
+        var cur = Number(document.querySelector('.screen.on').dataset.step);
+        setTimeout(function(){
+          if(cur === 0){ showStep(1); }
+          else if(cur >= 1 && cur <= 7){
+            if(cur < 7) showStep(cur+1);
+            else runSplash();
+          }
+        }, 320);
+      });
+    });
+  });
+
+  backBtn.addEventListener('click', function(){
+    history.pop();
+    var prev = history[history.length-1];
+    if(prev === undefined) prev = 0;
+    showStep(prev, false);
+  });
+
+  document.querySelectorAll('[data-next]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var cur = document.querySelector('.screen.on').dataset.step;
+      var order = ['summary','timeline','includes','won'];
+      var idx = order.indexOf(cur);
+      if(idx >= 0 && idx < order.length-1){ showStep(order[idx+1]); }
+      else if(cur === 'won'){ showStep('final'); }
+    });
+  });
+
+  /* ============ SPLASH ============ */
+  function runSplash(){
+    showStep('splash');
+    var pct = document.getElementById('pct');
+    var ring = document.getElementById('ring');
+    var C = 408;
+    var n = 0;
+    var timer = setInterval(function(){
+      n += Math.random()*8 + 3;
+      if(n >= 100){ n = 100; clearInterval(timer); }
+      pct.textContent = Math.round(n) + '%';
+      ring.style.strokeDashoffset = C - (C * n/100);
+      if(n === 100){ setTimeout(renderSummary, 500); }
+    }, 160);
+  }
+
+  /* ============ SUMMARY ============ */
+  function renderSummary(){
+    var t = I18N[currentLang];
+    var s = document.getElementById('summary');
+    var items = [
+      item('🎯', t.labels.goal,  label('goal',  answers.goal)),
+      item('📝', t.labels.format,label('format',answers.format)),
+      item('🏆', t.labels.target,'Band <em>'+(answers.target||'—')+'</em>'),
+      item('📌', t.labels.weak,  label('weak',  answers.weak)),
+      item('⏰', t.labels.when,  label('when',  answers.when)),
+      item('📊', t.labels.first, label('first', answers.first)),
+      item('⏳', t.labels.daily, label('daily', answers.daily))
+    ];
+    s.innerHTML = items.join('');
+    showStep('summary');
+  }
+  function item(icon, k, v){
+    return '<div class="summary-item">'+
+      '<div class="k"><i>'+icon+'</i>'+k+'</div>'+
+      '<div class="v">'+v+'</div>'+
+    '</div>';
+  }
+  function label(name, val){
+    if(!val) return '—';
+    var t = I18N[currentLang];
+    return (t.vals[name] && t.vals[name][val]) || val;
+  }
+
+  /* ============ WHEEL ============ */
+  var wheelValues = [10,15,20,30,40,50];
+  var wheelColors = ['#7B5CFF','#1FC28B','#FFB400','#FF5A1F','#B04DFF','#FF9A0A'];
+  var wheelG = document.getElementById('wheelG');
+  var spinning = false;
+
+  function buildWheel(){
+    while(wheelG.firstChild) wheelG.removeChild(wheelG.firstChild);
+    var cx = 150, cy = 150, r = 120;
+    var total = wheelValues.length;
+    var seg = 360/total;
+    for(var i=0;i<total;i++){
+      var a0 = (i*seg - 90) * Math.PI/180;
+      var a1 = ((i+1)*seg - 90) * Math.PI/180;
+      var x0 = cx + r*Math.cos(a0), y0 = cy + r*Math.sin(a0);
+      var x1 = cx + r*Math.cos(a1), y1 = cy + r*Math.sin(a1);
+      var large = seg > 180 ? 1 : 0;
+      var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d','M '+cx+' '+cy+' L '+x0+' '+y0+' A '+r+' '+r+' 0 '+large+' 1 '+x1+' '+y1+' Z');
+      path.setAttribute('fill', wheelColors[i]);
+      path.setAttribute('stroke','#fff');
+      path.setAttribute('stroke-width','2');
+      wheelG.appendChild(path);
+
+      var mid = (a0+a1)/2;
+      var tx = cx + r*0.62*Math.cos(mid);
+      var ty = cy + r*0.62*Math.sin(mid);
+      var t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',tx); t.setAttribute('y',ty);
+      t.setAttribute('text-anchor','middle');
+      t.setAttribute('dominant-baseline','middle');
+      t.setAttribute('fill','#fff');
+      t.setAttribute('font-family','Unbounded, Arial Black, sans-serif');
+      t.setAttribute('font-weight','800');
+      t.setAttribute('font-size','18');
+      t.textContent = wheelValues[i]+'%';
+      wheelG.appendChild(t);
+
+      var dx = cx + r*Math.cos(a0), dy = cy + r*Math.sin(a0);
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('cx',dx); dot.setAttribute('cy',dy); dot.setAttribute('r','6');
+      dot.setAttribute('fill','#fff'); dot.setAttribute('stroke','#1B1433'); dot.setAttribute('stroke-width','2');
+      wheelG.appendChild(dot);
+    }
+    var c1 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c1.setAttribute('cx',cx); c1.setAttribute('cy',cy); c1.setAttribute('r','26');
+    c1.setAttribute('fill','#fff'); c1.setAttribute('stroke','#1B1433'); c1.setAttribute('stroke-width','2');
+    wheelG.appendChild(c1);
+    var c2 = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c2.setAttribute('cx',cx); c2.setAttribute('cy',cy); c2.setAttribute('r','10');
+    c2.setAttribute('fill','#1B1433');
+    wheelG.appendChild(c2);
+  }
+  buildWheel();
+
+  document.getElementById('spin').addEventListener('click', function(){
+    if(spinning) return;
+    spinning = true;
+    var idx = Math.floor(Math.random()*wheelValues.length);
+    var total = wheelValues.length;
+    var seg = 360/total;
+    var spins = 6 + Math.floor(Math.random()*3);
+    var target = spins*360 + (360 - (idx*seg + seg/2));
+    var m = wheelG.getAttribute('transform');
+    var start = 0;
+    if(m){ var match = m.match(/rotate\(([-\d.]+)/); if(match) start = parseFloat(match[1]); }
+    var dur = 3800;
+    var t0 = performance.now();
+    (function anim(now){
+      var p = Math.min(1, (now - t0)/dur);
+      var ease = 1 - Math.pow(1-p, 3);
+      var ang = start + (target - start)*ease;
+      wheelG.setAttribute('transform','rotate('+ang+' 150 150)');
+      if(p < 1) requestAnimationFrame(anim);
+      else {
+        spinning = false;
+        document.getElementById('prizeVal').textContent = wheelValues[idx]+'%';
+        setTimeout(function(){ showStep('won'); }, 600);
+      }
+    })(t0);
+  });
+
+  /* ============ FINAL ============ */
+  var email = document.getElementById('email');
+  var finish = document.getElementById('finish');
+  email.addEventListener('input', function(){
+    finish.disabled = !/^\S+@\S+\.\S+$/.test(email.value.trim());
+  });
+  finish.addEventListener('click', function(){ showStep('done'); });
+
+  /* ============ INIT ============ */
+  applyLang('ru');
+  showStep(0, false);
+})();
+</script>
+
+</body>
+</html>
