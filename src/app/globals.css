@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* Theme follows the system; [data-theme] on <html> lets the user override it. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Lexy tokens. Brand from the first draft: fire orange on ink and mist.
+  Shape rule: buttons and chips are pills, cards are 24px, inputs are 14px.
+*/
+:root {
+  --bg: #f7f5fc;
+  --surface: #fffefe;
+  --surface-2: #efebf8;
+  --ink: #1b1433;
+  --muted: #5f5978;
+  --line: #e3ddef;
+  --fire: #ff5a1f;
+  --fire-2: #ff9a0a;
+  --fire-text: #d93f08;
+  --fire-soft: #ffe9df;
+  --ok: #0f8a4f;
+  --ok-soft: #dcf5e7;
+  --bad: #c62f2f;
+  --bad-soft: #fde4e4;
+  --shadow: 27 20 51;
+  /* Chart series, validated for colour-blind separation on the light surface */
+  --chart-1: #ff5a1f;
+  --chart-2: #6f5fd0;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #110d1f;
+  --surface: #1a1530;
+  --surface-2: #231c3d;
+  --ink: #f3f0fa;
+  --muted: #a9a3c2;
+  --line: #2f2849;
+  --fire: #ff6a2b;
+  --fire-2: #ffa21f;
+  --fire-text: #ff8a55;
+  --fire-soft: #3a1f1a;
+  --ok: #3dd68c;
+  --ok-soft: #12352a;
+  --bad: #ff7a7a;
+  --bad-soft: #3d1a22;
+  --shadow: 0 0 0;
+  --chart-1: #f25414;
+  --chart-2: #8b7cf0;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-fire: var(--fire);
+  --color-fire-2: var(--fire-2);
+  --color-fire-text: var(--fire-text);
+  --color-fire-soft: var(--fire-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --font-display: var(--font-unbounded), "Arial Black", system-ui, sans-serif;
+  --font-sans: var(--font-onest), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 88px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: 3px solid var(--fire);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::selection {
+  background: var(--fire);
+  color: #1b1433;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-semibold whitespace-nowrap transition duration-200 ease-out-expo select-none;
+    @apply active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  /* Ink text on fire: 5.9:1 contrast, white on this orange would only reach 3:1 */
+  .btn-fire {
+    @apply bg-fire text-[#1b1433] hover:-translate-y-0.5;
+    box-shadow: 0 10px 24px -12px rgb(255 90 31 / 0.8), inset 0 -2px 0 rgb(0 0 0 / 0.12);
+  }
+  .btn-ink {
+    @apply bg-ink text-bg hover:-translate-y-0.5;
+  }
+  .btn-ghost {
+    @apply border border-line bg-surface text-ink hover:border-ink/30;
+  }
+  .btn-sm {
+    @apply px-4 py-2.5 text-sm;
+  }
+  .card {
+    @apply rounded-3xl border border-line bg-surface;
+    box-shadow: 0 1px 0 rgb(var(--shadow) / 0.03), 0 18px 40px -28px rgb(var(--shadow) / 0.25);
+  }
+  .field {
+    @apply w-full rounded-[14px] border border-line bg-surface px-4 py-3 text-base text-ink placeholder:text-muted transition;
+    @apply focus:border-fire focus:outline-none focus:ring-4 focus:ring-fire/20;
+  }
+  .label {
+    @apply text-sm font-semibold text-ink;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-semibold text-muted;
+  }
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+}
+
+/* Mascot idle motion: only when the user has not asked for reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .bob {
+    animation: bob 4.5s ease-in-out infinite;
+  }
+  .blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: blink 5.5s infinite;
+  }
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-10px) rotate(-1.5deg);
+  }
+}
+
+@keyframes blink {
+  0%, 93%, 100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+/* Fixed grain over the whole page, never on scrolling layers */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

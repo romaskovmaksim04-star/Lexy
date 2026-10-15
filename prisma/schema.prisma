@@ -1,0 +1,67 @@
+// SQLite for local development. For production switch the provider to "postgresql"
+// and point DATABASE_URL at the server database.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  // Answers from the onboarding quiz
+  goal         String   @default("ielts")    // ielts | english
+  format       String   @default("academic") // academic | general
+  targetBand   Float    @default(6.5)
+  focusSkill   String   @default("speaking") // reading | listening | writing | speaking
+  examWindow   String   @default("1-3m")     // 1m | 1-3m | 3-6m | no-date
+  experience   String   @default("yes")      // yes (first time) | mock | real
+  dailyMinutes Int      @default(30)
+  worry        String   @default("confidence")
+  locale       String   @default("ru")
+
+  xp           Int      @default(0)
+  streak       Int      @default(0)
+  lastActive   String?  // YYYY-MM-DD of the last practice day, drives the streak
+
+  attempts     Attempt[]
+  cards        Card[]
+}
+
+// One finished exercise: a reading/listening test, an essay, a speaking answer
+model Attempt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section   String   // reading | listening | writing | speaking
+  taskId    String
+  band      Float
+  raw       Int?     // correct answers for reading/listening
+  total     Int?
+  details   String   // JSON: answers, metrics, essay text
+  minutes   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// Spaced-repetition state of one vocabulary word for one user
+model Card {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wordId   String
+  ease     Float    @default(2.5)
+  interval Int      @default(0) // days
+  reps     Int      @default(0)
+  due      DateTime @default(now())
+
+  @@unique([userId, wordId])
+}
