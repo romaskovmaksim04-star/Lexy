@@ -80,22 +80,101 @@ body.open .drawer{transform:none}
 .reel i{position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;font-style:normal}
 
 /* platform */
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
-.tab{padding:10px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:600;font-size:14px}
-.tab[aria-selected=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.stage{display:grid;gap:28px;align-items:center}
-.phone{width:min(78vw,290px);margin:0 auto;border:9px solid var(--ink);border-radius:40px;background:#fff;overflow:hidden;box-shadow:0 30px 50px -28px rgba(27,20,51,.55)}
-.phone .scr{padding:16px;min-height:440px}
-.phone .hd{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--soft);margin-bottom:14px}
-.phone .hd svg{width:16px;height:19px}
-.card{border-radius:20px;background:var(--fire);color:#fff;padding:18px;margin-bottom:12px}
-.card h3{font:700 18px/1.2 var(--display);margin-bottom:6px}
-.card small{opacity:.9}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.pair div{background:var(--peach);border-radius:14px;padding:10px;text-align:center;font-size:12px;color:var(--soft)}
-.pair b{display:block;font:700 20px var(--display);color:var(--fire)}
-.note{font-size:13px;color:var(--soft);display:grid;gap:6px}
-.stage .copy h3{font:700 22px/1.2 var(--display);margin-bottom:10px}
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:24px auto 34px;padding:10px;background:#fff;border-radius:26px;box-shadow:0 14px 34px -22px rgba(27,20,51,.4);max-width:700px}
+.tab{padding:11px 18px;border-radius:999px;font-weight:600;font-size:15px;color:var(--soft);transition:color .25s,background .25s,transform .2s}
+.tab:hover{color:var(--ink);transform:translateY(-2px)}
+.tab[aria-selected=true]{background:var(--peach);color:var(--ink);box-shadow:0 8px 16px -10px rgba(255,90,31,.8);animation:pop .4s}
+.stage{display:grid;gap:30px;align-items:center}
+.phone{width:min(82vw,310px);margin:0 auto;border:9px solid var(--ink);border-radius:42px;background:#fff;overflow:hidden;box-shadow:0 44px 60px -32px rgba(27,20,51,.65);position:relative}
+.phone::before{content:"";position:absolute;top:0;left:50%;width:84px;height:17px;margin-left:-42px;background:var(--ink);border-radius:0 0 14px 14px;z-index:5}
+.scr{height:540px;overflow-y:auto;padding-bottom:18px;scrollbar-width:none}
+.app-hd{position:sticky;top:0;z-index:4;background:#fff;display:flex;align-items:center;gap:8px;padding:26px 16px 10px;border-bottom:1px solid var(--line);font:800 17px var(--display);letter-spacing:-.04em}
+.app-hd svg{width:20px;height:24px}
+.app-hd i{margin-left:auto;font:600 11px var(--body);color:var(--soft);letter-spacing:0}
+.pg{padding:14px;display:grid;gap:12px}
+.pg>*{animation:up .55s both;animation-delay:calc(var(--i,0)*80ms)}
+.pg h3{font:800 22px/1.1 var(--display);letter-spacing:-.03em}
+.pg .s{font-size:12.5px;color:var(--soft);margin-top:-6px}
+.blk{border-radius:22px;padding:16px;color:#fff;position:relative;overflow:hidden}
+.blk h4{font:800 18px/1.15 var(--display);letter-spacing:-.03em;margin-bottom:6px}
+.blk small{font-size:12.5px;opacity:.92;display:block}
+.blk .fl{position:absolute;right:-6px;top:-4px;width:60px;height:72px;transform:rotate(12deg);animation:bob 3.5s ease-in-out infinite}
+.c-fire{background:linear-gradient(135deg,#FF5A1F,#FF8A1F)}.c-vio{background:linear-gradient(135deg,#6D4AFF,#B04DFF)}.c-mint{background:linear-gradient(135deg,#0FA678,#35D6A0)}.c-ink{background:linear-gradient(150deg,#1B1433,#4A1F3D)}.c-plum{background:linear-gradient(150deg,#3A1380,#8A1F6B)}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.22);font-size:11px;font-weight:600;margin-bottom:8px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:var(--mist);font-size:13px}
+.row b{display:block;font-size:13.5px}.row span:not(.ok){color:var(--soft);font-size:12px}
+.row em{margin-left:auto;font:700 13px var(--display);font-style:normal;color:var(--ok)}
+.ok{width:26px;height:26px;border-radius:9px;background:#DDF6EC;color:var(--ok);display:grid;place-items:center;font-size:13px;flex:none;font-weight:700}
+.seg{display:flex;background:var(--peach);border-radius:999px;padding:4px;font-size:12px;gap:2px}
+.seg span{flex:1;text-align:center;padding:7px 4px;border-radius:999px;color:var(--soft)}
+.seg .on{background:var(--fire);color:#fff;font-weight:700}
+.bar2,.trk{height:9px;border-radius:9px;background:rgba(255,255,255,.3);overflow:hidden;margin:12px 0 8px}
+.bar2 i,.trk i{display:block;height:100%;border-radius:9px;background:#fff;width:0;animation:fill 1.3s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.nums{display:flex;justify-content:space-between;font:800 26px var(--display);letter-spacing:-.04em}
+.nums small{display:block;font:600 10px var(--body);letter-spacing:.08em;opacity:.85}
+.ring{width:130px;height:130px;margin:0 auto;position:relative}
+.ring svg{transform:rotate(-90deg)}.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .bg{stroke:rgba(255,255,255,.3)}.ring .fg{stroke:#fff;stroke-dasharray:314;stroke-dashoffset:314;animation:ring 1.4s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 32px var(--display);letter-spacing:-.04em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g2 div{background:rgba(255,255,255,.2);border-radius:14px;padding:9px;text-align:center;font-size:11px}
+.g2 b{display:block;font:800 18px var(--display)}
+.pers{display:flex;gap:8px}
+.pers div{flex:1;border-radius:18px;padding:12px 10px;color:#fff;font-size:11px;line-height:1.3;animation:rise .7s both}
+.pers b{display:block;font:800 12px var(--display);margin-bottom:4px}
+.bub{background:var(--mist);border-radius:16px 16px 16px 4px;padding:10px 12px;font-size:12.5px}
+.bub.me{background:var(--peach);border-radius:16px 16px 4px 16px;justify-self:end}
+.btn-app{display:block;text-align:center;padding:13px;border-radius:16px;background:var(--fire);color:#fff;font-weight:700;font-size:14px}
+.btn-app.w{background:#fff;color:var(--ink)}
+.hero-ai{text-align:center;background:linear-gradient(160deg,#FFE9DF,#EFE9FF);border-radius:24px;padding:18px 12px 14px}
+.hero-ai svg{width:92px;height:110px;animation:bob 3.6s ease-in-out infinite}
+.hero-ai h4{font:800 16px var(--display)}.hero-ai small{color:var(--soft);font-size:12px}
+.copy h3{font:700 24px/1.2 var(--display);margin-bottom:10px}
+
+/* universities */
+.uni{overflow:hidden;padding:10px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.track{display:flex;gap:46px;padding-right:46px;width:max-content;animation:drift 42s linear infinite}
+.uni:hover .track{animation-play-state:paused}
+.u{display:flex;align-items:center;gap:10px;white-space:nowrap;font:600 22px/1 Georgia,"Times New Roman",serif;color:#8A84A3;transition:color .3s,transform .3s}
+.u:hover{color:var(--ink);transform:scale(1.07)}
+.u i{width:28px;height:28px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font:700 12px var(--body)}
+
+/* motion */
+.js .rv{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0)*90ms)}
+.js .rv.in{opacity:1;transform:none}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@keyframes rise{from{opacity:0;transform:translateY(36px) rotate(2deg)}}
+@keyframes pop{50%{transform:scale(1.08)}}
+@keyframes fill{to{width:var(--w)}}
+@keyframes ring{to{stroke-dashoffset:var(--o)}}
+@keyframes drift{to{transform:translateX(-50%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shine{from{transform:translateX(0) skewX(-20deg)}to{transform:translateX(420%) skewX(-20deg)}}
+@keyframes star{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.35)}100%{transform:none}}
+@keyframes squash{0%{transform:scale(.3) translateY(60px);opacity:0}60%{transform:scale(1.08,.92)}100%{transform:none;opacity:1}}
+@keyframes boop{30%{transform:scale(1.12,.88)}60%{transform:scale(.94,1.08)}}
+@keyframes glow{50%{opacity:.55;transform:scale(1.1)}}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(255,255,255,.55)}to{box-shadow:0 0 0 14px transparent}}
+.hero h1 span{display:block;animation:rise .9s both}.hero h1 span+span{animation-delay:.14s}
+.hero p,.hero .cta-row,.hero .stats{animation:up .8s .3s both}.hero .cta-row{animation-delay:.42s}.hero .stats{animation-delay:.54s}
+.mascot{animation:squash 1s .15s cubic-bezier(.3,1.4,.5,1) both;cursor:pointer}
+.mascot::before{animation:glow 4s infinite}
+.mascot.boop svg{animation:boop .5s}
+.look{transition:transform .18s;transform:translate(calc(var(--ex,0)*3px),calc(var(--ey,0)*2px))}
+.btn{position:relative;overflow:hidden}.btn:active{transform:scale(.96)}
+.btn-fire::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)}
+.btn-fire:hover::after{animation:shine .8s}.hero .btn-fire::after{animation:shine 3.4s 1.8s infinite}
+header{transition:box-shadow .3s}header.sc{box-shadow:0 10px 28px -18px rgba(27,20,51,.5)}
+.bar{transition:height .3s}header.sc .bar{height:54px}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--fire2),var(--fire));transform:scaleX(var(--p,0));transform-origin:left}
+.drawer a.item{opacity:0;transform:translateX(-18px);transition:opacity .4s,transform .4s,background .2s}
+body.open .drawer a.item{opacity:1;transform:none;transition-delay:calc(var(--i,0)*60ms + .12s)}
+.reel{transition:transform .35s}.reel:hover{transform:translateY(-8px) rotate(-1.5deg)}.reel i{animation:pulse 2s infinite}
+.rev{transition:transform .3s,box-shadow .3s}.rev:hover{transform:translateY(-6px);box-shadow:0 26px 40px -28px rgba(27,20,51,.45)}
+.stars span{display:inline-block;transform:scale(0)}.go .stars span{animation:star .5s calc(var(--k)*90ms + .3s) both}
+.seal{position:relative}.seal::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);animation:spin 18s linear infinite}
+details[open] p{animation:up .35s both}details{transition:box-shadow .3s}details:hover{box-shadow:0 12px 24px -18px rgba(27,20,51,.4)}
+.cols a{transition:color .2s,transform .2s}.cols a:hover{transform:translateX(4px)}
 
 /* reviews */
 .score{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
@@ -141,7 +220,9 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  .cols{grid-template-columns:repeat(4,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.stars span{transform:none!important}.bar2 i,.trk i{width:var(--w)!important}.ring .fg{stroke-dashoffset:var(--o)!important}.mascot{opacity:1!important}.drawer a.item{opacity:1;transform:none}}
 </style>
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
 
@@ -184,7 +265,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  <section class="hero">
   <div class="wrap">
    <div>
-    <h1>Нужный балл IELTS <b>с первой попытки</b></h1>
+    <h1><span>Нужный балл IELTS</span><span><b>с первой попытки</b></span></h1>
     <p class="lead">ИИ-тренажёр для Academic и General Training. Все четыре секции, разбор ошибок и пробные экзамены в одном приложении.</p>
     <div class="cta-row">
      <a class="btn btn-fire" href="#start">НАЧАТЬ ПОДГОТОВКУ →</a>
@@ -199,17 +280,14 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     <svg viewBox="0 0 100 120" role="img" aria-label="Огонёк Lexy">
      <path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/>
      <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/>
-     <ellipse class="eye" cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse class="eye" cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
-     <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/>
+     <g class="look"><ellipse class="eye" cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse class="eye" cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
+     <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></g>
     </svg>
    </div>
   </div>
  </section>
 
- <section style="padding-top:0">
-  <div class="wrap"><h2>Сюда поступают наши ученики</h2><p class="lead">Замени названия на реальные вузы и страны, где учатся твои ученики.</p></div>
-  <div class="chips" style="margin-top:18px"><span class="chip">University 1</span><span class="chip">University 2</span><span class="chip">University 3</span><span class="chip">University 4</span><span class="chip">University 5</span></div>
- </section>
+ <section style="padding-top:0"><div class="wrap"><h2 style="text-align:center">С нами ты достигнешь большего</h2></div><div class="uni" style="margin-top:22px"><div class="track" id="trk"></div></div></section>
 
  <section style="padding-top:8px">
   <div class="wrap"><h2>Ты уже видел нас везде</h2><p class="lead">TikTok, Instagram, Threads — и в школе.</p></div>
@@ -219,16 +297,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
   <div class="wrap"><a class="btn btn-fire" href="#start">НАЧАТЬ ПОДГОТОВКУ →</a></div>
  </section>
 
- <section id="platform">
-  <div class="wrap">
-   <h2>Посмотри платформу изнутри</h2>
-   <div class="tabs" role="tablist" id="tabs"></div>
-   <div class="stage">
-    <div class="phone"><div class="scr" id="scr"></div></div>
-    <div class="copy"><h3 id="ct"></h3><p class="lead" id="cp"></p><br><a class="btn btn-fire" href="#start">НАЧАТЬ ПОДГОТОВКУ →</a></div>
-   </div>
-  </div>
- </section>
+ <section id="platform"><div class="wrap"><h2>Взгляни на платформу изнутри</h2><div class="tabs" role="tablist" id="tabs"></div><div class="stage"><div class="phone"><div class="scr" id="scr"></div></div><div class="copy" id="copy"><h3 id="ct"></h3><p class="lead" id="cp"></p><br><a class="btn btn-fire" href="#start">НАЧАТЬ ПОДГОТОВКУ →</a></div></div></div></section>
 
  <section id="reviews">
   <div class="wrap">
@@ -282,29 +351,75 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
 </footer>
 
 <script>
+var F='<svg><use href="#flame"/></svg>',
+H=function(t){return'<div class="app-hd">'+F+'Lexy<i>'+t+'</i></div>'},
+R=function(i,b,s,e){return'<div class="row"><span class="ok">'+i+'</span><div><b>'+b+'</b><span>'+s+'</span></div>'+(e?'<em>'+e+'</em>':'')+'</div>'},
+P=function(h){return'<div class="pg">'+h+'</div>'};
 var D=[
- ["План","Персональный план","Lexy смотрит на текущий уровень и срок экзамена и собирает задания на каждый день.",["45 мин|в день","4|секции"],"Сегодня: Reading, 2 текста · Vocabulary, 20 слов"],
- ["Пробники","Полные пробные экзамены","Все четыре секции в формате реального теста. Время идёт, как на экзамене.",["60 мин|Writing","2|задания"],"Task 1 — описание графика, 150+ слов · Task 2 — эссе, 250+ слов"],
- ["Фидбек","Разбор по критериям","ИИ оценивает по четырём критериям IELTS и показывает, что поправить в тексте.",["6.5|сейчас","7.0|цель"],"Task Achievement · Coherence · Vocabulary · Grammar"],
- ["Статистика","Прогресс по секциям","Видно, какая секция тянет балл вниз и как он растёт от пробника к пробнику.",["+0.5|за месяц","12|пробников"],"Слабое место: Reading, вопросы True / False / Not Given"],
- ["Игры","Практика как игра","Короткие раунды на слова и аудирование, чтобы заниматься даже в дороге.",["5 мин|раунд","🔥 14|дней подряд"],"Новый вызов: Speak or Die"],
- ["Словарь","Свой словарь","Слова из заданий попадают в личный набор и повторяются, пока не запомнятся.",["240|слов","86%|запомнено"],"Повторить сегодня: 18 слов"]
+["Lexy AI","Lexy AI — собеседник для практики","Живой ИИ-партнёр для разговорной практики. Выбери характер и начинай говорить.",
+P('<div class="hero-ai">'+F+'<h4>Знакомься с Lexy AI</h4><small>Готов, когда ты готов</small></div><div class="pers"><div class="c-vio" style="animation-delay:.3s"><b>Саркастичный</b>Колкий юмор держит в тонусе</div><div class="c-mint" style="animation-delay:.42s"><b>Добрый</b>Мягко поддержит и подскажет</div><div class="c-fire" style="animation-delay:.54s"><b>Строгий</b>Как настоящий экзаменатор</div></div><div class="bub">Tell me about a place you love visiting.</div><div class="bub me">I love the old town in my city…</div><a class="btn-app">Начать разговор</a>')],
+["План","Персональный план","До экзамена остаётся время, и Lexy раскладывает его по дням: что учить сегодня и успеваешь ли ты к цели.",
+P('<div class="blk c-fire"><h4>До экзамена 52 дня</h4><small>6 декабря</small><div class="trk"><i style="--w:58%"></i></div><div class="nums"><div>6.5<small>СЕЙЧАС</small></div><div style="text-align:right">7.0<small>ЦЕЛЬ</small></div></div><small style="margin-top:8px">Почти успеваешь. Небольшой рывок, и цель твоя.</small></div><h3 style="font-size:17px">Твой план на сегодня</h3>'+R('1','Reading: 2 текста','15 мин')+R('2','Vocabulary: 20 слов','10 мин')+R('3','Writing Task 1','20 мин')+R('4','Разбор ошибок','5 мин'))],
+["Пробники","Пробные экзамены","Полный экзамен и отдельные секции в формате реального теста, с таймером и прогнозом балла.",
+P('<h3>Пробные тесты IELTS</h3><p class="s">Выбери тип теста и начни практику</p><div class="blk c-vio"><span class="pill">~2.5 часа</span><h4>Полный экзамен</h4><small>Все четыре секции в условиях экзамена и один прогнозируемый балл.</small></div><div class="seg"><span class="on">Reading</span><span>Listening</span><span>Writing</span></div>'+R('⇄','Случайный тест','Lexy выберет за тебя','Начать')+R('▶','Academic Reading 12','3 текста · 60 мин')+R('▶','Academic Reading 13','3 текста · 60 мин'))],
+["Фидбек","Детальный фидбек","Оценка по критериям IELTS и разбор: что поправить, чтобы поднять балл.",
+P('<h3>Результаты: Writing</h3><p class="s">Завершено 7 октября</p><div class="blk c-fire"><div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" style="--o:70" cx="60" cy="60" r="50"/></svg><b>7.0</b></div><h4 style="text-align:center;margin:10px 0 8px">Общий балл IELTS</h4><div class="g2"><div><b>7.0</b>Task</div><div><b>7.5</b>Coherence</div><div><b>6.5</b>Vocabulary</div><div><b>7.0</b>Grammar</div></div></div>'+R('!','Поправь артикли','3 ошибки в Task 2'))],
+["Статистика","Статистика прогресса","Видно, какой навык тянет балл вниз и как он растёт от пробника к пробнику.",
+P('<h3>Статистика</h3><p class="s">Следи за прогрессом по навыкам</p><div class="seg"><span>Неделя</span><span class="on">Месяц</span><span>3 мес</span><span>Всё</span></div><div class="blk c-mint"><h4>Твои инсайты</h4><small>Собрано из твоих реальных результатов</small><div class="bar2"><i style="--w:78%"></i></div></div>'+R('✓','Стартовый band','~6.5','+0.5')+R('✓','Слабый навык','Аудирование')+R('✓','Типичные ошибки','Открыт разбор Writing'))],
+["Игры","Игры под давлением","Короткие раунды на слова и речь. Заниматься можно в дороге.",
+P('<h3>Аркада</h3><p class="s">Мини-игры, которые тренируют английский под давлением</p><div class="blk c-ink"><span class="pill">Новая игра</span><h4>Speaking Challenge</h4><small>Крути барабан, лови тему и говори 60 секунд без остановки.</small><a class="btn-app" style="margin-top:12px;display:inline-block;padding:10px 22px">▶ Играть</a></div><div class="blk c-plum"><span class="pill">Новый режим</span><h4>Speak or Die</h4><small>Замолчал — проиграл.</small></div>')],
+["Словарь","Личный словарь","Слова из заданий попадают в твой набор и повторяются, пока не запомнятся.",
+P('<h3>Словарь</h3><p class="s">Твой личный словарь</p><div class="blk c-vio"><svg class="fl"><use href="#flame"/></svg><span class="pill">Каждый день</span><h4>Ежедневное<br>повторение</h4><small>Повторяй слова и добавляй новые</small><a class="btn-app w" style="margin-top:12px">Начать повторение · 4</a></div>'+R('A','resilient','устойчивый','новое')+R('A','mitigate','смягчать')+R('A','substantial','значительный'))],
+["Режим экзамена","Режим экзамена","Тест идёт полностью на английском, с таймером и паузой, как в день экзамена.",
+P('<div class="blk c-fire" style="padding-top:20px"><svg class="fl"><use href="#flame"/></svg><h4 style="margin-top:36px">IELTS Academic<br>Writing</h4><small>2 задания: описание графика и эссе</small></div><div class="g2" style="color:var(--ink)"><div style="background:var(--peach)"><b style="color:var(--fire)">60 мин</b>время</div><div style="background:var(--peach)"><b style="color:var(--fire)">2</b>задания</div></div>'+R('1','Task 1','описание графика · 150+ слов')+R('2','Task 2','эссе · 250+ слов')+'<a class="btn-app">Начать тест Writing →</a>')]
 ];
-var tabs=document.getElementById("tabs"),scr=document.getElementById("scr");
+var tabs=document.getElementById("tabs"),scr=document.getElementById("scr"),cp=document.getElementById("copy");
 function show(i){
  var d=D[i];
  [].forEach.call(tabs.children,function(b,k){b.setAttribute("aria-selected",k==i)});
- var p=d[3].map(function(x){x=x.split("|");return "<div><b>"+x[0]+"</b>"+x[1]+"</div>"}).join("");
- scr.innerHTML='<div class="hd"><svg><use href="#flame"/></svg><b style="color:var(--ink)">Lexy</b> · '+d[0]+'</div><div class="card"><h3>'+d[1]+'</h3><small>'+d[2]+'</small></div><div class="pair">'+p+'</div><div class="note"><span>'+d[4]+'</span></div>';
- document.getElementById("ct").textContent=d[1];
- document.getElementById("cp").textContent=d[2];
+ scr.innerHTML=H(d[0])+d[3];scr.scrollTop=0;
+ [].forEach.call(scr.querySelectorAll(".pg>*"),function(e,k){e.style.setProperty("--i",k)});
+ document.getElementById("ct").textContent=d[1];document.getElementById("cp").textContent=d[2];
+ cp.style.animation="none";void cp.offsetWidth;cp.style.animation="";
 }
 D.forEach(function(d,i){var b=document.createElement("button");b.className="tab";b.role="tab";b.textContent=d[0];b.onclick=function(){show(i)};tabs.appendChild(b)});
-show(1);
+show(0);
+
+/* universities */
+var U=["Harvard University","Massachusetts Institute of Technology","Stanford University","Columbia University","Princeton University","Yale University","University of Pennsylvania","UC Berkeley","University of Texas at Austin","New York University"],tk=document.getElementById("trk");
+tk.innerHTML=U.concat(U).map(function(n){return'<span class="u"><i>'+n[0]+'</i>'+n+'</span>'}).join("");
+
+/* drawer */
 function t(o){document.body.classList.toggle("open",o)}
 document.getElementById("open").onclick=function(){t(true)};
 document.getElementById("close").onclick=document.getElementById("veil").onclick=function(){t(false)};
+[].forEach.call(document.querySelectorAll(".drawer a.item"),function(a,k){a.style.setProperty("--i",k)});
 [].forEach.call(document.querySelectorAll(".drawer a"),function(a){a.onclick=function(){t(false)}});
+
+/* scroll: header + progress */
+var hd=document.querySelector("header");
+function sc(){var y=scrollY,m=document.documentElement.scrollHeight-innerHeight;hd.classList.toggle("sc",y>8);hd.style.setProperty("--p",m>0?y/m:0)}
+addEventListener("scroll",sc,{passive:true});sc();
+
+/* reveal */
+[].forEach.call(document.querySelectorAll(".stars"),function(s){s.innerHTML=[0,1,2,3,4].map(function(k){return'<span style="--k:'+k+'">★</span>'}).join("")});
+var rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target;io.unobserve(el);el.classList.add("in","go");el.addEventListener("transitionend",function(){el.classList.remove("rv","in")},{once:true})})},{threshold:.15});
+[].forEach.call(document.querySelectorAll("section h2,section .lead,.tabs,.phone,.reel,.score,.rev,.guar,details,.ugc,.cols>div,.legal"),function(el){
+ if(el.closest(".hero"))return;
+ el.style.setProperty("--d",Math.min(5,[].indexOf.call(el.parentNode.children,el)));
+ el.classList.add("rv");io.observe(el)});
+
+/* count-up */
+var co=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;co.unobserve(e.target);if(rm)return;var el=e.target,x=el.textContent,v=parseFloat(x),d=(x.split(".")[1]||"").length,s=performance.now();(function f(n){var k=Math.min(1,(n-s)/1300);el.textContent=(v*(1-Math.pow(1-k,3))).toFixed(d);if(k<1)requestAnimationFrame(f)})(s)})});
+[].forEach.call(document.querySelectorAll(".stats strong,.score strong"),function(el){co.observe(el)});
+
+/* mascot: eyes follow pointer, boop on tap */
+var ms=document.querySelector(".mascot");
+addEventListener("pointermove",function(e){var r=ms.getBoundingClientRect();
+ ms.style.setProperty("--ex",Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/260)));
+ ms.style.setProperty("--ey",Math.max(-1,Math.min(1,(e.clientY-r.top-r.height/2)/260)))},{passive:true});
+ms.onclick=function(){ms.classList.remove("boop");void ms.offsetWidth;ms.classList.add("boop")};
 </script>
 </body>
 </html>
