@@ -27,7 +27,7 @@ function Waveform() {
           key={i}
           className="w-1.5 rounded-full bg-[#1b1433]/80"
           style={{ height: `${h * 100}%`, originY: 0.5 }}
-          animate={reduce ? undefined : { scaleY: [1, 0.35 + ((i * 7) % 5) / 8, 1] }}
+          animate={reduce ? { opacity: [1, 0.45, 1] } : { scaleY: [1, 0.35 + ((i * 7) % 5) / 8, 1] }}
           transition={{ duration: 1.1 + (i % 4) * 0.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.05 }}
         />
       ))}

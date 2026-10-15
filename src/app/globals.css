@@ -133,15 +133,16 @@ body {
   }
 }
 
-/* Mascot idle motion: only when the user has not asked for reduced motion */
+/* Blinking does not move anything on screen, so it stays on with reduced motion */
+.blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5.5s infinite;
+}
+/* The mascot floats only when the user has not asked for reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   .bob {
     animation: bob 4.5s ease-in-out infinite;
-  }
-  .blink {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: blink 5.5s infinite;
   }
 }
 

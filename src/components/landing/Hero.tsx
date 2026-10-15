@@ -17,7 +17,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function Hero() {
   const reduce = useReducedMotion();
   const enter = (delay: number) =>
-    reduce ? {} : { initial: { opacity: 0, y: 28 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, delay, ease } };
+    ({ initial: { opacity: 0, y: reduce ? 0 : 28 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, delay, ease } });
 
   return (
     <section className="relative overflow-hidden">
@@ -44,7 +44,7 @@ export function Hero() {
 
         <motion.div
           className="relative mx-auto w-full max-w-[520px]"
-          initial={reduce ? false : { opacity: 0, scale: 0.94 }}
+          initial={{ opacity: 0, scale: reduce ? 1 : 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.1, delay: 0.15, ease }}
         >
@@ -66,7 +66,7 @@ export function Hero() {
                 <motion.div
                   key={c.key}
                   className="flex items-center justify-between rounded-2xl bg-surface-2 px-4 py-3"
-                  initial={reduce ? false : { opacity: 0, x: 16 }}
+                  initial={{ opacity: 0, x: reduce ? 0 : 16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 + i * 0.12, ease }}
                 >
