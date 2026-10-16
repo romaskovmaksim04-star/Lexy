@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Speaking и Writing с таймером — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C; --white:#fff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-behavior:smooth}
+body{font:400 16px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--ink);transition:border-color .2s,background .2s,transform .15s;margin-left:auto}
+.menu-btn:hover{border-color:var(--fire);background:#FFF8F3;color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--ink);transition:border-color .2s,background .2s}
+.lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item .flag{font-size:16px}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:36px 20px 60px}
+h1{font:800 clamp(28px,5vw,40px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:12px}
+.sub{color:var(--soft);font-size:15px;margin-bottom:26px;max-width:62ch;line-height:1.55}
+
+.snav{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.snav a{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--soft);transition:border-color .2s,background .2s,color .2s}
+.snav a:hover{border-color:var(--fire);color:var(--ink)}
+.snav a.on{background:var(--peach);border-color:var(--fire);color:var(--ink)}
+
+.big-sec{margin-bottom:52px;scroll-margin-top:80px}
+.big-sec .title{font:800 clamp(22px,4vw,32px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:8px}
+.big-sec .desc{color:var(--soft);font-size:14.5px;margin-bottom:22px;max-width:62ch}
+
+.picker{
+  position:relative;
+  border-radius:24px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(255,180,10,.15) 0%, transparent 55%),
+    radial-gradient(120% 140% at 100% 100%, rgba(138,92,255,.12) 0%, transparent 55%),
+    #fff;
+  border:1.5px solid var(--line);
+  padding:28px 24px 24px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.picker::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,154,10,.28), transparent 65%);pointer-events:none;
+}
+.picker .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;position:relative;z-index:1}
+.pill{
+  padding:9px 16px;border-radius:999px;
+  border:1.5px solid var(--line);background:#fff;
+  font:600 13px var(--body);color:var(--soft);
+  cursor:pointer;transition:all .2s;
+}
+.pill:hover{border-color:var(--fire);color:var(--ink)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+.topic-card{
+  position:relative;z-index:1;
+  background:#fff;border:1px solid var(--line);border-radius:20px;
+  padding:24px;margin-bottom:16px;
+  min-height:120px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.topic-card .tag{
+  display:inline-block;
+  font:700 11px var(--display);letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;
+  background:var(--peach);color:var(--fire);
+  margin-bottom:12px;
+  align-self:flex-start;
+}
+.topic-card .q{
+  font:600 18px/1.45 var(--body);color:var(--ink);
+}
+.topic-card .hint{
+  margin-top:14px;font-size:13px;color:var(--soft);line-height:1.5;
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 22px;border-radius:14px;
+  font:700 14px var(--body);letter-spacing:.02em;
+  transition:transform .15s, box-shadow .2s;
+  cursor:pointer;
+}
+.btn-primary{background:var(--fire);color:#fff;box-shadow:0 12px 26px -12px rgba(255,90,31,.75)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--fire);color:var(--fire)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.timer-box{
+  display:none;
+  margin-top:20px;
+  border-radius:20px;
+  background:#fff;
+  border:1.5px solid var(--line);
+  padding:24px;
+}
+.timer-box.on{display:block;animation:fadeIn .3s}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.timer-display{
+  font:800 clamp(48px,10vw,72px)/1 var(--display);
+  letter-spacing:-.04em;
+  color:var(--ink);
+  text-align:center;
+  margin-bottom:6px;
+  font-variant-numeric:tabular-nums;
+  transition:color .3s;
+}
+.timer-display.warn{color:#E5A800}
+.timer-display.danger{color:#E5443E}
+.timer-display.done{color:var(--ok)}
+.timer-stage{
+  text-align:center;
+  font:700 12px var(--body);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--soft);
+  margin-bottom:20px;
+}
+.timer-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.recorder{
+  margin-top:24px;padding-top:24px;
+  border-top:1px solid var(--line);
+}
+.rec-title{font:700 14px var(--body);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.rec-title .dot{width:8px;height:8px;border-radius:50%;background:#ccc;display:inline-block}
+.rec-title .dot.rec{background:#E5443E;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.rec-status{font-size:13px;color:var(--soft);margin-bottom:12px}
+.rec-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.rec-actions .btn{padding:11px 18px;font-size:13.5px}
+audio{width:100%;margin-top:10px}
+
+.pad{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+.pad textarea{
+  width:100%;min-height:220px;
+  font:400 15px/1.6 var(--body);
+  color:var(--ink);
+  padding:18px;
+  border:1.5px solid var(--line);
+  border-radius:16px;
+  outline:none;
+  resize:vertical;
+  transition:border-color .2s, box-shadow .2s;
+  background:#fff;
+}
+.pad textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+.pad-meta{display:flex;justify-content:space-between;gap:14px;margin-top:10px;font-size:13px;color:var(--soft);flex-wrap:wrap}
+.pad-meta .wc{font-weight:700;color:var(--ink)}
+.pad-meta .wc.low{color:#E5443E}
+.pad-meta .wc.ok{color:var(--ok)}
+
+@media(max-width:520px){
+  .top .bar{padding:0 14px;gap:8px}
+  .logo{font-size:18px}.logo svg{width:22px;height:26px}
+  .menu-btn{padding:8px 12px;font-size:12.5px}
+  main{padding:24px 16px 60px}
+  .picker{padding:22px 18px 18px;border-radius:20px}
+  .topic-card{padding:18px}
+  .topic-card .q{font-size:16px}
+  .timer-box{padding:18px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <a class="menu-btn" href="main.html"><svg><use href="#ic-home"/></svg><span data-i18n="btn.menu">Главное меню</span></a>
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn"><span id="curFlag">🇷🇺</span><span id="curLang">RU</span><svg><use href="#ic-chev"/></svg></button>
+      <div class="lang-menu" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 data-i18n="page.title">Speaking и Writing с таймером</h1>
+  <p class="sub" data-i18n="page.sub">Тренируйтесь под таймером как на реальном экзамене. Для Speaking включайте микрофон и записывайте ответ — потом можно переслушать. Для Writing пишите прямо здесь и следите за количеством слов.</p>
+
+  <div class="snav">
+    <a href="#speaking" data-i18n="nav.speaking">Speaking</a>
+    <a href="#writing" data-i18n="nav.writing">Writing</a>
+  </div>
+
+  <section id="speaking" class="big-sec">
+    <h2 class="title" data-i18n="speak.title">Speaking</h2>
+    <p class="desc" data-i18n="speak.desc">Выберите часть, затем тему. Нажмите «Начать» — включится таймер, а после старта записи — микрофон. В конце можно прослушать свою запись.</p>
+
+    <div class="picker">
+      <div class="row" id="speakingParts"></div>
+
+      <div class="topic-card" id="speakingCard">
+        <span class="tag" id="speakingTag">Part 1</span>
+        <div class="q" id="speakingQ">Нажмите «Новая тема», чтобы получить задание.</div>
+        <div class="hint" id="speakingHint"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="speakingNew" data-i18n="btn.newTopic">Новая тема</button>
+        <button class="btn btn-primary" id="speakingStart" data-i18n="btn.startTimer">Начать с таймером</button>
+      </div>
+
+      <div class="timer-box" id="speakingTimerBox">
+        <div class="timer-display" id="speakingDisplay">00:00</div>
+        <div class="timer-stage" id="speakingStage"></div>
+
+        <div class="timer-controls">
+          <button class="btn btn-dark" id="speakingPause" data-i18n="btn.pause">Пауза</button>
+          <button class="btn btn-ghost" id="speakingReset" data-i18n="btn.reset">Сброс</button>
+        </div>
+
+        <div class="recorder">
+          <div class="rec-title"><span class="dot" id="recDot"></span> <span data-i18n="rec.title">Запись голоса</span></div>
+          <div class="rec-status" id="recStatus" data-i18n="rec.idle">Микрофон выключен. Запись начнётся автоматически при старте таймера.</div>
+
+          <div class="rec-actions" id="recActions" style="display:none">
+            <button class="btn btn-dark" id="recPlay" data-i18n="rec.play">▶ Прослушать</button>
+            <button class="btn btn-ghost" id="recDownload" data-i18n="rec.download">Скачать</button>
+            <button class="btn btn-ghost" id="recClear" data-i18n="rec.clear">Очистить</button>
+          </div>
+          <audio id="recAudio" style="display:none"></audio>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="writing" class="big-sec">
+    <h2 class="title" data-i18n="write.title">Writing</h2>
+    <p class="desc" data-i18n="write.desc">Выберите Task 1 или Task 2. Нажмите «Начать» — включится таймер. Пишите прямо в поле ниже, счётчик слов подскажет, когда вы добрались до нормы.</p>
+
+    <div class="picker">
+      <div class="row" id="writingTasks"></div>
+
+      <div class="topic-card" id="writingCard">
+        <span class="tag" id="writingTag">Task 1</span>
+        <div class="q" id="writingQ">Нажмите «Новая тема», чтобы получить задание.</div>
+        <div class="hint" id="writingHint"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="writingNew" data-i18n="btn.newTopic">Новая тема</button>
+        <button class="btn btn-primary" id="writingStart" data-i18n="btn.startTimer">Начать с таймером</button>
+      </div>
+
+      <div class="timer-box" id="writingTimerBox">
+        <div class="timer-display" id="writingDisplay">00:00</div>
+        <div class="timer-stage" id="writingStage"></div>
+
+        <div class="timer-controls">
+          <button class="btn btn-dark" id="writingPause" data-i18n="btn.pause">Пауза</button>
+          <button class="btn btn-ghost" id="writingReset" data-i18n="btn.reset">Сброс</button>
+        </div>
+
+        <div class="pad">
+          <textarea id="writingText" placeholder="Начните писать здесь…" data-i18n-placeholder="write.placeholder"></textarea>
+          <div class="pad-meta">
+            <span><span data-i18n="write.words">Слов:</span> <span class="wc low" id="writingWC">0</span></span>
+            <span data-i18n="write.target">Цель: Task 1 — 150+, Task 2 — 250+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+var SPEAKING_TOPICS = {
+  part1: [
+    "Where are you from?","Do you work or study?","What do you do in your free time?","Do you enjoy reading books?","How often do you use public transport?","What's your favourite kind of weather?","Do you like cooking?","Do you prefer tea or coffee?","Tell me about your family.","What kind of music do you like?","Do you play any sports?","How often do you go to the cinema?","Do you like animals?","What's your favourite season and why?","Do you use social media a lot?","Are you a morning person or a night owl?","Do you like travelling?","What's your hometown like?","Do you enjoy shopping?","Have you ever had a pet?","What's your favourite meal of the day?","Do you like learning languages?","What do you usually do at the weekend?","Do you prefer city or countryside?","What's your favourite colour?","Do you like watching TV series?","What do you think about fast food?","Do you enjoy walking?","What's your favourite holiday?","Do you like meeting new people?","Are you good at drawing?","What kind of apps do you use daily?","Do you like flowers?","Have you ever been abroad?","Do you like board games?","What's your dream job?","How do you usually relax?","Do you like photography?","What's the weather like today?","Do you go to the gym?","Do you drink much water?","Do you like sweets?","Do you have any hobbies?","Do you read the news?","Do you use a bicycle?","Do you like singing?","Do you enjoy cooking for others?","What's your favourite film genre?","Do you like taking public transport?","Do you plan your day?"
+  ],
+  part2: [
+    "Describe a place you love visiting. Say where it is, when you went there, what you did, and why you love it.",
+    "Describe a person who influenced you. Say who they are, how you met, what they taught you, and why they matter.",
+    "Describe a memorable journey. Say where you went, who you were with, what happened, and why it was memorable.",
+    "Describe a book that changed your view. Say what it was about, when you read it, what you learned, and why it mattered.",
+    "Describe a skill you would like to learn. Say what it is, why you want to learn it, how you would learn, and how it would change your life.",
+    "Describe a piece of technology you use every day. Say what it is, how you use it, and why it is important to you.",
+    "Describe a time you helped someone. Say who you helped, what you did, how they reacted, and how you felt.",
+    "Describe a traditional dish from your country. Say what it is, how it's made, when it's eaten, and why you like it.",
+    "Describe a person you admire. Say who they are, what they do, why you admire them, and how they inspire you.",
+    "Describe your favourite childhood memory. Say what happened, where you were, who was with you, and why you remember it.",
+    "Describe a holiday you enjoyed. Say where you went, who with, what you did, and why it was special.",
+    "Describe a sports event you watched. Say what it was, when, who played, and why it was exciting.",
+    "Describe a song that means a lot to you. Say what it is, when you heard it first, what it means, and why you love it.",
+    "Describe a teacher you remember. Say who they were, what they taught, how they taught, and why you remember them.",
+    "Describe a difficult decision you made. Say what it was, why it was hard, what you chose, and what happened.",
+    "Describe a film that impressed you. Say what it was, when you watched it, what it was about, and why it impressed you.",
+    "Describe a public place in your city. Say where it is, what happens there, who visits it, and why it's important.",
+    "Describe a gift you gave someone. Say what it was, who you gave it to, why you chose it, and how they reacted.",
+    "Describe a piece of advice you received. Say what it was, who gave it, when, and how it helped you.",
+    "Describe a time you were late. Say when it was, why you were late, what happened, and how you felt.",
+    "Describe a language you would like to speak. Say which one, why, how you would learn it, and what you'd do with it.",
+    "Describe a special occasion in your family. Say what it is, how it's celebrated, who comes, and why it's special.",
+    "Describe a park or natural place near you. Say where it is, what you do there, who goes there, and why you like it.",
+    "Describe something you own that is important to you. Say what it is, how you got it, how long you've had it, and why it matters.",
+    "Describe a TV programme you enjoy. Say what it is, what it's about, when you watch it, and why you enjoy it.",
+    "Describe a person who is good at their job. Say who they are, what they do, why they're good, and how they inspired you.",
+    "Describe a journey that didn't go as planned. Say where you went, what went wrong, how you handled it, and what you learned.",
+    "Describe a time when you met a famous person. Say who, where, when, what you said, and how you felt.",
+    "Describe a food you tried for the first time. Say what it was, where you tried it, how it tasted, and whether you'd have it again.",
+    "Describe a place where you like to study or work. Say where it is, how often you go, what you do there, and why you like it.",
+    "Describe an invention you find useful. Say what it is, when it was invented, how it's used, and why it's useful.",
+    "Describe a sport you'd like to try. Say what it is, why you're interested, how you'd start, and what you'd need.",
+    "Describe a time you received good news. Say what it was, when you got it, who told you, and how you celebrated.",
+    "Describe a movie you'd recommend. Say what it is, what it's about, why you recommend it, and to whom.",
+    "Describe a trip you took alone. Say where you went, why you went alone, what you did, and how it changed you.",
+    "Describe a photo you like. Say what's on it, when it was taken, who's on it, and why you like it.",
+    "Describe a subject you enjoyed at school. Say what it was, who taught it, why you enjoyed it, and how it helped you.",
+    "Describe a place where you would like to live. Say where it is, what it's like, why you'd like to live there, and how you'd feel.",
+    "Describe a tradition in your country. Say what it is, when it happens, who participates, and why it's important.",
+    "Describe a time you had to be brave. Say what happened, why it was difficult, how you handled it, and what you learned.",
+    "Describe a pet you had or would like to have. Say what it is, why you chose it, how you take care of it, and what it means to you.",
+    "Describe a competition you took part in. Say what it was, when, who with, how you prepared, and what the result was.",
+    "Describe a café or restaurant you like. Say where it is, what you order there, how often you go, and why you like it.",
+    "Describe a machine you use often. Say what it is, how you use it, why you use it, and how it helps you.",
+    "Describe a skill your friend has. Say what it is, why they're good at it, how they learned, and how you feel about it.",
+    "Describe an event in your life that changed you. Say what it was, when, how it changed you, and why it matters.",
+    "Describe something you'd like to buy. Say what it is, why you want it, how much it costs, and when you'll buy it.",
+    "Describe a person you'd like to meet. Say who, why, what you'd say, and what you'd do together.",
+    "Describe a city you'd like to visit. Say which one, why, what you'd do there, and when you'd go.",
+    "Describe a piece of art you like. Say what it is, who made it, where you saw it, and why you like it."
+  ],
+  part3: [
+    "Why do some people prefer living in cities?",
+    "How has technology changed the way people communicate?",
+    "Should governments invest more in public transport?",
+    "What are the advantages of learning a second language?",
+    "Do you think traditional shops will disappear?",
+    "How does advertising affect consumer behaviour?",
+    "Should schoolchildren be allowed to use smartphones?",
+    "What is the impact of social media on teenagers?",
+    "How important is it to preserve local traditions?",
+    "Do you think working from home will become the norm?",
+    "What role should governments play in protecting the environment?",
+    "Why do people choose to live abroad?",
+    "Should university education be free?",
+    "How can we reduce food waste in cities?",
+    "What makes a good leader?",
+    "Is it important to learn about other cultures?",
+    "Do you think all jobs will be replaced by AI?",
+    "How has globalisation affected local businesses?",
+    "Why do some people prefer paper books over e-books?",
+    "What is the best way to reduce stress in modern life?",
+    "Should there be limits on screen time for children?",
+    "Is volunteering important for society?",
+    "How do public spaces affect community life?",
+    "What are the pros and cons of studying online?",
+    "Should governments provide free healthcare?",
+    "Why do people enjoy dangerous sports?",
+    "How can we encourage more people to recycle?",
+    "Is it possible to be happy without money?",
+    "What role does art play in society?",
+    "How does music affect our mood?",
+    "Should schools teach financial literacy?",
+    "What are the biggest challenges for young people today?",
+    "How has the internet changed how we learn?",
+    "Why is it important to travel?",
+    "Should we ban single-use plastics?",
+    "What makes a city a good place to live?",
+    "How do sports benefit society?",
+    "Is it better to live alone or with family?",
+    "Why do we value privacy so much?",
+    "Should companies allow employees to work 4 days a week?",
+    "What are the long-term effects of remote work?",
+    "Should school start later in the day?",
+    "How can we make cities more walkable?",
+    "What's the role of humour in difficult situations?",
+    "Why do people prefer certain brands over others?",
+    "Should we spend money on space exploration?",
+    "How can small businesses compete with big chains?",
+    "What makes someone a good listener?",
+    "Do you think life is getting better or worse?"
+  ]
+};
+
+var WRITING_TOPICS = {
+  task1: [
+    "The chart below shows the percentage of households in owned and rented accommodation in England and Wales between 1918 and 2011. Summarise the information by selecting and reporting the main features.",
+    "The graph below shows average monthly salaries in three countries between 2000 and 2020. Summarise the information and make comparisons where relevant.",
+    "The diagram below shows the process of recycling plastic bottles. Summarise the information by selecting and reporting the main features.",
+    "The pie charts show the proportion of energy produced from different sources in a country in 2000 and 2020. Summarise the information and make comparisons.",
+    "The table below shows the number of international students in five countries in 2010 and 2020. Summarise the information and make comparisons.",
+    "The line graph shows the number of visitors to three museums in London between 2015 and 2023. Summarise the information and make comparisons.",
+    "The bar chart shows the amount of coffee consumed per person in five countries in 2022. Summarise the information and make comparisons.",
+    "The process diagram shows how paper is made from wood. Summarise the information by selecting and reporting the main features.",
+    "The map below shows the changes to a town centre between 1990 and 2020. Summarise the information and make comparisons.",
+    "The line graph compares the number of men and women in higher education in a country from 1970 to 2020. Summarise the information.",
+    "The pie chart shows the main reasons for migration to a country in 2023. Summarise the information by selecting and reporting the main features.",
+    "The table below shows the number of hours worked per week in five industries. Summarise the information and make comparisons.",
+    "The bar chart shows average temperatures in three cities over twelve months. Summarise the information and make comparisons.",
+    "The graph shows internet usage in a country between 1995 and 2025. Summarise the information and make comparisons.",
+    "The diagram shows how electricity is generated from solar panels. Summarise the information and describe the process.",
+    "The map shows the layout of a university campus in 2000 and 2020. Summarise the information and make comparisons.",
+    "The line graph shows the number of cars sold in three countries between 2010 and 2023. Summarise the information.",
+    "The pie charts compare household spending on five categories in two different years. Summarise the information and make comparisons.",
+    "The table shows average life expectancy in six countries in 1990 and 2022. Summarise the information and make comparisons.",
+    "The bar chart shows the percentage of people using public transport in four cities. Summarise the information and make comparisons.",
+    "The process diagram shows how chocolate is produced from cocoa beans. Summarise the information by describing the process.",
+    "The graph shows the number of tourists visiting a country between 2015 and 2024. Summarise the information and make comparisons.",
+    "The pie chart shows the breakdown of a household's monthly budget. Summarise the information by selecting the main features.",
+    "The line graph shows birth rates in five countries from 1980 to 2020. Summarise the information and make comparisons.",
+    "The bar chart shows the amount of time spent on different leisure activities in two age groups. Summarise the information.",
+    "The map shows how a coastal village changed between 1980 and 2020. Summarise the information and make comparisons.",
+    "The table shows the number of employees in five industries in 2010 and 2020. Summarise the information and make comparisons.",
+    "The pie charts show the sources of electricity in two countries in 2022. Summarise the information and make comparisons.",
+    "The process diagram shows how glass is recycled. Summarise the information by describing the main stages.",
+    "The graph shows the number of books borrowed from a library between 2018 and 2024. Summarise the information.",
+    "The bar chart shows average weekly working hours in five countries. Summarise the information and make comparisons.",
+    "The table shows the number of students enrolled in four subjects in a university. Summarise the information and make comparisons.",
+    "The line graph shows the number of internet users in three countries between 2005 and 2023. Summarise the information.",
+    "The pie chart shows the main reasons people exercise. Summarise the information by selecting the main features.",
+    "The diagram shows how drinking water is treated in a city. Summarise the information and describe the process.",
+    "The bar chart shows average house prices in five cities in 2018 and 2023. Summarise the information and make comparisons.",
+    "The map shows the layout of a town in 1990 and 2020. Summarise the information and make comparisons.",
+    "The line graph compares the number of people using bicycles and cars in a city. Summarise the information.",
+    "The pie chart shows how people in a country spend their weekends. Summarise the information by selecting the main features.",
+    "The table shows the number of hospital admissions for five reasons in 2020. Summarise the information and make comparisons.",
+    "The bar chart shows energy consumption in five sectors in a country. Summarise the information and make comparisons.",
+    "The process diagram shows how coffee is produced from coffee beans. Summarise the information and describe the process.",
+    "The graph shows average rainfall in three cities over a year. Summarise the information and make comparisons.",
+    "The pie charts compare the number of male and female workers in five industries in 2023. Summarise the information.",
+    "The bar chart shows the number of mobile phone users in five age groups. Summarise the information and make comparisons.",
+    "The diagram shows how a wind turbine generates electricity. Summarise the information and describe the process.",
+    "The line graph shows traffic accidents in three cities between 2010 and 2022. Summarise the information.",
+    "The map shows the changes to a shopping mall between 2015 and 2023. Summarise the information and make comparisons.",
+    "The pie chart shows the breakdown of time spent on different activities by teenagers. Summarise the information."
+  ],
+  task2: [
+    "Some people believe that unpaid community service should be a compulsory part of high school programmes. To what extent do you agree or disagree?",
+    "Discuss both views: some say technology improves education, others think it harms students' attention. Give your opinion.",
+    "Many people believe that the best way to reduce traffic in cities is to increase the cost of driving. Do the advantages outweigh the disadvantages?",
+    "Some people think children should start school at an earlier age; others say later. Discuss both views and give your opinion.",
+    "International tourism has brought enormous benefit to many places. At the same time, there is concern about its impact on local inhabitants. Discuss both views and give your opinion.",
+    "Some people think that governments should spend more money on public transport than on new roads. To what extent do you agree or disagree?",
+    "More and more people are choosing to work from home. Do the advantages of this trend outweigh the disadvantages?",
+    "Some people believe that the best way to stay healthy is to do exercise every day. Others think a balanced diet is more important. Discuss both views.",
+    "Some people think that university education should be free for everyone. To what extent do you agree or disagree?",
+    "Many cities are becoming overcrowded. What are the causes of this, and what solutions can you suggest?",
+    "Some people think that art is an essential subject at school; others say it is a waste of time. Discuss both views.",
+    "Advertising aimed at children should be banned. To what extent do you agree or disagree?",
+    "Some believe that the internet has brought people closer together; others think it has made people more isolated. Discuss both views.",
+    "Many people think that the best way to protect the environment is to increase the cost of fuel. Do you agree or disagree?",
+    "Some people prefer to live in a small town; others prefer a big city. Discuss both and give your opinion.",
+    "Some think children should be allowed to make their own decisions; others say parents should decide. Discuss both views.",
+    "The gap between the rich and the poor is widening. What problems does this cause, and what solutions can you suggest?",
+    "Some people believe that exams are the best way to measure a student's ability; others disagree. Discuss both views.",
+    "Global warming is one of the biggest threats to our planet. What are the causes and what can be done?",
+    "Some people think that older people should live with their families; others believe they should live independently. Discuss both views.",
+    "Many people spend more and more time on social media. What are the causes and what can be done?",
+    "Some people think that governments should invest in space exploration; others say money should be spent on Earth. Discuss both views.",
+    "Should wealthy nations help poorer countries? Give your opinion with examples.",
+    "Some people say that prison is the best punishment; others think community service is better. Discuss both views.",
+    "Many young people leave their home country to study or work abroad. Do the advantages outweigh the disadvantages?",
+    "Some people believe that all cars should be banned from city centres. To what extent do you agree or disagree?",
+    "Some think that modern technology makes life more complicated; others believe it makes life simpler. Discuss both views.",
+    "Some people prefer to eat at home; others eat out. Discuss both views.",
+    "Some say money can buy happiness; others disagree. Discuss both views and give your opinion.",
+    "Many parents today give their children everything they ask for. What problems does this cause?",
+    "Some people think that the government should provide free healthcare for all citizens. To what extent do you agree?",
+    "Some believe that video games are bad for children; others think they can be educational. Discuss both views.",
+    "Some people think that learning a foreign language should start in primary school. Do you agree or disagree?",
+    "Some people believe that reading books is better than watching films. Do you agree or disagree?",
+    "Many countries have introduced laws to reduce plastic waste. What else can be done to protect the environment?",
+    "Some think that all students should study the same subjects until the age of 18; others believe they should choose earlier. Discuss both views.",
+    "Some say that professional athletes earn too much money. To what extent do you agree or disagree?",
+    "Some people think that zoos are cruel; others believe they help protect animals. Discuss both views.",
+    "Some say that modern life is more stressful than before. What are the causes and what can be done?",
+    "Some think that all young people should do military service. To what extent do you agree or disagree?",
+    "Some people think that advertising should be banned in public places. Do you agree?",
+    "Many people today are choosing to have fewer children. What are the causes and what are the consequences?",
+    "Some say that technology has made handwriting obsolete. Do you agree or disagree?",
+    "Some think that school uniforms should be required; others think they limit freedom. Discuss both views.",
+    "Some people prefer to live alone; others prefer to live with family. Discuss both views and give your opinion.",
+    "Some think that celebrities have a bad influence on young people. To what extent do you agree or disagree?",
+    "Many people believe that the government should regulate the internet more strictly. Discuss both views.",
+    "Some say that volunteering should be compulsory for teenagers. Do you agree or disagree?",
+    "Some think that all businesses should be required to hire more women. To what extent do you agree or disagree?",
+    "Many people buy second-hand items instead of new ones. What are the reasons and effects?",
+    "Some people believe that life in the countryside is healthier than in the city. Discuss both views.",
+    "Some think that learning history is less important than learning science. Discuss both views.",
+    "Some say that pets should not be kept in small apartments. Do you agree or disagree?",
+    "Some think that higher education should focus more on practical skills than theory. Discuss both views.",
+    "Some people believe that the death penalty should be abolished. To what extent do you agree?",
+    "Many governments are investing in high-speed rail. Do the advantages outweigh the disadvantages?",
+    "Some think that journalists should not report on the private lives of celebrities. Discuss both views.",
+    "Some say that money spent on space travel is wasted. To what extent do you agree or disagree?",
+    "Some people think that children should be taught to cook at school. Do you agree or disagree?",
+    "Some people say that social media companies should be responsible for harmful content. Do you agree?",
+    "Some think that owning a home is better than renting. Discuss both views.",
+    "Some say that famous people have a responsibility to be role models. To what extent do you agree?"
+  ]
+};
+
+var TRANSLATIONS = {
+  ru: {
+    "meta.title":"Speaking и Writing с таймером — Lexy",
+    "btn.menu":"Главное меню",
+    "page.title":"Speaking и Writing с таймером",
+    "page.sub":"Тренируйтесь под таймером как на реальном экзамене. Для Speaking включайте микрофон и записывайте ответ — потом можно переслушать. Для Writing пишите прямо здесь и следите за количеством слов.",
+    "nav.speaking":"Speaking","nav.writing":"Writing",
+    "speak.title":"Speaking","speak.desc":"Выберите часть, затем тему. Нажмите «Начать» — включится таймер, а после старта записи — микрофон. В конце можно прослушать свою запись.",
+    "write.title":"Writing","write.desc":"Выберите Task 1 или Task 2. Нажмите «Начать» — включится таймер. Пишите прямо в поле ниже, счётчик слов подскажет, когда вы добрались до нормы.",
+    "btn.newTopic":"Новая тема","btn.startTimer":"Начать с таймером","btn.pause":"Пауза","btn.resume":"Продолжить","btn.reset":"Сброс",
+    "rec.title":"Запись голоса","rec.idle":"Микрофон выключен. Запись начнётся автоматически при старте таймера.","rec.rec":"Запись идёт…","rec.stop":"Запись готова — можешь прослушать или скачать.","rec.err":"Не удалось получить доступ к микрофону. Проверьте разрешения браузера.","rec.nosupport":"Ваш браузер не поддерживает запись голоса.","rec.play":"Прослушать","rec.pause":"Пауза","rec.download":"Скачать","rec.clear":"Очистить",
+    "stage.prep":"Подготовка","stage.answer":"Отвечайте","stage.done":"Время вышло","stage.t1":"Task 1 — 20 минут","stage.t2":"Task 2 — 40 минут",
+    "write.placeholder":"Начните писать здесь…","write.words":"Слов:","write.target":"Цель: Task 1 — 150+, Task 2 — 250+",
+    "hint.part1":"Ответьте 2–3 предложениями на каждый вопрос — это как на реальном экзамене.",
+    "hint.part2":"У вас 1 минута на подготовку и 2 минуты на ответ. Записывайте голос и слушайте потом.",
+    "hint.part3":"Развёрнутый ответ: мнение → причина → пример → вывод. 30–40 секунд.",
+    "hint.task1":"20 минут, 150+ слов. Обязательно overview в начале.",
+    "hint.task2":"40 минут, 250+ слов. Позиция, 2 аргумента, примеры, вывод.",
+    "confirm.reset":"Сбросить таймер и начать заново?"
+  },
+  en: {
+    "meta.title":"Speaking and Writing with timer — Lexy",
+    "btn.menu":"Main menu",
+    "page.title":"Speaking and Writing with timer",
+    "page.sub":"Practise under an exam-style timer. For Speaking, turn on the microphone and record your answer — then play it back. For Writing, type right here and watch the word count.",
+    "nav.speaking":"Speaking","nav.writing":"Writing",
+    "speak.title":"Speaking","speak.desc":"Pick a part, then a topic. Press Start — the timer runs and the microphone records automatically. You can play the recording back at the end.",
+    "write.title":"Writing","write.desc":"Pick Task 1 or Task 2. Press Start — the timer runs. Write in the box below and check the word count as you go.",
+    "btn.newTopic":"New topic","btn.startTimer":"Start with timer","btn.pause":"Pause","btn.resume":"Resume","btn.reset":"Reset",
+    "rec.title":"Voice recording","rec.idle":"Microphone is off. Recording starts automatically when the timer begins.","rec.rec":"Recording…","rec.stop":"Recording is ready — play or download it.","rec.err":"Could not access the microphone. Check your browser permissions.","rec.nosupport":"Your browser does not support voice recording.","rec.play":"Play","rec.pause":"Pause","rec.download":"Download","rec.clear":"Clear",
+    "stage.prep":"Preparation","stage.answer":"Speaking","stage.done":"Time's up","stage.t1":"Task 1 — 20 minutes","stage.t2":"Task 2 — 40 minutes",
+    "write.placeholder":"Start writing here…","write.words":"Words:","write.target":"Target: Task 1 — 150+, Task 2 — 250+",
+    "hint.part1":"Answer in 2–3 sentences per question — same as on the real exam.",
+    "hint.part2":"1 minute to prepare, 2 minutes to answer. Record and listen back.",
+    "hint.part3":"Extended answer: opinion → reason → example → conclusion. 30–40 seconds.",
+    "hint.task1":"20 minutes, 150+ words. Include an overview at the start.",
+    "hint.task2":"40 minutes, 250+ words. Position, 2 arguments, examples, conclusion.",
+    "confirm.reset":"Reset the timer and start over?"
+  },
+  kz: {
+    "meta.title":"Таймермен Speaking және Writing — Lexy",
+    "btn.menu":"Басты мәзір",
+    "page.title":"Таймермен Speaking және Writing",
+    "page.sub":"Нақты емтихандағыдай таймермен жаттығыңыз. Speaking үшін микрофонды қосып, жауапты жазып алыңыз — кейін тыңдауға болады. Writing үшін осында жазып, сөз санын қадағалаңыз.",
+    "nav.speaking":"Speaking","nav.writing":"Writing",
+    "speak.title":"Speaking","speak.desc":"Бөлімді, содан кейін тақырыпты таңдаңыз. «Бастау» басыңыз — таймер қосылады, микрофон автоматты түрде жаза бастайды.",
+    "write.title":"Writing","write.desc":"Task 1 немесе Task 2 таңдаңыз. «Бастау» басыңыз — таймер қосылады. Төмендегі өріске жазыңыз.",
+    "btn.newTopic":"Жаңа тақырып","btn.startTimer":"Таймермен бастау","btn.pause":"Кідірту","btn.resume":"Жалғастыру","btn.reset":"Қайта",
+    "rec.title":"Дауыс жазу","rec.idle":"Микрофон өшірулі. Жазу таймер басталғанда автоматты түрде қосылады.","rec.rec":"Жазу жүріп жатыр…","rec.stop":"Жазу дайын — тыңдаңыз немесе жүктеп алыңыз.","rec.err":"Микрофонға қол жеткізу мүмкін болмады.","rec.nosupport":"Браузеріңіз дауыс жазуды қолдамайды.","rec.play":"Тыңдау","rec.pause":"Кідірту","rec.download":"Жүктеу","rec.clear":"Тазарту",
+    "stage.prep":"Дайындық","stage.answer":"Сөйлеу","stage.done":"Уақыт бітті","stage.t1":"Task 1 — 20 минут","stage.t2":"Task 2 — 40 минут",
+    "write.placeholder":"Осында жаза бастаңыз…","write.words":"Сөз саны:","write.target":"Мақсат: Task 1 — 150+, Task 2 — 250+",
+    "hint.part1":"Әр сұраққа 2–3 сөйлеммен жауап беріңіз — емтихандағыдай.",
+    "hint.part2":"Дайындыққа 1 минут, жауапқа 2 минут. Жазып алып, кейін тыңдаңыз.",
+    "hint.part3":"Кеңейтілген жауап: пікір → себеп → мысал → қорытынды. 30–40 секунд.",
+    "hint.task1":"20 минут, 150+ сөз. Басында overview болуы міндетті.",
+    "hint.task2":"40 минут, 250+ сөз. Позиция, 2 дәлел, мысалдар, қорытынды.",
+    "confirm.reset":"Таймерді қайта бастайсыз ба?"
+  },
+  uz: {
+    "meta.title":"Taymer bilan Speaking va Writing — Lexy",
+    "btn.menu":"Asosiy menyu",
+    "page.title":"Taymer bilan Speaking va Writing",
+    "page.sub":"Imtihondagidek taymer ostida mashq qiling. Speaking uchun mikrofonni yoqing va javobni yozib oling — keyin tinglaysiz. Writing uchun shu yerda yozing va so‘z sonini kuzating.",
+    "nav.speaking":"Speaking","nav.writing":"Writing",
+    "speak.title":"Speaking","speak.desc":"Qismni, keyin mavzuni tanlang. «Boshlash» ni bosing — taymer ishlaydi, mikrofon avtomatik yozishni boshlaydi.",
+    "write.title":"Writing","write.desc":"Task 1 yoki Task 2 tanlang. «Boshlash» ni bosing — taymer ishlaydi. Quyidagi maydonga yozing.",
+    "btn.newTopic":"Yangi mavzu","btn.startTimer":"Taymer bilan boshlash","btn.pause":"Pauza","btn.resume":"Davom etish","btn.reset":"Boshidan",
+    "rec.title":"Ovoz yozish","rec.idle":"Mikrofon o‘chirilgan. Yozish taymer boshlanganda avtomatik ishga tushadi.","rec.rec":"Yozilmoqda…","rec.stop":"Yozuv tayyor — tinglang yoki yuklab oling.","rec.err":"Mikrofonga ruxsat berilmadi.","rec.nosupport":"Brauzeringiz ovoz yozishni qo‘llamaydi.","rec.play":"Tinglash","rec.pause":"Pauza","rec.download":"Yuklab olish","rec.clear":"Tozalash",
+    "stage.prep":"Tayyorgarlik","stage.answer":"Gapirish","stage.done":"Vaqt tugadi","stage.t1":"Task 1 — 20 daqiqa","stage.t2":"Task 2 — 40 daqiqa",
+    "write.placeholder":"Shu yerda yozishni boshlang…","write.words":"So‘zlar:","write.target":"Maqsad: Task 1 — 150+, Task 2 — 250+",
+    "hint.part1":"Har bir savolga 2–3 gap bilan javob bering — imtihondagidek.",
+    "hint.part2":"Tayyorgarlik uchun 1 daqiqa, javob uchun 2 daqiqa. Yozib oling va keyin tinglang.",
+    "hint.part3":"Kengaytirilgan javob: fikr → sabab → misol → xulosa. 30–40 soniya.",
+    "hint.task1":"20 daqiqa, 150+ so‘z. Boshida overview bo‘lishi shart.",
+    "hint.task2":"40 daqiqa, 250+ so‘z. Pozitsiya, 2 dalil, misollar, xulosa.",
+    "confirm.reset":"Taymerni boshidan boshlaysizmi?"
+  }
+};
+
+var currentLang = 'ru';
+function t(key){
+  var L = TRANSLATIONS[currentLang] || TRANSLATIONS.ru;
+  return L[key] || key;
+}
+
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) lang = 'ru';
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    el.textContent = t(k);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+  });
+  document.title = t('meta.title');
+  document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+  var meta = {ru:['🇷🇺','RU'], en:['🇬🇧','EN'], kz:['🇰🇿','KZ'], uz:['🇺🇿','UZ']};
+  document.getElementById('curFlag').textContent = meta[lang][0];
+  document.getElementById('curLang').textContent = meta[lang][1];
+  document.documentElement.lang = lang;
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+  updateHints();
+}
+
+var langWrap = document.getElementById('langWrap');
+document.getElementById('langBtn').addEventListener('click', function(e){ e.stopPropagation(); langWrap.classList.toggle('open'); });
+document.querySelectorAll('.lang-item').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.dataset.lang); langWrap.classList.remove('open'); });
+});
+document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
+
+/* ============ SPEAKING ============ */
+var spkPart = 'part1';
+var spkCurrent = null;
+
+function buildSpeakingParts(){
+  var parts = [
+    {id:'part1', label:'Part 1'},
+    {id:'part2', label:'Part 2'},
+    {id:'part3', label:'Part 3'}
+  ];
+  var wrap = document.getElementById('speakingParts');
+  wrap.innerHTML = '';
+  parts.forEach(function(p){
+    var b = document.createElement('button');
+    b.className = 'pill' + (p.id === spkPart ? ' on' : '');
+    b.textContent = p.label;
+    b.onclick = function(){
+      spkPart = p.id;
+      wrap.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      newSpeakingTopic();
+    };
+    wrap.appendChild(b);
+  });
+}
+
+function newSpeakingTopic(){
+  var arr = SPEAKING_TOPICS[spkPart];
+  spkCurrent = arr[Math.floor(Math.random()*arr.length)];
+  document.getElementById('speakingQ').textContent = spkCurrent;
+  document.getElementById('speakingTag').textContent = 'Part ' + spkPart.slice(-1);
+  updateHints();
+  resetSpeakingTimer();
+}
+
+function updateHints(){
+  document.getElementById('speakingHint').textContent = t('hint.' + spkPart);
+  var wkey = wriTask === 'task1' ? 'hint.task1' : 'hint.task2';
+  document.getElementById('writingHint').textContent = t(wkey);
+}
+
+var spkTimer = { prep:0, answer:0, remaining:0, interval:null, paused:false, phase:'prep' };
+var mediaRecorder = null, recordedChunks = [], streamRef = null, lastBlobUrl = null;
+
+function resetSpeakingTimer(){
+  clearInterval(spkTimer.interval);
+  spkTimer.interval = null;
+  spkTimer.paused = false;
+  document.getElementById('speakingTimerBox').classList.remove('on');
+  document.getElementById('speakingDisplay').textContent = '00:00';
+  document.getElementById('speakingDisplay').className = 'timer-display';
+  document.getElementById('speakingStage').textContent = '';
+  document.getElementById('speakingStart').textContent = t('btn.startTimer');
+  document.getElementById('speakingPause').textContent = t('btn.pause');
+  stopRecorder();
+  clearRecorder();
+}
+
+function clearRecorder(){
+  var a = document.getElementById('recAudio');
+  try{ a.pause(); }catch(e){}
+  a.removeAttribute('src');
+  try{ a.load(); }catch(e){}
+  if(lastBlobUrl){ try{ URL.revokeObjectURL(lastBlobUrl); }catch(e){} lastBlobUrl = null; }
+  document.getElementById('recActions').style.display = 'none';
+  document.getElementById('recStatus').textContent = t('rec.idle');
+  document.getElementById('recDot').className = 'dot';
+}
+
+function fmt(sec){
+  var m = Math.floor(sec/60), s = sec % 60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+
+async function startRecorder(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    document.getElementById('recStatus').textContent = t('rec.nosupport');
+    return;
+  }
+  try{
+    streamRef = await navigator.mediaDevices.getUserMedia({audio:true});
+    var mime = '';
+    if(window.MediaRecorder){
+      if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mime = 'audio/webm;codecs=opus';
+      else if(MediaRecorder.isTypeSupported('audio/webm')) mime = 'audio/webm';
+      else if(MediaRecorder.isTypeSupported('audio/mp4')) mime = 'audio/mp4';
+    }
+    mediaRecorder = mime ? new MediaRecorder(streamRef, {mimeType: mime}) : new MediaRecorder(streamRef);
+    recordedChunks = [];
+    mediaRecorder.ondataavailable = function(e){ if(e.data && e.data.size>0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = function(){
+      try{
+        var type = (mediaRecorder && mediaRecorder.mimeType) || 'audio/webm';
+        var blob = new Blob(recordedChunks, {type: type});
+        if(lastBlobUrl){ try{ URL.revokeObjectURL(lastBlobUrl); }catch(e){} }
+        lastBlobUrl = URL.createObjectURL(blob);
+        var a = document.getElementById('recAudio');
+        a.src = lastBlobUrl;
+        try{ a.load(); }catch(e){}
+        a.style.display = 'none';
+        document.getElementById('recActions').style.display = 'flex';
+        document.getElementById('recPlay').textContent = '▶ ' + t('rec.play');
+        document.getElementById('recStatus').textContent = t('rec.stop');
+        document.getElementById('recDot').className = 'dot';
+      }catch(err){ console.error(err); }
+      if(streamRef){ streamRef.getTracks().forEach(function(tr){ tr.stop(); }); streamRef = null; }
+    };
+    mediaRecorder.start();
+    document.getElementById('recStatus').textContent = t('rec.rec');
+    document.getElementById('recDot').className = 'dot rec';
+    document.getElementById('recActions').style.display = 'none';
+  }catch(err){
+    document.getElementById('recStatus').textContent = t('rec.err');
+  }
+}
+
+function stopRecorder(){
+  if(mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')){
+    try{ mediaRecorder.stop(); }catch(e){}
+  }
+}
+
+/* player buttons */
+document.getElementById('recPlay').addEventListener('click', function(){
+  var a = document.getElementById('recAudio');
+  if(!a.src) return;
+  if(a.paused){
+    a.play();
+    this.textContent = '⏸ ' + t('rec.pause');
+  } else {
+    a.pause();
+    this.textContent = '▶ ' + t('rec.play');
+  }
+});
+document.getElementById('recAudio').addEventListener('ended', function(){
+  document.getElementById('recPlay').textContent = '▶ ' + t('rec.play');
+});
+document.getElementById('recDownload').addEventListener('click', function(){
+  var a = document.getElementById('recAudio');
+  if(!a.src) return;
+  var link = document.createElement('a');
+  link.href = a.src;
+  link.download = 'lexy-speaking-' + Date.now() + '.webm';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+document.getElementById('recClear').addEventListener('click', function(){
+  clearRecorder();
+});
+
+document.getElementById('speakingNew').addEventListener('click', newSpeakingTopic);
+
+document.getElementById('speakingStart').addEventListener('click', function(){
+  if(!spkCurrent) newSpeakingTopic();
+  document.getElementById('speakingTimerBox').classList.add('on');
+
+  if(spkPart === 'part2'){
+    spkTimer.prep = 60; spkTimer.answer = 120; spkTimer.phase = 'prep';
+  } else if(spkPart === 'part3'){
+    spkTimer.prep = 0; spkTimer.answer = 60; spkTimer.phase = 'answer';
+  } else {
+    spkTimer.prep = 0; spkTimer.answer = 60; spkTimer.phase = 'answer';
+  }
+
+  spkTimer.remaining = spkTimer.phase === 'prep' ? spkTimer.prep : spkTimer.answer;
+  spkTimer.paused = false;
+  document.getElementById('speakingPause').textContent = t('btn.pause');
+
+  if(spkTimer.phase === 'prep'){
+    document.getElementById('speakingStage').textContent = t('stage.prep');
+    stopRecorder();
+    document.getElementById('recStatus').textContent = t('rec.idle');
+  } else {
+    document.getElementById('speakingStage').textContent = t('stage.answer');
+    startRecorder();
+  }
+
+  tickSpeaking();
+  clearInterval(spkTimer.interval);
+  spkTimer.interval = setInterval(tickSpeaking, 1000);
+});
+
+function tickSpeaking(){
+  if(spkTimer.paused) return;
+  var disp = document.getElementById('speakingDisplay');
+  disp.textContent = fmt(spkTimer.remaining);
+  disp.className = 'timer-display' + (spkTimer.remaining <= 10 ? ' danger' : spkTimer.remaining <= 30 ? ' warn' : '');
+
+  if(spkTimer.remaining <= 0){
+    if(spkTimer.phase === 'prep'){
+      spkTimer.phase = 'answer';
+      spkTimer.remaining = spkTimer.answer;
+      document.getElementById('speakingStage').textContent = t('stage.answer');
+      startRecorder();
+      return;
+    } else {
+      clearInterval(spkTimer.interval);
+      spkTimer.interval = null;
+      disp.textContent = '00:00';
+      disp.className = 'timer-display done';
+      document.getElementById('speakingStage').textContent = t('stage.done');
+      stopRecorder();
+      return;
+    }
+  }
+  spkTimer.remaining--;
+}
+
+document.getElementById('speakingPause').addEventListener('click', function(){
+  if(!spkTimer.interval) return;
+  spkTimer.paused = !spkTimer.paused;
+  this.textContent = spkTimer.paused ? t('btn.resume') : t('btn.pause');
+  if(spkTimer.paused){
+    if(mediaRecorder && mediaRecorder.state === 'recording'){ try{ mediaRecorder.pause(); }catch(e){} }
+  } else {
+    if(mediaRecorder && mediaRecorder.state === 'paused'){ try{ mediaRecorder.resume(); }catch(e){} }
+  }
+});
+
+document.getElementById('speakingReset').addEventListener('click', function(){
+  if(confirm(t('confirm.reset'))) resetSpeakingTimer();
+});
+
+/* ============ WRITING ============ */
+var wriTask = 'task1';
+var wriCurrent = null;
+
+function buildWritingTasks(){
+  var tasks = [
+    {id:'task1', label:'Task 1'},
+    {id:'task2', label:'Task 2'}
+  ];
+  var wrap = document.getElementById('writingTasks');
+  wrap.innerHTML = '';
+  tasks.forEach(function(p){
+    var b = document.createElement('button');
+    b.className = 'pill' + (p.id === wriTask ? ' on' : '');
+    b.textContent = p.label;
+    b.onclick = function(){
+      wriTask = p.id;
+      wrap.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      newWritingTopic();
+    };
+    wrap.appendChild(b);
+  });
+}
+
+function newWritingTopic(){
+  var arr = WRITING_TOPICS[wriTask];
+  wriCurrent = arr[Math.floor(Math.random()*arr.length)];
+  document.getElementById('writingQ').textContent = wriCurrent;
+  document.getElementById('writingTag').textContent = wriTask === 'task1' ? 'Task 1' : 'Task 2';
+  updateHints();
+  resetWritingTimer();
+}
+
+var wriTimer = { duration:0, remaining:0, interval:null, paused:false };
+
+function resetWritingTimer(){
+  clearInterval(wriTimer.interval);
+  wriTimer.interval = null;
+  wriTimer.paused = false;
+  document.getElementById('writingTimerBox').classList.remove('on');
+  document.getElementById('writingDisplay').textContent = '00:00';
+  document.getElementById('writingDisplay').className = 'timer-display';
+  document.getElementById('writingStage').textContent = '';
+  document.getElementById('writingStart').textContent = t('btn.startTimer');
+  document.getElementById('writingPause').textContent = t('btn.pause');
+}
+
+document.getElementById('writingNew').addEventListener('click', newWritingTopic);
+
+document.getElementById('writingStart').addEventListener('click', function(){
+  if(!wriCurrent) newWritingTopic();
+  document.getElementById('writingTimerBox').classList.add('on');
+  wriTimer.duration = wriTask === 'task1' ? 20*60 : 40*60;
+  wriTimer.remaining = wriTimer.duration;
+  wriTimer.paused = false;
+  document.getElementById('writingStage').textContent = wriTask === 'task1' ? t('stage.t1') : t('stage.t2');
+  document.getElementById('writingPause').textContent = t('btn.pause');
+  tickWriting();
+  clearInterval(wriTimer.interval);
+  wriTimer.interval = setInterval(tickWriting, 1000);
+});
+
+function tickWriting(){
+  if(wriTimer.paused) return;
+  var disp = document.getElementById('writingDisplay');
+  disp.textContent = fmt(wriTimer.remaining);
+  disp.className = 'timer-display' + (wriTimer.remaining <= 60 ? ' danger' : wriTimer.remaining <= 300 ? ' warn' : '');
+  if(wriTimer.remaining <= 0){
+    clearInterval(wriTimer.interval); wriTimer.interval = null;
+    disp.textContent = '00:00'; disp.className = 'timer-display done';
+    document.getElementById('writingStage').textContent = t('stage.done');
+    return;
+  }
+  wriTimer.remaining--;
+}
+
+document.getElementById('writingPause').addEventListener('click', function(){
+  if(!wriTimer.interval) return;
+  wriTimer.paused = !wriTimer.paused;
+  this.textContent = wriTimer.paused ? t('btn.resume') : t('btn.pause');
+});
+document.getElementById('writingReset').addEventListener('click', function(){
+  if(confirm(t('confirm.reset'))) resetWritingTimer();
+});
+
+var wta = document.getElementById('writingText');
+var wcEl = document.getElementById('writingWC');
+wta.addEventListener('input', function(){
+  var text = wta.value.trim();
+  var words = text ? text.split(/\s+/).length : 0;
+  wcEl.textContent = words;
+  wcEl.className = 'wc';
+  var target = wriTask === 'task1' ? 150 : 250;
+  if(words === 0) wcEl.classList.add('low');
+  else if(words < target) wcEl.classList.add('low');
+  else wcEl.classList.add('ok');
+});
+
+/* INIT */
+(function(){
+  var saved;
+  try{ saved = localStorage.getItem('lang'); }catch(e){}
+  if(!saved){
+    var nav = (navigator.language || 'ru').slice(0,2).toLowerCase();
+    saved = TRANSLATIONS[nav] ? nav : 'ru';
+  }
+  if(!TRANSLATIONS[saved]) saved = 'ru';
+
+  buildSpeakingParts();
+  buildWritingTasks();
+  setLang(saved);
+
+  newSpeakingTopic();
+  newWritingTopic();
+
+  if(location.hash === '#speaking' || location.hash === '#writing'){
+    var el = document.querySelector(location.hash);
+    if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 200);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Гайды — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C; --white:#fff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font:400 16px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+
+/* HEADER */
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--ink);transition:border-color .2s,background .2s,transform .15s;margin-left:auto}
+.menu-btn:hover{border-color:var(--fire);background:#FFF8F3;color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+
+/* language switcher */
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--ink);transition:border-color .2s,background .2s}
+.lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item .flag{font-size:16px}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+/* MAIN */
+main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:36px 20px 60px}
+h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:10px}
+.sub{color:var(--soft);font-size:16px;margin-bottom:26px;max-width:52ch}
+
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chip{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--soft);cursor:pointer;transition:border-color .2s,background .2s,color .2s;white-space:nowrap}
+.chip:hover{border-color:var(--fire);color:var(--ink)}
+.chip.on{background:var(--peach);border-color:var(--fire);color:var(--ink)}
+
+/* search */
+.search{position:relative;margin-bottom:26px}
+.search input{width:100%;font:500 15px var(--body);padding:16px 18px 16px 48px;background:#fff;border:1.5px solid var(--line);border-radius:16px;outline:none;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.search input::placeholder{color:#B5AEC9}
+.search input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+.search svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--soft)}
+
+/* category */
+.cat{margin-bottom:34px}
+.cat h2{font:800 20px var(--display);letter-spacing:-.02em;margin-bottom:4px}
+.cat .count{font:600 12px var(--body);color:var(--soft);margin-bottom:12px;display:block}
+.cat ul{list-style:none;display:flex;flex-direction:column;gap:2px}
+.cat li a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;font:600 14.5px var(--body);color:var(--ink);transition:background .15s,transform .15s}
+.cat li a:hover{background:#fff;transform:translateX(4px)}
+.cat li a .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.cat li a .arrow{margin-left:auto;color:var(--soft);font-size:16px}
+.dot-blue{background:#3B82F6}.dot-red{background:#EF4444}.dot-teal{background:#14B8A6}
+.dot-orange{background:#F97316}.dot-amber{background:#F59E0B}.dot-purple{background:#8B5CF6}
+
+/* Modal */
+.modal-veil{position:fixed;inset:0;background:rgba(27,20,51,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px)}
+.modal-veil.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:101;display:grid;place-items:center;padding:20px;pointer-events:none}
+.modal.on{pointer-events:auto}
+.modal-box{width:100%;max-width:680px;max-height:88vh;overflow-y:auto;background:#fff;border-radius:24px;padding:32px 28px 28px;box-shadow:0 40px 80px -30px rgba(27,20,51,.6);transform:scale(.94);opacity:0;transition:transform .3s cubic-bezier(.3,1.4,.5,1),opacity .25s;position:relative}
+.modal.on .modal-box{transform:none;opacity:1}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:var(--mist);display:grid;place-items:center;font-size:20px;color:var(--ink);transition:background .2s}
+.modal-close:hover{background:var(--peach)}
+.modal-box .m-cat{display:inline-block;font:700 11px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:var(--peach);color:var(--fire);margin-bottom:12px}
+.modal-box h2{font:800 clamp(22px,4vw,30px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:10px;padding-right:44px}
+.modal-box .m-desc{color:var(--soft);font-size:15px;margin-bottom:22px;line-height:1.55}
+.modal-box .m-body{font-size:15px;line-height:1.7;color:var(--ink)}
+.modal-box .m-body p{margin-bottom:14px}
+.modal-box .m-body h3{font:700 18px var(--display);margin:22px 0 10px;letter-spacing:-.02em}
+.modal-box .m-body ul{margin:0 0 14px 20px}
+.modal-box .m-body li{margin-bottom:6px}
+.modal-box .m-body strong{color:var(--fire)}
+.modal-box .m-body em{color:var(--soft)}
+
+@media(max-width:520px){
+  .top .bar{padding:0 14px;gap:8px}
+  .logo{font-size:18px}
+  .logo svg{width:22px;height:26px}
+  .menu-btn{padding:8px 12px;font-size:12.5px}
+  main{padding:24px 16px 60px}
+  .modal-box{padding:26px 18px 22px;border-radius:20px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient>
+  </defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.5-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html" aria-label="Lexy"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <a class="menu-btn" href="main.html">
+      <svg><use href="#ic-home"/></svg>
+      <span data-i18n="btn.menu">Главное меню</span>
+    </a>
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn" aria-haspopup="listbox">
+        <span id="curFlag">🇷🇺</span>
+        <span id="curLang">RU</span>
+        <svg><use href="#ic-chev"/></svg>
+      </button>
+      <div class="lang-menu" role="listbox" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 data-i18n="guides.title">Гайды по IELTS</h1>
+  <p class="sub" data-i18n="guides.sub">Практические статьи по каждой части экзамена — от Reading до Speaking. Всё, что нужно, чтобы разобраться и поднять балл.</p>
+
+  <div class="filters" id="filters">
+    <button class="chip on" data-cat="all" data-i18n="cat.all">Все гайды</button>
+    <button class="chip" data-cat="about" data-i18n="cat.about">Об экзамене</button>
+    <button class="chip" data-cat="listening" data-i18n="cat.listening">Аудирование</button>
+    <button class="chip" data-cat="reading" data-i18n="cat.reading">Чтение</button>
+    <button class="chip" data-cat="writing1" data-i18n="cat.writing1">Writing Task 1</button>
+    <button class="chip" data-cat="writing2" data-i18n="cat.writing2">Writing Task 2</button>
+    <button class="chip" data-cat="speaking" data-i18n="cat.speaking">Говорение</button>
+  </div>
+
+  <div class="search">
+    <svg><use href="#ic-search"/></svg>
+    <input type="text" id="searchInput" data-i18n-placeholder="guides.search" placeholder="Поиск по гайдам…">
+  </div>
+
+  <div id="cats"></div>
+</main>
+
+<div class="modal-veil" id="modalVeil"></div>
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+    <span class="m-cat" id="mCat"></span>
+    <h2 id="mTitle"></h2>
+    <p class="m-desc" id="mDesc"></p>
+    <div class="m-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   GUIDES — 18 гайдов, каждый на 4 языках
+   ============================================================ */
+var GUIDES = [
+  /* ===== ABOUT THE EXAM ===== */
+  {
+    id:"about-1", cat:"about",
+    ru:{
+      t:"Как IELTS оценивает ваши ответы",
+      d:"Разбираем критерии оценки каждой секции и что именно влияет на финальный балл.",
+      b:"<p>Каждая секция IELTS оценивается по шкале от 0 до 9, но делает это по-разному. Аудирование и Чтение переводятся из количества правильных ответов в band по специальной таблице конвертации. Письмо и Говорение оценивает живой экзаменатор по четырём критериям: выполнение задачи, связность и связность текста, лексический запас, грамматический диапазон и точность.</p><p><strong>Что важно знать:</strong> итоговый балл за Письмо и Говорение — это не сумма, а среднее арифметическое по четырём критериям, округлённое до половины балла. Поэтому «провал» в одном критерии может утянуть всю секцию: например, если три критерия на 7, а один на 5, общая оценка будет 6.5, а не 7.</p><p>Общий балл IELTS — это тоже среднее по четырём секциям, округлённое до половины. Например, 6.5 + 6.5 + 7.0 + 7.0 = 6.75, что округляется до 7.0. А вот 6.5 + 6.0 + 6.0 + 6.0 = 6.125, что округляется до 6.0.</p>"
+    },
+    en:{
+      t:"How IELTS scores your answers",
+      d:"We break down the scoring criteria for each section and what really affects your final band.",
+      b:"<p>Each IELTS section is scored on a scale from 0 to 9, but the way it is done differs. Listening and Reading convert the number of correct answers into a band using a special conversion table. Writing and Speaking are graded by a live examiner against four criteria: task achievement, coherence and cohesion, lexical resource, and grammatical range and accuracy.</p><p><strong>What matters:</strong> the final Writing and Speaking score is not a sum but an average of the four criteria, rounded to the nearest half band. That means a weak spot in one criterion can pull down the whole section — for example, if three criteria are at 7 and one is at 5, the overall score is 6.5, not 7.</p><p>The overall IELTS band is also an average across the four sections, rounded to the nearest half. For example, 6.5 + 6.5 + 7.0 + 7.0 = 6.75, which rounds to 7.0. And 6.5 + 6.0 + 6.0 + 6.0 = 6.125, which rounds to 6.0.</p>"
+    },
+    kz:{
+      t:"IELTS жауаптарыңызды қалай бағалайды",
+      d:"Әр секцияның бағалау критерийлерін және қорытынды балға не әсер ететінін талдаймыз.",
+      b:"<p>IELTS-тің әр секциясы 0-ден 9-ға дейінгі шкала бойынша бағаланады, бірақ бұл әртүрлі жолмен жасалады. Тыңдау мен Оқу дұрыс жауаптар санын арнайы конвертация кестесі арқылы band-қа аударады. Жазу мен Сөйлеуді тірі емтихан алушы төрт критерий бойынша бағалайды: тапсырманы орындау, байланыстылық, лексикалық қор, грамматикалық диапазон және дәлдік.</p><p><strong>Маңызды:</strong> Жазу мен Сөйлеудің қорытынды балы — қосынды емес, төрт критерийдің орташа мәні, жарты балға дейін дөңгелектенеді. Сондықтан бір критерийдегі «сәтсіздік» бүкіл секцияны төмен тартуы мүмкін: мысалы, үш критерий 7-де, біреуі 5-те болса, жалпы баға 6.5 болады, 7 емес.</p><p>Жалпы IELTS балы — төрт секция бойынша орташа, жарты балға дейін дөңгелектенеді. Мысалы, 6.5 + 6.5 + 7.0 + 7.0 = 6.75, ол 7.0-ге дөңгелектенеді. Ал 6.5 + 6.0 + 6.0 + 6.0 = 6.125, ол 6.0-ге дөңгелектенеді.</p>"
+    },
+    uz:{
+      t:"IELTS javoblaringizni qanday baholaydi",
+      d:"Har bir bo‘limning baholash mezonlarini va yakuniy ballga nima ta’sir qilishini tahlil qilamiz.",
+      b:"<p>IELTSning har bir bo‘limi 0 dan 9 gacha shkalada baholanadi, lekin bu turlicha amalga oshiriladi. Tinglash va O‘qish to‘g‘ri javoblar sonini maxsus konversiya jadvali orqali bandga o‘giradi. Yozish va Gapirishni tirik imtihon oluvchi to‘rt mezon bo‘yicha baholaydi: vazifani bajarish, izchillik va bog‘liqlik, leksik boylik, grammatik diapazon va aniqlik.</p><p><strong>Muhim:</strong> Yozish va Gapirishning yakuniy bahosi — yig‘indi emas, to‘rt mezonning o‘rtachasi bo‘lib, yarim ballgacha yaxlitlanadi. Shuning uchun bitta mezondagi «muvaffaqiyatsizlik» butun bo‘limni pastga tortishi mumkin: masalan, uch mezon 7 da, bittasi 5 da bo‘lsa, umumiy baho 7 emas, 6.5 bo‘ladi.</p><p>Umumiy IELTS bali ham to‘rt bo‘lim bo‘yicha o‘rtacha bo‘lib, yarim ballgacha yaxlitlanadi. Masalan, 6.5 + 6.5 + 7.0 + 7.0 = 6.75, u 7.0 ga yaxlitlanadi. Va 6.5 + 6.0 + 6.0 + 6.0 = 6.125, u 6.0 ga yaxlitlanadi.</p>"
+    }
+  },
+  {
+    id:"about-2", cat:"about",
+    ru:{
+      t:"Academic или General Training: что выбрать",
+      d:"Чем отличаются модули, для каких целей нужен каждый и как не ошибиться при регистрации.",
+      b:"<p>Academic нужен для поступления в университет (бакалавриат, магистратура, PhD) и для профессиональной регистрации — например, для медиков, юристов, инженеров. General Training используется для иммиграции в Австралию, Канаду, Новую Зеландию и Великобританию, а также для поступления на курсы и программы среднего образования.</p><p>Listening и Speaking одинаковые в обоих модулях. Различия — в Reading и Writing.</p><p><strong>Reading Academic:</strong> три длинных научно-популярных текста из книг и журналов, 40 вопросов за 60 минут.</p><p><strong>Reading General:</strong> короткие тексты из бытовой жизни — объявления, реклама, инструкции, отрывки из книг, раздел 2 и 3 длиннее и сложнее.</p><p><strong>Writing Academic Task 1:</strong> описание графика, таблицы, диаграммы, карты или процесса на 150+ слов за 20 минут.</p><p><strong>Writing General Task 1:</strong> письмо формального, полуформального или неформального стиля на 150+ слов.</p><p>Задание Task 2 одинаковое в обоих модулях — эссе на 250+ слов за 40 минут.</p>"
+    },
+    en:{
+      t:"Academic or General Training: which to choose",
+      d:"How the modules differ, who each is for, and how not to make a mistake when registering.",
+      b:"<p>Academic is required for university admission (bachelor's, master's, PhD) and professional registration — for doctors, lawyers, engineers and others. General Training is used for immigration to Australia, Canada, New Zealand and the UK, as well as for vocational courses and some secondary education programmes.</p><p>Listening and Speaking are the same in both modules. The differences are in Reading and Writing.</p><p><strong>Reading Academic:</strong> three long academic-style passages from books and journals, 40 questions in 60 minutes.</p><p><strong>Reading General:</strong> shorter everyday texts — ads, notices, instructions, book excerpts. Sections 2 and 3 are longer and harder.</p><p><strong>Writing Academic Task 1:</strong> describing a graph, table, chart, map or process in 150+ words in 20 minutes.</p><p><strong>Writing General Task 1:</strong> a letter in formal, semi-formal or informal style, 150+ words.</p><p>Task 2 is the same in both modules — a 250+ word essay in 40 minutes.</p>"
+    },
+    kz:{
+      t:"Academic немесе General Training: қайсысын таңдау",
+      d:"Модульдер қалай ерекшеленеді, қайсысы не үшін керек және тіркелу кезінде қалай қателеспеу керек.",
+      b:"<p>Academic университетке түсу (бакалавриат, магистратура, PhD) және кәсіби тіркелу үшін қажет — мысалы, дәрігерлер, заңгерлер, инженерлер үшін. General Training Австралияға, Канадаға, Жаңа Зеландияға және Ұлыбританияға иммиграция үшін, сондай-ақ кәсіби курстар мен орта білім бағдарламалары үшін қолданылады.</p><p>Listening және Speaking екі модульде де бірдей. Айырмашылықтар — Reading және Writing-те.</p><p><strong>Reading Academic:</strong> кітаптар мен журналдардан үш ұзын ғылыми мәтін, 60 минутта 40 сұрақ.</p><p><strong>Reading General:</strong> қысқа күнделікті мәтіндер — жарнамалар, хабарландырулар, нұсқаулықтар, кітап үзінділері. 2 және 3-бөлімдер ұзынырақ және қиынырақ.</p><p><strong>Writing Academic Task 1:</strong> графикті, кестені, диаграмманы, картаны немесе процесті 20 минутта 150+ сөзбен сипаттау.</p><p><strong>Writing General Task 1:</strong> ресми, жартылай ресми немесе бейресми стильдегі хат, 150+ сөз.</p><p>Task 2 екі модульде де бірдей — 40 минутта 250+ сөз эссе.</p>"
+    },
+    uz:{
+      t:"Academic yoki General Training: qaysi birini tanlash",
+      d:"Modullar qanday farq qiladi, har biri kim uchun va ro‘yxatdan o‘tishda qanday xato qilmaslik kerak.",
+      b:"<p>Academic universitetga kirish (bakalavr, magistratura, PhD) va kasbiy ro‘yxatdan o‘tish uchun kerak — masalan, shifokorlar, yuristlar, muhandislar uchun. General Training Avstraliya, Kanada, Yangi Zelandiya va Buyuk Britaniyaga immigratsiya uchun, shuningdek kasbiy kurslar va o‘rta ta’lim dasturlari uchun ishlatiladi.</p><p>Listening va Speaking ikkala modulda bir xil. Farqlar Reading va Writingda.</p><p><strong>Reading Academic:</strong> kitob va jurnallardan uch uzun ilmiy matn, 60 daqiqada 40 savol.</p><p><strong>Reading General:</strong> qisqa kundalik matnlar — e’lonlar, xabarnomalar, ko‘rsatmalar, kitob parchalar. 2 va 3-bo‘limlar uzunroq va qiyinroq.</p><p><strong>Writing Academic Task 1:</strong> grafik, jadval, diagramma, xarita yoki jarayonni 20 daqiqada 150+ so‘z bilan tasvirlash.</p><p><strong>Writing General Task 1:</strong> rasmiy, yarim rasmiy yoki norasmiy uslubdagi xat, 150+ so‘z.</p><p>Task 2 ikkala modulda bir xil — 40 daqiqada 250+ so‘z insho.</p>"
+    }
+  },
+  {
+    id:"about-3", cat:"about",
+    ru:{
+      t:"Сколько времени нужно на подготовку",
+      d:"От чего зависит срок подготовки и как понять, когда записываться на экзамен.",
+      b:"<p>Стандартный ориентир: для роста на 0.5 балла нужно около 6–8 недель занятий по 6–10 часов в неделю. Для 1 балла — примерно вдвое больше, то есть 12–16 недель.</p><p>Срок зависит от трёх вещей: стартового уровня, целевого балла и регулярности занятий. Если вы занимаетесь 30 минут в день, прогресс будет медленнее, чем при 1.5–2 часах 4 раза в неделю, даже если суммарное время одинаковое. Мозгу нужны регулярные интервалы.</p><p><strong>Когда записываться:</strong> не раньше, чем два контрольных пробника подряд покажут нужный балл. Если до экзамена месяц, а вы ещё не написали ни одного полного пробника — это риск. Первый пробник должен быть минимум за 8 недель до даты, чтобы осталось время исправить слабое место.</p><p><strong>Практическое правило:</strong> считайте, что между вашим текущим баллом и целью — минимум 3 месяца подготовки, если разрыв 1.0, и минимум 6 недель, если разрыв 0.5.</p>"
+    },
+    en:{
+      t:"How long you need to prepare",
+      d:"What your preparation timeline depends on and how to know when to book the exam.",
+      b:"<p>Standard benchmark: going up by 0.5 band takes about 6–8 weeks of study at 6–10 hours per week. Going up by 1 whole band takes roughly double that — 12–16 weeks.</p><p>The timeline depends on three things: your starting level, your target band, and your consistency. If you study 30 minutes a day, progress will be slower than 1.5–2 hours four times a week, even if the total hours match. The brain needs regular intervals.</p><p><strong>When to book:</strong> not before two consecutive full mock tests hit your target band. If the exam is a month away and you haven't written a single full mock yet, that's a risk. Your first mock should be at least 8 weeks before the exam date, so there's time to fix weak spots.</p><p><strong>Rule of thumb:</strong> plan for at least 3 months of prep if the gap to your goal is 1.0, and at least 6 weeks if the gap is 0.5.</p>"
+    },
+    kz:{
+      t:"Дайындыққа қанша уақыт керек",
+      d:"Дайындық мерзімі неге байланысты және емтиханға қашан жазылу керектігін қалай білуге болады.",
+      b:"<p>Стандартты бағдар: 0.5 балға өсу үшін аптасына 6–10 сағаттан 6–8 апта жаттығу қажет. 1 балға — шамамен екі есе көп, яғни 12–16 апта.</p><p>Мерзім үш нәрсеге байланысты: бастапқы деңгей, мақсатты балл және тұрақтылық. Күніне 30 минут жаттықсаңыз, аптасына 4 рет 1.5–2 сағаттан жаттыққанға қарағанда баяу болады, тіпті жалпы уақыт бірдей болса да. Миға тұрақты аралықтар керек.</p><p><strong>Қашан жазылу керек:</strong> қатарынан екі толық сынақ тест мақсатты балға жетпейінше жазбаңыз. Емтиханға бір ай қалса, ал сіз бірде-бір толық сынақ тапсырмасаңыз — бұл тәуекел. Бірінші сынақ емтихан күніне дейін кемінде 8 апта бұрын болуы керек.</p><p><strong>Практикалық ереже:</strong> мақсатқа дейінгі айырма 1.0 болса, кемінде 3 ай дайындық, ал 0.5 болса, кемінде 6 апта жоспарлаңыз.</p>"
+    },
+    uz:{
+      t:"Tayyorgarlik uchun qancha vaqt kerak",
+      d:"Tayyorgarlik muddati nimaga bog‘liq va imtihonga qachon yozilishni qanday bilish mumkin.",
+      b:"<p>Standart yo‘nalish: 0.5 ballga ko‘tarilish uchun haftasiga 6–10 soatdan 6–8 hafta mashq kerak. 1 ball uchun — taxminan ikki baravar ko‘p, ya’ni 12–16 hafta.</p><p>Muddat uch narsaga bog‘liq: boshlang‘ich daraja, maqsad ball va barqarorlik. Kuniga 30 daqiqa mashq qilsangiz, haftasiga 4 marta 1.5–2 soatdan mashq qilganga qaraganda sekinroq bo‘ladi, hatto umumiy vaqt bir xil bo‘lsa ham. Miya muntazam intervallarni talab qiladi.</p><p><strong>Qachon yozilish kerak:</strong> ketma-ket ikkita to‘liq sinov testi maqsad ballga yetmaguncha yozilmang. Imtihonga bir oy qolsa, siz hali bitta to‘liq sinov topshirmagan bo‘lsangiz — bu xavf. Birinchi sinov imtihon kunidan kamida 8 hafta oldin bo‘lishi kerak.</p><p><strong>Amaliy qoida:</strong> maqsadgacha farq 1.0 bo‘lsa, kamida 3 oy tayyorgarlik, 0.5 bo‘lsa, kamida 6 hafta rejalashtiring.</p>"
+    }
+  },
+
+  /* ===== LISTENING ===== */
+  {
+    id:"listening-1", cat:"listening",
+    ru:{
+      t:"Типы вопросов в IELTS Listening",
+      d:"Все шесть форматов заданий: что от вас хотят и как не потерять баллы.",
+      b:"<p>В IELTS Listening шесть основных типов вопросов.</p><ul><li><strong>Multiple choice</strong> — выбрать один или несколько правильных ответов из списка.</li><li><strong>Matching</strong> — соотнести элементы из двух списков.</li><li><strong>Form / table / note completion</strong> — заполнить форму, таблицу или заметки.</li><li><strong>Sentence completion</strong> — вписать пропущенное слово в предложение.</li><li><strong>Map / plan / diagram labelling</strong> — отметить на карте или схеме.</li><li><strong>Short answer questions</strong> — короткий ответ в 1–3 слова.</li></ul><p><strong>Ключевая особенность:</strong> в каждом задании есть ограничение по словам — «не более одного слова», «не более двух слов и/или числа». Если напишете больше, ответ не засчитают, даже если по смыслу он правильный.</p><p>Аудио играет один раз. Никаких повторов нет. Между частями есть 30–60 секунд, чтобы просмотреть следующие вопросы.</p>"
+    },
+    en:{
+      t:"Question types in IELTS Listening",
+      d:"All six task formats: what is expected of you and how not to lose points.",
+      b:"<p>There are six main question types in IELTS Listening.</p><ul><li><strong>Multiple choice</strong> — pick one or several correct answers from a list.</li><li><strong>Matching</strong> — link items from two lists.</li><li><strong>Form / table / note completion</strong> — fill in a form, table or notes.</li><li><strong>Sentence completion</strong> — write the missing word in a sentence.</li><li><strong>Map / plan / diagram labelling</strong> — mark a location on a map or diagram.</li><li><strong>Short answer questions</strong> — answer in 1–3 words.</li></ul><p><strong>Key detail:</strong> each task has a word limit — “no more than one word”, “no more than two words and/or a number”. If you write more, the answer is not counted even if it is correct in meaning.</p><p>The audio plays once. There are no repeats. Between sections there are 30–60 seconds to look at the next questions.</p>"
+    },
+    kz:{
+      t:"IELTS Listening сұрақ түрлері",
+      d:"Барлық алты формат: сізден не талап етіледі және балл жоғалтпаудың жолы.",
+      b:"<p>IELTS Listening-те алты негізгі сұрақ түрі бар.</p><ul><li><strong>Multiple choice</strong> — тізімнен бір немесе бірнеше дұрыс жауап таңдау.</li><li><strong>Matching</strong> — екі тізімнен элементтерді сәйкестендіру.</li><li><strong>Form / table / note completion</strong> — форманы, кестені немесе жазбаларды толтыру.</li><li><strong>Sentence completion</strong> — сөйлемдегі түсіп қалған сөзді жазу.</li><li><strong>Map / plan / diagram labelling</strong> — картада немесе диаграммада белгілеу.</li><li><strong>Short answer questions</strong> — 1–3 сөзбен қысқа жауап.</li></ul><p><strong>Маңызды:</strong> әр тапсырмада сөз шектеуі бар — «бір сөзден аспай», «екі сөз және/немесе саннан аспай». Көбірек жазсаңыз, жауап мағынасы бойынша дұрыс болса да есепке алынбайды.</p><p>Аудио бір рет қана ойналады. Қайталау жоқ. Бөлімдер арасында келесі сұрақтарды қарауға 30–60 секунд беріледі.</p>"
+    },
+    uz:{
+      t:"IELTS Listening savol turlari",
+      d:"Barcha olti format: sizdan nima kutiladi va qanday qilib ball yo‘qotmaslik kerak.",
+      b:"<p>IELTS Listeningda oltita asosiy savol turi mavjud.</p><ul><li><strong>Multiple choice</strong> — ro‘yxatdan bir yoki bir nechta to‘g‘ri javobni tanlash.</li><li><strong>Matching</strong> — ikki ro‘yxatdan elementlarni moslashtirish.</li><li><strong>Form / table / note completion</strong> — shakl, jadval yoki eslatmalarni to‘ldirish.</li><li><strong>Sentence completion</strong> — gapda tushib qolgan so‘zni yozish.</li><li><strong>Map / plan / diagram labelling</strong> — xarita yoki diagrammada belgilash.</li><li><strong>Short answer questions</strong> — 1–3 so‘z bilan qisqa javob.</li></ul><p><strong>Muhim:</strong> har bir vazifada so‘z chegarasi bor — “bir so‘zdan ko‘p emas”, “ikki so‘z va/yoki raqamdan ko‘p emas”. Ko‘proq yozsangiz, javob ma’no jihatidan to‘g‘ri bo‘lsa ham hisobga olinmaydi.</p><p>Audio bir marta o‘ynaladi. Takrorlash yo‘q. Bo‘limlar orasida keyingi savollarni ko‘rish uchun 30–60 soniya beriladi.</p>"
+    }
+  },
+  {
+    id:"listening-2", cat:"listening",
+    ru:{
+      t:"Стратегия: как не пропустить ответ",
+      d:"Что делать до, во время и после аудирования, чтобы не терять баллы на пустом месте.",
+      b:"<p><strong>До аудирования (30–60 секунд):</strong> прочитайте вопросы и подчеркните ключевые слова. Подумайте, какие синонимы могут прозвучать вместо того, что вы видите в задании. Например, если в вопросе «cheap», в аудио может быть «affordable» или «budget-friendly».</p><p><strong>Во время:</strong> не застревайте на одном вопросе. Если не услышали ответ — идите дальше. Аудио играет один раз, и потеря одного вопроса не стоит того, чтобы пропустить три. Отвечайте на все вопросы, даже если не уверены — угадать 25% шанс, а пустая клетка даёт 0%.</p><p><strong>В конце:</strong> у вас есть 10 минут, чтобы перенести ответы на бланк. Проверьте орфографию и грамматику. Ошибка в написании слова стоит балла так же, как неправильный ответ. Обратите внимание на: единственное/множественное число, время глаголов, числа (13 vs 30).</p><p><strong>Типичные ловушки:</strong> диктор называет ответ, потом исправляется. Всегда ждите финальную версию: «The meeting is on Monday — no, sorry, it's on Wednesday». Правильный ответ — Wednesday.</p>"
+    },
+    en:{
+      t:"Strategy: how not to miss an answer",
+      d:"What to do before, during and after listening so you don't lose points for nothing.",
+      b:"<p><strong>Before listening (30–60 seconds):</strong> read the questions and underline key words. Think about what synonyms might appear instead of what you see. For example, if the question says “cheap”, the audio may have “affordable” or “budget-friendly”.</p><p><strong>During:</strong> do not get stuck on one question. If you didn't catch the answer — move on. The audio plays once, and losing one question is not worth missing three. Answer everything, even if unsure — a guess is a 25% chance, an empty box is 0%.</p><p><strong>At the end:</strong> you have 10 minutes to transfer answers to the answer sheet. Check spelling and grammar. A spelling mistake costs a point just like a wrong answer. Watch out for: singular/plural, verb tense, numbers (13 vs 30).</p><p><strong>Common traps:</strong> the speaker gives an answer, then corrects it. Always wait for the final version: “The meeting is on Monday — no, sorry, it's on Wednesday”. The correct answer is Wednesday.</p>"
+    },
+    kz:{
+      t:"Стратегия: жауапты қалай жіберіп алмау керек",
+      d:"Тыңдауға дейін, кезінде және кейін не істеу керек, босқа балл жоғалтпау үшін.",
+      b:"<p><strong>Тыңдауға дейін (30–60 секунд):</strong> сұрақтарды оқып, кілт сөздерді сызыңыз. Көргеніңіздің орнына қандай синонимдер естілуі мүмкін екенін ойлаңыз. Мысалы, сұрақта «cheap» болса, аудиода «affordable» немесе «budget-friendly» болуы мүмкін.</p><p><strong>Кезінде:</strong> бір сұраққа тұрып қалмаңыз. Жауапты естімесеңіз — әрі қарай жүріңіз. Аудио бір рет ойналады, бір сұрақты жоғалту үшеуін жіберіп алуға тұрарлық емес. Барлық сұраққа жауап беріңіз, сенімсіз болсаңыз да — болжам 25% мүмкіндік, бос ұяшық 0%.</p><p><strong>Соңында:</strong> жауаптарды бланкіге көшіруге 10 минут бар. Орфография мен грамматиканы тексеріңіз. Сөзді дұрыс жазбау дұрыс емес жауап сияқты балл жоғалтады.</p><p><strong>Жиі тұзақтар:</strong> диктор жауап айтады, содан кейін түзетеді. Әрқашан соңғы нұсқаны күтіңіз: «Кездесу дүйсенбіде — жоқ, кешіріңіз, сәрсенбіде». Дұрыс жауап — сәрсенбі.</p>"
+    },
+    uz:{
+      t:"Strategiya: javobni qanday boy bermaslik kerak",
+      d:"Tinglashdan oldin, davomida va keyin nima qilish kerak, bo‘sh joyda ball yo‘qotmaslik uchun.",
+      b:"<p><strong>Tinglashdan oldin (30–60 soniya):</strong> savollarni o‘qib, kalit so‘zlarni belgilang. Ko‘rganingiz o‘rniga qanday sinonimlar eshitilishi mumkinligini o‘ylab ko‘ring. Masalan, savolda «cheap» bo‘lsa, audioda «affordable» yoki «budget-friendly» bo‘lishi mumkin.</p><p><strong>Davomida:</strong> bitta savolda qotib qolmang. Javobni eshitmasangiz — davom eting. Audio bir marta o‘ynaladi, bitta savolni yo‘qotish uchtasini o‘tkazib yuborishga arzimaydi. Hamma savollarga javob bering, ishonchingiz komil bo‘lmasa ham — taxmin 25% imkoniyat, bo‘sh katak 0%.</p><p><strong>Oxirida:</strong> javoblarni blankka ko‘chirish uchun 10 daqiqa bor. Imlo va grammatikani tekshiring. So‘zni xato yozish noto‘g‘ri javob kabi ball yo‘qotadi.</p><p><strong>Ko‘p uchraydigan tuzoqlar:</strong> diktor javob aytadi, keyin tuzatadi. Har doim oxirgi variantni kuting: “Uchrashuv dushanbada — yo‘q, kechirasiz, chorshanbada”. To‘g‘ri javob — chorshanba.</p>"
+    }
+  },
+  {
+    id:"listening-3", cat:"listening",
+    ru:{
+      t:"Орфография в Listening: правила и ошибки",
+      d:"Почему правильное слово с ошибкой не считается и как тренировать написание.",
+      b:"<p>В IELTS Listening ответ должен быть написан правильно. Если вы услышали верное слово, но написали с ошибкой — балл не засчитают. Это правило работает жёстко, без поблажек.</p><p><strong>Что чаще всего пишут с ошибками:</strong></p><ul><li>Имена собственные: Sarah, Michael, Cambridge, Thames.</li><li>Числа: 13 vs 30, 14 vs 40 — разница в ударении, но на бумаге путают.</li><li>Дни недели и месяцы: Wednesday, February, August.</li><li>Британское vs американское написание: colour/color, centre/center. Оба варианта принимаются, но нужно выбрать один и держаться его.</li></ul><p><strong>Как тренировать:</strong> заведите список слов, в которых путаетесь, и диктуйте их себе вслух. Пишите по 20 слов в день — через 2 недели перестанете ошибаться в базовых. Отдельно потренируйте числа и даты: они стоят многих баллов.</p><p><strong>Важно:</strong> заглавные буквы в ответах не обязательны. «london» и «London» принимаются одинаково. Но если слово должно быть с большой буквы по правилам, лучше писать с большой — так безопаснее.</p>"
+    },
+    en:{
+      t:"Spelling in Listening: rules and mistakes",
+      d:"Why a correct word with a spelling mistake is not counted and how to train your writing.",
+      b:"<p>In IELTS Listening, answers must be spelled correctly. If you heard the right word but wrote it with a mistake — no point. This rule is strict, no exceptions.</p><p><strong>What people most often misspell:</strong></p><ul><li>Proper names: Sarah, Michael, Cambridge, Thames.</li><li>Numbers: 13 vs 30, 14 vs 40 — the difference is in the stress, but on paper they get mixed up.</li><li>Days and months: Wednesday, February, August.</li><li>British vs American spelling: colour/color, centre/center. Both are accepted, but pick one and stick to it.</li></ul><p><strong>How to train:</strong> keep a list of words you struggle with and dictate them to yourself out loud. Write 20 words a day — in two weeks you'll stop making basic errors. Train numbers and dates separately: they cost many points.</p><p><strong>Important:</strong> capital letters are not required. “london” and “London” are both accepted. But if a word should be capitalised, better to capitalise it — safer.</p>"
+    },
+    kz:{
+      t:"Listening-тегі орфография: ережелер мен қателер",
+      d:"Дұрыс сөз қатемен жазылса неге есепке алынбайды және жазуды қалай жаттықтыру керек.",
+      b:"<p>IELTS Listening-те жауап дұрыс жазылуы керек. Дұрыс сөзді естіп, қатемен жазсаңыз — балл жоқ. Бұл ереже қатаң, жеңілдіксіз.</p><p><strong>Жиі қате жазылатын сөздер:</strong></p><ul><li>Жалқы есімдер: Sarah, Michael, Cambridge, Thames.</li><li>Сандар: 13 пен 30, 14 пен 40 — айырмашылық екпінде, бірақ қағазда шатасады.</li><li>Апта күндері мен айлар: Wednesday, February, August.</li><li>Британдық және американдық жазылым: colour/color, centre/center. Екеуі де қабылданады, бірақ біреуін таңдап, соны ұстаныңыз.</li></ul><p><strong>Қалай жаттығу керек:</strong> шатасатын сөздердің тізімін жасап, оларды дауыстап айтыңыз. Күніне 20 сөз жазыңыз — екі аптадан кейін базалық қателерді жібермейсіз.</p><p><strong>Маңызды:</strong> бас әріптер міндетті емес. «london» және «London» бірдей қабылданады.</p>"
+    },
+    uz:{
+      t:"Listeningda imlo: qoidalar va xatolar",
+      d:"To‘g‘ri so‘z xato bilan yozilsa nega hisobga olinmaydi va yozishni qanday mashq qilish kerak.",
+      b:"<p>IELTS Listeningda javob to‘g‘ri yozilishi kerak. To‘g‘ri so‘zni eshitib, xato bilan yozsangiz — ball yo‘q. Bu qoida qat’iy.</p><p><strong>Ko‘p xato qilinadigan so‘zlar:</strong></p><ul><li>Atogli otlar: Sarah, Michael, Cambridge, Thames.</li><li>Raqamlar: 13 va 30, 14 va 40 — farq urg‘uda, lekin qog‘ozda aralashtiriladi.</li><li>Hafta kunlari va oylar: Wednesday, February, August.</li><li>Britaniya va Amerika imlosi: colour/color, centre/center. Ikkalasi ham qabul qilinadi, lekin bittasini tanlab, unga amal qiling.</li></ul><p><strong>Qanday mashq qilish kerak:</strong> qiynaladigan so‘zlar ro‘yxatini tuzib, ularni ovoz chiqarib ayting. Kuniga 20 so‘z yozing — ikki haftadan keyin asosiy xatolarni tashlaysiz.</p><p><strong>Muhim:</strong> bosh harflar shart emas. «london» va «London» bir xil qabul qilinadi.</p>"
+    }
+  },
+
+  /* ===== READING ===== */
+  {
+    id:"reading-1", cat:"reading",
+    ru:{
+      t:"True / False / Not Given: как отвечать",
+      d:"Самый коварный тип вопросов в Reading — разбираем логику и типичные ошибки.",
+      b:"<p>В этом типе вопросов три варианта:</p><ul><li><strong>True</strong> — информация в тексте прямо подтверждается.</li><li><strong>False</strong> — текст утверждает обратное.</li><li><strong>Not Given</strong> — информации в тексте нет, или автор не высказывается по этому поводу.</li></ul><p><strong>Главная ошибка:</strong> отвечать False, когда информация просто не упоминается. Если в тексте нет прямого утверждения или его опровержения — это Not Given. Не додумывайте, не используйте свои знания о мире. Ищите только то, что написано в тексте.</p><p><strong>Практический метод:</strong></p><ul><li>Прочитайте утверждение и найдите в тексте место, где говорится о том же.</li><li>Задайте вопрос: текст подтверждает это? Да → True. Нет, говорит обратное? → False. Ничего не говорит? → Not Given.</li><li>Если сомневаетесь между False и Not Given — задайте вопрос «а текст опровергает это или просто молчит?». Если молчит — Not Given.</li></ul><p><strong>Ловушка:</strong> экзаменатор специально использует синонимы, чтобы сбить вас. Слова «все» и «некоторые» — частая причина ошибок: текст говорит «некоторые», а вы отвечаете True на «все».</p>"
+    },
+    en:{
+      t:"True / False / Not Given: how to answer",
+      d:"The trickiest question type in Reading — we break down the logic and common mistakes.",
+      b:"<p>This question type has three options:</p><ul><li><strong>True</strong> — the statement is confirmed by the text.</li><li><strong>False</strong> — the text says the opposite.</li><li><strong>Not Given</strong> — the text does not mention it, or the author doesn't comment.</li></ul><p><strong>The biggest mistake:</strong> choosing False when the information is simply not mentioned. If the text doesn't confirm or contradict — it's Not Given. Don't assume, don't use your outside knowledge. Look only at what is written.</p><p><strong>Practical method:</strong></p><ul><li>Read the statement and find where the text talks about the same thing.</li><li>Ask: does the text confirm this? Yes → True. No, it says the opposite? → False. Nothing? → Not Given.</li><li>If unsure between False and Not Given — ask “does the text contradict this, or is it simply silent?”. Silent → Not Given.</li></ul><p><strong>Trap:</strong> exam writers use synonyms to confuse you. Words like “all” and “some” cause many errors: the text says “some”, and you mark True for “all”.</p>"
+    },
+    kz:{
+      t:"True / False / Not Given: қалай жауап беру керек",
+      d:"Reading-тегі ең қулықты сұрақ түрі — логиканы және жиі қателерді талдаймыз.",
+      b:"<p>Бұл сұрақ түрінде үш нұсқа бар:</p><ul><li><strong>True</strong> — ақпарат мәтінде тікелей расталады.</li><li><strong>False</strong> — мәтін керісінше айтады.</li><li><strong>Not Given</strong> — ақпарат мәтінде жоқ немесе автор бұл туралы айтпайды.</li></ul><p><strong>Басты қате:</strong> ақпарат айтылмаған кезде False таңдау. Егер мәтінде тікелей растау немесе теріске шығару болмаса — бұл Not Given. Ойдан шығармаңыз, әлем туралы біліміңізді қолданбаңыз.</p><p><strong>Практикалық әдіс:</strong></p><ul><li>Тұжырымды оқып, мәтінде дәл сол туралы айтылған жерді табыңыз.</li><li>Сұрақ қойыңыз: мәтін мұны растай ма? Иә → True. Жоқ, керісінше айтады ма? → False. Ештеңе жоқ па? → Not Given.</li><li>False мен Not Given арасында күмәндансаңыз — «мәтін мұны теріске шығара ма әлде жай ғана үнсіз бе?» деп сұраңыз. Үнсіз болса — Not Given.</li></ul><p><strong>Тұзақ:</strong> емтихан алушы сізді шатастыру үшін синонимдерді әдейі қолданады. «Барлығы» және «кейбіреуі» сөздері жиі қатеге әкеледі: мәтін «кейбіреуі» дейді, ал сіз «барлығына» True қоясыз.</p>"
+    },
+    uz:{
+      t:"True / False / Not Given: qanday javob berish kerak",
+      d:"Readingdagi eng qiyin savol turi — mantiqni va ko‘p uchraydigan xatolarni tahlil qilamiz.",
+      b:"<p>Bu savol turida uch variant bor:</p><ul><li><strong>True</strong> — matnda to‘g‘ridan-to‘g‘ri tasdiqlanadi.</li><li><strong>False</strong> — matn aksini aytadi.</li><li><strong>Not Given</strong> — matnda bu haqda ma’lumot yo‘q yoki muallif gapirmaydi.</li></ul><p><strong>Eng katta xato:</strong> ma’lumot umuman aytilmagan bo‘lsa ham False tanlash. Agar matnda tasdiq yoki inkor bo‘lmasa — bu Not Given. O‘zingizdan o‘ylab topmang, dunyo haqidagi bilimingizni ishlatmang.</p><p><strong>Amaliy usul:</strong></p><ul><li>Bayonotni o‘qib, matnda xuddi shu haqda aytilgan joyni toping.</li><li>Savol bering: matn buni tasdiqlaydimi? Ha → True. Yo‘q, aksini aytadimi? → False. Hech narsa yo‘qmi? → Not Given.</li><li>False va Not Given o‘rtasida ikkilansangiz — «matn buni inkor qiladimi yoki shunchaki jimmi?» deb so‘rang. Jim bo‘lsa — Not Given.</li></ul><p><strong>Tuzoq:</strong> imtihon tuzuvchi sizni chalg‘itish uchun sinonimlardan foydalanadi. “Hammasi” va “ba’zilari” so‘zlari ko‘p xatolarga sabab bo‘ladi: matn “ba’zilari” deydi, siz esa “hammasi”ga True qo‘yasiz.</p>"
+    }
+  },
+  {
+    id:"reading-2", cat:"reading",
+    ru:{
+      t:"Советы: план на 60 минут",
+      d:"Как распределить время на три текста и не застрять на первом.",
+      b:"<p>Чтение длится 60 минут на 40 вопросов, то есть около 1.5 минуты на вопрос. На первый текст обычно уходит меньше времени, на третий — больше, потому что он самый сложный.</p><p><strong>Практический план:</strong></p><ul><li>Первые 15–18 минут — текст 1 (обычно самый лёгкий).</li><li>Следующие 18–20 минут — текст 2 (средняя сложность).</li><li>Оставшиеся 22–25 минут — текст 3 (самый сложный).</li></ul><p><strong>Если застряли на вопросе дольше 2 минут:</strong> оставьте его, отметьте и вернитесь позже. Часто ответ приходит после того, как вы прочитали следующий абзац или посмотрели на вопрос свежим взглядом.</p><p><strong>Порядок вопросов:</strong> в большинстве типов заданий (кроме Matching Headings и некоторых Matching Information) вопросы идут в том же порядке, что и информация в тексте. Это значит, что если нашли ответ на вопрос 5, ответ на 6 нужно искать дальше по тексту, а не в начале.</p><p><strong>Не переносите ответы на бланк в конце:</strong> в Reading нет дополнительного времени на перенос. Пишите ответы сразу в бланк, иначе не успеете.</p>"
+    },
+    en:{
+      t:"Tips: your 60-minute plan",
+      d:"How to spread the time across three passages and not get stuck on the first one.",
+      b:"<p>Reading is 60 minutes for 40 questions — about 1.5 minutes per question. The first passage usually takes less time, the third takes more because it is the hardest.</p><p><strong>Practical plan:</strong></p><ul><li>First 15–18 minutes — passage 1 (usually the easiest).</li><li>Next 18–20 minutes — passage 2 (medium).</li><li>Remaining 22–25 minutes — passage 3 (the hardest).</li></ul><p><strong>If you're stuck on a question for more than 2 minutes:</strong> leave it, mark it and come back later. Often the answer appears after you read the next paragraph or look at the question with fresh eyes.</p><p><strong>Question order:</strong> in most question types (except Matching Headings and some Matching Information) the questions follow the same order as the information in the text. So if you found the answer to question 5, the answer to question 6 is further down, not at the beginning.</p><p><strong>Do not postpone transferring answers to the sheet:</strong> there is no extra time for that in Reading. Write answers directly on the sheet, or you won't finish.</p>"
+    },
+    kz:{
+      t:"Кеңестер: 60 минутқа жоспар",
+      d:"Үш мәтінге уақытты қалай бөлу керек және біріншісінде тұрып қалмау керек.",
+      b:"<p>Оқу 40 сұраққа 60 минутқа созылады, яғни бір сұраққа шамамен 1.5 минут. Бірінші мәтінге әдетте аз уақыт, үшіншіге — көбірек, өйткені ол ең қиыны.</p><p><strong>Практикалық жоспар:</strong></p><ul><li>Алғашқы 15–18 минут — 1-мәтін (әдетте жеңіл).</li><li>Келесі 18–20 минут — 2-мәтін (орташа).</li><li>Қалған 22–25 минут — 3-мәтін (ең қиыны).</li></ul><p><strong>Егер сұраққа 2 минуттан көп тұрып қалсаңыз:</strong> қалдырып, белгілеп, кейінірек қайта оралыңыз. Жиі жауап келесі абзацты оқығаннан кейін немесе сұраққа жаңа көзқараспен қарағаннан кейін келеді.</p><p><strong>Сұрақтар реті:</strong> көп жағдайда (Matching Headings және кейбір Matching Information-нан басқа) сұрақтар мәтіндегі ақпарат ретімен жүреді. Демек, 5-сұрақтың жауабын тапсаңыз, 6-сұрақтың жауабын мәтіннің соңынан іздеу керек.</p><p><strong>Жауаптарды бланкіге соңында көшірмеңіз:</strong> Reading-те бұған қосымша уақыт жоқ.</p>"
+    },
+    uz:{
+      t:"Maslahatlar: 60 daqiqalik reja",
+      d:"Uchta matn uchun vaqtni qanday taqsimlash va birinchisida qotib qolmaslik kerak.",
+      b:"<p>O‘qish 40 savol uchun 60 daqiqa davom etadi, ya’ni savol uchun taxminan 1.5 daqiqa. Birinchi matn odatda kamroq vaqt oladi, uchinchisi — ko‘proq, chunki u eng qiyini.</p><p><strong>Amaliy reja:</strong></p><ul><li>Birinchi 15–18 daqiqa — 1-matn (odatda eng oson).</li><li>Keyingi 18–20 daqiqa — 2-matn (o‘rtacha).</li><li>Qolgan 22–25 daqiqa — 3-matn (eng qiyini).</li></ul><p><strong>Agar savolda 2 daqiqadan ko‘p qotib qolsangiz:</strong> qoldirib, belgilab, keyinroq qaytib keling. Ko‘pincha javob keyingi xatboshini o‘qigandan yoki savolga yangi nigoh bilan qaragandan keyin keladi.</p><p><strong>Savollar tartibi:</strong> ko‘p savol turlarida (Matching Headings va ba’zi Matching Informationdan tashqari) savollar matndagi ma’lumot tartibida keladi. Demak, 5-savolning javobini topsangiz, 6-savolning javobini matn oxiridan izlang.</p><p><strong>Javoblarni blankka oxirida ko‘chirmang:</strong> Readingda bunga qo‘shimcha vaqt yo‘q.</p>"
+    }
+  },
+  {
+    id:"reading-3", cat:"reading",
+    ru:{
+      t:"Matching Headings: метод из 5 шагов",
+      d:"Как подбирать заголовки к абзацам быстро и без паники.",
+      b:"<p><strong>Шаг 1.</strong> Прочитайте все заголовки один раз. Отметьте те, что перекликаются по смыслу — это поможет сузить выбор.</p><p><strong>Шаг 2.</strong> Читайте первый абзац и обращайте особое внимание на первое и последнее предложение. Часто именно там спрятана основная мысль. Остальное — детали и примеры.</p><p><strong>Шаг 3.</strong> Не цепляйтесь за слова, которые встречаются и в заголовке, и в тексте. IELTS специально использует синонимы, чтобы сбить с толку. Совпадение слова — не гарантия правильного ответа.</p><p><strong>Шаг 4.</strong> После каждого абзаца сразу выбирайте подходящий заголовок. Не оставляйте всё на конец — к концу вы забудете первые абзацы.</p><p><strong>Шаг 5.</strong> Если сомневаетесь между двумя заголовками, задайте вопрос: «О чём этот абзац целиком?». Правильный заголовок описывает весь абзац, а не одну фразу из него.</p><p><strong>Совет:</strong> если какой-то заголовок никуда не подходит — оставьте его напоследок. К концу вы, скорее всего, уже вставите его методом исключения. И помните: заголовков всегда больше, чем абзацев.</p>"
+    },
+    en:{
+      t:"Matching Headings: a 5-step method",
+      d:"How to match headings to paragraphs quickly and without panic.",
+      b:"<p><strong>Step 1.</strong> Read all headings once. Mark the ones that overlap in meaning — this narrows your choice.</p><p><strong>Step 2.</strong> Read the first paragraph, paying special attention to the first and last sentence. That's often where the main idea hides. The rest is detail and examples.</p><p><strong>Step 3.</strong> Don't latch onto words that appear both in the heading and in the text. IELTS deliberately uses synonyms to confuse you. A matching word is not a guarantee of a correct answer.</p><p><strong>Step 4.</strong> Choose the heading for each paragraph right after reading it. Don't leave everything for the end — you'll forget the early paragraphs.</p><p><strong>Step 5.</strong> If you're torn between two headings, ask: “What is this paragraph really about?”. The correct heading describes the whole paragraph, not one sentence in it.</p><p><strong>Tip:</strong> if a heading doesn't fit anywhere, leave it for last. By the end, you'll likely slot it in by elimination. And remember: there are always more headings than paragraphs.</p>"
+    },
+    kz:{
+      t:"Matching Headings: 5 қадамнан тұратын әдіс",
+      d:"Абзацтарға тақырыпшаларды жылдам және дүрбелеңсіз таңдау жолы.",
+      b:"<p><strong>1-қадам.</strong> Барлық тақырыпшаларды бір рет оқыңыз. Мағынасы жақындарын белгілеңіз — бұл таңдауды тарылтады.</p><p><strong>2-қадам.</strong> Бірінші абзацты оқып, бірінші және соңғы сөйлемге ерекше назар аударыңыз. Көбінесе негізгі ой сонда жасырылады. Қалғаны — бөлшектер мен мысалдар.</p><p><strong>3-қадам.</strong> Тақырыпшада да, мәтінде де кездесетін сөздерге жабыспаңыз. IELTS сізді шатастыру үшін синонимдерді әдейі қолданады.</p><p><strong>4-қадам.</strong> Әр абзацты оқығаннан кейін бірден сәйкес тақырыпшаны таңдаңыз. Барлығын соңына қалдырмаңыз — алғашқы абзацтарды ұмытып қаласыз.</p><p><strong>5-қадам.</strong> Екі тақырыпша арасында күмәндансаңыз — «Бұл абзац жалпы алғанда не туралы?» деп сұраңыз. Дұрыс тақырыпша бүкіл абзацты сипаттайды, бір сөйлемді емес.</p><p><strong>Кеңес:</strong> қандай да бір тақырыпша еш жерге сәйкес келмесе — соңына қалдырыңыз. Соңында алып тастау әдісімен қоясыз.</p>"
+    },
+    uz:{
+      t:"Matching Headings: 5 qadamli usul",
+      d:"Sarlavhalarni xatboshilarga tez va vahimasiz tanlash usuli.",
+      b:"<p><strong>1-qadam.</strong> Barcha sarlavhalarni bir marta o‘qing. Ma’nosi yaqinlarini belgilang — bu tanlovni toraytiradi.</p><p><strong>2-qadam.</strong> Birinchi xatboshini o‘qib, birinchi va oxirgi gapga alohida e’tibor bering. Ko‘pincha asosiy fikr shu yerda yashirinadi. Qolgani — tafsilotlar va misollar.</p><p><strong>3-qadam.</strong> Sarlavhada ham, matnda ham uchraydigan so‘zlarga yopishmang. IELTS sizni chalg‘itish uchun sinonimlardan foydalanadi.</p><p><strong>4-qadam.</strong> Har bir xatboshini o‘qib bo‘lgach, darhol mos sarlavhani tanlang. Hammasini oxiriga qoldirmang — boshidagi xatboshilarni esdan chiqarasiz.</p><p><strong>5-qadam.</strong> Ikki sarlavha orasida ikkilansangiz — «Bu xatboshi umuman nima haqida?» deb so‘rang. To‘g‘ri sarlavha butun xatboshini tasvirlaydi, bitta gapni emas.</p><p><strong>Maslahat:</strong> biror sarlavha hech qayerga to‘g‘ri kelmasa — oxiriga qoldiring. Oxirida istisno usuli bilan qo‘yasiz.</p>"
+    }
+  },
+
+  /* ===== WRITING TASK 1 ===== */
+  {
+    id:"writing1-1", cat:"writing1",
+    ru:{
+      t:"Overview: что это и как писать",
+      d:"Почему без overview теряют балл и как писать его для любого графика.",
+      b:"<p><strong>Overview — это предложение (или два) во введении, где вы называете главную тенденцию графика.</strong> Без него балл за Task Achievement будет ниже, потому что экзаменатор специально проверяет, умеете ли вы видеть общую картину, а не только отдельные цифры.</p><p><strong>Как писать:</strong> смотрите на график целиком и отвечайте на вопрос «что самое заметное». Например: «Самый резкий рост показал X, а Y остался стабильным». Или: «Все три категории выросли, но X вырос значительно быстрее остальных».</p><p><strong>Чего не делать:</strong> не приводите в overview конкретные цифры — они идут в body-абзацы. Не перечисляйте всё подряд. Не пишите «as can be seen from the graph» — это пустые слова, за них баллов не дают.</p><p><strong>Структура:</strong></p><ul><li>Introduction — перефразируйте задание своими словами.</li><li>Overview — 1–2 предложения с главной тенденцией.</li><li>Body 1 — детали первой группы данных.</li><li>Body 2 — детали второй группы данных.</li></ul><p><strong>Совет:</strong> пишите overview после того, как разобрались с данными, но ставьте его сразу после введения. Не оставляйте его на конец — забудете.</p>"
+    },
+    en:{
+      t:"Overview: what it is and how to write it",
+      d:"Why you lose a band without an overview, and how to write one for any chart.",
+      b:"<p><strong>An overview is a sentence (or two) in the introduction where you name the main trend of the chart.</strong> Without it, your Task Achievement score drops, because the examiner specifically checks whether you can see the overall picture, not just individual numbers.</p><p><strong>How to write it:</strong> look at the whole chart and answer the question “what is the most noticeable?”. For example: “X showed the sharpest growth, while Y stayed stable”. Or: “All three categories rose, but X grew much faster than the others”.</p><p><strong>What not to do:</strong> don't put specific numbers in the overview — they belong in the body paragraphs. Don't list everything. Don't write “as can be seen from the graph” — empty words, no points for them.</p><p><strong>Structure:</strong></p><ul><li>Introduction — paraphrase the task in your own words.</li><li>Overview — 1–2 sentences with the main trend.</li><li>Body 1 — details of the first data group.</li><li>Body 2 — details of the second data group.</li></ul><p><strong>Tip:</strong> write the overview after you understand the data, but place it right after the introduction. Don't leave it for the end — you'll forget.</p>"
+    },
+    kz:{
+      t:"Overview: бұл не және қалай жазу керек",
+      d:"Неге overview жоқ болса балл жоғалтады және кез келген график үшін оны қалай жазу керек.",
+      b:"<p><strong>Overview — бұл кіріспедегі бір (немесе екі) сөйлем, онда графиктің негізгі тенденциясын атайсыз.</strong> Онсыз Task Achievement балы төмендейді, өйткені емтихан алушы сіздің жалпы суретті көре алатыныңызды тексереді.</p><p><strong>Қалай жазу:</strong> графикке тұтас қарап, «ең байқалатыны не?» деген сұраққа жауап беріңіз. Мысалы: «X ең күрт өсуді көрсетті, ал Y тұрақты болды».</p><p><strong>Не істемеу керек:</strong> overview-ге нақты сандарды кіргізбеңіз — олар body-абзацтарға барады. Барлығын тізімдемеңіз. «as can be seen from the graph» деп жазбаңыз — бос сөздер.</p><p><strong>Құрылым:</strong></p><ul><li>Introduction — тапсырманы өз сөздеріңізбен қайталап жазыңыз.</li><li>Overview — негізгі тенденциямен 1–2 сөйлем.</li><li>Body 1 — бірінші деректер тобының бөлшектері.</li><li>Body 2 — екінші деректер тобының бөлшектері.</li></ul><p><strong>Кеңес:</strong> overview-ді деректерді түсінгеннен кейін жазыңыз, бірақ кіріспеден кейін бірден қойыңыз.</p>"
+    },
+    uz:{
+      t:"Overview: bu nima va qanday yozish kerak",
+      d:"Nega overviewsiz ball yo‘qotiladi va har qanday grafik uchun uni qanday yozish kerak.",
+      b:"<p><strong>Overview — bu kirishdagi bir (yoki ikki) gap bo‘lib, unda grafikning asosiy tendensiyasini aytasiz.</strong> Usiz Task Achievement bahosi pasayadi, chunki imtihon oluvchi sizning umumiy rasmni ko‘ra olishingizni tekshiradi.</p><p><strong>Qanday yozish:</strong> grafikka butunlay qarab, «eng ko‘zga tashlanadigani nima?» degan savolga javob bering. Masalan: «X eng keskin o‘sishni ko‘rsatdi, Y esa barqaror qoldi».</p><p><strong>Nima qilmaslik kerak:</strong> overviewga aniq raqamlarni kiritmang — ular body xatboshilariga tegishli. Hammani sanab chiqmang. «as can be seen from the graph» deb yozmang — bo‘sh so‘zlar.</p><p><strong>Tuzilish:</strong></p><ul><li>Introduction — vazifani o‘z so‘zlaringiz bilan qayta yozing.</li><li>Overview — asosiy tendensiya bilan 1–2 gap.</li><li>Body 1 — birinchi ma’lumot guruhining tafsilotlari.</li><li>Body 2 — ikkinchi ma’lumot guruhining tafsilotlari.</li></ul><p><strong>Maslahat:</strong> overviewni ma’lumotlarni tushungandan keyin yozing, lekin kirishdan keyin darhol qo‘ying.</p>"
+    }
+  },
+  {
+    id:"writing1-2", cat:"writing1",
+    ru:{
+      t:"Лексика для графиков и процессов",
+      d:"Слова для трендов, сравнений и описания процессов — без которых не поднять балл.",
+      b:"<p><strong>Слова для трендов:</strong></p><ul><li>Рост: increase, rise, grow, climb, surge, soar (сильный рост).</li><li>Падение: decrease, fall, drop, decline, plummet (резкое падение).</li><li>Стабильность: remain stable, stay constant, level off, plateau.</li><li>Колебания: fluctuate, vary.</li><li>Пик: peak, reach a peak, hit a high.</li><li>Дно: hit a low, reach a trough.</li></ul><p><strong>Слова для сравнений:</strong> significantly more, twice as many, a similar proportion, the majority of, roughly equal, three times higher.</p><p><strong>Наречия для описания скорости:</strong> sharply, gradually, steadily, dramatically, slightly, marginally.</p><p><strong>Для процессов:</strong> first, then, next, subsequently, after that, finally. Используйте пассивный залог, если действие выполняет что-то другое: «The bottles are collected and transported to the recycling plant».</p><p><strong>Типичные ошибки:</strong> путать существительное и глагол (rise / raise), писать цифры словами там, где можно числами (числа пишите цифрами — это разрешено).</p>"
+    },
+    en:{
+      t:"Vocabulary for graphs and processes",
+      d:"Words for trends, comparisons and describing processes — without them your band won't rise.",
+      b:"<p><strong>Trend words:</strong></p><ul><li>Growth: increase, rise, grow, climb, surge, soar (strong growth).</li><li>Fall: decrease, fall, drop, decline, plummet (sharp fall).</li><li>Stability: remain stable, stay constant, level off, plateau.</li><li>Fluctuation: fluctuate, vary.</li><li>Peak: peak, reach a peak, hit a high.</li><li>Trough: hit a low, reach a trough.</li></ul><p><strong>Comparison words:</strong> significantly more, twice as many, a similar proportion, the majority of, roughly equal, three times higher.</p><p><strong>Adverbs for speed:</strong> sharply, gradually, steadily, dramatically, slightly, marginally.</p><p><strong>For processes:</strong> first, then, next, subsequently, after that, finally. Use the passive voice if something else performs the action: “The bottles are collected and transported to the recycling plant”.</p><p><strong>Common mistakes:</strong> confusing noun and verb (rise / raise), spelling out numbers where figures are allowed (write numbers as digits — it is accepted).</p>"
+    },
+    kz:{
+      t:"Графиктер мен процестерге арналған лексика",
+      d:"Трендтер, салыстырулар және процестерді сипаттауға арналған сөздер.",
+      b:"<p><strong>Тренд сөздері:</strong></p><ul><li>Өсу: increase, rise, grow, climb, surge, soar.</li><li>Құлдырау: decrease, fall, drop, decline, plummet.</li><li>Тұрақтылық: remain stable, stay constant, level off, plateau.</li><li>Ауытқу: fluctuate, vary.</li><li>Шың: peak, reach a peak, hit a high.</li><li>Түбі: hit a low, reach a trough.</li></ul><p><strong>Салыстыру сөздері:</strong> significantly more, twice as many, a similar proportion, the majority of, roughly equal.</p><p><strong>Жылдамдық үстеулері:</strong> sharply, gradually, steadily, dramatically, slightly, marginally.</p><p><strong>Процестер үшін:</strong> first, then, next, subsequently, after that, finally. Егер әрекетті басқа нәрсе жасаса, пассивті қолданыңыз: «The bottles are collected and transported».</p>"
+    },
+    uz:{
+      t:"Grafik va jarayonlar uchun leksika",
+      d:"Trendlar, taqqoslashlar va jarayonlarni tasvirlash uchun so‘zlar.",
+      b:"<p><strong>Trend so‘zlari:</strong></p><ul><li>O‘sish: increase, rise, grow, climb, surge, soar.</li><li>Tushish: decrease, fall, drop, decline, plummet.</li><li>Barqarorlik: remain stable, stay constant, level off, plateau.</li><li>O‘zgarish: fluctuate, vary.</li><li>Cho‘qqi: peak, reach a peak, hit a high.</li><li>Pastki: hit a low, reach a trough.</li></ul><p><strong>Taqqoslash so‘zlari:</strong> significantly more, twice as many, a similar proportion, the majority of, roughly equal.</p><p><strong>Tezlik ravishlari:</strong> sharply, gradually, steadily, dramatically, slightly, marginally.</p><p><strong>Jarayonlar uchun:</strong> first, then, next, subsequently, after that, finally. Agar harakatni boshqa narsa bajarsa, passivdan foydalaning: “The bottles are collected and transported”.</p>"
+    }
+  },
+  {
+    id:"writing1-3", cat:"writing1",
+    ru:{
+      t:"Таблица в Task 1: как выбрать главное",
+      d:"Что писать в overview и как группировать данные из таблицы.",
+      b:"<p>В таблице обычно много цифр, но overview нужна только общая тенденция. Посмотрите, какой показатель самый высокий и самый низкий, и как они меняются со временем.</p><p><strong>Как группировать данные:</strong></p><ul><li>По росту и падению: «категории, которые выросли» и «категории, которые упали».</li><li>По величине: «крупные показатели» и «мелкие показатели».</li><li>По времени: «в начале периода» и «в конце периода».</li></ul><p><strong>Что писать в body:</strong> не перечисляйте все числа подряд. Выберите 3–4 самые важные цифры для сравнения и покажите, как они связаны. Например: «Германия потратила в три раза больше, чем Франция, но к 2020 году разрыв сократился».</p><p><strong>Чего избегать:</strong> однообразных предложений «X was 20, Y was 30, Z was 40». Экзаменатор смотрит на лексику и грамматику, а не на количество цифр.</p><p><strong>Совет:</strong> перед письмом обведите в таблице самые высокие и самые низкие значения карандашом. Это поможет вам быстрее выбрать материал для overview.</p>"
+    },
+    en:{
+      t:"Tables in Task 1: how to pick the main things",
+      d:"What to put in the overview and how to group data from a table.",
+      b:"<p>A table usually has many numbers, but the overview needs only the main trend. Look at which figure is highest and lowest, and how they change over time.</p><p><strong>How to group data:</strong></p><ul><li>By growth and fall: “categories that grew” and “categories that fell”.</li><li>By size: “large figures” and “small figures”.</li><li>By time: “at the start of the period” and “at the end of the period”.</li></ul><p><strong>What to write in body:</strong> don't list every number. Pick 3–4 of the most important figures for comparison and show how they relate. For example: “Germany spent three times as much as France, but by 2020 the gap narrowed”.</p><p><strong>What to avoid:</strong> repetitive sentences like “X was 20, Y was 30, Z was 40”. The examiner looks at vocabulary and grammar, not at how many numbers you can quote.</p><p><strong>Tip:</strong> before writing, circle the highest and lowest values in the table with a pencil. This will help you pick material for the overview faster.</p>"
+    },
+    kz:{
+      t:"Task 1-дегі кесте: бастысын қалай таңдау керек",
+      d:"Overview-ге не жазу керек және кестедегі деректерді қалай топтастыру керек.",
+      b:"<p>Кестеде әдетте көп сандар болады, бірақ overview-ге тек жалпы тенденция қажет. Қай көрсеткіш ең жоғары және ең төмен, және олар уақыт бойынша қалай өзгеретінін қараңыз.</p><p><strong>Деректерді топтастыру:</strong></p><ul><li>Өсу мен құлдырау бойынша.</li><li>Шамасы бойынша: «үлкен» және «кіші» көрсеткіштер.</li><li>Уақыт бойынша: «кезеңнің басында» және «соңында».</li></ul><p><strong>Body-де не жазу керек:</strong> барлық сандарды тізімдемеңіз. Салыстыру үшін 3–4 маңызды санды таңдаңыз.</p><p><strong>Не істемеу керек:</strong> «X was 20, Y was 30, Z was 40» сияқты біркелкі сөйлемдер.</p>"
+    },
+    uz:{
+      t:"Task 1da jadval: asosiysini qanday tanlash kerak",
+      d:"Overviewga nima yozish kerak va jadvaldagi ma’lumotlarni qanday guruhlash kerak.",
+      b:"<p>Jadvalda odatda ko‘p raqamlar bo‘ladi, lekin overviewga faqat asosiy tendensiya kerak. Qaysi ko‘rsatkich eng yuqori va eng past, va ular vaqt bo‘yicha qanday o‘zgarishini ko‘ring.</p><p><strong>Ma’lumotlarni guruhlash:</strong></p><ul><li>O‘sish va tushish bo‘yicha.</li><li>Kattalik bo‘yicha: «katta» va «kichik» ko‘rsatkichlar.</li><li>Vaqt bo‘yicha: «davr boshida» va «oxirida».</li></ul><p><strong>Bodyga nima yozish kerak:</strong> barcha raqamlarni sanab chiqmang. Taqqoslash uchun 3–4 ta muhim raqamni tanlang.</p><p><strong>Nima qilmaslik kerak:</strong> «X was 20, Y was 30, Z was 40» kabi bir xil gaplar.</p>"
+    }
+  },
+
+  /* ===== WRITING TASK 2 ===== */
+  {
+    id:"writing2-1", cat:"writing2",
+    ru:{
+      t:"Типы эссе и как их различать",
+      d:"Opinion, discussion, advantages/disadvantages — что писать в каждом типе.",
+      b:"<p>В IELTS Task 2 есть пять основных типов эссе, и каждый требует своей структуры.</p><p><strong>1. Opinion (agree/disagree).</strong> Вопрос: «To what extent do you agree or disagree?». Вы должны чётко выразить свою позицию и защищать её. Нельзя сидеть на двух стульях.</p><p><strong>2. Discussion.</strong> Вопрос: «Discuss both views and give your opinion». Нужно рассмотреть обе точки зрения и в конце сказать, какая вам ближе.</p><p><strong>3. Advantages / Disadvantages.</strong> Вопрос: «Do the advantages outweigh the disadvantages?». Нужно взвесить плюсы и минусы и сделать вывод.</p><p><strong>4. Problem / Solution.</strong> Вопрос: «What are the causes and what solutions can you suggest?». Обычно два body-абзаца: причины и решения (или проблемы и решения).</p><p><strong>5. Two-part question.</strong> Два вопроса подряд. Отвечать нужно на оба, каждому по абзацу.</p><p><strong>Как не ошибиться:</strong> читайте вопрос внимательно. Если напишете не тот тип — потеряете балл за Task Response. Если в задании два вопроса, а вы отвечаете только на один, максимальный балл за Task Response будет 5.</p>"
+    },
+    en:{
+      t:"Essay types and how to tell them apart",
+      d:"Opinion, discussion, advantages/disadvantages — what to write in each type.",
+      b:"<p>IELTS Task 2 has five main essay types, and each requires its own structure.</p><p><strong>1. Opinion (agree/disagree).</strong> The question: “To what extent do you agree or disagree?”. You must clearly state your position and defend it. No sitting on the fence.</p><p><strong>2. Discussion.</strong> The question: “Discuss both views and give your opinion”. You need to look at both sides and say at the end which one you find more convincing.</p><p><strong>3. Advantages / Disadvantages.</strong> The question: “Do the advantages outweigh the disadvantages?”. Weigh the pros and cons and reach a conclusion.</p><p><strong>4. Problem / Solution.</strong> The question: “What are the causes and what solutions can you suggest?”. Usually two body paragraphs: causes and solutions (or problems and solutions).</p><p><strong>5. Two-part question.</strong> Two questions in a row. Answer both, one paragraph each.</p><p><strong>How not to make a mistake:</strong> read the question carefully. Writing the wrong type costs you Task Response points. If the question has two parts and you answer only one, your Task Response cannot exceed band 5.</p>"
+    },
+    kz:{
+      t:"Эссе түрлері және оларды қалай ажырату керек",
+      d:"Opinion, discussion, advantages/disadvantages — әр түрде не жазу керек.",
+      b:"<p>IELTS Task 2-де бес негізгі эссе түрі бар, әрқайсысы өз құрылымын талап етеді.</p><p><strong>1. Opinion (agree/disagree).</strong> Сұрақ: «To what extent do you agree or disagree?». Позицияңызды анық білдіріп, қорғауыңыз керек.</p><p><strong>2. Discussion.</strong> Сұрақ: «Discuss both views and give your opinion». Екі көзқарасты қарап, соңында қайсысы сізге жақын екенін айту керек.</p><p><strong>3. Advantages / Disadvantages.</strong> Сұрақ: «Do the advantages outweigh the disadvantages?». Плюс пен минусты салыстырып, қорытынды жасау керек.</p><p><strong>4. Problem / Solution.</strong> Сұрақ: «What are the causes and what solutions can you suggest?». Әдетте екі body-абзац: себептер мен шешімдер.</p><p><strong>5. Two-part question.</strong> Қатарынан екі сұрақ. Екеуіне де жауап беріңіз, әрқайсысына бір абзац.</p><p><strong>Қалай қателеспеу керек:</strong> сұрақты мұқият оқыңыз. Қате түрді жазсаңыз — Task Response балынан айырыласыз.</p>"
+    },
+    uz:{
+      t:"Insho turlari va ularni qanday ajratish kerak",
+      d:"Opinion, discussion, advantages/disadvantages — har bir turda nima yozish kerak.",
+      b:"<p>IELTS Task 2da beshta asosiy insho turi bor, har biri o‘z tuzilishini talab qiladi.</p><p><strong>1. Opinion (agree/disagree).</strong> Savol: “To what extent do you agree or disagree?”. Pozitsiyangizni aniq bildirib, himoya qilishingiz kerak.</p><p><strong>2. Discussion.</strong> Savol: “Discuss both views and give your opinion”. Ikkala qarashni ko‘rib, oxirida qaysi biri sizga yaqinligini aytish kerak.</p><p><strong>3. Advantages / Disadvantages.</strong> Savol: “Do the advantages outweigh the disadvantages?”. Plyus va minusni solishtirib, xulosa chiqarish kerak.</p><p><strong>4. Problem / Solution.</strong> Savol: “What are the causes and what solutions can you suggest?”. Odatda ikki body xatboshi: sabablar va yechimlar.</p><p><strong>5. Two-part question.</strong> Ketma-ket ikki savol. Ikkalasiga ham javob bering, har biriga bitta xatboshi.</p><p><strong>Qanday xato qilmaslik kerak:</strong> savolni diqqat bilan o‘qing. Noto‘g‘ri turni yozsangiz — Task Response balini yo‘qotasiz.</p>"
+    }
+  },
+  {
+    id:"writing2-2", cat:"writing2",
+    ru:{
+      t:"Структура эссе: intro, body, conclusion",
+      d:"Проверенная структура, которая подходит для любого типа Task 2.",
+      b:"<p>Стандартное эссе Task 2 — 250+ слов, 40 минут, четыре абзаца.</p><p><strong>Введение (2–3 предложения):</strong> перефразируйте вопрос своими словами и обозначьте свою позицию (если требуется). Не копируйте формулировку задания — за это снижают балл.</p><p><strong>Body 1 (5–7 предложений):</strong> одна мысль, топик-предложение, объяснение, пример или доказательство.</p><p><strong>Body 2 (5–7 предложений):</strong> вторая мысль, та же структура. Не повторяйте аргумент из первого абзаца другими словами — это заметно и снижает балл за Coherence.</p><p><strong>Заключение (2–3 предложения):</strong> повторите позицию и главные аргументы, но не добавляйте новую информацию. Если в заключении появляется новая мысль — это ошибка.</p><p><strong>Распределение времени:</strong></p><ul><li>5 минут — план: подумать о позиции, аргументах, примерах.</li><li>30 минут — написать текст.</li><li>5 минут — проверить грамматику, орфографию, повторы.</li></ul><p><strong>Важно:</strong> не пишите больше 300 слов, если не уверены в грамматике. Каждое предложение с ошибкой стоит балла, а лишние предложения — это дополнительный риск.</p>"
+    },
+    en:{
+      t:"Essay structure: intro, body, conclusion",
+      d:"A proven structure that works for any Task 2 essay type.",
+      b:"<p>The standard Task 2 essay — 250+ words, 40 minutes, four paragraphs.</p><p><strong>Introduction (2–3 sentences):</strong> paraphrase the question in your own words and state your position (if required). Do not copy the prompt — you lose points for that.</p><p><strong>Body 1 (5–7 sentences):</strong> one idea, topic sentence, explanation, example or evidence.</p><p><strong>Body 2 (5–7 sentences):</strong> second idea, same structure. Don't restate the first argument in different words — it's noticeable and hurts your Coherence score.</p><p><strong>Conclusion (2–3 sentences):</strong> restate your position and main arguments, but do not add new information. New ideas in the conclusion are a mistake.</p><p><strong>Time plan:</strong></p><ul><li>5 minutes — plan: think about position, arguments, examples.</li><li>30 minutes — write.</li><li>5 minutes — check grammar, spelling, repetitions.</li></ul><p><strong>Important:</strong> don't write more than 300 words if you're unsure of your grammar. Every sentence with an error costs a point, and extra sentences mean extra risk.</p>"
+    },
+    kz:{
+      t:"Эссе құрылымы: intro, body, conclusion",
+      d:"Кез келген Task 2 түріне жарайтын тексерілген құрылым.",
+      b:"<p>Стандартты Task 2 эссесі — 250+ сөз, 40 минут, төрт абзац.</p><p><strong>Кіріспе (2–3 сөйлем):</strong> сұрақты өз сөздеріңізбен қайталап, позицияңызды білдіріңіз. Тапсырманың тұжырымын көшірмеңіз — ол үшін балл азаяды.</p><p><strong>Body 1 (5–7 сөйлем):</strong> бір ой, топик-сөйлем, түсіндіру, мысал.</p><p><strong>Body 2 (5–7 сөйлем):</strong> екінші ой, сол құрылым.</p><p><strong>Қорытынды (2–3 сөйлем):</strong> позиция мен негізгі дәлелдерді қайталаңыз, жаңа ақпарат қоспаңыз.</p><p><strong>Уақытты бөлу:</strong></p><ul><li>5 минут — жоспар.</li><li>30 минут — жазу.</li><li>5 минут — тексеру.</li></ul><p><strong>Маңызды:</strong> грамматикаға сенімді болмасаңыз, 300 сөзден артық жазбаңыз.</p>"
+    },
+    uz:{
+      t:"Insho tuzilishi: intro, body, conclusion",
+      d:"Har qanday Task 2 turi uchun ishlaydigan tasdiqlangan tuzilish.",
+      b:"<p>Standart Task 2 inshosi — 250+ so‘z, 40 daqiqa, to‘rt xatboshi.</p><p><strong>Kirish (2–3 gap):</strong> savolni o‘z so‘zlaringiz bilan qayta yozing va pozitsiyangizni bildiring. Vazifani ko‘chirmang — buning uchun ball kamayadi.</p><p><strong>Body 1 (5–7 gap):</strong> bitta fikr, mavzu gapi, tushuntirish, misol.</p><p><strong>Body 2 (5–7 gap):</strong> ikkinchi fikr, xuddi shu tuzilish.</p><p><strong>Xulosa (2–3 gap):</strong> pozitsiya va asosiy dalillarni takrorlang, yangi ma’lumot qo‘shmang.</p><p><strong>Vaqtni taqsimlash:</strong></p><ul><li>5 daqiqa — reja.</li><li>30 daqiqa — yozish.</li><li>5 daqiqa — tekshirish.</li></ul><p><strong>Muhim:</strong> grammatikaga ishonchingiz komil bo‘lmasa, 300 so‘zdan ko‘p yozmang.</p>"
+    }
+  },
+  {
+    id:"writing2-3", cat:"writing2",
+    ru:{
+      t:"Слова-связки: что использовать и что убрать",
+      d:"Как связывать абзацы и не перегружать эссе шаблонными фразами.",
+      b:"<p>Связки (linking words) помогают тексту звучать логично и повышают балл за Coherence and Cohesion. Но важнее не количество, а уместность.</p><p><strong>Хорошие связки для начала абзаца:</strong> however, therefore, in addition, as a result, for instance, on the other hand, furthermore.</p><p><strong>Что убрать:</strong> «Firstly, Secondly, Lastly» — экзаменаторы видят эти слова в каждом втором эссе. Лучше использовать более естественные переходы: «Another reason is», «A further point is», «This is especially true when».</p><p><strong>Внутри предложения:</strong> because, although, while, whereas, despite, in spite of.</p><p><strong>Типичные ошибки:</strong></p><ul><li>Ставить связку в начало каждого предложения — это выглядит механически.</li><li>Использовать «moreover» вместо «also» — moreover звучит слишком официально и утяжеляет текст.</li><li>Путать «on the other hand» (для противопоставления двух позиций) и «however» (для одного контраста).</li></ul><p><strong>Практика:</strong> возьмите готовое эссе и подчеркните все связки. Если их больше 8–10 на 250 слов — это перебор, уберите половину и замените смысловыми переходами.</p>"
+    },
+    en:{
+      t:"Linking words: what to use and what to drop",
+      d:"How to link paragraphs and avoid stuffing your essay with template phrases.",
+      b:"<p>Linking words make the text sound logical and raise your Coherence and Cohesion score. But it's not the quantity that matters — it's the appropriateness.</p><p><strong>Good linkers for starting a paragraph:</strong> however, therefore, in addition, as a result, for instance, on the other hand, furthermore.</p><p><strong>What to drop:</strong> “Firstly, Secondly, Lastly” — examiners see these in every other essay. Use more natural transitions: “Another reason is”, “A further point is”, “This is especially true when”.</p><p><strong>Inside a sentence:</strong> because, although, while, whereas, despite, in spite of.</p><p><strong>Common mistakes:</strong></p><ul><li>Putting a linker at the start of every sentence — it looks mechanical.</li><li>Using “moreover” instead of “also” — moreover sounds too formal and clogs the text.</li><li>Confusing “on the other hand” (for contrasting two positions) with “however” (for one contrast).</li></ul><p><strong>Practice:</strong> take a finished essay and underline every linker. If there are more than 8–10 per 250 words, that's too many — remove half and replace them with meaning-based transitions.</p>"
+    },
+    kz:{
+      t:"Байланыс сөздері: не қолдану керек және нені алып тастау керек",
+      d:"Абзацтарды қалай байланыстыру керек және эссені қалыпты фразалармен толтырмау керек.",
+      b:"<p>Байланыс сөздері мәтінді логикалық етеді және Coherence and Cohesion балын көтереді. Бірақ саны емес, орындылығы маңызды.</p><p><strong>Абзац басына жақсы байланыстырғыштар:</strong> however, therefore, in addition, as a result, for instance, on the other hand, furthermore.</p><p><strong>Нені алып тастау керек:</strong> «Firstly, Secondly, Lastly» — емтихан алушылар бұл сөздерді әр екінші эсседе көреді.</p><p><strong>Сөйлем ішінде:</strong> because, although, while, whereas, despite, in spite of.</p><p><strong>Жиі қателер:</strong></p><ul><li>Әр сөйлемнің басында байланыстырғыш қою.</li><li>«moreover»-ды «also» орнына қолдану.</li><li>«on the other hand» мен «however»-ды шатастыру.</li></ul>"
+    },
+    uz:{
+      t:"Bog‘lovchi so‘zlar: nima ishlatish va nimani olib tashlash kerak",
+      d:"Xatboshilarni qanday bog‘lash va inshoni shablon iboralar bilan to‘ldirmaslik kerak.",
+      b:"<p>Bog‘lovchi so‘zlar matnni mantiqiy qiladi va Coherence and Cohesion bahosini ko‘taradi. Lekin muhimi — miqdor emas, o‘rinlilik.</p><p><strong>Xatboshi boshiga yaxshi bog‘lovchilar:</strong> however, therefore, in addition, as a result, for instance, on the other hand, furthermore.</p><p><strong>Nimani olib tashlash kerak:</strong> “Firstly, Secondly, Lastly” — imtihon oluvchilar bu so‘zlarni har ikkinchi inshoda ko‘radi.</p><p><strong>Gap ichida:</strong> because, although, while, whereas, despite, in spite of.</p><p><strong>Ko‘p uchraydigan xatolar:</strong></p><ul><li>Har bir gap boshida bog‘lovchi qo‘yish.</li><li>“moreover”ni “also” o‘rniga ishlatish.</li><li>“on the other hand” va “however”ni aralashtirish.</li></ul>"
+    }
+  },
+
+  /* ===== SPEAKING ===== */
+  {
+    id:"speaking-1", cat:"speaking",
+    ru:{
+      t:"Три части Speaking: что ожидать",
+      d:"Разбираем формат каждой части и что проверяет экзаменатор.",
+      b:"<p><strong>Part 1 (4–5 минут).</strong> Короткие вопросы о вас: работа, учёба, хобби, привычки, семья. Ответы должны быть 2–3 предложения, без заготовок. Здесь проверяют беглость и умение говорить о бытовых темах.</p><p><strong>Part 2 (3–4 минуты).</strong> Монолог на 2 минуты по карточке. У вас 1 минута на подготовку и карандаш с бумагой, чтобы делать заметки. После монолога экзаменатор может задать 1–2 уточняющих вопроса.</p><p><strong>Part 3 (4–5 минут).</strong> Обсуждение абстрактных тем, связанных с карточкой из Part 2. Здесь важны развёрнутые ответы, аргументация и умение говорить об общих явлениях, а не о личном опыте.</p><p><strong>Что проверяют по критериям:</strong></p><ul><li>Fluency — как долго и связно говорите, есть ли паузы.</li><li>Lexical resource — насколько разнообразна лексика.</li><li>Grammar — какие конструкции используете и насколько точно.</li><li>Pronunciation — насколько речь понятна.</li></ul><p><strong>Что делать в день экзамена:</strong> не заучивайте ответы. Экзаменатор задаёт уточняющие вопросы, и заготовки сразу видно. Лучше тренироваться говорить спонтанно.</p>"
+    },
+    en:{
+      t:"Three parts of Speaking: what to expect",
+      d:"We break down the format of each part and what the examiner checks.",
+      b:"<p><strong>Part 1 (4–5 minutes).</strong> Short questions about you: work, study, hobbies, habits, family. Answers should be 2–3 sentences, no memorised scripts. Here they check fluency and your ability to talk about everyday topics.</p><p><strong>Part 2 (3–4 minutes).</strong> A 2-minute monologue based on a cue card. You have 1 minute to prepare and pencil + paper for notes. After the monologue, the examiner may ask 1–2 follow-up questions.</p><p><strong>Part 3 (4–5 minutes).</strong> Discussion of abstract topics related to the Part 2 card. Long answers, arguments and the ability to talk about general phenomena (not personal experience) matter most here.</p><p><strong>What is scored:</strong></p><ul><li>Fluency — how long and coherent your speech is, whether you pause.</li><li>Lexical resource — how varied your vocabulary is.</li><li>Grammar — which structures you use and how accurately.</li><li>Pronunciation — how clearly you speak.</li></ul><p><strong>On exam day:</strong> don't memorise answers. The examiner asks follow-up questions, and rehearsed lines are obvious. Better to practice speaking spontaneously.</p>"
+    },
+    kz:{
+      t:"Speaking-тің үш бөлігі: не күту керек",
+      d:"Әр бөлімнің форматын және емтихан алушы нені тексеретінін талдаймыз.",
+      b:"<p><strong>Part 1 (4–5 минут).</strong> Сіз туралы қысқа сұрақтар: жұмыс, оқу, хобби, әдеттер, отбасы. Жауаптар 2–3 сөйлем болуы керек, дайындалған мәтінсіз.</p><p><strong>Part 2 (3–4 минут).</strong> Карточка бойынша 2 минут монолог. Дайындыққа 1 минут және жазба жасауға қарындаш пен қағаз беріледі.</p><p><strong>Part 3 (4–5 минут).</strong> Part 2 карточкасына қатысты абстрактілі тақырыптарды талқылау.</p><p><strong>Критерийлер:</strong></p><ul><li>Fluency — қаншалықты ұзақ және байланысты сөйлейсіз.</li><li>Lexical resource — сөздік қоры қаншалықты әртүрлі.</li><li>Grammar — қандай құрылымдар қолданасыз.</li><li>Pronunciation — сөйлеу қаншалықты түсінікті.</li></ul>"
+    },
+    uz:{
+      t:"Speakingning uch qismi: nima kutish kerak",
+      d:"Har bir qismning formatini va imtihon oluvchi nima tekshirishini tahlil qilamiz.",
+      b:"<p><strong>Part 1 (4–5 daqiqa).</strong> Siz haqingizda qisqa savollar: ish, o‘qish, sevimli mashg‘ulot, odatlar, oila. Javoblar 2–3 gap bo‘lishi kerak, yodlangan matnsiz.</p><p><strong>Part 2 (3–4 daqiqa).</strong> Kartochka asosida 2 daqiqalik monolog. Tayyorgarlik uchun 1 daqiqa va qaydlar uchun qalam va qog‘oz beriladi.</p><p><strong>Part 3 (4–5 daqiqa).</strong> Part 2 kartochkasi bilan bog‘liq mavhum mavzularni muhokama qilish.</p><p><strong>Mezonlar:</strong></p><ul><li>Fluency — qanchalik uzoq va izchil gapirasiz.</li><li>Lexical resource — lug‘at boyligingiz qanchalik xilma-xil.</li><li>Grammar — qanday tuzilmalardan foydalanasiz.</li><li>Pronunciation — nutqingiz qanchalik tushunarli.</li></ul>"
+    }
+  },
+  {
+    id:"speaking-2", cat:"speaking",
+    ru:{
+      t:"Как развернуть ответ в Part 3",
+      d:"Метод, который помогает говорить дольше и логичнее без воды.",
+      b:"<p>В Part 3 от вас ждут не короткого «да» или «нет», а развёрнутого мнения с примером. Средний ответ здесь — 30–40 секунд.</p><p><strong>Метод из 4 шагов (сокращённо OPEC):</strong></p><ul><li><strong>O — Opinion:</strong> дайте прямой ответ на вопрос. «I think it depends on…», «In my view, …».</li><li><strong>P — Point:</strong> объясните причину. «The main reason is that…».</li><li><strong>E — Example:</strong> приведите пример из жизни или новостей. «For example, in my country…».</li><li><strong>C — Conclusion:</strong> свяжите всё вместе. «So overall, I believe that…».</li></ul><p><strong>Практический пример:</strong> вопрос «Should governments invest more in public transport?». Ответ: «Yes, I believe they should (opinion), mainly because it would reduce traffic and pollution in cities (point). For example, in Amsterdam, investing in trams and bike lanes cut car use by around 30% (example). So overall, public transport is one of the best long-term investments a city can make (conclusion)».</p><p><strong>Что помогает говорить дольше:</strong> добавляйте примеры из личного опыта, статистику (можно приблизительную), сравнения «в одной стране / в другой стране», противопоставления «some people say / however I think».</p><p><strong>Чего избегать:</strong> односложных ответов, повторов одного и того же аргумента, фраз «I don't know» — даже если не знаете ответа, дайте мнение на основе логики.</p>"
+    },
+    en:{
+      t:"How to expand an answer in Part 3",
+      d:"A method that helps you speak longer and more logically without filler.",
+      b:"<p>In Part 3 the examiner wants not a short “yes” or “no”, but an extended opinion with an example. The average answer here is 30–40 seconds.</p><p><strong>4-step method (OPEC):</strong></p><ul><li><strong>O — Opinion:</strong> give a direct answer to the question. “I think it depends on…”, “In my view, …”.</li><li><strong>P — Point:</strong> explain the reason. “The main reason is that…”.</li><li><strong>E — Example:</strong> give an example from life or the news. “For example, in my country…”.</li><li><strong>C — Conclusion:</strong> tie it all together. “So overall, I believe that…”.</li></ul><p><strong>Practical example:</strong> the question “Should governments invest more in public transport?”. Answer: “Yes, I believe they should (opinion), mainly because it would reduce traffic and pollution in cities (point). For example, in Amsterdam, investing in trams and bike lanes cut car use by around 30% (example). So overall, public transport is one of the best long-term investments a city can make (conclusion)”.</p><p><strong>What helps you speak longer:</strong> add examples from personal experience, statistics (approximate is fine), comparisons “in one country / in another country”, contrasts “some people say / however I think”.</p><p><strong>What to avoid:</strong> one-word answers, repeating the same argument, phrases like “I don't know” — even if you don't know, give an opinion based on logic.</p>"
+    },
+    kz:{
+      t:"Part 3-те жауапты қалай кеңейту керек",
+      d:"Ұзағырақ және логикалық сөйлеуге көмектесетін әдіс.",
+      b:"<p>Part 3-те емтихан алушы қысқа «иә» немесе «жоқ» емес, мысалмен кеңейтілген пікір күтеді. Мұндағы орташа жауап — 30–40 секунд.</p><p><strong>4 қадамнан тұратын әдіс (OPEC):</strong></p><ul><li><strong>O — Opinion:</strong> сұраққа тікелей жауап беріңіз.</li><li><strong>P — Point:</strong> себебін түсіндіріңіз.</li><li><strong>E — Example:</strong> өмірден немесе жаңалықтардан мысал келтіріңіз.</li><li><strong>C — Conclusion:</strong> бәрін байланыстырыңыз.</li></ul><p><strong>Мысал:</strong> «Үкімет қоғамдық көлікке көбірек инвестиция салуы керек пе?». Жауап: «Иә, меніңше керек (opinion), өйткені бұл кептеліс пен ластануды азайтады (point). Мысалы, Амстердамда трамвай мен веложолдарға инвестиция көлік қолданысын 30%-ға қысқартты (example). Тұтастай алғанда, қоғамдық көлік — қаланың ең тиімді ұзақ мерзімді инвестицияларының бірі (conclusion)».</p>"
+    },
+    uz:{
+      t:"Part 3da javobni qanday kengaytirish kerak",
+      d:"Uzoqroq va mantiqiy gapirishga yordam beradigan usul.",
+      b:"<p>Part 3da imtihon oluvchi qisqa “ha” yoki “yo‘q” emas, misol bilan kengaytirilgan fikr kutadi. Bu yerda o‘rtacha javob — 30–40 soniya.</p><p><strong>4 qadamli usul (OPEC):</strong></p><ul><li><strong>O — Opinion:</strong> savolga to‘g‘ridan-to‘g‘ri javob bering.</li><li><strong>P — Point:</strong> sababini tushuntiring.</li><li><strong>E — Example:</strong> hayotdan yoki yangiliklardan misol keltiring.</li><li><strong>C — Conclusion:</strong> hammasini bog‘lang.</li></ul><p><strong>Misol:</strong> “Hukumat jamoat transportiga ko‘proq sarmoya kiritishi kerakmi?”. Javob: “Ha, menimcha kerak (opinion), chunki bu tirbandlik va ifloslanishni kamaytiradi (point). Masalan, Amsterdamda tramvay va velosiped yo‘llariga sarmoya avtomobil ishlatilishini 30%ga kamaytirdi (example). Umuman, jamoat transporti — shaharning eng foydali uzoq muddatli sarmoyalaridan biri (conclusion)”.</p>"
+    }
+  },
+  {
+    id:"speaking-3", cat:"speaking",
+    ru:{
+      t:"Speaking без партнёра: как тренироваться",
+      d:"Что делать, если не с кем практиковать Speaking, и как проверить себя.",
+      b:"<p>Записывайте себя на телефон. Это самый эффективный способ: вы слышите свои ошибки, которые не замечаете, когда говорите.</p><p><strong>Как построить тренировку:</strong></p><ul><li>Возьмите одну карточку Part 2 и ответьте на неё на 2 минуты без подготовки.</li><li>Послушайте запись и отметьте: сколько было пауз больше 3 секунд, какие слова повторялись, есть ли грамматические ошибки.</li><li>Запишите ответ второй раз, попытавшись исправить слабые места.</li><li>Сравните две записи. Обычно вторая звучит заметно лучше.</li></ul><p><strong>Как проверить себя по критериям:</strong></p><ul><li><strong>Fluency:</strong> средняя длина пауз. Если больше 3–4 секунд — тренируйте спонтанность.</li><li><strong>Lexical resource:</strong> сколько разных слов на 2 минуты. Если меньше 150 разных — словарь надо расширять.</li><li><strong>Grammar:</strong> используете ли сложные конструкции (условные, относительные). Если только Present Simple — надо усложнять.</li><li><strong>Pronunciation:</strong> понимаете ли вы сами себя при прослушивании. Если приходится вслушиваться — работайте над чёткостью.</li></ul><p><strong>Как часто:</strong> минимум 3 раза в неделю по 20 минут. Один раз в неделю записывайте ответ на новую тему и сравнивайте с прошлой записью — так вы видите прогресс.</p><p><strong>Что делать без партнёра:</strong> слушайте подкасты и повторяйте за диктором вслух (shadowing), проговаривайте монологи на прогулке, читайте вслух.</p>"
+    },
+    en:{
+      t:"Speaking without a partner: how to train",
+      d:"What to do if there's nobody to practise Speaking with, and how to check yourself.",
+      b:"<p>Record yourself on your phone. This is the most effective method: you hear mistakes you never notice while speaking.</p><p><strong>How to structure a session:</strong></p><ul><li>Take one Part 2 card and answer it for 2 minutes without preparation.</li><li>Listen to the recording and mark: how many pauses lasted over 3 seconds, which words repeated, any grammar errors.</li><li>Record the answer a second time, trying to fix weak spots.</li><li>Compare the two recordings. Usually the second sounds noticeably better.</li></ul><p><strong>How to self-assess by criteria:</strong></p><ul><li><strong>Fluency:</strong> average pause length. If over 3–4 seconds — practise spontaneity.</li><li><strong>Lexical resource:</strong> how many different words over 2 minutes. Under 150 unique words — expand your vocabulary.</li><li><strong>Grammar:</strong> do you use complex structures (conditionals, relative clauses)? If only Present Simple — level up.</li><li><strong>Pronunciation:</strong> do you understand yourself on playback? If you have to strain — work on clarity.</li></ul><p><strong>How often:</strong> at least 3 times a week, 20 minutes each. Once a week, record on a new topic and compare with the previous recording — that's how you see progress.</p><p><strong>What to do without a partner:</strong> listen to podcasts and repeat after the speaker out loud (shadowing), practise monologues on walks, read aloud.</p>"
+    },
+    kz:{
+      t:"Серіктессіз Speaking: қалай жаттығу керек",
+      d:"Speaking-ті жаттығатын адам болмаса не істеу керек және өзіңізді қалай тексеру керек.",
+      b:"<p>Өзіңізді телефонға жазып алыңыз. Бұл ең тиімді әдіс: сөйлегенде байқамайтын қателеріңізді естисіз.</p><p><strong>Жаттығуды қалай құру керек:</strong></p><ul><li>Part 2 карточкасын алып, дайындықсыз 2 минут жауап беріңіз.</li><li>Жазбаны тыңдап, 3 секундтан ұзақ үзілістерді, қайталанған сөздерді белгілеңіз.</li><li>Жауапты екінші рет жазып алыңыз, әлсіз жерлерді түзетуге тырысыңыз.</li><li>Екі жазбаны салыстырыңыз.</li></ul><p><strong>Критерийлер бойынша өзіңізді тексеру:</strong></p><ul><li><strong>Fluency:</strong> үзілістердің орташа ұзақтығы.</li><li><strong>Lexical resource:</strong> 2 минутта қанша түрлі сөз.</li><li><strong>Grammar:</strong> күрделі құрылымдарды қолданасыз ба.</li><li><strong>Pronunciation:</strong> өзіңізді түсінесіз бе.</li></ul><p><strong>Қаншалықты жиі:</strong> аптасына кемінде 3 рет, 20 минуттан.</p>"
+    },
+    uz:{
+      t:"Sheriksiz Speaking: qanday mashq qilish kerak",
+      d:"Speakingni mashq qiladigan odam bo‘lmasa nima qilish kerak va o‘zingizni qanday tekshirish kerak.",
+      b:"<p>O‘zingizni telefonga yozib oling. Bu eng samarali usul: gapirganda sezmaydigan xatolaringizni eshitasiz.</p><p><strong>Mashg‘ulotni qanday qurish kerak:</strong></p><ul><li>Part 2 kartochkasini olib, tayyorgarliksiz 2 daqiqa javob bering.</li><li>Yozuvni tinglab, 3 soniyadan uzoq pauzalarni, takrorlangan so‘zlarni belgilang.</li><li>Javobni ikkinchi marta yozib oling, zaif joylarni tuzatishga harakat qiling.</li><li>Ikki yozuvni solishtiring.</li></ul><p><strong>Mezonlar bo‘yicha o‘zingizni tekshirish:</strong></p><ul><li><strong>Fluency:</strong> pauzalarning o‘rtacha uzunligi.</li><li><strong>Lexical resource:</strong> 2 daqiqada qancha turli so‘z.</li><li><strong>Grammar:</strong> murakkab tuzilmalardan foydalanasizmi.</li><li><strong>Pronunciation:</strong> o‘zingizni tushunasizmi.</li></ul><p><strong>Qanchalik tez-tez:</strong> haftasiga kamida 3 marta, 20 daqiqadan.</p>"
+    }
+  }
+];
+
+/* ============================================================
+   TRANSLATIONS
+   ============================================================ */
+var TRANSLATIONS = {
+  ru: {
+    "meta.title":"Гайды — Lexy",
+    "btn.menu":"Главное меню",
+    "guides.title":"Гайды по IELTS",
+    "guides.sub":"Практические статьи по каждой части экзамена — от Reading до Speaking. Всё, что нужно, чтобы разобраться и поднять балл.",
+    "guides.search":"Поиск по гайдам…",
+    "guides.empty":"Ничего не найдено",
+    "guides.count":"гайдов",
+    "cat.all":"Все гайды",
+    "cat.about":"Об экзамене",
+    "cat.listening":"Аудирование",
+    "cat.reading":"Чтение",
+    "cat.writing1":"Writing Task 1",
+    "cat.writing2":"Writing Task 2",
+    "cat.speaking":"Говорение"
+  },
+  en: {
+    "meta.title":"Guides — Lexy",
+    "btn.menu":"Main menu",
+    "guides.title":"IELTS Guides",
+    "guides.sub":"Practical articles for every exam section — from Reading to Speaking. Everything you need to understand the format and raise your band.",
+    "guides.search":"Search guides…",
+    "guides.empty":"Nothing found",
+    "guides.count":"guides",
+    "cat.all":"All guides",
+    "cat.about":"About the exam",
+    "cat.listening":"Listening",
+    "cat.reading":"Reading",
+    "cat.writing1":"Writing Task 1",
+    "cat.writing2":"Writing Task 2",
+    "cat.speaking":"Speaking"
+  },
+  kz: {
+    "meta.title":"Нұсқаулықтар — Lexy",
+    "btn.menu":"Басты мәзір",
+    "guides.title":"IELTS нұсқаулықтары",
+    "guides.sub":"Емтиханның әр бөліміне арналған практикалық мақалалар — Reading-тен Speaking-ке дейін.",
+    "guides.search":"Нұсқаулықтардан іздеу…",
+    "guides.empty":"Ештеңе табылмады",
+    "guides.count":"нұсқаулық",
+    "cat.all":"Барлығы",
+    "cat.about":"Емтихан туралы",
+    "cat.listening":"Тыңдау",
+    "cat.reading":"Оқу",
+    "cat.writing1":"Writing Task 1",
+    "cat.writing2":"Writing Task 2",
+    "cat.speaking":"Сөйлеу"
+  },
+  uz: {
+    "meta.title":"Qo‘llanmalar — Lexy",
+    "btn.menu":"Asosiy menyu",
+    "guides.title":"IELTS qo‘llanmalari",
+    "guides.sub":"Imtihonning har bir bo‘limi uchun amaliy maqolalar — Readingdan Speakinggacha.",
+    "guides.search":"Qo‘llanmalardan qidirish…",
+    "guides.empty":"Hech narsa topilmadi",
+    "guides.count":"qo‘llanma",
+    "cat.all":"Barchasi",
+    "cat.about":"Imtihon haqida",
+    "cat.listening":"Tinglash",
+    "cat.reading":"O‘qish",
+    "cat.writing1":"Writing Task 1",
+    "cat.writing2":"Writing Task 2",
+    "cat.speaking":"Gapirish"
+  }
+};
+
+var CAT_TITLES = {
+  about:{ru:"Об экзамене", en:"About the exam", kz:"Емтихан туралы", uz:"Imtihon haqida"},
+  listening:{ru:"Аудирование", en:"Listening", kz:"Тыңдау", uz:"Tinglash"},
+  reading:{ru:"Чтение", en:"Reading", kz:"Оқу", uz:"O‘qish"},
+  writing1:{ru:"Writing Task 1", en:"Writing Task 1", kz:"Writing Task 1", uz:"Writing Task 1"},
+  writing2:{ru:"Writing Task 2", en:"Writing Task 2", kz:"Writing Task 2", uz:"Writing Task 2"},
+  speaking:{ru:"Говорение", en:"Speaking", kz:"Сөйлеу", uz:"Gapirish"}
+};
+
+var currentLang = 'ru';
+
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) lang = 'ru';
+  currentLang = lang;
+  var t = TRANSLATIONS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(t[key] == null) return;
+    el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-placeholder');
+    if(t[key]) el.setAttribute('placeholder', t[key]);
+  });
+  var mt = t["meta.title"];
+  if(mt) document.title = mt;
+  document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+  var meta = {ru:['🇷🇺','RU'], en:['🇬🇧','EN'], kz:['🇰🇿','KZ'], uz:['🇺🇿','UZ']};
+  document.getElementById('curFlag').textContent = meta[lang][0];
+  document.getElementById('curLang').textContent = meta[lang][1];
+  document.documentElement.lang = lang;
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+  renderCats();
+}
+
+/* language picker */
+var langWrap = document.getElementById('langWrap');
+document.getElementById('langBtn').addEventListener('click', function(e){
+  e.stopPropagation();
+  langWrap.classList.toggle('open');
+});
+document.querySelectorAll('.lang-item').forEach(function(b){
+  b.addEventListener('click', function(){
+    setLang(b.dataset.lang);
+    langWrap.classList.remove('open');
+  });
+});
+document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+var activeCat = 'all';
+var searchQuery = '';
+
+function getGuideText(g, field){
+  if(g[currentLang] && g[currentLang][field]) return g[currentLang][field];
+  return g.ru[field];
+}
+
+function renderCats(){
+  var container = document.getElementById('cats');
+  var cats = ['about','listening','reading','writing1','writing2','speaking'];
+  var html = '';
+
+  cats.forEach(function(cat){
+    if(activeCat !== 'all' && cat !== activeCat) return;
+
+    var list = GUIDES.filter(function(g){
+      if(g.cat !== cat) return false;
+      if(searchQuery){
+        var t = getGuideText(g, 't').toLowerCase();
+        return t.indexOf(searchQuery) !== -1;
+      }
+      return true;
+    });
+    if(!list.length) return;
+
+    var title = (CAT_TITLES[cat] && CAT_TITLES[cat][currentLang]) || cat;
+    var dots = {about:'dot-red', listening:'dot-blue', reading:'dot-teal', writing1:'dot-orange', writing2:'dot-amber', speaking:'dot-purple'};
+    var countLabel = TRANSLATIONS[currentLang]["guides.count"];
+
+    html += '<div class="cat"><h2>'+title+'</h2><span class="count">'+list.length+' '+countLabel+'</span><ul>';
+    list.forEach(function(g){
+      html += '<li><a href="#" data-guide="'+g.id+'"><span class="dot '+dots[cat]+'"></span>'+getGuideText(g,'t')+'<span class="arrow">›</span></a></li>';
+    });
+    html += '</ul></div>';
+  });
+
+  if(!html) html = '<p style="color:var(--soft);padding:20px 0">'+TRANSLATIONS[currentLang]["guides.empty"]+'</p>';
+  container.innerHTML = html;
+
+  container.querySelectorAll('[data-guide]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      openGuide(a.dataset.guide);
+    });
+  });
+}
+
+var modal = document.getElementById('modal');
+var modalVeil = document.getElementById('modalVeil');
+
+function openGuide(id){
+  var g = GUIDES.find(function(x){ return x.id === id; });
+  if(!g) return;
+  var title = getGuideText(g, 't');
+  var desc = getGuideText(g, 'd');
+  var body = getGuideText(g, 'b');
+  var catTitle = (CAT_TITLES[g.cat] && CAT_TITLES[g.cat][currentLang]) || g.cat;
+
+  document.getElementById('mCat').textContent = catTitle;
+  document.getElementById('mTitle').textContent = title;
+  document.getElementById('mDesc').textContent = desc;
+  document.getElementById('mBody').innerHTML = body;
+
+  modal.classList.add('on');
+  modalVeil.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeGuide(){
+  modal.classList.remove('on');
+  modalVeil.classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').addEventListener('click', closeGuide);
+modalVeil.addEventListener('click', closeGuide);
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeGuide();
+});
+
+document.querySelectorAll('.chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+    c.classList.add('on');
+    activeCat = c.dataset.cat;
+    renderCats();
+  });
+});
+
+var searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', function(){
+  searchQuery = searchInput.value.trim().toLowerCase();
+  renderCats();
+});
+
+(function(){
+  var saved;
+  try{ saved = localStorage.getItem('lang'); }catch(e){}
+  if(!saved){
+    var nav = (navigator.language || 'ru').slice(0,2).toLowerCase();
+    saved = TRANSLATIONS[nav] ? nav : 'ru';
+  }
+  if(!TRANSLATIONS[saved]) saved = 'ru';
+  setLang(saved);
+})();
+</script>
+</body>
+</html>

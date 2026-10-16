@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Инструменты — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C; --white:#fff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font:400 16px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+
+/* HEADER */
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--ink);transition:border-color .2s,background .2s,transform .15s;margin-left:auto}
+.menu-btn:hover{border-color:var(--fire);background:#FFF8F3;color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+
+/* language switcher */
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--ink);transition:border-color .2s,background .2s}
+.lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item .flag{font-size:16px}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+/* MAIN */
+main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:36px 20px 60px}
+h1{font:800 clamp(28px,5vw,44px)/1.12 var(--display);letter-spacing:-.03em;margin-bottom:12px}
+h1 em{font-style:normal;color:var(--fire)}
+.sub{color:var(--soft);font-size:16px;margin-bottom:36px;max-width:62ch;line-height:1.55}
+
+/* HERO */
+.tools-hero{
+  position:relative;border-radius:28px;
+  background:radial-gradient(120% 140% at 0% 0%, #FFF3EB 0%, transparent 55%),radial-gradient(120% 140% at 100% 100%, #F0E9FF 0%, transparent 55%),#fff;
+  border:1.5px solid var(--line);padding:38px 32px 34px;margin-bottom:34px;overflow:hidden;
+}
+.tools-hero::after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle, rgba(255,154,10,.28), transparent 65%);pointer-events:none}
+.tools-hero .badge{display:inline-flex;align-items:center;gap:6px;background:var(--peach);color:var(--fire);font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:14px}
+.tools-hero .badge i{width:6px;height:6px;border-radius:50%;background:var(--fire)}
+.tools-hero h1{margin-bottom:12px;max-width:22ch}
+.tools-hero .sub{margin-bottom:0}
+
+/* SECTIONS */
+.tsection{margin-bottom:38px}
+.tsection h2{font:800 clamp(20px,3vw,26px)/1.2 var(--display);letter-spacing:-.02em;margin-bottom:6px}
+.tsection .desc{color:var(--soft);font-size:14px;margin-bottom:16px;max-width:60ch}
+
+.tool{position:relative;display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 20px;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;text-align:left;width:100%}
+.tool:hover{transform:translateY(-3px);box-shadow:0 24px 44px -28px rgba(27,20,51,.5);border-color:#FFC2A1}
+.tool .em{width:52px;height:52px;border-radius:16px;flex:none;display:grid;place-items:center;color:#fff;position:relative;transition:transform .35s}
+.tool:hover .em{transform:scale(1.05) rotate(-4deg)}
+.tool .em svg{width:28px;height:28px;position:relative;z-index:1}
+.tool .em.blue{background:linear-gradient(140deg,#3B82F6,#1E40AF)}
+.tool .em.red{background:linear-gradient(140deg,#EF4444,#991B1B)}
+.tool .em.amber{background:linear-gradient(140deg,#F59E0B,#B45309)}
+.tool .em.orange{background:linear-gradient(140deg,#FF9A0A,#FF5A1F)}
+.tool .em.teal{background:linear-gradient(140deg,#14B8A6,#0F766E)}
+.tool .em.purple{background:linear-gradient(140deg,#8B5CF6,#6D28D9)}
+.tool .body{flex:1;min-width:0}
+.tool .body b{display:block;font:800 15.5px var(--body);letter-spacing:-.01em;margin-bottom:4px}
+.tool .body p{font-size:13px;color:var(--soft);line-height:1.4;margin-bottom:8px}
+.tool .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tool .tags span{font:600 11px var(--body);padding:4px 9px;border-radius:999px;background:var(--mist);color:var(--soft)}
+.tool .arrow{width:36px;height:36px;border-radius:50%;flex:none;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:16px;transition:transform .25s}
+.tool:hover .arrow{transform:translateX(4px)}
+.tool .arrow svg{width:16px;height:16px}
+
+.tgrid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:820px){.tgrid.two{grid-template-columns:1fr 1fr}}
+
+.cta-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#FFF3EB,#FFE3D2);border:1.5px solid #FFD1B8;border-radius:20px;padding:20px 22px;margin-top:8px}
+.cta-bar b{font:800 16px var(--display);letter-spacing:-.02em}
+.cta-bar span{color:var(--soft);font-size:13.5px;flex:1;min-width:180px}
+.cta-bar a{display:inline-flex;align-items:center;gap:8px;background:var(--fire);color:#fff;padding:13px 20px;border-radius:999px;font:700 13.5px var(--body);letter-spacing:.02em;box-shadow:0 10px 24px -10px rgba(255,90,31,.85);transition:transform .15s}
+.cta-bar a:hover{transform:translateY(-2px)}
+
+/* FAQ */
+.faq details{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;transition:box-shadow .25s,border-color .25s}
+.faq details:hover{box-shadow:0 12px 24px -18px rgba(27,20,51,.4)}
+.faq details[open]{border-color:#FFC2A1}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;padding:16px 18px;font-weight:600;font-size:15px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--fire);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(135deg)}
+.faq details p{padding:0 18px 16px;color:var(--soft);font-size:14px;line-height:1.6}
+
+/* big CTA */
+.big-cta{position:relative;border-radius:26px;background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff;padding:38px 28px;overflow:hidden;margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.big-cta::before{content:"";position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.25),transparent 60%);pointer-events:none}
+.big-cta h2{font:800 clamp(22px,4vw,32px)/1.15 var(--display);letter-spacing:-.03em;color:#fff;margin-bottom:6px;position:relative;z-index:1}
+.big-cta p{color:rgba(255,255,255,.85);font-size:14.5px;max-width:48ch;position:relative;z-index:1}
+.big-cta a{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--ink);padding:16px 24px;border-radius:999px;font:700 14px var(--body);letter-spacing:.02em;transition:transform .15s,box-shadow .2s;box-shadow:0 14px 30px -12px rgba(0,0,0,.35)}
+.big-cta a:hover{transform:translateY(-2px)}
+
+/* Modal */
+.modal-veil{position:fixed;inset:0;background:rgba(27,20,51,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px)}
+.modal-veil.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:0;z-index:101;display:grid;place-items:center;padding:20px;pointer-events:none}
+.modal.on{pointer-events:auto}
+.modal-box{width:100%;max-width:640px;max-height:88vh;overflow-y:auto;background:#fff;border-radius:24px;padding:32px 28px 28px;box-shadow:0 40px 80px -30px rgba(27,20,51,.6);transform:scale(.94);opacity:0;transition:transform .3s cubic-bezier(.3,1.4,.5,1),opacity .25s;position:relative}
+.modal.on .modal-box{transform:none;opacity:1}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:var(--mist);display:grid;place-items:center;font-size:20px;color:var(--ink);transition:background .2s}
+.modal-close:hover{background:var(--peach)}
+.modal-box h2{font:800 clamp(20px,4vw,26px)/1.2 var(--display);letter-spacing:-.03em;margin-bottom:8px;padding-right:44px}
+.modal-box .m-sub{color:var(--soft);font-size:14px;margin-bottom:22px}
+.modal-box .m-body{font-size:15px;line-height:1.65}
+
+.fgroup{margin-bottom:14px}
+.fgroup label{display:block;font:600 12px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin-bottom:6px}
+.fgroup input,.fgroup select{width:100%;font:500 15px var(--body);padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s, box-shadow .2s;-webkit-appearance:none;appearance:none}
+.fgroup select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B6585' stroke-width='2' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:42px}
+.fgroup input:focus,.fgroup select:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+.btn-calc{width:100%;padding:15px;border-radius:14px;background:var(--fire);color:#fff;font:700 14.5px var(--body);letter-spacing:.02em;box-shadow:0 12px 24px -12px rgba(255,90,31,.75);transition:transform .15s;margin-top:8px}
+.btn-calc:hover{transform:translateY(-2px)}
+.result{margin-top:16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#FFF3EB,#FFE3D2);border:1.5px solid #FFD1B8;text-align:center;display:none}
+.result.on{display:block;animation:pop .4s}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.result .k{font:600 12px var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--soft);margin-bottom:4px}
+.result .v{font:800 42px var(--display);color:var(--fire);letter-spacing:-.04em}
+.result .n{font-size:13px;color:var(--soft);margin-top:4px}
+
+@media(max-width:520px){
+  .top .bar{padding:0 14px;gap:8px}
+  .logo{font-size:18px}.logo svg{width:22px;height:26px}
+  .menu-btn{padding:8px 12px;font-size:12.5px}
+  main{padding:24px 16px 60px}
+  .tools-hero{padding:26px 20px 24px;border-radius:22px}
+  .tool{padding:16px;gap:12px}
+  .tool .em{width:46px;height:46px;border-radius:14px}
+  .tool .em svg{width:24px;height:24px}
+  .tool .arrow{display:none}
+  .modal-box{padding:26px 18px 22px;border-radius:20px}
+  .big-cta{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-grad" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 8l10-4 10 4-10 4L2 8z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 10v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M4 20h4L20 8l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 6l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-calc" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 6h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0M8 19h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-head" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="2" y="14" width="5" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="14" width="5" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 4h12a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4v16" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="ic-swap" viewBox="0 0 24 24"><path d="M7 4v14M7 18l-3-3M7 18l3-3M17 20V6M17 6l-3 3M17 6l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <a class="menu-btn" href="main.html"><svg><use href="#ic-home"/></svg><span data-i18n="btn.menu">Главное меню</span></a>
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn"><span id="curFlag">🇷🇺</span><span id="curLang">RU</span><svg><use href="#ic-chev"/></svg></button>
+      <div class="lang-menu" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="tools-hero">
+    <span class="badge"><i></i><span data-i18n="hero.badge">Бесплатно</span></span>
+    <h1><span data-i18n="hero.title1">Инструменты для подготовки</span> <em data-i18n="hero.title2">к IELTS</em></h1>
+    <p class="sub" data-i18n="hero.sub">Считайте баллы, тренируйте Speaking и Writing на темах как на экзамене, переводите IELTS в другие системы. Без регистрации и email — всё работает сразу в браузере.</p>
+  </div>
+
+  <section class="tsection">
+    <h2 data-i18n="sec.uni.title">Балл для вашего вуза</h2>
+    <p class="desc" data-i18n="sec.uni.desc">У каждого балла указаны источник и дата проверки.</p>
+    <a class="tool" href="uni.html">
+      <span class="em blue"><svg><use href="#ic-grad"/></svg></span>
+      <span class="body">
+        <b data-i18n="tool.uni.t">Требования вузов к IELTS</b>
+        <p data-i18n="tool.uni.d">Более 60 ведущих университетов мира с фильтром по странам и ссылками на сайты.</p>
+        <span class="tags">
+          <span data-i18n="tool.uni.tag1">США</span>
+          <span data-i18n="tool.uni.tag2">Великобритания</span>
+          <span data-i18n="tool.uni.tag3">Европа</span>
+          <span>Harvard</span>
+          <span>NYU</span>
+        </span>
+      </span>
+      <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+    </a>
+  </section>
+
+  <section class="tsection">
+    <h2 data-i18n="sec.speak.title">Тренируйте Speaking и Writing</h2>
+    <p class="desc" data-i18n="sec.speak.desc">Более 150 тем на каждый навык, с таймером как на экзамене, записью голоса для Speaking и подсчётом слов для Writing.</p>
+    <div class="tgrid two">
+      <a class="tool" href="topics.html#speaking">
+        <span class="em amber"><svg><use href="#ic-mic"/></svg></span>
+        <span class="body">
+          <b data-i18n="tool.speaking.t">Speaking с таймером и записью</b>
+          <p data-i18n="tool.speaking.d">Части 1–3, 150+ тем. Таймер как на экзамене и запись голоса с возможностью прослушать.</p>
+        </span>
+        <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+      </a>
+      <a class="tool" href="topics.html#writing">
+        <span class="em orange"><svg><use href="#ic-pencil"/></svg></span>
+        <span class="body">
+          <b data-i18n="tool.writing.t">Writing с таймером и счётчиком слов</b>
+          <p data-i18n="tool.writing.d">Task 1 и Task 2, 150+ тем. Официальный таймер и живой счётчик слов.</p>
+        </span>
+        <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="tsection">
+    <h2 data-i18n="sec.score.title">Узнайте свой балл</h2>
+    <p class="desc" data-i18n="sec.score.desc">Переведите правильные ответы в балл и посчитайте общий балл с официальным округлением.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <button class="tool" data-tool="calc-overall">
+        <span class="em blue"><svg><use href="#ic-calc"/></svg></span>
+        <span class="body">
+          <b data-i18n="tool.overall.t">Калькулятор общего балла IELTS</b>
+          <p data-i18n="tool.overall.d">Среднее из четырёх баллов по навыкам, округлённое так, как это делает IELTS.</p>
+        </span>
+        <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+      </button>
+
+      <div class="tgrid two">
+        <button class="tool" data-tool="calc-listening">
+          <span class="em red"><svg><use href="#ic-head"/></svg></span>
+          <span class="body">
+            <b data-i18n="tool.listening.t">Калькулятор Listening</b>
+            <p data-i18n="tool.listening.d">Из 40 правильных ответов в band.</p>
+          </span>
+          <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+        </button>
+        <button class="tool" data-tool="calc-reading">
+          <span class="em teal"><svg><use href="#ic-book"/></svg></span>
+          <span class="body">
+            <b data-i18n="tool.reading.t">Калькулятор Reading</b>
+            <p data-i18n="tool.reading.d">Из 40 в band для Academic и General.</p>
+          </span>
+          <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="cta-bar">
+      <b data-i18n="cta1.t">Ещё не проходили пробный тест?</b>
+      <span data-i18n="cta1.d">Соберём персональный план подготовки под ваш балл и сроки.</span>
+      <a href="reg.html"><span data-i18n="cta1.btn">Получить план подготовки</span> →</a>
+    </div>
+  </section>
+
+  <section class="tsection">
+    <h2 data-i18n="sec.conv.title">Переведите балл</h2>
+    <p class="desc" data-i18n="sec.conv.desc">У каждого числа указан источник.</p>
+    <button class="tool" data-tool="converter">
+      <span class="em purple"><svg><use href="#ic-swap"/></svg></span>
+      <span class="body">
+        <b data-i18n="tool.conv.t">Конвертер баллов IELTS</b>
+        <p data-i18n="tool.conv.d">Сравните балл IELTS с TOEFL, Duolingo, PTE и уровнями CEFR.</p>
+        <span class="tags">
+          <span data-i18n="tool.conv.tag1">IELTS в TOEFL</span>
+          <span data-i18n="tool.conv.tag2">IELTS в Duolingo</span>
+          <span data-i18n="tool.conv.tag3">IELTS в PTE</span>
+          <span data-i18n="tool.conv.tag4">IELTS в CEFR</span>
+        </span>
+      </span>
+      <span class="arrow"><svg><use href="#ic-arrow"/></svg></span>
+    </button>
+  </section>
+
+  <section class="tsection faq">
+    <h2 data-i18n="faq.title">Частые вопросы</h2>
+    <div style="margin-top:16px">
+      <details><summary data-i18n="faq.q1">Это официальные инструменты IELTS?</summary><p data-i18n="faq.a1">Нет. Lexy не связан с организаторами IELTS. Калькуляторы используют опубликованные IELTS таблицы перевода и правила округления, а у каждого числа указан источник. Официальный балл выдаёт только экзаменационный центр.</p></details>
+      <details><summary data-i18n="faq.q2">Нужна ли регистрация?</summary><p data-i18n="faq.a2">Нет. Все инструменты работают сразу, с телефона или компьютера, без регистрации и email.</p></details>
+      <details><summary data-i18n="faq.q3">Насколько точны калькуляторы?</summary><p data-i18n="faq.a3">Общий балл точен: это среднее четырёх модулей, округлённое так же, как делает IELTS. Таблицы Listening и Reading ориентировочные.</p></details>
+      <details><summary data-i18n="faq.q4">Темы Speaking и Writing настоящие?</summary><p data-i18n="faq.a4">Это темы, которые кандидаты часто встречают на недавних экзаменах. IELTS не публикует свои вопросы, поэтому тренируйтесь на этих темах как на похожих заданиях.</p></details>
+      <details><summary data-i18n="faq.q5">Как перевести IELTS в TOEFL или Duolingo?</summary><p data-i18n="faq.a5">Откройте конвертер баллов, выберите экзамен и балл — увидите все эквиваленты.</p></details>
+      <details><summary data-i18n="faq.q6">Какой балл IELTS требуют университеты?</summary><p data-i18n="faq.a6">Чаще всего общий балл от 6.0 до 7.0, нередко с минимумом по каждому модулю.</p></details>
+    </div>
+  </section>
+
+  <div class="big-cta">
+    <div>
+      <h2 data-i18n="bigcta.title">Готовитесь к IELTS?</h2>
+      <p data-i18n="bigcta.desc">Соберём план подготовки под ваш балл и дату экзамена — бесплатно.</p>
+    </div>
+    <a href="reg.html"><span data-i18n="bigcta.btn">Получить план подготовки</span> →</a>
+  </div>
+</main>
+
+<div class="modal-veil" id="modalVeil"></div>
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">×</button>
+    <h2 id="mTitle"></h2>
+    <p class="m-sub" id="mSub"></p>
+    <div class="m-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+var TRANSLATIONS = {
+  ru: {
+    "meta.title":"Инструменты — Lexy","btn.menu":"Главное меню",
+    "hero.badge":"Бесплатно","hero.title1":"Инструменты для подготовки","hero.title2":"к IELTS",
+    "hero.sub":"Считайте баллы, тренируйте Speaking и Writing на темах как на экзамене, переводите IELTS в другие системы. Без регистрации и email — всё работает сразу в браузере.",
+    "sec.uni.title":"Балл для вашего вуза","sec.uni.desc":"У каждого балла указаны источник и дата проверки.",
+    "tool.uni.t":"Требования вузов к IELTS","tool.uni.d":"Более 60 ведущих университетов мира с фильтром по странам и ссылками на сайты.",
+    "tool.uni.tag1":"США","tool.uni.tag2":"Великобритания","tool.uni.tag3":"Европа",
+    "sec.speak.title":"Тренируйте Speaking и Writing","sec.speak.desc":"Более 150 тем на каждый навык, с таймером как на экзамене, записью голоса для Speaking и подсчётом слов для Writing.",
+    "tool.speaking.t":"Speaking с таймером и записью","tool.speaking.d":"Части 1–3, 150+ тем. Таймер как на экзамене и запись голоса с возможностью прослушать.",
+    "tool.writing.t":"Writing с таймером и счётчиком слов","tool.writing.d":"Task 1 и Task 2, 150+ тем. Официальный таймер и живой счётчик слов.",
+    "sec.score.title":"Узнайте свой балл","sec.score.desc":"Переведите правильные ответы в балл и посчитайте общий балл с официальным округлением.",
+    "tool.overall.t":"Калькулятор общего балла IELTS","tool.overall.d":"Среднее из четырёх баллов по навыкам, округлённое так, как это делает IELTS.",
+    "tool.listening.t":"Калькулятор Listening","tool.listening.d":"Из 40 правильных ответов в band.",
+    "tool.reading.t":"Калькулятор Reading","tool.reading.d":"Из 40 в band для Academic и General.",
+    "cta1.t":"Ещё не проходили пробный тест?","cta1.d":"Соберём персональный план подготовки под ваш балл и сроки.","cta1.btn":"Получить план подготовки",
+    "sec.conv.title":"Переведите балл","sec.conv.desc":"У каждого числа указан источник.",
+    "tool.conv.t":"Конвертер баллов IELTS","tool.conv.d":"Сравните балл IELTS с TOEFL, Duolingo, PTE и уровнями CEFR.",
+    "tool.conv.tag1":"IELTS в TOEFL","tool.conv.tag2":"IELTS в Duolingo","tool.conv.tag3":"IELTS в PTE","tool.conv.tag4":"IELTS в CEFR",
+    "faq.title":"Частые вопросы",
+    "faq.q1":"Это официальные инструменты IELTS?","faq.a1":"Нет. Lexy не связан с организаторами IELTS. Калькуляторы используют опубликованные IELTS таблицы перевода и правила округления, а у каждого числа указан источник. Официальный балл выдаёт только экзаменационный центр.",
+    "faq.q2":"Нужна ли регистрация?","faq.a2":"Нет. Все инструменты работают сразу, с телефона или компьютера, без регистрации и email.",
+    "faq.q3":"Насколько точны калькуляторы?","faq.a3":"Общий балл точен: это среднее четырёх модулей, округлённое так же, как делает IELTS. Таблицы Listening и Reading ориентировочные.",
+    "faq.q4":"Темы Speaking и Writing настоящие?","faq.a4":"Это темы, которые кандидаты часто встречают на недавних экзаменах. IELTS не публикует свои вопросы, поэтому тренируйтесь на этих темах как на похожих заданиях.",
+    "faq.q5":"Как перевести IELTS в TOEFL или Duolingo?","faq.a5":"Откройте конвертер баллов, выберите экзамен и балл — увидите все эквиваленты.",
+    "faq.q6":"Какой балл IELTS требуют университеты?","faq.a6":"Чаще всего общий балл от 6.0 до 7.0, нередко с минимумом по каждому модулю.",
+    "bigcta.title":"Готовитесь к IELTS?","bigcta.desc":"Соберём план подготовки под ваш балл и дату экзамена — бесплатно.","bigcta.btn":"Получить план подготовки"
+  },
+  en: {
+    "meta.title":"Tools — Lexy","btn.menu":"Main menu",
+    "hero.badge":"Free","hero.title1":"Tools to prepare","hero.title2":"for IELTS",
+    "hero.sub":"Calculate bands, practise Speaking and Writing on exam-style topics, convert IELTS to other systems. No signup or email — everything works right in your browser.",
+    "sec.uni.title":"The band for your university","sec.uni.desc":"Every band comes with a source and check date.",
+    "tool.uni.t":"University IELTS requirements","tool.uni.d":"60+ leading universities worldwide with country filters and links.",
+    "tool.uni.tag1":"USA","tool.uni.tag2":"UK","tool.uni.tag3":"Europe",
+    "sec.speak.title":"Practise Speaking and Writing","sec.speak.desc":"150+ topics per skill, with an exam-style timer, voice recording for Speaking, and a live word counter for Writing.",
+    "tool.speaking.t":"Speaking with timer and recording","tool.speaking.d":"Parts 1–3, 150+ topics. Exam timer and voice recording you can replay.",
+    "tool.writing.t":"Writing with timer and word counter","tool.writing.d":"Task 1 and Task 2, 150+ topics. Official timer and live word counter.",
+    "sec.score.title":"Find out your band","sec.score.desc":"Convert correct answers to a band and get the overall score with official rounding.",
+    "tool.overall.t":"Overall IELTS band calculator","tool.overall.d":"Average of four skill bands, rounded the way IELTS does it.",
+    "tool.listening.t":"Listening calculator","tool.listening.d":"From 40 correct answers to band.",
+    "tool.reading.t":"Reading calculator","tool.reading.d":"From 40 to band for Academic and General.",
+    "cta1.t":"Haven't taken a mock test yet?","cta1.d":"We'll build a personal plan for your band and timeline.","cta1.btn":"Get your prep plan",
+    "sec.conv.title":"Convert your band","sec.conv.desc":"Every number comes with a source.",
+    "tool.conv.t":"IELTS band converter","tool.conv.d":"Compare IELTS with TOEFL, Duolingo, PTE and CEFR levels.",
+    "tool.conv.tag1":"IELTS to TOEFL","tool.conv.tag2":"IELTS to Duolingo","tool.conv.tag3":"IELTS to PTE","tool.conv.tag4":"IELTS to CEFR",
+    "faq.title":"Frequent questions",
+    "faq.q1":"Are these official IELTS tools?","faq.a1":"No. Lexy is not affiliated with IELTS organisers. The calculators use published IELTS conversion tables and rounding rules. Only the official test centre issues an official band.",
+    "faq.q2":"Do I need to register?","faq.a2":"No. All tools work instantly, on phone or desktop, without signup or email.",
+    "faq.q3":"How accurate are the calculators?","faq.a3":"The overall band is accurate: it's the average of four modules, rounded the same way IELTS does. Listening and Reading tables are approximate.",
+    "faq.q4":"Are Speaking and Writing topics real?","faq.a4":"These are topics candidates often see in recent exams. IELTS does not publish its questions, so practise these as similar tasks.",
+    "faq.q5":"How do I convert IELTS to TOEFL or Duolingo?","faq.a5":"Open the band converter, pick the test and band — you'll see all equivalents.",
+    "faq.q6":"What IELTS band do universities require?","faq.a6":"Most commonly an overall band of 6.0 to 7.0, often with a minimum in each module.",
+    "bigcta.title":"Preparing for IELTS?","bigcta.desc":"We'll build a prep plan for your band and exam date — free.","bigcta.btn":"Get your prep plan"
+  },
+  kz: {
+    "meta.title":"Құралдар — Lexy","btn.menu":"Басты мәзір",
+    "hero.badge":"Тегін","hero.title1":"Дайындық құралдары","hero.title2":"IELTS-ке",
+    "hero.sub":"Балдарды есептеңіз, Speaking және Writing-ті емтихандағыдай тақырыптарда жаттығыңыз, IELTS-ті басқа жүйелерге аударыңыз. Тіркеусіз — бәрі браузерде жұмыс істейді.",
+    "sec.uni.title":"Университетіңіз үшін балл","sec.uni.desc":"Әр балл үшін дереккөз бен тексеру күні көрсетілген.",
+    "tool.uni.t":"Университеттердің IELTS талаптары","tool.uni.d":"Әлемнің 60+ жетекші университеті, ел сүзгісімен және сайт сілтемелерімен.",
+    "tool.uni.tag1":"АҚШ","tool.uni.tag2":"Ұлыбритания","tool.uni.tag3":"Еуропа",
+    "sec.speak.title":"Speaking және Writing жаттықтыру","sec.speak.desc":"Әр дағдыға 150+ тақырып, емтихандағыдай таймер, Speaking үшін дауыс жазу, Writing үшін сөз санағыш.",
+    "tool.speaking.t":"Таймер және жазбамен Speaking","tool.speaking.d":"Part 1–3, 150+ тақырып. Емтихан таймері және тыңдауға болатын дауыс жазбасы.",
+    "tool.writing.t":"Таймер және сөз санағышпен Writing","tool.writing.d":"Task 1 және Task 2, 150+ тақырып. Ресми таймер және тірі сөз санағыш.",
+    "sec.score.title":"Балыңызды біліңіз","sec.score.desc":"Дұрыс жауаптарды балға айналдырып, ресми дөңгелектеумен жалпы балл есептеңіз.",
+    "tool.overall.t":"Жалпы IELTS балл калькуляторы","tool.overall.d":"Төрт дағды балының орташасы, IELTS жасайтындай дөңгелектелген.",
+    "tool.listening.t":"Listening калькуляторы","tool.listening.d":"40 дұрыс жауаптан band-қа.",
+    "tool.reading.t":"Reading калькуляторы","tool.reading.d":"40-тан band-қа, Academic және General үшін.",
+    "cta1.t":"Сынақ тест тапсырмадыңыз ба?","cta1.d":"Балыңыз бен мерзіміңізге жеке жоспар құрамыз.","cta1.btn":"Дайындық жоспарын алу",
+    "sec.conv.title":"Балды аударыңыз","sec.conv.desc":"Әр сан үшін дереккөз көрсетілген.",
+    "tool.conv.t":"IELTS балл конвертері","tool.conv.d":"IELTS-ті TOEFL, Duolingo, PTE және CEFR деңгейлерімен салыстырыңыз.",
+    "tool.conv.tag1":"IELTS-тен TOEFL-ға","tool.conv.tag2":"IELTS-тен Duolingo-ға","tool.conv.tag3":"IELTS-тен PTE-ге","tool.conv.tag4":"IELTS-тен CEFR-ға",
+    "faq.title":"Жиі қойылатын сұрақтар",
+    "faq.q1":"Бұл ресми IELTS құралдары ма?","faq.a1":"Жоқ. Lexy IELTS ұйымдастырушыларымен байланысты емес. Калькуляторлар жарияланған IELTS кестелерін қолданады. Ресми балды тек емтихан орталығы береді.",
+    "faq.q2":"Тіркелу керек пе?","faq.a2":"Жоқ. Барлық құралдар бірден жұмыс істейді, тіркеусіз және email-сыз.",
+    "faq.q3":"Калькуляторлар қаншалықты дәл?","faq.a3":"Жалпы балл дәл: төрт модульдің орташасы, IELTS жасайтындай дөңгелектелген. Listening және Reading кестелері шамамен.",
+    "faq.q4":"Speaking және Writing тақырыптары шынайы ма?","faq.a4":"Бұл кандидаттар жақында емтихандарда жиі кездестіретін тақырыптар.",
+    "faq.q5":"IELTS-ті TOEFL немесе Duolingo-ға қалай аударуға болады?","faq.a5":"Конвертерді ашып, емтихан мен балды таңдаңыз.",
+    "faq.q6":"Университеттер қандай IELTS балын талап етеді?","faq.a6":"Көбінесе жалпы балл 6.0-ден 7.0-ге дейін.",
+    "bigcta.title":"IELTS-ке дайындалып жатырсыз ба?","bigcta.desc":"Балыңыз бен емтихан күніне жоспар құрамыз — тегін.","bigcta.btn":"Дайындық жоспарын алу"
+  },
+  uz: {
+    "meta.title":"Vositalar — Lexy","btn.menu":"Asosiy menyu",
+    "hero.badge":"Bepul","hero.title1":"Tayyorgarlik vositalari","hero.title2":"IELTS uchun",
+    "hero.sub":"Ballarni hisoblang, Speaking va Writingni imtihondagidek mavzularda mashq qiling, IELTSni boshqa tizimlarga o‘giring. Ro‘yxatdan o‘tmasdan — hammasi brauzerda ishlaydi.",
+    "sec.uni.title":"Universitetinngiz uchun ball","sec.uni.desc":"Har bir ball uchun manba va tekshirish sanasi ko‘rsatilgan.",
+    "tool.uni.t":"Universitetlarning IELTS talablari","tool.uni.d":"Dunyoning 60+ yetakchi universiteti, mamlakat filtri va sayt havolalari bilan.",
+    "tool.uni.tag1":"AQSh","tool.uni.tag2":"Buyuk Britaniya","tool.uni.tag3":"Yevropa",
+    "sec.speak.title":"Speaking va Writing mashq qiling","sec.speak.desc":"Har bir ko‘nikma uchun 150+ mavzu, imtihondagidek taymer, Speaking uchun ovoz yozish, Writing uchun so‘z hisoblagich.",
+    "tool.speaking.t":"Taymer va yozuv bilan Speaking","tool.speaking.d":"Part 1–3, 150+ mavzu. Imtihon taymeri va qayta tinglash mumkin bo‘lgan ovoz yozuvi.",
+    "tool.writing.t":"Taymer va so‘z hisoblagich bilan Writing","tool.writing.d":"Task 1 va Task 2, 150+ mavzu. Rasmiy taymer va jonli so‘z hisoblagich.",
+    "sec.score.title":"Ballingizni bilib oling","sec.score.desc":"To‘g‘ri javoblarni ballga o‘girib, rasmiy yaxlitlash bilan umumiy ballni hisoblang.",
+    "tool.overall.t":"Umumiy IELTS ball kalkulyatori","tool.overall.d":"To‘rt ko‘nikma ballining o‘rtachasi, IELTS qilgandek yaxlitlangan.",
+    "tool.listening.t":"Listening kalkulyatori","tool.listening.d":"40 ta to‘g‘ri javobdan bandga.",
+    "tool.reading.t":"Reading kalkulyatori","tool.reading.d":"40 dan bandga, Academic va General uchun.",
+    "cta1.t":"Hali sinov testini topshirmadingizmi?","cta1.d":"Balingiz va muddatingiz uchun shaxsiy reja tuzamiz.","cta1.btn":"Tayyorgarlik rejasini olish",
+    "sec.conv.title":"Ballni o‘giring","sec.conv.desc":"Har bir raqam uchun manba ko‘rsatilgan.",
+    "tool.conv.t":"IELTS ball konverteri","tool.conv.d":"IELTSni TOEFL, Duolingo, PTE va CEFR darajalari bilan solishtiring.",
+    "tool.conv.tag1":"IELTSdan TOEFLga","tool.conv.tag2":"IELTSdan Duolingoga","tool.conv.tag3":"IELTSdan PTEga","tool.conv.tag4":"IELTSdan CEFRga",
+    "faq.title":"Ko‘p beriladigan savollar",
+    "faq.q1":"Bu rasmiy IELTS vositalarimi?","faq.a1":"Yo‘q. Lexy IELTS tashkilotchilari bilan bog‘liq emas. Rasmiy ballni faqat imtihon markazi beradi.",
+    "faq.q2":"Ro‘yxatdan o‘tish kerakmi?","faq.a2":"Yo‘q. Barcha vositalar darhol ishlaydi, ro‘yxatdan o‘tmasdan va emailsiz.",
+    "faq.q3":"Kalkulyatorlar qanchalik aniq?","faq.a3":"Umumiy ball aniq: bu to‘rt modulning o‘rtachasi, IELTS qilgandek yaxlitlangan.",
+    "faq.q4":"Speaking va Writing mavzulari haqiqiymi?","faq.a4":"Bu nomzodlar yaqinda imtihonlarda tez-tez uchratadigan mavzular.",
+    "faq.q5":"IELTSni TOEFL yoki Duolingoga qanday o‘girish mumkin?","faq.a5":"Konvertorni ochib, imtihon va ballni tanlang.",
+    "faq.q6":"Universitetlar qanday IELTS ballini talab qiladi?","faq.a6":"Ko‘pincha umumiy ball 6.0 dan 7.0 gacha.",
+    "bigcta.title":"IELTSga tayyorlanyapsizmi?","bigcta.desc":"Balingiz va imtihon sanasi uchun reja tuzamiz — bepul.","bigcta.btn":"Tayyorgarlik rejasini olish"
+  }
+};
+
+var currentLang = 'ru';
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) lang = 'ru';
+  currentLang = lang;
+  var t = TRANSLATIONS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(t[key] == null) return;
+    el.textContent = t[key];
+  });
+  var mt = t["meta.title"]; if(mt) document.title = mt;
+  document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+  var meta = {ru:['🇷🇺','RU'], en:['🇬🇧','EN'], kz:['🇰🇿','KZ'], uz:['🇺🇿','UZ']};
+  document.getElementById('curFlag').textContent = meta[lang][0];
+  document.getElementById('curLang').textContent = meta[lang][1];
+  document.documentElement.lang = lang;
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+
+var langWrap = document.getElementById('langWrap');
+document.getElementById('langBtn').addEventListener('click', function(e){ e.stopPropagation(); langWrap.classList.toggle('open'); });
+document.querySelectorAll('.lang-item').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.dataset.lang); langWrap.classList.remove('open'); });
+});
+document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
+
+/* ==== MODAL ==== */
+var modal = document.getElementById('modal');
+var modalVeil = document.getElementById('modalVeil');
+var mTitle = document.getElementById('mTitle');
+var mSub = document.getElementById('mSub');
+var mBody = document.getElementById('mBody');
+
+function openModal(title, sub, html){
+  mTitle.textContent = title;
+  mSub.textContent = sub;
+  mBody.innerHTML = html;
+  modal.classList.add('on');
+  modalVeil.classList.add('on');
+  document.body.style.overflow = 'hidden';
+  // ВАЖНО: всегда переинициализируем обработчики внутри модалки
+  setTimeout(function(){
+    if(typeof window._modalInit === 'function') window._modalInit();
+  }, 30);
+}
+function closeModal(){
+  modal.classList.remove('on');
+  modalVeil.classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalVeil.addEventListener('click', closeModal);
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+/* ==== BAND TABLES ==== */
+function listeningBand(n){
+  if(n>=39)return 9;if(n>=37)return 8.5;if(n>=35)return 8;if(n>=32)return 7.5;
+  if(n>=30)return 7;if(n>=26)return 6.5;if(n>=23)return 6;if(n>=18)return 5.5;
+  if(n>=16)return 5;if(n>=13)return 4.5;if(n>=10)return 4;if(n>=8)return 3.5;
+  if(n>=6)return 3;if(n>=4)return 2.5;return 2;
+}
+function readingAcademicBand(n){
+  if(n>=39)return 9;if(n>=37)return 8.5;if(n>=35)return 8;if(n>=33)return 7.5;
+  if(n>=30)return 7;if(n>=27)return 6.5;if(n>=23)return 6;if(n>=19)return 5.5;
+  if(n>=15)return 5;if(n>=13)return 4.5;if(n>=10)return 4;if(n>=8)return 3.5;
+  if(n>=6)return 3;return 2.5;
+}
+function readingGeneralBand(n){
+  if(n>=40)return 9;if(n>=39)return 8.5;if(n>=37)return 8;if(n>=36)return 7.5;
+  if(n>=34)return 7;if(n>=32)return 6.5;if(n>=30)return 6;if(n>=27)return 5.5;
+  if(n>=23)return 5;if(n>=19)return 4.5;if(n>=15)return 4;if(n>=12)return 3.5;
+  if(n>=9)return 3;return 2.5;
+}
+function roundOverall(avg){
+  var w = Math.floor(avg), f = avg - w;
+  if(f < 0.25) return w;
+  if(f < 0.75) return w + 0.5;
+  return w + 1;
+}
+
+document.querySelectorAll('.tool[data-tool]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var t = btn.dataset.tool;
+    var L = TRANSLATIONS[currentLang];
+
+    if(t === 'calc-overall'){
+      openModal(L["tool.overall.t"], L["tool.overall.d"],
+        '<div class="fgroup"><label>Listening</label><input type="number" step="0.5" min="0" max="9" id="g_listening" placeholder="0–9"></div>'+
+        '<div class="fgroup"><label>Reading</label><input type="number" step="0.5" min="0" max="9" id="g_reading" placeholder="0–9"></div>'+
+        '<div class="fgroup"><label>Writing</label><input type="number" step="0.5" min="0" max="9" id="g_writing" placeholder="0–9"></div>'+
+        '<div class="fgroup"><label>Speaking</label><input type="number" step="0.5" min="0" max="9" id="g_speaking" placeholder="0–9"></div>'+
+        '<button class="btn-calc" id="btnCalcOverall">Рассчитать общий балл</button>'+
+        '<div class="result" id="resOverall"><div class="k">Overall band</div><div class="v" id="resOverallVal">—</div><div class="n">по правилу округления IELTS</div></div>'
+      );
+      window._modalInit = function(){
+        var b = document.getElementById('btnCalcOverall');
+        if(!b) return;
+        b.onclick = function(){
+          var ids = ['g_listening','g_reading','g_writing','g_speaking'];
+          var vals = ids.map(function(id){
+            var n = parseFloat(document.getElementById(id).value);
+            return isNaN(n) ? null : Math.max(0, Math.min(9, n));
+          });
+          var res = document.getElementById('resOverall');
+          var resVal = document.getElementById('resOverallVal');
+          if(vals.some(function(x){ return x === null; })){
+            resVal.textContent = '—';
+            res.classList.add('on');
+            return;
+          }
+          var avg = (vals[0]+vals[1]+vals[2]+vals[3])/4;
+          resVal.textContent = roundOverall(avg).toFixed(1);
+          res.classList.add('on');
+        };
+      };
+    }
+
+    else if(t === 'calc-listening'){
+      openModal(L["tool.listening.t"], L["tool.listening.d"],
+        '<div class="fgroup"><label>Правильных ответов (0–40)</label><input type="number" min="0" max="40" id="lstN" placeholder="например, 27"></div>'+
+        '<button class="btn-calc" id="lstBtn">Узнать балл</button>'+
+        '<div class="result" id="lstRes"><div class="k">Listening band</div><div class="v" id="lstVal">—</div></div>'
+      );
+      window._modalInit = function(){
+        var b = document.getElementById('lstBtn');
+        if(!b) return;
+        b.onclick = function(){
+          var n = parseInt(document.getElementById('lstN').value,10);
+          if(isNaN(n) || n < 0 || n > 40) return;
+          document.getElementById('lstVal').textContent = listeningBand(n).toFixed(1);
+          document.getElementById('lstRes').classList.add('on');
+        };
+      };
+    }
+
+    else if(t === 'calc-reading'){
+      openModal(L["tool.reading.t"], L["tool.reading.d"],
+        '<div class="fgroup"><label>Модуль</label><select id="rdMod"><option value="academic">Academic</option><option value="general">General Training</option></select></div>'+
+        '<div class="fgroup"><label>Правильных ответов (0–40)</label><input type="number" min="0" max="40" id="rdN" placeholder="например, 30"></div>'+
+        '<button class="btn-calc" id="rdBtn">Узнать балл</button>'+
+        '<div class="result" id="rdRes"><div class="k">Reading band</div><div class="v" id="rdVal">—</div></div>'
+      );
+      window._modalInit = function(){
+        var b = document.getElementById('rdBtn');
+        if(!b) return;
+        b.onclick = function(){
+          var n = parseInt(document.getElementById('rdN').value,10);
+          var m = document.getElementById('rdMod').value;
+          if(isNaN(n) || n < 0 || n > 40) return;
+          var band = m === 'academic' ? readingAcademicBand(n) : readingGeneralBand(n);
+          document.getElementById('rdVal').textContent = band.toFixed(1);
+          document.getElementById('rdRes').classList.add('on');
+        };
+      };
+    }
+
+    else if(t === 'converter'){
+      var map = {
+        '4.0':{toefl:'31–34',duo:'60–70',pte:'30',cefr:'B1'},
+        '4.5':{toefl:'35–45',duo:'71–80',pte:'36',cefr:'B1'},
+        '5.0':{toefl:'46–59',duo:'81–90',pte:'42',cefr:'B1/B2'},
+        '5.5':{toefl:'60–78',duo:'91–100',pte:'50',cefr:'B2'},
+        '6.0':{toefl:'79–93',duo:'101–110',pte:'59',cefr:'B2'},
+        '6.5':{toefl:'94–101',duo:'111–115',pte:'65',cefr:'B2/C1'},
+        '7.0':{toefl:'102–109',duo:'116–120',pte:'76',cefr:'C1'},
+        '7.5':{toefl:'110–114',duo:'121–125',pte:'84',cefr:'C1'},
+        '8.0':{toefl:'115–117',duo:'126–130',pte:'89',cefr:'C1/C2'},
+        '8.5':{toefl:'118–120',duo:'131–135',pte:'90',cefr:'C2'}
+      };
+      var html = '<div class="fgroup"><label>IELTS band</label><select id="cvN">'+Object.keys(map).map(function(k){return '<option>'+k+'</option>';}).join('')+'</select></div>'+
+        '<button class="btn-calc" id="cvBtn">Показать эквиваленты</button>'+
+        '<div class="result" id="cvRes" style="text-align:left">'+
+          '<div class="k" style="text-align:center;margin-bottom:10px">Эквиваленты</div>'+
+          '<div id="cvList" style="display:flex;flex-direction:column;gap:8px"></div>'+
+        '</div>';
+      openModal(L["tool.conv.t"], L["tool.conv.d"], html);
+      window._modalInit = function(){
+        var b = document.getElementById('cvBtn');
+        if(!b) return;
+        b.onclick = function(){
+          var m = map[document.getElementById('cvN').value];
+          var rows = [['TOEFL iBT',m.toefl],['Duolingo',m.duo],['PTE Academic',m.pte],['CEFR',m.cefr]];
+          document.getElementById('cvList').innerHTML = rows.map(function(r){
+            return '<div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:12px;background:var(--mist);font-size:14px"><b>'+r[0]+'</b><span style="font-weight:700">'+r[1]+'</span></div>';
+          }).join('');
+          document.getElementById('cvRes').classList.add('on');
+        };
+      };
+    }
+  });
+});
+
+(function(){
+  var saved;
+  try{ saved = localStorage.getItem('lang'); }catch(e){}
+  if(!saved){
+    var nav = (navigator.language || 'ru').slice(0,2).toLowerCase();
+    saved = TRANSLATIONS[nav] ? nav : 'ru';
+  }
+  if(!TRANSLATIONS[saved]) saved = 'ru';
+  setLang(saved);
+
+  var params = new URLSearchParams(location.search);
+  var open = params.get('open');
+
+  // Speaking и Writing живут на topics.html — редиректим
+  if(open === 'speaking' || open === 'writing'){
+    window.location.replace('topics.html#' + open);
+    return;
+  }
+
+  // Иначе — открываем модалку с калькулятором
+  if(open){
+    var btn = document.querySelector('.tool[data-tool="'+open+'"]');
+    if(btn){
+      setTimeout(function(){ btn.click(); }, 120);
+    }
+  }
+})();
+</script>
+</body>
+</html>
