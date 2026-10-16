@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Тарифы — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C; --white:#fff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font:400 16px/1.5 var(--body);
+  color:var(--ink); background:var(--mist);
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+  display:flex; flex-direction:column;
+  padding-bottom:120px;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+
+/* HEADER */
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:999px;
+  background:#fff;border:1.5px solid var(--line);
+  font:700 13.5px var(--body);color:var(--ink);
+  transition:border-color .2s,background .2s,transform .15s;
+  margin-left:auto;
+}
+.menu-btn:hover{border-color:var(--fire);background:#FFF8F3;color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+
+/* language switcher */
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);color:var(--ink);transition:border-color .2s,background .2s}
+.lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item .flag{font-size:16px}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+/* MAIN */
+main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:36px 20px 60px}
+h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:10px;text-align:center}
+.sub{color:var(--soft);text-align:center;font-size:16px;margin-bottom:34px;max-width:52ch;margin-left:auto;margin-right:auto}
+
+/* Дисконт */
+.discount-badge{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  margin:0 auto 26px;max-width:520px;
+  background:linear-gradient(135deg,#FFF3EB,#FFE3D2);
+  border:1.5px dashed #FF9A0A;color:var(--ink);
+  padding:14px 20px;border-radius:18px;
+  font:700 15px var(--body);
+}
+.discount-badge.on{display:flex}
+.discount-badge strong{font:800 22px var(--display);color:var(--fire);letter-spacing:-.02em}
+.discount-badge svg{width:22px;height:22px;color:var(--fire)}
+
+/* Тарифы */
+.plans{display:grid;gap:18px;grid-template-columns:1fr;margin-bottom:30px}
+@media(min-width:820px){.plans{grid-template-columns:repeat(3,1fr);align-items:stretch}}
+.plan{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:24px;padding:26px 22px;display:flex;flex-direction:column;gap:14px;transition:transform .25s,border-color .25s,box-shadow .25s}
+.plan:hover{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(27,20,51,.5)}
+.plan.featured{border-color:var(--fire);box-shadow:0 20px 40px -26px rgba(255,90,31,.7)}
+.plan.featured::before{
+  content:attr(data-badge);
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--fire2),var(--fire));
+  color:#fff;font:700 11px var(--display);letter-spacing:.06em;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;white-space:nowrap;
+}
+.plan .name{font:800 20px var(--display);letter-spacing:-.02em}
+.plan .descr{font-size:13.5px;color:var(--soft);line-height:1.45;min-height:40px}
+.plan .price{display:flex;align-items:baseline;gap:6px;font:800 40px var(--display);letter-spacing:-.04em;margin:6px 0 4px;flex-wrap:wrap}
+.plan .price small{font:600 14px var(--body);color:var(--soft);letter-spacing:0}
+.plan .price .was{font:600 16px var(--body);color:var(--soft);text-decoration:line-through;text-decoration-thickness:2px}
+.plan .per{font-size:12.5px;color:var(--soft);margin-bottom:12px}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.plan li{display:flex;align-items:flex-start;gap:9px;font-size:14px;line-height:1.4}
+.plan li svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--ok)}
+.plan .cta{margin-top:auto;display:block;width:100%;padding:15px;border-radius:14px;background:var(--fire);color:#fff;font:700 14.5px var(--body);letter-spacing:.02em;text-align:center;box-shadow:0 12px 24px -12px rgba(255,90,31,.75);transition:transform .15s,box-shadow .2s}
+.plan .cta:hover{transform:translateY(-2px)}
+.plan.free .cta{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.plan.free .cta:hover{border-color:var(--fire);color:var(--fire)}
+
+.guarantee-note{display:flex;align-items:center;gap:12px;max-width:600px;margin:30px auto 0;background:#F1FBF6;border:1px solid #C8EAD7;border-radius:16px;padding:16px 18px;font-size:13.5px;color:var(--ink)}
+.guarantee-note svg{width:22px;height:22px;flex:none;color:var(--ok)}
+
+/* Плавающая плашка */
+.free-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(94vw,600px);background:#fff;border:1.5px solid var(--line);border-radius:20px;box-shadow:0 24px 50px -22px rgba(27,20,51,.5);padding:16px 18px;display:flex;align-items:center;gap:14px;z-index:40;opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}
+.free-bar.on{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.free-bar .txt{flex:1;min-width:0}
+.free-bar .txt b{display:block;font:700 14.5px var(--body);margin-bottom:2px}
+.free-bar .txt span{display:block;font-size:12.5px;color:var(--soft);line-height:1.35}
+.free-bar button{display:inline-flex;align-items:center;gap:6px;padding:12px 16px;border-radius:14px;background:var(--mist);border:1.5px solid var(--line);font:700 13px var(--body);color:var(--ink);white-space:nowrap;transition:border-color .2s,background .2s}
+.free-bar button:hover{border-color:var(--fire);background:#FFF8F3;color:var(--fire)}
+.free-bar button svg{width:14px;height:14px}
+@media(max-width:520px){
+  .free-bar{flex-direction:column;align-items:stretch;gap:10px;padding:16px}
+  .free-bar .txt{text-align:center}
+  .free-bar button{justify-content:center;width:100%}
+  body{padding-bottom:200px}
+  .top .bar{padding:0 14px;gap:8px}
+  .logo{font-size:18px}
+  .logo svg{width:22px;height:26px}
+  .menu-btn{padding:8px 12px;font-size:12.5px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient>
+  </defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v13M3 12h18M12 8c-2-3-6-3-6 0 0 1.5 1.5 2 3 2h3zM12 8c2-3 6-3 6 0 0 1.5-1.5 2-3 2h-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html" aria-label="Lexy"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <a class="menu-btn" href="main.html">
+      <svg><use href="#ic-home"/></svg>
+      <span data-i18n="btn.menu">Главное меню</span>
+    </a>
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn" aria-haspopup="listbox">
+        <span id="curFlag">🇷🇺</span>
+        <span id="curLang">RU</span>
+        <svg><use href="#ic-chev"/></svg>
+      </button>
+      <div class="lang-menu" role="listbox" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 data-i18n="plans.title">Выбери свой план</h1>
+  <p class="sub" data-i18n="plans.sub">Начни бесплатно и переходи на Pro, когда захочешь больше. Отмена в любой момент.</p>
+
+  <div class="discount-badge" id="discountBadge">
+    <svg><use href="#ic-gift"/></svg>
+    <span data-i18n="discount.text">Тебе повезло — скидка</span> <strong id="discountVal">50%</strong> <span data-i18n="discount.applied">уже применена</span>
+  </div>
+
+  <div class="plans">
+    <article class="plan free">
+      <div class="name" data-i18n="plan.free.name">Free</div>
+      <div class="descr" data-i18n="plan.free.descr">Всё, чтобы начать и понять, как это работает.</div>
+      <div class="price">
+        <span data-i18n="plan.free.price">0</span>
+        <small data-i18n="plan.free.per">навсегда</small>
+      </div>
+      <div class="per" data-i18n="plan.free.sub">Бесплатно, без карты</div>
+      <ul>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f1">3 пробника в неделю</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f2">Базовая статистика прогресса</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f3">Личный словарь до 50 слов</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f4">3 мини-игры</span></li>
+      </ul>
+      <button class="cta" id="stayFreeBtn" data-i18n="plan.free.cta">Остаться на Free</button>
+    </article>
+
+    <article class="plan featured" data-badge="Популярный">
+      <div class="name" data-i18n="plan.pro.name">Pro</div>
+      <div class="descr" data-i18n="plan.pro.descr">Идеально, если готовишься к IELTS в ближайшие 3 месяца.</div>
+      <div class="price">
+        <span class="was" id="wasPro">980</span>
+        <span id="pricePro">490</span>
+        <small id="curPro">₽/мес</small>
+      </div>
+      <div class="per" data-i18n="plan.pro.per">Оплата ежемесячно · отмена в любой момент</div>
+      <ul>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f1">300 полноценных пробных IELTS-тестов</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f2">ИИ-экзаменатор Writing и Speaking</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f3">Все мини-игры без лимита</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f4">Детальная статистика по навыкам</span></li>
+      </ul>
+      <button class="cta" data-i18n="plan.pro.cta">Перейти на Pro</button>
+    </article>
+
+    <article class="plan">
+      <div class="name" data-i18n="plan.plus.name">Pro+</div>
+      <div class="descr" data-i18n="plan.plus.descr">Максимум, если цель — 7.5+ и нужен интенсив.</div>
+      <div class="price">
+        <span class="was" id="wasPlus">3180</span>
+        <span id="pricePlus">1590</span>
+        <small id="curPlus">₽/мес</small>
+      </div>
+      <div class="per" data-i18n="plan.plus.per">Оплата ежемесячно · отмена в любой момент</div>
+      <ul>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f1">Всё, что в Pro</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f2">Персональный куратор раз в неделю</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f3">Проверка Writing человеком-экспертом</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f4">Ускоренный план под дату экзамена</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f5">Гарантия результата — вернём деньги</span></li>
+      </ul>
+      <button class="cta" data-i18n="plan.plus.cta">Перейти на Pro+</button>
+    </article>
+  </div>
+
+  <div class="guarantee-note">
+    <svg><use href="#ic-shield"/></svg>
+    <span data-i18n="guarantee.text">Если не получишь прогресс за 30 дней занятий — вернём деньги и оплатим пересдачу.</span>
+  </div>
+</main>
+
+<div class="free-bar" id="freeBar">
+  <div class="txt">
+    <b data-i18n="freebar.title">Не готов платить сейчас?</b>
+    <span data-i18n="freebar.sub">Оставайся на бесплатной версии — весь прогресс и настройки сохранятся.</span>
+  </div>
+  <button id="stayFreeBar">
+    <svg><use href="#ic-close"/></svg>
+    <span data-i18n="freebar.btn">Остаться на бесплатной</span>
+  </button>
+</div>
+
+<script>
+(function(){
+  /* ===== БАЗОВЫЕ ЦЕНЫ (без скидки) по языкам =====
+     Pro   базовая = 980 ₽  → со скидкой 50% = 490 ₽
+     Pro+  базовая = 3180 ₽ → со скидкой 50% = 1590 ₽
+  */
+  var PRICES = {
+    ru: { pro: 980,    plus: 3180,    cur: '₽/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
+    en: { pro: 10,     plus: 32,      cur: '$/mo',     fmt: function(n){ return '$' + n; } },
+    kz: { pro: 5800,   plus: 19000,   cur: '₸/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
+    uz: { pro: 130000, plus: 420000,  cur: 'soʻm/мес', fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } }
+  };
+
+  var TRANSLATIONS = {
+    ru: {
+      "meta.title":"Тарифы — Lexy",
+      "btn.menu":"Главное меню",
+      "plans.title":"Выбери свой план",
+      "plans.sub":"Начни бесплатно и переходи на Pro, когда захочешь больше. Отмена в любой момент.",
+      "discount.text":"Тебе повезло — скидка",
+      "discount.applied":"уже применена",
+      "plan.free.name":"Free",
+      "plan.free.descr":"Всё, чтобы начать и понять, как это работает.",
+      "plan.free.price":"0",
+      "plan.free.per":"навсегда",
+      "plan.free.sub":"Бесплатно, без карты",
+      "plan.free.f1":"3 пробника в неделю",
+      "plan.free.f2":"Базовая статистика прогресса",
+      "plan.free.f3":"Личный словарь до 50 слов",
+      "plan.free.f4":"3 мини-игры",
+      "plan.free.cta":"Остаться на Free",
+      "plan.pro.name":"Pro",
+      "plan.pro.descr":"Идеально, если готовишься к IELTS в ближайшие 3 месяца.",
+      "plan.pro.per":"Оплата ежемесячно · отмена в любой момент",
+      "plan.pro.f1":"300 полноценных пробных IELTS-тестов",
+      "plan.pro.f2":"ИИ-экзаменатор Writing и Speaking",
+      "plan.pro.f3":"Все мини-игры без лимита",
+      "plan.pro.f4":"Детальная статистика по навыкам",
+      "plan.pro.cta":"Перейти на Pro",
+      "plan.plus.name":"Pro+",
+      "plan.plus.descr":"Максимум, если цель — 7.5+ и нужен интенсив.",
+      "plan.plus.per":"Оплата ежемесячно · отмена в любой момент",
+      "plan.plus.f1":"Всё, что в Pro",
+      "plan.plus.f2":"Персональный куратор раз в неделю",
+      "plan.plus.f3":"Проверка Writing человеком-экспертом",
+      "plan.plus.f4":"Ускоренный план под дату экзамена",
+      "plan.plus.f5":"Гарантия результата — вернём деньги",
+      "plan.plus.cta":"Перейти на Pro+",
+      "guarantee.text":"Если не получишь прогресс за 30 дней занятий — вернём деньги и оплатим пересдачу.",
+      "freebar.title":"Не готов платить сейчас?",
+      "freebar.sub":"Оставайся на бесплатной версии — весь прогресс и настройки сохранятся.",
+      "freebar.btn":"Остаться на бесплатной"
+    },
+    en: {
+      "meta.title":"Pricing — Lexy",
+      "btn.menu":"Main menu",
+      "plans.title":"Choose your plan",
+      "plans.sub":"Start free and move up to Pro when you want more. Cancel anytime.",
+      "discount.text":"Lucky you — discount",
+      "discount.applied":"already applied",
+      "plan.free.name":"Free",
+      "plan.free.descr":"Everything to start and see how it works.",
+      "plan.free.price":"0",
+      "plan.free.per":"forever",
+      "plan.free.sub":"Free, no card needed",
+      "plan.free.f1":"3 mock tests per week",
+      "plan.free.f2":"Basic progress stats",
+      "plan.free.f3":"Personal dictionary up to 50 words",
+      "plan.free.f4":"3 mini-games",
+      "plan.free.cta":"Stay on Free",
+      "plan.pro.name":"Pro",
+      "plan.pro.descr":"Perfect if you're prepping for IELTS in the next 3 months.",
+      "plan.pro.per":"Billed monthly · cancel anytime",
+      "plan.pro.f1":"300 full IELTS mock tests",
+      "plan.pro.f2":"AI examiner for Writing and Speaking",
+      "plan.pro.f3":"All mini-games unlimited",
+      "plan.pro.f4":"Detailed stats by skill",
+      "plan.pro.cta":"Switch to Pro",
+      "plan.plus.name":"Pro+",
+      "plan.plus.descr":"Maximum, if your goal is 7.5+ and you want intensity.",
+      "plan.plus.per":"Billed monthly · cancel anytime",
+      "plan.plus.f1":"Everything in Pro",
+      "plan.plus.f2":"Personal tutor once a week",
+      "plan.plus.f3":"Writing reviewed by a human expert",
+      "plan.plus.f4":"Accelerated plan for your exam date",
+      "plan.plus.f5":"Result guarantee — money back",
+      "plan.plus.cta":"Switch to Pro+",
+      "guarantee.text":"If you don't make progress in 30 days of study — we refund and pay for your retake.",
+      "freebar.title":"Not ready to pay now?",
+      "freebar.sub":"Stay on the free version — all your progress and settings are saved.",
+      "freebar.btn":"Stay on free"
+    },
+    kz: {
+      "meta.title":"Тарифтер — Lexy",
+      "btn.menu":"Басты мәзір",
+      "plans.title":"Жоспарыңды таңда",
+      "plans.sub":"Тегін бастап, көбірек қалағанда Pro-ға өт. Кез келген уақытта тоқтатуға болады.",
+      "discount.text":"Сәті түсті — жеңілдік",
+      "discount.applied":"қолданылды",
+      "plan.free.name":"Free",
+      "plan.free.descr":"Бастау және қалай жұмыс істейтінін түсіну үшін бәрі.",
+      "plan.free.price":"0",
+      "plan.free.per":"мәңгі",
+      "plan.free.sub":"Тегін, картасыз",
+      "plan.free.f1":"Аптасына 3 сынақ тест",
+      "plan.free.f2":"Негізгі прогресс статистикасы",
+      "plan.free.f3":"50 сөзге дейінгі жеке сөздік",
+      "plan.free.f4":"3 мини-ойын",
+      "plan.free.cta":"Free-де қалу",
+      "plan.pro.name":"Pro",
+      "plan.pro.descr":"Келесі 3 айда IELTS тапсыратын болсаң — дәл өзіңе.",
+      "plan.pro.per":"Ай сайын төлем · кез келген уақытта тоқтату",
+      "plan.pro.f1":"300 толық IELTS сынақ тесті",
+      "plan.pro.f2":"Writing және Speaking үшін AI-емтихан алушы",
+      "plan.pro.f3":"Барлық мини-ойындар шексіз",
+      "plan.pro.f4":"Дағдылар бойынша толық статистика",
+      "plan.pro.cta":"Pro-ға өту",
+      "plan.plus.name":"Pro+",
+      "plan.plus.descr":"Мақсат 7.5+ және интенсив керек болса — максимум.",
+      "plan.plus.per":"Ай сайын төлем · кез келген уақытта тоқтату",
+      "plan.plus.f1":"Pro-дағы барлығы",
+      "plan.plus.f2":"Аптасына бір рет жеке куратор",
+      "plan.plus.f3":"Writing-ті адам-сарапшы тексереді",
+      "plan.plus.f4":"Емтихан күніне қарай жылдамдатылған жоспар",
+      "plan.plus.f5":"Нәтиже кепілдігі — ақшаңды қайтарамыз",
+      "plan.plus.cta":"Pro+-ға өту",
+      "guarantee.text":"30 күн жаттыққан соң прогресс болмаса — ақшаңды қайтарып, қайта тапсыруды төлейміз.",
+      "freebar.title":"Қазір төлеуге дайын емессің бе?",
+      "freebar.sub":"Тегін нұсқада қал — барлық прогресс пен параметрлер сақталады.",
+      "freebar.btn":"Тегінде қалу"
+    },
+    uz: {
+      "meta.title":"Narxlar — Lexy",
+      "btn.menu":"Asosiy menyu",
+      "plans.title":"Rejangizni tanlang",
+      "plans.sub":"Bepul boshlang va ko'proq xohlaganingizda Pro'ga o'ting. Istalgan vaqtda bekor qiling.",
+      "discount.text":"Omadingiz keldi — chegirma",
+      "discount.applied":"allaqachon qo'llandi",
+      "plan.free.name":"Free",
+      "plan.free.descr":"Boshlash va qanday ishlashini ko'rish uchun hamma narsa.",
+      "plan.free.price":"0",
+      "plan.free.per":"abadiy",
+      "plan.free.sub":"Bepul, kartasiz",
+      "plan.free.f1":"Haftada 3 sinov testi",
+      "plan.free.f2":"Asosiy progress statistikasi",
+      "plan.free.f3":"50 so'zgacha shaxsiy lug'at",
+      "plan.free.f4":"3 mini-o'yin",
+      "plan.free.cta":"Free'da qolish",
+      "plan.pro.name":"Pro",
+      "plan.pro.descr":"Keyingi 3 oyda IELTSga tayyorlanayotgan bo'lsangiz — aynan sizga.",
+      "plan.pro.per":"Har oy to'lov · istalgan vaqtda bekor qilish",
+      "plan.pro.f1":"300 ta to'liq IELTS sinov testi",
+      "plan.pro.f2":"Writing va Speaking uchun AI-ekspert",
+      "plan.pro.f3":"Barcha mini-o'yinlar cheksiz",
+      "plan.pro.f4":"Ko'nikmalar bo'yicha batafsil statistika",
+      "plan.pro.cta":"Pro'ga o'tish",
+      "plan.plus.name":"Pro+",
+      "plan.plus.descr":"Maqsad 7.5+ va intensiv kerak bo'lsa — maksimum.",
+      "plan.plus.per":"Har oy to'lov · istalgan vaqtda bekor qilish",
+      "plan.plus.f1":"Pro'dagi hamma narsa",
+      "plan.plus.f2":"Haftada bir marta shaxsiy kurator",
+      "plan.plus.f3":"Writing inson-ekspert tomonidan tekshiriladi",
+      "plan.plus.f4":"Imtihon sanasiga mos tezlashtirilgan reja",
+      "plan.plus.f5":"Natija kafolati — pulingizni qaytaramiz",
+      "plan.plus.cta":"Pro+'ga o'tish",
+      "guarantee.text":"30 kun mashq qilib progress bo'lmasa — pulni qaytarib, qayta topshirishni to'laymiz.",
+      "freebar.title":"Hozir to'lashga tayyor emasmisiz?",
+      "freebar.sub":"Bepul versiyada qoling — barcha progress va sozlamalar saqlanadi.",
+      "freebar.btn":"Bepulda qolish"
+    }
+  };
+
+  var currentLang = 'ru';
+
+  function setLang(lang){
+    if(!TRANSLATIONS[lang]) lang = 'ru';
+    currentLang = lang;
+    var t = TRANSLATIONS[lang];
+
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(t[key] == null) return;
+      el.textContent = t[key];
+    });
+    var mt = t["meta.title"];
+    if(mt) document.title = mt;
+
+    document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+    var meta = {ru:['🇷🇺','RU'], en:['🇬🇧','EN'], kz:['🇰🇿','KZ'], uz:['🇺🇿','UZ']};
+    document.getElementById('curFlag').textContent = meta[lang][0];
+    document.getElementById('curLang').textContent = meta[lang][1];
+    document.documentElement.lang = lang;
+    try{ localStorage.setItem('lang', lang); }catch(e){}
+
+    updatePrices();
+  }
+
+  var langWrap = document.getElementById('langWrap');
+  document.getElementById('langBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    langWrap.classList.toggle('open');
+  });
+  document.querySelectorAll('.lang-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      setLang(b.dataset.lang);
+      langWrap.classList.remove('open');
+    });
+  });
+  document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
+
+  /* ===== Скидка ===== */
+  var params = new URLSearchParams(location.search);
+  var discount = parseFloat(params.get('discount') || '0');
+  if(isNaN(discount) || discount < 5 || discount > 90){
+    try{ discount = parseFloat(localStorage.getItem('discount') || '0'); }catch(e){ discount = 0; }
+  }
+  if(discount > 0){
+    document.getElementById('discountBadge').classList.add('on');
+    document.getElementById('discountVal').textContent = Math.round(discount) + '%';
+  }
+
+  /* ===== Цены ===== */
+  function updatePrices(){
+    var p = PRICES[currentLang];
+    var basePro = p.pro;
+    var basePlus = p.plus;
+
+    if(discount > 0){
+      var proSale = Math.round(basePro * (1 - discount/100) / 5) * 5;
+      var plusSale = Math.round(basePlus * (1 - discount/100) / 5) * 5;
+      document.getElementById('pricePro').textContent = p.fmt(proSale);
+      document.getElementById('pricePlus').textContent = p.fmt(plusSale);
+      document.getElementById('wasPro').textContent = p.fmt(basePro);
+      document.getElementById('wasPlus').textContent = p.fmt(basePlus);
+    } else {
+      document.getElementById('pricePro').textContent = p.fmt(basePro);
+      document.getElementById('pricePlus').textContent = p.fmt(basePlus);
+      document.getElementById('wasPro').textContent = '';
+      document.getElementById('wasPlus').textContent = '';
+    }
+    document.getElementById('curPro').textContent = p.cur;
+    document.getElementById('curPlus').textContent = p.cur;
+
+    var badgeMap = {ru:'Популярный', en:'Popular', kz:'Танымал', uz:'Mashhur'};
+    var featured = document.querySelector('.plan.featured');
+    if(featured) featured.setAttribute('data-badge', badgeMap[currentLang] || 'Popular');
+  }
+
+  /* ===== Плашка снизу ===== */
+  var freeBar = document.getElementById('freeBar');
+  setTimeout(function(){ freeBar.classList.add('on'); }, 200);
+  function hideBar(){
+    freeBar.classList.remove('on');
+    setTimeout(function(){ freeBar.style.display = 'none'; }, 400);
+  }
+  document.getElementById('stayFreeBar').addEventListener('click', hideBar);
+  document.getElementById('stayFreeBtn').addEventListener('click', hideBar);
+
+  /* ===== Заглушка для оплаты ===== */
+  document.querySelectorAll('.plan:not(.free) .cta').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      alert('Здесь будет оплата');
+    });
+  });
+
+  /* ===== INIT ===== */
+  (function(){
+    var saved;
+    try{ saved = localStorage.getItem('lang'); }catch(e){}
+    if(!saved){
+      var nav = (navigator.language || 'ru').slice(0,2).toLowerCase();
+      saved = TRANSLATIONS[nav] ? nav : 'ru';
+    }
+    if(!TRANSLATIONS[saved]) saved = 'ru';
+    setLang(saved);
+  })();
+})();
+</script>
+
+</body>
+</html>
