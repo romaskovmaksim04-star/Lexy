@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Lexy — нужный балл IELTS с первой попытки</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--fire:#FF5A1F;--fire2:#FF9A0A;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--peach:#FFE9DF;--ok:#12A15C;--white:#fff;
+--display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font:400 16px/1.55 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 20px}
+section{padding:56px 0}
+h1,h2{font-family:var(--display);line-height:1.12;letter-spacing:-.02em}
+h2{font-size:clamp(24px,5vw,38px);font-weight:700;margin-bottom:12px}
+.lead{color:var(--soft);max-width:52ch}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 28px;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .15s,box-shadow .15s}
+.btn-fire{background:var(--fire);color:#fff;box-shadow:0 8px 20px -8px rgba(255,90,31,.7)}
+.btn-fire:hover{transform:translateY(-2px)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line)}
+.btn-sm{padding:11px 18px;font-size:13px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(247,245,252,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar{display:flex;align-items:center;gap:14px;height:64px}
+.logo{display:flex;align-items:center;gap:9px;font:800 24px var(--display);letter-spacing:-.04em}
+.logo svg{width:30px;height:36px}
+.bar .btn{margin-left:auto}
+.burger{width:40px;height:40px;display:grid;place-items:center;border-radius:12px}
+.burger span,.burger span::before,.burger span::after{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;position:relative;content:""}
+.burger span::before{position:absolute;top:-6px}.burger span::after{position:absolute;top:6px}
+nav.desk{display:none;gap:26px;font-weight:500}
+nav.desk a:hover{color:var(--fire)}
+
+/* drawer */
+.veil{position:fixed;inset:0;background:rgba(27,20,51,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(86vw,340px);background:#fff;z-index:31;transform:translateX(-100%);transition:transform .3s;display:flex;flex-direction:column;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+body.open .veil{opacity:1;pointer-events:auto}
+body.open .drawer{transform:none}
+.drawer .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.drawer .nav-list{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1;margin:0 -6px}
+.drawer a.item{display:flex;justify-content:space-between;padding:15px 14px;border-radius:16px;font-weight:600;font-size:17px;transition:background .2s}
+.drawer a.item:hover{background:var(--peach)}
+.drawer .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+
+/* language picker inside drawer */
+.lang-pick{position:relative}
+.lang-pick-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--mist);border:1.5px solid var(--line);border-radius:16px;font:600 15px var(--body);transition:border-color .2s, background .2s}
+.lang-pick-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-pick-btn .flag{font-size:20px}
+.lang-pick-btn .name{flex:1;text-align:left}
+.lang-pick-btn .code{color:var(--soft);font-size:13px}
+.lang-pick-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-pick.open .lang-pick-btn svg{transform:rotate(180deg)}
+.lang-pick-menu{position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 -18px 40px -22px rgba(27,20,51,.5);padding:6px;opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:5}
+.lang-pick.open .lang-pick-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-pick-menu button{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;font:600 15px var(--body);text-align:left;transition:background .15s}
+.lang-pick-menu button:hover{background:var(--peach)}
+.lang-pick-menu button.on{background:#FFF3EC;color:var(--fire)}
+.lang-pick-menu button .flag{font-size:20px}
+.lang-pick-menu button .name{flex:1}
+.lang-pick-menu button .code{color:var(--soft);font-size:12px}
+.lang-pick-menu button.on::after{content:"✓";color:var(--fire);font-weight:800}
+
+.drawer .foot .btn-fire{width:100%;justify-content:center}
+
+/* hero */
+.hero{padding:36px 0 56px;overflow:hidden}
+.hero .wrap{display:grid;gap:28px;align-items:center}
+.hero h1{font-size:clamp(34px,9vw,60px);font-weight:800}
+.hero h1 b{color:var(--fire)}
+.hero p{margin:16px 0 26px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.mascot{position:relative;width:min(62vw,300px);margin:0 auto}
+.mascot::before{content:"";position:absolute;inset:-14% -14% 0;background:radial-gradient(circle,rgba(255,154,10,.28),transparent 65%);z-index:0}
+.mascot svg{position:relative;z-index:1;width:100%;height:auto;animation:bob 4s ease-in-out infinite}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.stats{display:flex;gap:26px;margin-top:30px}
+.stats div{font-size:13px;color:var(--soft);line-height:1.3}
+.stats strong{display:block;font:700 26px var(--display);color:var(--ink);letter-spacing:-.03em}
+
+/* proof */
+.chips{display:flex;gap:10px;overflow-x:auto;padding:4px 20px 12px;scrollbar-width:none}
+.chip{flex:none;padding:12px 20px;border-radius:14px;background:#fff;border:1px solid var(--line);font:700 15px var(--display);color:var(--soft)}
+.reels{display:flex;gap:14px;overflow-x:auto;padding:8px 20px 16px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.reel{flex:none;width:170px;aspect-ratio:9/14;border-radius:22px;scroll-snap-align:start;position:relative;display:flex;align-items:flex-end;padding:14px;color:#fff;font-size:13px;font-weight:600;background:linear-gradient(160deg,var(--fire2),var(--fire) 60%,#C2300A)}
+.reel:nth-child(2){background:linear-gradient(160deg,#7B5CFF,#3B2A8F)}
+.reel:nth-child(3){background:linear-gradient(160deg,#1FC28B,#0B6B52)}
+.reel:nth-child(4){background:linear-gradient(160deg,#FFB400,#E56B00)}
+.reel i{position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;font-style:normal}
+
+/* platform */
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:24px auto 34px;padding:10px;background:#fff;border-radius:26px;box-shadow:0 14px 34px -22px rgba(27,20,51,.4);max-width:700px}
+.tab{padding:11px 18px;border-radius:999px;font-weight:600;font-size:15px;color:var(--soft);transition:color .25s,background .25s,transform .2s}
+.tab:hover{color:var(--ink);transform:translateY(-2px)}
+.tab[aria-selected=true]{background:var(--peach);color:var(--ink);box-shadow:0 8px 16px -10px rgba(255,90,31,.8);animation:pop .4s}
+.stage{display:grid;gap:30px;align-items:center}
+.phone{width:min(82vw,310px);margin:0 auto;border:9px solid var(--ink);border-radius:42px;background:#fff;overflow:hidden;box-shadow:0 44px 60px -32px rgba(27,20,51,.65);position:relative}
+.phone::before{content:"";position:absolute;top:0;left:50%;width:84px;height:17px;margin-left:-42px;background:var(--ink);border-radius:0 0 14px 14px;z-index:5}
+.scr{height:540px;overflow-y:auto;overflow-x:hidden;padding-bottom:18px;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.app-hd{position:sticky;top:0;z-index:4;background:#fff;display:flex;align-items:center;gap:8px;padding:26px 16px 10px;border-bottom:1px solid var(--line);font:800 17px var(--display);letter-spacing:-.04em}
+.app-hd svg{width:20px;height:24px}
+.app-hd i{margin-left:auto;font:600 11px var(--body);color:var(--soft);letter-spacing:0}
+.pg{padding:14px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.pg>*{animation:up .55s both;animation-delay:calc(var(--i,0)*80ms);min-width:0}
+.pg h3{font:800 22px/1.1 var(--display);letter-spacing:-.03em}
+.pg .s{font-size:12.5px;color:var(--soft);margin-top:-6px}
+.blk{border-radius:22px;padding:16px;color:#fff;position:relative;overflow:hidden}
+.blk h4{font:800 18px/1.15 var(--display);letter-spacing:-.03em;margin-bottom:6px}
+.blk small{font-size:12.5px;opacity:.92;display:block}
+.blk .fl{position:absolute;right:6px;top:6px;width:52px;height:62px;transform:rotate(12deg);animation:bob 3.5s ease-in-out infinite;pointer-events:none}
+.c-fire{background:linear-gradient(135deg,#FF5A1F,#FF8A1F)}.c-vio{background:linear-gradient(135deg,#6D4AFF,#B04DFF)}.c-mint{background:linear-gradient(135deg,#0FA678,#35D6A0)}.c-ink{background:linear-gradient(150deg,#1B1433,#4A1F3D)}.c-plum{background:linear-gradient(150deg,#3A1380,#8A1F6B)}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.22);font-size:11px;font-weight:600;margin-bottom:8px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:var(--mist);font-size:13px;min-width:0}
+.row b{display:block;font-size:13.5px}.row span:not(.ok){color:var(--soft);font-size:12px}
+.row em{margin-left:auto;font:700 13px var(--display);font-style:normal;color:var(--ok);white-space:nowrap}
+.row>div{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis}
+.ok{width:26px;height:26px;border-radius:9px;background:#DDF6EC;color:var(--ok);display:grid;place-items:center;font-size:13px;flex:none;font-weight:700}
+.seg{display:flex;background:var(--peach);border-radius:999px;padding:4px;font-size:12px;gap:2px;overflow:hidden}
+.seg span{flex:1;text-align:center;padding:7px 4px;border-radius:999px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg .on{background:var(--fire);color:#fff;font-weight:700}
+.bar2,.trk{height:9px;border-radius:9px;background:rgba(255,255,255,.3);overflow:hidden;margin:12px 0 8px}
+.bar2 i,.trk i{display:block;height:100%;border-radius:9px;background:#fff;width:0;animation:fill 1.3s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.nums{display:flex;justify-content:space-between;font:800 26px var(--display);letter-spacing:-.04em;gap:10px}
+.nums small{display:block;font:600 10px var(--body);letter-spacing:.08em;opacity:.85}
+.ring{width:130px;height:130px;margin:0 auto;position:relative}
+.ring svg{transform:rotate(-90deg);width:100%;height:100%}.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .bg{stroke:rgba(255,255,255,.3)}.ring .fg{stroke:#fff;stroke-dasharray:314;stroke-dashoffset:314;animation:ring 1.4s .35s cubic-bezier(.2,.8,.2,1) forwards}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 32px var(--display);letter-spacing:-.04em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g2 div{background:rgba(255,255,255,.2);border-radius:14px;padding:9px;text-align:center;font-size:11px;min-width:0}
+.g2 b{display:block;font:800 18px var(--display)}
+.pers{display:flex;gap:8px}
+.pers div{flex:1 1 0;min-width:0;border-radius:18px;padding:12px 10px;color:#fff;font-size:11px;line-height:1.3;animation:rise .7s both}
+.pers b{display:block;font:800 12px var(--display);margin-bottom:4px}
+.bub{background:var(--mist);border-radius:16px 16px 16px 4px;padding:10px 12px;font-size:12.5px;max-width:100%}
+.bub.me{background:var(--peach);border-radius:16px 16px 4px 16px;justify-self:end}
+.btn-app{display:block;text-align:center;padding:13px;border-radius:16px;background:var(--fire);color:#fff;font-weight:700;font-size:14px}
+.btn-app.w{background:#fff;color:var(--ink)}
+.hero-ai{text-align:center;background:linear-gradient(160deg,#FFE9DF,#EFE9FF);border-radius:24px;padding:18px 12px 14px}
+.hero-ai svg{width:92px;height:110px;animation:bob 3.6s ease-in-out infinite}
+.hero-ai h4{font:800 16px var(--display)}.hero-ai small{color:var(--soft);font-size:12px}
+.copy h3{font:700 24px/1.2 var(--display);margin-bottom:10px}
+
+/* ============ GAMES SECTION ============ */
+.games-hero{display:grid;gap:24px;align-items:center;margin-bottom:34px}
+.games-hero .copy h2{margin-bottom:10px}
+.games-hero .tag{display:inline-flex;align-items:center;gap:6px;background:var(--peach);color:var(--fire);font:700 12px var(--display);letter-spacing:.04em;padding:6px 12px;border-radius:999px;margin-bottom:14px;text-transform:uppercase}
+.games-hero .tag i{width:6px;height:6px;border-radius:50%;background:var(--fire);font-style:normal}
+.games-stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:22px}
+.games-stats div{font-size:12px;color:var(--soft);line-height:1.3}
+.games-stats strong{display:block;font:700 24px var(--display);color:var(--ink);letter-spacing:-.03em}
+.games-deck{position:relative;height:280px;display:grid;place-items:center}
+.game-card{position:absolute;width:210px;aspect-ratio:9/14;border-radius:26px;padding:18px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 30px 50px -24px rgba(27,20,51,.6);transition:transform .4s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.game-card .ic{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.25);display:grid;place-items:center;font-size:22px}
+.game-card .meta b{display:block;font:800 18px/1.1 var(--display);letter-spacing:-.03em}
+.game-card .meta small{display:block;font-size:12px;opacity:.9;margin-top:4px}
+.game-card:nth-child(1){transform:rotate(-8deg) translateX(-70px)}
+.game-card:nth-child(2){transform:rotate(0deg) translateY(-10px);z-index:2}
+.game-card:nth-child(3){transform:rotate(8deg) translateX(70px)}
+.games-deck:hover .game-card:nth-child(1){transform:rotate(-12deg) translateX(-90px) translateY(-6px)}
+.games-deck:hover .game-card:nth-child(2){transform:rotate(0deg) translateY(-20px) scale(1.04)}
+.games-deck:hover .game-card:nth-child(3){transform:rotate(12deg) translateX(90px) translateY(-6px)}
+
+.games-grid{display:grid;gap:16px;grid-template-columns:1fr;margin-top:10px}
+.game-tile{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px;transition:transform .25s,box-shadow .25s,border-color .25s}
+.game-tile:hover{transform:translateY(-4px);border-color:#FFC2A1;box-shadow:0 26px 44px -30px rgba(27,20,51,.5)}
+.game-tile .head{display:flex;align-items:center;gap:14px}
+.game-tile .em{width:52px;height:52px;flex:none;border-radius:16px;display:grid;place-items:center;font-size:24px;background:var(--peach)}
+.game-tile .head b{font:800 17px var(--display);letter-spacing:-.02em}
+.game-tile .head small{display:block;color:var(--soft);font-size:12.5px;margin-top:2px}
+.game-tile p{color:var(--soft);font-size:14px;line-height:1.5}
+.game-tile .tags{display:flex;flex-wrap:wrap;gap:6px}
+.game-tile .tags span{font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--mist);color:var(--soft)}
+.game-tile .go{margin-top:auto;display:inline-flex;align-items:center;gap:8px;font:700 14px var(--body);color:var(--fire);transition:gap .2s}
+.game-tile .go:hover{gap:14px}
+
+@media(min-width:820px){
+  .games-hero{grid-template-columns:1.1fr 1fr;gap:40px}
+  .games-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* universities */
+.uni{overflow:hidden;padding:10px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.track{display:flex;gap:46px;padding-right:46px;width:max-content;animation:drift 42s linear infinite}
+.uni:hover .track{animation-play-state:paused}
+.u{display:flex;align-items:center;gap:10px;white-space:nowrap;font:600 22px/1 Georgia,"Times New Roman",serif;color:#8A84A3;transition:color .3s,transform .3s}
+.u:hover{color:var(--ink);transform:scale(1.07)}
+.u i{width:28px;height:28px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font:700 12px var(--body)}
+
+/* motion */
+.js .rv{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0)*90ms)}
+.js .rv.in{opacity:1;transform:none}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@keyframes rise{from{opacity:0;transform:translateY(36px) rotate(2deg)}}
+@keyframes pop{50%{transform:scale(1.08)}}
+@keyframes fill{to{width:var(--w)}}
+@keyframes ring{to{stroke-dashoffset:var(--o)}}
+@keyframes drift{to{transform:translateX(-50%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shine{from{transform:translateX(0) skewX(-20deg)}to{transform:translateX(420%) skewX(-20deg)}}
+@keyframes star{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.35)}100%{transform:none}}
+@keyframes squash{0%{transform:scale(.3) translateY(60px);opacity:0}60%{transform:scale(1.08,.92)}100%{transform:none;opacity:1}}
+@keyframes boop{30%{transform:scale(1.12,.88)}60%{transform:scale(.94,1.08)}}
+@keyframes glow{50%{opacity:.55;transform:scale(1.1)}}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(255,255,255,.55)}to{box-shadow:0 0 0 14px transparent}}
+.hero h1 span{display:block;animation:rise .9s both}.hero h1 span+span{animation-delay:.14s}
+.hero p,.hero .cta-row,.hero .stats{animation:up .8s .3s both}.hero .cta-row{animation-delay:.42s}.hero .stats{animation-delay:.54s}
+.mascot{animation:squash 1s .15s cubic-bezier(.3,1.4,.5,1) both;cursor:pointer}
+.mascot::before{animation:glow 4s infinite}
+.mascot.boop svg{animation:boop .5s}
+.look{transition:transform .18s;transform:translate(calc(var(--ex,0)*3px),calc(var(--ey,0)*2px))}
+.btn{position:relative;overflow:hidden}.btn:active{transform:scale(.96)}
+.btn-fire::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)}
+.btn-fire:hover::after{animation:shine .8s}.hero .btn-fire::after{animation:shine 3.4s 1.8s infinite}
+header{transition:box-shadow .3s}header.sc{box-shadow:0 10px 28px -18px rgba(27,20,51,.5)}
+.bar{transition:height .3s}header.sc .bar{height:54px}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--fire2),var(--fire));transform:scaleX(var(--p,0));transform-origin:left}
+.drawer a.item{opacity:0;transform:translateX(-18px);transition:opacity .4s,transform .4s,background .2s}
+body.open .drawer a.item{opacity:1;transform:none;transition-delay:calc(var(--i,0)*60ms + .12s)}
+.reel{transition:transform .35s}.reel:hover{transform:translateY(-8px) rotate(-1.5deg)}.reel i{animation:pulse 2s infinite}
+.rev{transition:transform .3s,box-shadow .3s}.rev:hover{transform:translateY(-6px);box-shadow:0 26px 40px -28px rgba(27,20,51,.45)}
+.stars span{display:inline-block;transform:scale(0)}.go .stars span{animation:star .5s calc(var(--k)*90ms + .3s) both}
+.seal{position:relative}.seal::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);animation:spin 18s linear infinite}
+details[open] p{animation:up .35s both}details{transition:box-shadow .3s}details:hover{box-shadow:0 12px 24px -18px rgba(27,20,51,.4)}
+.cols a{transition:color .2s,transform .2s}.cols a:hover{transform:translateX(4px)}
+
+/* reviews */
+.score{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+.score strong{font:800 64px/1 var(--display);letter-spacing:-.05em}
+.score span{color:var(--soft);font-size:14px}
+.reviews{display:grid;gap:14px}
+.rev{background:#fff;border-radius:22px;padding:22px;border:1px solid var(--line)}
+.stars{color:#FFB400;letter-spacing:3px;margin-bottom:10px}
+.who{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:14px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--peach);display:grid;place-items:center;font-weight:700;color:var(--fire)}
+.who em{margin-left:auto;font-style:normal;font-weight:700;color:var(--ok)}
+
+/* guarantee */
+.guar{background:var(--ink);color:#fff;border-radius:32px;padding:36px 26px;display:grid;gap:22px;align-items:center}
+.guar p{color:#C9C3E0}
+.seal{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--fire2),var(--fire));display:grid;place-items:center;text-align:center;font:800 24px/1 var(--display);box-shadow:0 0 0 8px rgba(255,255,255,.12)}
+.seal small{display:block;font:600 11px var(--body);margin-top:4px}
+
+/* faq */
+details{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;line-height:1;color:var(--fire);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin-top:12px;color:var(--soft)}
+.ugc{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;display:grid;gap:14px;justify-items:start}
+.ugc h3{font:700 18px var(--display)}
+
+/* footer */
+footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px + env(safe-area-inset-bottom,0px))}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px 16px;margin:28px 0}
+.cols h4{font:700 13px var(--body);margin-bottom:10px}
+.cols a{display:block;color:var(--soft);font-size:14px;padding:4px 0}
+.cols a:hover{color:var(--fire)}
+.legal{font-size:12px;color:var(--soft);max-width:70ch}
+
+@media(min-width:820px){
+ .burger{display:none}nav.desk{display:flex}.bar .btn{margin-left:0}.bar{justify-content:space-between}
+ .hero .wrap{grid-template-columns:1.2fr 1fr}.mascot{width:100%;max-width:360px}
+ .chips,.reels{padding-left:max(20px,calc((100vw - 1080px)/2 + 20px))}
+ .stage{grid-template-columns:1fr 1fr}.reviews{grid-template-columns:repeat(3,1fr)}
+ .guar{grid-template-columns:auto 1fr auto;padding:48px}
+ .cols{grid-template-columns:repeat(4,1fr)}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.stars span{transform:none!important}.bar2 i,.trk i{width:var(--w)!important}.ring .fg{stroke-dashoffset:var(--o)!important}.mascot{opacity:1!important}.drawer a.item{opacity:1;transform:none}}
+</style>
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs><linearGradient id="fg" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+ <symbol id="flame" viewBox="0 0 100 120">
+  <path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/>
+  <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/>
+  <ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
+  <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/>
+ </symbol>
+</svg>
+
+<div class="veil" id="veil"></div>
+<aside class="drawer" id="drawer" aria-label="Меню">
+ <div class="top">
+  <a class="logo" href="#top"><svg><use href="#flame"/></svg>Lexy</a>
+  <button id="close" aria-label="Закрыть меню" style="font-size:28px;line-height:1">×</button>
+ </div>
+
+ <div class="nav-list">
+  <a class="item" href="#top"><span data-i18n="nav.home">Главная</span> <span>›</span></a>
+  <a class="item" href="#games"><span data-i18n="nav.games">Игры</span> <span>›</span></a>
+  <a class="item" href="#tools"><span data-i18n="nav.tools">Инструменты</span> <span>›</span></a>
+  <a class="item" href="#guides"><span data-i18n="nav.guides">Гайды</span> <span>›</span></a>
+  <a class="item" href="#guarantee"><span data-i18n="nav.guarantee">Гарантия</span> <span>›</span></a>
+  <a class="item" href="#faq"><span data-i18n="nav.faq">Вопросы</span> <span>›</span></a>
+ </div>
+
+ <div class="foot">
+  <div class="lang-pick" id="langPick">
+   <button class="lang-pick-btn" id="langPickBtn" aria-haspopup="listbox">
+    <span class="flag" id="langFlag">🇷🇺</span>
+    <span class="name" id="langName">Русский</span>
+    <span class="code" id="langCode">RU</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+   </button>
+   <div class="lang-pick-menu" role="listbox" id="langMenu">
+    <button data-lang="ru" class="on"><span class="flag">🇷🇺</span><span class="name">Русский</span><span class="code">RU</span></button>
+    <button data-lang="en"><span class="flag">🇬🇧</span><span class="name">English</span><span class="code">EN</span></button>
+    <button data-lang="kz"><span class="flag">🇰🇿</span><span class="name">Қазақша</span><span class="code">KZ</span></button>
+    <button data-lang="uz"><span class="flag">🇺🇿</span><span class="name">O‘zbekcha</span><span class="code">UZ</span></button>
+   </div>
+  </div>
+
+  <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
+ </div>
+</aside>
+
+<header>
+ <div class="wrap bar">
+  <button class="burger" id="open" aria-label="Открыть меню"><span></span></button>
+  <a class="logo" href="#top"><svg><use href="#flame"/></svg>Lexy</a>
+  <nav class="desk">
+    <a href="#games" data-i18n="nav.games">Игры</a>
+    <a href="#reviews" data-i18n="nav.reviews">Отзывы</a>
+    <a href="#guarantee" data-i18n="nav.guarantee">Гарантия</a>
+    <a href="#faq" data-i18n="nav.faq">Вопросы</a>
+  </nav>
+  <a class="btn btn-fire btn-sm" href="reg.html?goal=ielts" id="start" data-i18n="btn.openLexyShort">ОТКРЫТЬ LEXY</a>
+ </div>
+</header>
+
+<main id="top">
+ <section class="hero">
+  <div class="wrap">
+   <div>
+    <h1>
+      <span data-i18n="hero.title1">Нужный балл IELTS</span>
+      <span><b data-i18n="hero.title2">с первой попытки</b></span>
+    </h1>
+    <p class="lead" data-i18n="hero.lead">ИИ-тренажёр для Academic и General Training. Все четыре секции, разбор ошибок и пробные экзамены в одном приложении.</p>
+    <div class="cta-row">
+     <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a>
+     <a class="btn btn-ghost" href="#games" data-i18n="btn.seeGames">ПОСМОТРЕТЬ ИГРЫ</a>
+    </div>
+    <div class="stats">
+     <div><strong>4.8</strong><span data-i18n="stats.rating">средняя оценка</span></div>
+     <div><strong>7</strong><span data-i18n="stats.tools">инструментов в одном</span></div>
+    </div>
+   </div>
+   <div class="mascot" aria-label="Лекси — огонёк-талисман">
+    <svg viewBox="0 0 100 120" role="img" aria-label="Огонёк Lexy">
+     <path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/>
+     <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/>
+     <g class="look"><ellipse class="eye" cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse class="eye" cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
+     <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></g>
+    </svg>
+   </div>
+  </div>
+ </section>
+
+ <section style="padding-top:0">
+   <div class="wrap"><h2 style="text-align:center" data-i18n="uni.title">С нами ты достигнешь большего</h2></div>
+   <div class="uni" style="margin-top:22px"><div class="track" id="trk"></div></div>
+ </section>
+
+ <section style="padding-top:8px">
+  <div class="wrap">
+    <h2 data-i18n="reels.title">Ты уже видел нас везде</h2>
+    <p class="lead" data-i18n="reels.lead">TikTok, Instagram, Threads — и в школе.</p>
+  </div>
+  <div class="reels" style="margin-top:18px">
+   <div class="reel"><i>▶</i>@student_one</div>
+   <div class="reel"><i>▶</i>@student_two</div>
+   <div class="reel"><i>▶</i>@student_three</div>
+   <div class="reel"><i>▶</i>@student_four</div>
+  </div>
+  <div class="wrap"><a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a></div>
+ </section>
+
+ <section id="games">
+  <div class="wrap">
+   <div class="games-hero">
+    <div class="copy">
+     <span class="tag"><i></i><span data-i18n="games.tag">Игры</span></span>
+     <h2>
+       <span data-i18n="games.title1">Тренируй </span>
+       <b style="color:var(--fire)" data-i18n="games.title2">слабые места</b>
+       <span data-i18n="games.title3"> в формате игры</span>
+     </h2>
+     <p class="lead" data-i18n="games.lead">Три коротких тренажёра — на произношение, связки и ловушки в Listening. Каждый раунд меньше 2 минут и с мгновенным фидбеком.</p>
+     <div class="games-stats">
+      <div><strong>2 мин</strong><span data-i18n="games.stat1">средний раунд</span></div>
+      <div><strong>3</strong><span data-i18n="games.stat2">навыка в фокусе</span></div>
+      <div><strong>∞</strong><span data-i18n="games.stat3">безлимит попыток</span></div>
+     </div>
+    </div>
+    <div class="games-deck" aria-hidden="true">
+     <div class="game-card" style="background:linear-gradient(160deg,#FF9A0A,#FF5A1F 70%)">
+      <div class="ic">🎙️</div>
+      <div class="meta"><b>Shadow<br>Speak</b><small data-i18n="games.card1">Произношение и ритм</small></div>
+     </div>
+     <div class="game-card" style="background:linear-gradient(160deg,#8A5CFF,#3B2A8F 80%)">
+      <div class="ic">🔗</div>
+      <div class="meta"><b>Connector<br>Rush</b><small data-i18n="games.card2">Связки в Writing</small></div>
+     </div>
+     <div class="game-card" style="background:linear-gradient(160deg,#1FC28B,#0B6B52 80%)">
+      <div class="ic">🎧</div>
+      <div class="meta"><b>Listening<br>Trap</b><small data-i18n="games.card3">Ловушки в аудио</small></div>
+     </div>
+    </div>
+   </div>
+
+   <div class="games-grid">
+    <article class="game-tile">
+     <div class="head">
+      <span class="em">🎙️</span>
+      <div>
+       <b>Shadow Speak</b>
+       <small data-i18n="g1.sub">Speaking · Произношение</small>
+      </div>
+     </div>
+     <p data-i18n="g1.desc">Слушаешь эталонную фразу и повторяешь вслух. Lexy сравнивает твою речь с оригиналом по темпу, паузам и интонации — и подсвечивает, где ты «проглотил» слова.</p>
+     <div class="tags"><span>Speaking</span><span>Pronunciation</span><span data-i18n="g1.tag3">Микрофон</span></div>
+     <a class="go" href="reg.html?goal=ielts" data-i18n="btn.train">Тренировать →</a>
+    </article>
+
+    <article class="game-tile">
+     <div class="head">
+      <span class="em">🔗</span>
+      <div>
+       <b>Connector Rush</b>
+       <small data-i18n="g2.sub">Writing · Связки</small>
+      </div>
+     </div>
+     <p data-i18n="g2.desc">В предложении пропущена связка — выбери правильную из четырёх за 5 секунд. Ошибся? Сразу видишь правило. За 60 секунд нужно набрать максимум очков.</p>
+     <div class="tags"><span>Writing</span><span>Task 1</span><span>60 сек</span></div>
+     <a class="go" href="reg.html?goal=ielts" data-i18n="btn.train">Тренировать →</a>
+    </article>
+
+    <article class="game-tile">
+     <div class="head">
+      <span class="em">🎧</span>
+      <div>
+       <b>Listening Trap</b>
+       <small data-i18n="g3.sub">Listening · Ловушки</small>
+      </div>
+     </div>
+     <p data-i18n="g3.desc">Слушаешь короткий фрагмент, где диктор меняет ответ посреди фразы: «...on Monday — actually no, Wednesday». Поймай финальный ответ — и больше не купишься на экзамене.</p>
+     <div class="tags"><span>Listening</span><span>Anti-trap</span><span>15 сек</span></div>
+     <a class="go" href="reg.html?goal=ielts" data-i18n="btn.train">Тренировать →</a>
+    </article>
+   </div>
+
+   <div style="text-align:center;margin-top:34px">
+    <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.tryGames">ПОПРОБОВАТЬ ИГРЫ →</a>
+   </div>
+  </div>
+ </section>
+
+ <section id="platform">
+   <div class="wrap">
+     <h2 data-i18n="platform.title">Взгляни на платформу изнутри</h2>
+     <div class="tabs" role="tablist" id="tabs"></div>
+     <div class="stage">
+       <div class="phone"><div class="scr" id="scr"></div></div>
+       <div class="copy" id="copy">
+         <h3 id="ct"></h3>
+         <p class="lead" id="cp"></p><br>
+         <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a>
+       </div>
+     </div>
+   </div>
+ </section>
+
+ <section id="reviews">
+  <div class="wrap">
+   <div class="score"><strong>4.8</strong><span data-i18n="reviews.scoreNote">оценка по отзывам<br>учеников Lexy</span></div>
+   <h2 data-i18n="reviews.title">Наши благодарные ученики</h2>
+   <div class="reviews" style="margin-top:22px">
+    <article class="rev">
+      <div class="stars">★★★★★</div>
+      <p data-i18n="rev1.text">Сдала на 7.5 с первой попытки. Раньше боялась Speaking, а здесь практиковалась с ИИ каждый день.</p>
+      <div class="who"><span class="av">А</span><span data-i18n="rev1.name">Айгерим</span><em>IELTS 7.5</em></div>
+    </article>
+    <article class="rev">
+      <div class="stars">★★★★★</div>
+      <p data-i18n="rev2.text">Фидбек по Writing пришёл за минуту и совпал с оценкой на реальном экзамене. Отличие всего 0.5.</p>
+      <div class="who"><span class="av">Б</span><span data-i18n="rev2.name">Бекзат</span><em>IELTS 7.0</em></div>
+    </article>
+    <article class="rev">
+      <div class="stars">★★★★★</div>
+      <p data-i18n="rev3.text">После третьей попытки наконец взяла 6.5. Главное — безлимитные пробники, я перестала бояться формата.</p>
+      <div class="who"><span class="av">К</span><span data-i18n="rev3.name">Камилла</span><em>IELTS 6.5</em></div>
+    </article>
+   </div>
+   <p class="lead" style="margin:14px 0 22px;font-size:13px" data-i18n="reviews.note">Это примеры текстов. Подставь настоящие отзывы и результаты.</p>
+   <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a>
+  </div>
+ </section>
+
+ <section id="guarantee">
+  <div class="wrap">
+   <div class="guar">
+    <div class="seal"><div>100%<small data-i18n="guar.seal">гарантия</small></div></div>
+    <div>
+      <h2 style="color:#fff" data-i18n="guar.title">Двойная гарантия результата</h2>
+      <p data-i18n="guar.lead">Не набрал нужный балл — вернём деньги или оплатим пересдачу.</p>
+    </div>
+    <div style="display:grid;gap:10px">
+      <a class="btn btn-fire" href="reg.html?goal=ielts" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a>
+      <a class="btn btn-ghost" href="#faq" style="color:var(--ink)" data-i18n="btn.guarTerms">УСЛОВИЯ ГАРАНТИИ</a>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <section id="faq">
+  <div class="wrap" style="max-width:760px">
+   <h2 data-i18n="faq.title">Частые вопросы</h2>
+   <div style="margin-top:20px">
+    <details>
+      <summary data-i18n="faq.q1">Чем Lexy отличается от других платформ?</summary>
+      <p data-i18n="faq.a1">Здесь одна подписка на все секции экзамена: ИИ проверяет Writing и Speaking по критериям IELTS и объясняет каждую ошибку.</p>
+    </details>
+    <details>
+      <summary data-i18n="faq.q2">Что входит в «двойную гарантию»?</summary>
+      <p data-i18n="faq.a2">Опиши условия возврата денег и оплаты пересдачи — коротко и без мелкого шрифта.</p>
+    </details>
+    <details>
+      <summary data-i18n="faq.q3">Можно ли отменить подписку?</summary>
+      <p data-i18n="faq.a3">Да, в любой момент в настройках профиля. Доступ сохранится до конца оплаченного периода.</p>
+    </details>
+   </div>
+   <div class="ugc">
+     <h3 data-i18n="ugc.title">Стань UGC-креатором</h3>
+     <p class="lead" data-i18n="ugc.lead">Снимай короткие видео для Lexy и получай вознаграждение.</p>
+     <a class="btn btn-fire btn-sm" href="#" data-i18n="ugc.btn">ПЕРЕЙТИ ↗</a>
+   </div>
+  </div>
+ </section>
+</main>
+
+<footer>
+ <div class="wrap">
+  <a class="logo" href="#top"><svg><use href="#flame"/></svg>Lexy</a>
+  <div class="cols">
+   <div>
+     <h4 data-i18n="ft.games">Игры</h4>
+     <a href="#games">Shadow Speak</a>
+     <a href="#games">Connector Rush</a>
+     <a href="#games">Listening Trap</a>
+   </div>
+   <div>
+     <h4 data-i18n="ft.tools">Инструменты</h4>
+     <a href="#" data-i18n="ft.tools1">Калькулятор баллов</a>
+     <a href="#" data-i18n="ft.tools2">Генератор тем Writing</a>
+     <a href="#" data-i18n="ft.tools3">Все инструменты</a>
+   </div>
+   <div>
+     <h4 data-i18n="ft.lexy">Lexy</h4>
+     <a href="#" data-i18n="ft.lexy1">Гайды</a>
+     <a href="#" data-i18n="ft.lexy2">Гарантия результата</a>
+     <a href="#" data-i18n="ft.lexy3">Поддержка</a>
+     <a href="#" data-i18n="ft.lexy4">Приложение для iPhone</a>
+   </div>
+   <div>
+     <h4 data-i18n="ft.lang">Язык</h4>
+     <a href="#" data-lang-link="en">English</a>
+     <a href="#" data-lang-link="ru"><b style="color:var(--ink)">Русский</b></a>
+     <a href="#" data-lang-link="uz">O‘zbekcha</a>
+     <a href="#" data-lang-link="kz">Қазақша</a>
+   </div>
+  </div>
+  <p class="legal" data-i18n="ft.legal">© 2026 Lexy. Подставь сюда юридическое лицо и дисклеймер: IELTS® — зарегистрированный товарный знак его владельцев, Lexy не связан с ними, если это так.</p>
+  <p class="legal" style="margin-top:10px">
+    <a href="#" data-i18n="ft.terms">Условия</a> · <a href="#" data-i18n="ft.privacy">Конфиденциальность</a> · <a href="#" data-i18n="ft.refund">Возврат</a>
+  </p>
+ </div>
+</footer>
+
+<script>
+/* ============================================================
+   TRANSLATIONS — все ключи сайта на 4 языка
+   ============================================================ */
+var TRANSLATIONS = {
+  ru: {
+    "meta.title":"Lexy — нужный балл IELTS с первой попытки",
+    "nav.home":"Главная","nav.games":"Игры","nav.tools":"Инструменты","nav.guides":"Гайды",
+    "nav.guarantee":"Гарантия","nav.faq":"Вопросы","nav.reviews":"Отзывы",
+    "btn.openLexy":"ОТКРЫТЬ LEXY →","btn.openLexyShort":"ОТКРЫТЬ LEXY",
+    "btn.startPrep":"НАЧАТЬ ПОДГОТОВКУ →","btn.seeGames":"ПОСМОТРЕТЬ ИГРЫ",
+    "btn.train":"Тренировать →","btn.tryGames":"ПОПРОБОВАТЬ ИГРЫ →","btn.guarTerms":"УСЛОВИЯ ГАРАНТИИ",
+    "hero.title1":"Нужный балл IELTS","hero.title2":"с первой попытки",
+    "hero.lead":"ИИ-тренажёр для Academic и General Training. Все четыре секции, разбор ошибок и пробные экзамены в одном приложении.",
+    "stats.rating":"средняя оценка","stats.tools":"инструментов в одном",
+    "uni.title":"С нами ты достигнешь большего",
+    "reels.title":"Ты уже видел нас везде","reels.lead":"TikTok, Instagram, Threads — и в школе.",
+    "games.tag":"Игры",
+    "games.title1":"Тренируй ","games.title2":"слабые места","games.title3":" в формате игры",
+    "games.lead":"Три коротких тренажёра — на произношение, связки и ловушки в Listening. Каждый раунд меньше 2 минут и с мгновенным фидбеком.",
+    "games.stat1":"средний раунд","games.stat2":"навыка в фокусе","games.stat3":"безлимит попыток",
+    "games.card1":"Произношение и ритм","games.card2":"Связки в Writing","games.card3":"Ловушки в аудио",
+    "g1.sub":"Speaking · Произношение",
+    "g1.desc":"Слушаешь эталонную фразу и повторяешь вслух. Lexy сравнивает твою речь с оригиналом по темпу, паузам и интонации — и подсвечивает, где ты «проглотил» слова.",
+    "g1.tag3":"Микрофон",
+    "g2.sub":"Writing · Связки",
+    "g2.desc":"В предложении пропущена связка — выбери правильную из четырёх за 5 секунд. Ошибся? Сразу видишь правило. За 60 секунд нужно набрать максимум очков.",
+    "g3.sub":"Listening · Ловушки",
+    "g3.desc":"Слушаешь короткий фрагмент, где диктор меняет ответ посреди фразы: «...on Monday — actually no, Wednesday». Поймай финальный ответ — и больше не купишься на экзамене.",
+    "platform.title":"Взгляни на платформу изнутри",
+    "reviews.scoreNote":"оценка по отзывам<br>учеников Lexy","reviews.title":"Наши благодарные ученики",
+    "rev1.name":"Айгерим","rev1.text":"Сдала на 7.5 с первой попытки. Раньше боялась Speaking, а здесь практиковалась с ИИ каждый день.",
+    "rev2.name":"Бекзат","rev2.text":"Фидбек по Writing пришёл за минуту и совпал с оценкой на реальном экзамене. Отличие всего 0.5.",
+    "rev3.name":"Камилла","rev3.text":"После третьей попытки наконец взяла 6.5. Главное — безлимитные пробники, я перестала бояться формата.",
+    "reviews.note":"Это примеры текстов. Подставь настоящие отзывы и результаты.",
+    "guar.seal":"гарантия","guar.title":"Двойная гарантия результата",
+    "guar.lead":"Не набрал нужный балл — вернём деньги или оплатим пересдачу.",
+    "faq.title":"Частые вопросы",
+    "faq.q1":"Чем Lexy отличается от других платформ?",
+    "faq.a1":"Здесь одна подписка на все секции экзамена: ИИ проверяет Writing и Speaking по критериям IELTS и объясняет каждую ошибку.",
+    "faq.q2":"Что входит в «двойную гарантию»?",
+    "faq.a2":"Опиши условия возврата денег и оплаты пересдачи — коротко и без мелкого шрифта.",
+    "faq.q3":"Можно ли отменить подписку?",
+    "faq.a3":"Да, в любой момент в настройках профиля. Доступ сохранится до конца оплаченного периода.",
+    "ugc.title":"Стань UGC-креатором","ugc.lead":"Снимай короткие видео для Lexy и получай вознаграждение.","ugc.btn":"ПЕРЕЙТИ ↗",
+    "ft.games":"Игры","ft.tools":"Инструменты","ft.tools1":"Калькулятор баллов","ft.tools2":"Генератор тем Writing","ft.tools3":"Все инструменты",
+    "ft.lexy":"Lexy","ft.lexy1":"Гайды","ft.lexy2":"Гарантия результата","ft.lexy3":"Поддержка","ft.lexy4":"Приложение для iPhone",
+    "ft.lang":"Язык",
+    "ft.legal":"© 2026 Lexy. Подставь сюда юридическое лицо и дисклеймер: IELTS® — зарегистрированный товарный знак его владельцев, Lexy не связан с ними, если это так.",
+    "ft.terms":"Условия","ft.privacy":"Конфиденциальность","ft.refund":"Возврат"
+  },
+  en: {
+    "meta.title":"Lexy — hit your target IELTS score on the first try",
+    "nav.home":"Home","nav.games":"Games","nav.tools":"Tools","nav.guides":"Guides",
+    "nav.guarantee":"Guarantee","nav.faq":"FAQ","nav.reviews":"Reviews",
+    "btn.openLexy":"OPEN LEXY →","btn.openLexyShort":"OPEN LEXY",
+    "btn.startPrep":"START PREPARING →","btn.seeGames":"SEE GAMES",
+    "btn.train":"Train →","btn.tryGames":"TRY THE GAMES →","btn.guarTerms":"GUARANTEE TERMS",
+    "hero.title1":"Your target IELTS score","hero.title2":"on the first try",
+    "hero.lead":"AI trainer for Academic and General Training. All four sections, error breakdown, and mock exams in one app.",
+    "stats.rating":"average rating","stats.tools":"tools in one",
+    "uni.title":"Go further with us",
+    "reels.title":"You've already seen us everywhere","reels.lead":"TikTok, Instagram, Threads — and at school.",
+    "games.tag":"Games",
+    "games.title1":"Train your ","games.title2":"weak spots","games.title3":" as a game",
+    "games.lead":"Three short trainers — pronunciation, linking words, and Listening traps. Each round is under 2 minutes with instant feedback.",
+    "games.stat1":"avg round","games.stat2":"skills in focus","games.stat3":"unlimited tries",
+    "games.card1":"Pronunciation and rhythm","games.card2":"Linking words in Writing","games.card3":"Traps in audio",
+    "g1.sub":"Speaking · Pronunciation",
+    "g1.desc":"You listen to a model phrase and repeat it out loud. Lexy compares your speech to the original by pace, pauses, and intonation — and highlights where you swallowed words.",
+    "g1.tag3":"Microphone",
+    "g2.sub":"Writing · Linking words",
+    "g2.desc":"A linking word is missing — pick the right one out of four in 5 seconds. Wrong? You instantly see the rule. Score as much as you can in 60 seconds.",
+    "g3.sub":"Listening · Traps",
+    "g3.desc":"You hear a short clip where the speaker changes the answer mid-sentence: \"...on Monday — actually no, Wednesday\". Catch the final answer — and never fall for it on the real exam.",
+    "platform.title":"See the platform from the inside",
+    "reviews.scoreNote":"rated by Lexy<br>students","reviews.title":"Our grateful students",
+    "rev1.name":"Aigerim","rev1.text":"Scored 7.5 on my first try. I used to be scared of Speaking, but here I practiced with AI every day.",
+    "rev2.name":"Bekzat","rev2.text":"Writing feedback came within a minute and matched my real exam score. Off by only 0.5.",
+    "rev3.name":"Kamilla","rev3.text":"After the third attempt I finally got 6.5. The main thing was unlimited mocks — I stopped fearing the format.",
+    "reviews.note":"These are sample texts. Replace with real reviews and results.",
+    "guar.seal":"guarantee","guar.title":"Double result guarantee",
+    "guar.lead":"Didn't hit your target band — we'll refund your money or pay for your retake.",
+    "faq.title":"Frequent questions",
+    "faq.q1":"How is Lexy different from other platforms?",
+    "faq.a1":"One subscription covers all exam sections: AI grades Writing and Speaking against IELTS criteria and explains every mistake.",
+    "faq.q2":"What's included in the double guarantee?",
+    "faq.a2":"Describe the refund and retake terms — short, no fine print.",
+    "faq.q3":"Can I cancel the subscription?",
+    "faq.a3":"Yes, anytime in your profile settings. Access stays until the end of the paid period.",
+    "ugc.title":"Become a UGC creator","ugc.lead":"Shoot short videos for Lexy and get rewarded.","ugc.btn":"GO ↗",
+    "ft.games":"Games","ft.tools":"Tools","ft.tools1":"Score calculator","ft.tools2":"Writing topic generator","ft.tools3":"All tools",
+    "ft.lexy":"Lexy","ft.lexy1":"Guides","ft.lexy2":"Result guarantee","ft.lexy3":"Support","ft.lexy4":"iPhone app",
+    "ft.lang":"Language",
+    "ft.legal":"© 2026 Lexy. Put your legal entity and disclaimer here: IELTS® is a registered trademark of its owners, Lexy is not affiliated with them, if that is the case.",
+    "ft.terms":"Terms","ft.privacy":"Privacy","ft.refund":"Refund"
+  },
+  kz: {
+    "meta.title":"Lexy — IELTS мақсатты балын бірінші ретте алыңыз",
+    "nav.home":"Басты","nav.games":"Ойындар","nav.tools":"Құралдар","nav.guides":"Нұсқаулықтар",
+    "nav.guarantee":"Кепілдік","nav.faq":"Сұрақтар","nav.reviews":"Пікірлер",
+    "btn.openLexy":"LEXY АШУ →","btn.openLexyShort":"LEXY АШУ",
+    "btn.startPrep":"ДАЙЫНДЫҚТЫ БАСТАУ →","btn.seeGames":"ОЙЫНДАРДЫ КӨРУ",
+    "btn.train":"Жаттығу →","btn.tryGames":"ОЙЫНДАРДЫ БАЙҚАП КӨРУ →","btn.guarTerms":"КЕПІЛДІК ШАРТТАРЫ",
+    "hero.title1":"IELTS мақсатты балыңыз","hero.title2":"бірінші ретте",
+    "hero.lead":"Academic және General Training үшін AI-тренажёр. Барлық төрт бөлім, қате талдауы және сынақ емтихандары бір қосымшада.",
+    "stats.rating":"орташа баға","stats.tools":"құрал бірге",
+    "uni.title":"Бізбен бірге алысқа жетіңіз",
+    "reels.title":"Бізді барлық жерде көрдіңіз","reels.lead":"TikTok, Instagram, Threads — және мектепте.",
+    "games.tag":"Ойындар",
+    "games.title1":"Әлсіз тұстарыңызды ","games.title2":"ойын түрінде","games.title3":" шыңдаңыз",
+    "games.lead":"Үш қысқа тренажёр — айтылым, байланыстырғыштар және Listening тұзақтары. Әр раунд 2 минуттан аз және лезде кері байланыспен.",
+    "games.stat1":"орташа раунд","games.stat2":"дағды назарда","games.stat3":"шексіз әрекет",
+    "games.card1":"Айтылым және ырғақ","games.card2":"Writing-тегі байланыстырғыштар","games.card3":"Аудиодағы тұзақтар",
+    "g1.sub":"Speaking · Айтылым",
+    "g1.desc":"Эталондық сөйлемді тыңдап, дауыстап қайталайсыз. Lexy сіздің сөйлеуіңізді қарқын, паузалар және интонация бойынша салыстырып, сөздерді «жұтып қойған» жерлерді белгілейді.",
+    "g1.tag3":"Микрофон",
+    "g2.sub":"Writing · Байланыстырғыштар",
+    "g2.desc":"Сөйлемде байланыстырғыш жоқ — 5 секунд ішінде төртеуінен дұрысын таңда. Қателестіңіз бе? Ережені бірден көресіз. 60 секундта максимум ұпай жинаңыз.",
+    "g3.sub":"Listening · Тұзақтар",
+    "g3.desc":"Диктор жауапты сөйлем ортасында өзгертетін қысқа фрагментті тыңдайсыз: «...дүйсенбіде — жоқ, сәрсенбіде». Соңғы жауапты ұстап алыңыз — және емтиханда енді алданып қалмайсыз.",
+    "platform.title":"Платформаны ішінен қараңыз",
+    "reviews.scoreNote":"Lexy<br>оқушыларының бағасы","reviews.title":"Риза оқушыларымыз",
+    "rev1.name":"Айгерім","rev1.text":"Бірінші ретте 7.5 алдым. Бұрын Speaking-тен қорқатынмын, ал мұнда күн сайын AI-мен жаттықтым.",
+    "rev2.name":"Бекзат","rev2.text":"Writing бойынша фидбек бір минутта келді және нақты емтихан бағасымен сәйкесті. Айырмашылық небәрі 0.5.",
+    "rev3.name":"Камилла","rev3.text":"Үшінші әрекеттен кейін 6.5 алдым. Ең бастысы — шексіз сынақтар, форматтан қорқуды қойдым.",
+    "reviews.note":"Бұл мысал мәтіндер. Нақты пікірлер мен нәтижелерді қойыңыз.",
+    "guar.seal":"кепілдік","guar.title":"Қос кепілдік нәтиже",
+    "guar.lead":"Қажетті балды жинай алмасаңыз — ақшаңызды қайтарамыз немесе қайта тапсыруды төлейміз.",
+    "faq.title":"Жиі қойылатын сұрақтар",
+    "faq.q1":"Lexy басқа платформалардан несімен ерекшеленеді?",
+    "faq.a1":"Бір жазылым барлық бөлімдерге: AI Writing және Speaking-ті IELTS критерийлері бойынша тексереді және әр қатені түсіндіреді.",
+    "faq.q2":"«Қос кепілдікке» не кіреді?",
+    "faq.a2":"Ақшаны қайтару және қайта тапсыруды төлеу шарттарын сипаттаңыз — қысқа, ұсақ жазусыз.",
+    "faq.q3":"Жазылымнан бас тартуға бола ма?",
+    "faq.a3":"Иә, кез келген уақытта профиль параметрлерінде. Қолжетімділік төленген кезеңнің соңына дейін сақталады.",
+    "ugc.title":"UGC-креатор болыңыз","ugc.lead":"Lexy үшін қысқа бейнелер түсіріп, сыйақы алыңыз.","ugc.btn":"ӨТУ ↗",
+    "ft.games":"Ойындар","ft.tools":"Құралдар","ft.tools1":"Балл калькуляторы","ft.tools2":"Writing тақырыптарының генераторы","ft.tools3":"Барлық құралдар",
+    "ft.lexy":"Lexy","ft.lexy1":"Нұсқаулықтар","ft.lexy2":"Нәтиже кепілдігі","ft.lexy3":"Қолдау","ft.lexy4":"iPhone қосымшасы",
+    "ft.lang":"Тіл",
+    "ft.legal":"© 2026 Lexy. Осы жерге заңды тұлға мен дисклеймерді қойыңыз: IELTS® — оның иелерінің тіркелген сауда белгісі, Lexy олармен байланысты емес, егер солай болса.",
+    "ft.terms":"Шарттар","ft.privacy":"Құпиялылық","ft.refund":"Қайтару"
+  },
+  uz: {
+    "meta.title":"Lexy — IELTS maqsad ballingizni birinchi urinishda oling",
+    "nav.home":"Asosiy","nav.games":"O‘yinlar","nav.tools":"Vositalar","nav.guides":"Qo‘llanmalar",
+    "nav.guarantee":"Kafolat","nav.faq":"Savollar","nav.reviews":"Sharhlar",
+    "btn.openLexy":"LEXYNI OCHISH →","btn.openLexyShort":"LEXYNI OCHISH",
+    "btn.startPrep":"TAYYORLANISHNI BOSHLASH →","btn.seeGames":"O‘YINLARNI KO‘RISH",
+    "btn.train":"Mashq →","btn.tryGames":"O‘YINLARNI SINAB KO‘RISH →","btn.guarTerms":"KAFOLAT SHARTLARI",
+    "hero.title1":"IELTS maqsad ballingiz","hero.title2":"birinchi urinishda",
+    "hero.lead":"Academic va General Training uchun AI-trener. Barcha to‘rt bo‘lim, xatolar tahlili va sinov imtihonlari bitta ilovada.",
+    "stats.rating":"o‘rtacha baho","stats.tools":"vosita bir joyda",
+    "uni.title":"Biz bilan uzoqqa yeting",
+    "reels.title":"Bizni hamma joyda ko‘rgansiz","reels.lead":"TikTok, Instagram, Threads — va maktabda.",
+    "games.tag":"O‘yinlar",
+    "games.title1":"Zaif joylaringizni ","games.title2":"o‘yin tarzida","games.title3":" mashq qiling",
+    "games.lead":"Uchta qisqa trenajyor — talaffuz, bog‘lovchilar va Listening tuzoqlari. Har bir raund 2 daqiqadan kam va tezkor fikr-mulohaza bilan.",
+    "games.stat1":"o‘rtacha raund","games.stat2":"ko‘nikma diqqatda","games.stat3":"cheksiz urinish",
+    "games.card1":"Talaffuz va ritm","games.card2":"Writing’dagi bog‘lovchilar","games.card3":"Audiodagi tuzoqlar",
+    "g1.sub":"Speaking · Talaffuz",
+    "g1.desc":"Namunali iborani eshitib, ovoz chiqarib takrorlaysiz. Lexy nutqingizni temp, pauza va intonatsiya bo‘yicha taqqoslab, so‘zlarni «yutib yuborgan» joylarni belgilaydi.",
+    "g1.tag3":"Mikrofon",
+    "g2.sub":"Writing · Bog‘lovchilar",
+    "g2.desc":"Gapda bog‘lovchi tushib qolgan — 5 soniyada to‘rttadan to‘g‘risini tanlang. Xato qildingizmi? Darhol qoidani ko‘rasiz. 60 soniyada maksimal ball to‘plang.",
+    "g3.sub":"Listening · Tuzoqlar",
+    "g3.desc":"Diktor javobni gap o‘rtasida o‘zgartiradigan qisqa fragmentni eshitasiz: «...dushanbada — yo‘q, chorshanbada». Yakuniy javobni tuting — va imtihonda boshqa aldanmaysiz.",
+    "platform.title":"Platformani ichidan ko‘ring",
+    "reviews.scoreNote":"Lexy<br>o‘quvchilari bahosi","reviews.title":"Minnatdor o‘quvchilarimiz",
+    "rev1.name":"Aigerim","rev1.text":"Birinchi urinishda 7.5 oldim. Ilgari Speaking’dan qo‘rqardim, bu yerda har kuni AI bilan mashq qildim.",
+    "rev2.name":"Bekzat","rev2.text":"Writing bo‘yicha fikr-mulohaza bir daqiqada keldi va haqiqiy imtihon bahosiga mos tushdi. Farq atigi 0.5.",
+    "rev3.name":"Kamilla","rev3.text":"Uchinchi urinishdan keyin nihoyat 6.5 oldim. Eng muhimi — cheksiz sinovlar, formatdan qo‘rqishni tashladim.",
+    "reviews.note":"Bu namunaviy matnlar. Haqiqiy sharhlar va natijalarni qo‘ying.",
+    "guar.seal":"kafolat","guar.title":"Ikki tomonlama natija kafolati",
+    "guar.lead":"Kerakli ballni to‘play olmasangiz — pulingizni qaytaramiz yoki qayta topshirishni to‘laymiz.",
+    "faq.title":"Ko‘p beriladigan savollar",
+    "faq.q1":"Lexy boshqa platformalardan nimasi bilan farq qiladi?",
+    "faq.a1":"Bitta obuna barcha bo‘limlarga: AI Writing va Speaking’ni IELTS mezonlari bo‘yicha baholaydi va har bir xatoni tushuntiradi.",
+    "faq.q2":"«Ikki tomonlama kafolat»ga nima kiradi?",
+    "faq.a2":"Pulni qaytarish va qayta topshirishni to‘lash shartlarini tavsiflang — qisqa, mayda yozuvsiz.",
+    "faq.q3":"Obunani bekor qilish mumkinmi?",
+    "faq.a3":"Ha, istalgan vaqtda profil sozlamalarida. Kirish to‘langan davr oxirigacha saqlanadi.",
+    "ugc.title":"UGC-kreator bo‘ling","ugc.lead":"Lexy uchun qisqa videolar suratga oling va mukofot oling.","ugc.btn":"O‘TISH ↗",
+    "ft.games":"O‘yinlar","ft.tools":"Vositalar","ft.tools1":"Ball kalkulyatori","ft.tools2":"Writing mavzulari generatori","ft.tools3":"Barcha vositalar",
+    "ft.lexy":"Lexy","ft.lexy1":"Qo‘llanmalar","ft.lexy2":"Natija kafolati","ft.lexy3":"Qo‘llab-quvvatlash","ft.lexy4":"iPhone ilovasi",
+    "ft.lang":"Til",
+    "ft.legal":"© 2026 Lexy. Bu yerga yuridik shaxs va diskleymerni qo‘ying: IELTS® — uning egalarining ro‘yxatdan o‘tgan savdo belgisi, Lexy ular bilan bog‘liq emas, agar shunday bo‘lsa.",
+    "ft.terms":"Shartlar","ft.privacy":"Maxfiylik","ft.refund":"Qaytarish"
+  }
+};
+
+/* ============================================================
+   setLang — переводит ВСЁ по data-i18n сразу
+   ============================================================ */
+var LANGS = {
+  ru:{flag:'🇷🇺', name:'Русский',   code:'RU'},
+  en:{flag:'🇬🇧', name:'English',   code:'EN'},
+  kz:{flag:'🇰🇿', name:'Қазақша',   code:'KZ'},
+  uz:{flag:'🇺🇿', name:'O‘zbekcha', code:'UZ'}
+};
+var currentLang = 'ru';
+
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) lang = 'ru';
+  currentLang = lang;
+
+  // 1. перевести всё по data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    var txt = TRANSLATIONS[lang][key];
+    if(txt == null) return;
+    // если есть <br> — используем innerHTML
+    if(txt.indexOf('<br>') >= 0) el.innerHTML = txt;
+    else el.textContent = txt;
+  });
+
+  // 2. title страницы
+  var mt = TRANSLATIONS[lang]["meta.title"];
+  if(mt) document.title = mt;
+
+  // 3. активный язык в кнопке-пикере
+  var meta = LANGS[lang];
+  document.getElementById('langFlag').textContent = meta.flag;
+  document.getElementById('langName').textContent = meta.name;
+  document.getElementById('langCode').textContent = meta.code;
+  document.querySelectorAll('#langMenu button').forEach(function(b){
+    b.classList.toggle('on', b.dataset.lang === lang);
+  });
+  document.documentElement.lang = lang;
+
+  // 4. сохранить и перерисовать динамический контент (табы в телефоне)
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+  if(typeof renderPlatform === 'function') renderPlatform();
+
+  // 5. подсветить активный язык в футере
+  document.querySelectorAll('[data-lang-link]').forEach(function(a){
+    var b = a.querySelector('b');
+    if(b) b.style.color = (a.dataset.langLink === lang) ? 'var(--ink)' : '';
+  });
+}
+
+/* ============================================================
+   Переключатель языка в drawer
+   ============================================================ */
+var langPick = document.getElementById('langPick');
+var langPickBtn = document.getElementById('langPickBtn');
+var langMenu = document.getElementById('langMenu');
+
+langPickBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  langPick.classList.toggle('open');
+});
+langMenu.querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    setLang(b.dataset.lang);
+    langPick.classList.remove('open');
+  });
+});
+document.addEventListener('click', function(){ langPick.classList.remove('open'); });
+langMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+
+// клики по ссылкам языка в футере
+document.querySelectorAll('[data-lang-link]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    setLang(a.dataset.langLink);
+  });
+});
+
+/* ============================================================
+   Контент внутри .phone — тоже переводим
+   ============================================================ */
+var F='<svg><use href="#flame"/></svg>',
+H=function(t){return'<div class="app-hd">'+F+'Lexy<i>'+t+'</i></div>'},
+R=function(i,b,s,e){return'<div class="row"><span class="ok">'+i+'</span><div><b>'+b+'</b><span>'+s+'</span></div>'+(e?'<em>'+e+'</em>':'')+'</div>'},
+P=function(h){return'<div class="pg">'+h+'</div>'};
+
+// Тексты табов — по языкам
+var TAB_CONTENT = {
+  ru: [
+    ["Lexy AI","Lexy AI — собеседник для практики","Живой ИИ-партнёр для разговорной практики. Выбери характер и начинай говорить.",
+     P('<div class="hero-ai">'+F+'<h4>Знакомься с Lexy AI</h4><small>Готов, когда ты готов</small></div><div class="pers"><div class="c-vio"><b>Саркастичный</b>Колкий юмор держит в тонусе</div><div class="c-mint"><b>Добрый</b>Мягко поддержит и подскажет</div><div class="c-fire"><b>Строгий</b>Как настоящий экзаменатор</div></div><div class="bub">Tell me about a place you love visiting.</div><div class="bub me">I love the old town in my city…</div><a class="btn-app">Начать разговор</a>')],
+    ["План","Персональный план","До экзамена остаётся время, и Lexy раскладывает его по дням: что учить сегодня и успеваешь ли ты к цели.",
+     P('<div class="blk c-fire"><h4>До экзамена 52 дня</h4><small>6 декабря</small><div class="trk"><i style="--w:58%"></i></div><div class="nums"><div>6.5<small>СЕЙЧАС</small></div><div style="text-align:right">7.0<small>ЦЕЛЬ</small></div></div><small style="margin-top:8px">Почти успеваешь. Небольшой рывок, и цель твоя.</small></div><h3 style="font-size:17px">Твой план на сегодня</h3>'+R('1','Reading: 2 текста','15 мин')+R('2','Vocabulary: 20 слов','10 мин')+R('3','Writing Task 1','20 мин')+R('4','Разбор ошибок','5 мин'))],
+    ["Пробники","Пробные экзамены","Полный экзамен и отдельные секции в формате реального теста, с таймером и прогнозом балла.",
+     P('<h3>Пробные тесты IELTS</h3><p class="s">Выбери тип теста и начни практику</p><div class="blk c-vio"><span class="pill">~2.5 часа</span><h4>Полный экзамен</h4><small>Все четыре секции в условиях экзамена и один прогнозируемый балл.</small></div><div class="seg"><span class="on">Reading</span><span>Listening</span><span>Writing</span></div>'+R('⇄','Случайный тест','Lexy выберет за тебя','Начать')+R('▶','Academic Reading 12','3 текста · 60 мин')+R('▶','Academic Reading 13','3 текста · 60 мин'))],
+    ["Фидбек","Детальный фидбек","Оценка по критериям IELTS и разбор: что поправить, чтобы поднять балл.",
+     P('<h3>Результаты: Writing</h3><p class="s">Завершено 7 октября</p><div class="blk c-fire"><div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" style="--o:70" cx="60" cy="60" r="50"/></svg><b>7.0</b></div><h4 style="text-align:center;margin:10px 0 8px">Общий балл IELTS</h4><div class="g2"><div><b>7.0</b>Task</div><div><b>7.5</b>Coherence</div><div><b>6.5</b>Vocabulary</div><div><b>7.0</b>Grammar</div></div></div>'+R('!','Поправь артикли','3 ошибки в Task 2'))],
+    ["Статистика","Статистика прогресса","Видно, какой навык тянет балл вниз и как он растёт от пробника к пробнику.",
+     P('<h3>Статистика</h3><p class="s">Следи за прогрессом по навыкам</p><div class="seg"><span>Неделя</span><span class="on">Месяц</span><span>3 мес</span><span>Всё</span></div><div class="blk c-mint"><h4>Твои инсайты</h4><small>Собрано из твоих реальных результатов</small><div class="bar2"><i style="--w:78%"></i></div></div>'+R('✓','Стартовый band','~6.5','+0.5')+R('✓','Слабый навык','Аудирование')+R('✓','Типичные ошибки','Открыт разбор Writing'))],
+    ["Игры","Игры под давлением","Короткие раунды на слова и речь. Заниматься можно в дороге.",
+     P('<h3>Аркада</h3><p class="s">Мини-игры, которые тренируют английский под давлением</p><div class="blk c-ink"><span class="pill">Новая игра</span><h4>Shadow Speak</h4><small>Слушай эталон и повтори с той же интонацией.</small><a class="btn-app" style="margin-top:12px;display:inline-block;padding:10px 22px">▶ Играть</a></div><div class="blk c-plum"><span class="pill">Новый режим</span><h4>Listening Trap</h4><small>Диктор меняет ответ посреди фразы — не купись.</small></div>')],
+    ["Словарь","Личный словарь","Слова из заданий попадают в твой набор и повторяются, пока не запомнятся.",
+     P('<h3>Словарь</h3><p class="s">Твой личный словарь</p><div class="blk c-vio"><svg class="fl"><use href="#flame"/></svg><span class="pill">Каждый день</span><h4>Ежедневное<br>повторение</h4><small>Повторяй слова и добавляй новые</small><a class="btn-app w" style="margin-top:12px">Начать повторение · 4</a></div>'+R('A','resilient','устойчивый','новое')+R('A','mitigate','смягчать')+R('A','substantial','значительный'))],
+    ["Режим экзамена","Режим экзамена","Тест идёт полностью на английском, с таймером и паузой, как в день экзамена.",
+     P('<div class="blk c-fire" style="padding-top:20px"><svg class="fl"><use href="#flame"/></svg><h4 style="margin-top:36px">IELTS Academic<br>Writing</h4><small>2 задания: описание графика и эссе</small></div><div class="g2" style="color:var(--ink)"><div style="background:var(--peach)"><b style="color:var(--fire)">60 мин</b>время</div><div style="background:var(--peach)"><b style="color:var(--fire)">2</b>задания</div></div>'+R('1','Task 1','описание графика · 150+ слов')+R('2','Task 2','эссе · 250+ слов')+'<a class="btn-app">Начать тест Writing →</a>')]
+  ],
+  en: [
+    ["Lexy AI","Lexy AI — speaking partner","A live AI partner for speaking practice. Pick a personality and start talking.",
+     P('<div class="hero-ai">'+F+'<h4>Meet Lexy AI</h4><small>Ready when you are</small></div><div class="pers"><div class="c-vio"><b>Sarcastic</b>Sharp humor keeps you sharp</div><div class="c-mint"><b>Kind</b>Gently supports and hints</div><div class="c-fire"><b>Strict</b>Like a real examiner</div></div><div class="bub">Tell me about a place you love visiting.</div><div class="bub me">I love the old town in my city…</div><a class="btn-app">Start a conversation</a>')],
+    ["Plan","Personal plan","The exam date is coming, and Lexy breaks the time down by day: what to learn today and whether you're on track.",
+     P('<div class="blk c-fire"><h4>52 days until the exam</h4><small>December 6</small><div class="trk"><i style="--w:58%"></i></div><div class="nums"><div>6.5<small>NOW</small></div><div style="text-align:right">7.0<small>GOAL</small></div></div><small style="margin-top:8px">Almost there. One small push and the goal is yours.</small></div><h3 style="font-size:17px">Your plan for today</h3>'+R('1','Reading: 2 texts','15 min')+R('2','Vocabulary: 20 words','10 min')+R('3','Writing Task 1','20 min')+R('4','Error review','5 min'))],
+    ["Mocks","Mock exams","A full exam and separate sections in a real-test format, with a timer and band prediction.",
+     P('<h3>IELTS mock tests</h3><p class="s">Pick a test type and start</p><div class="blk c-vio"><span class="pill">~2.5 hours</span><h4>Full exam</h4><small>All four sections under exam conditions and one predicted band.</small></div><div class="seg"><span class="on">Reading</span><span>Listening</span><span>Writing</span></div>'+R('⇄','Random test','Lexy will pick for you','Start')+R('▶','Academic Reading 12','3 texts · 60 min')+R('▶','Academic Reading 13','3 texts · 60 min'))],
+    ["Feedback","Detailed feedback","Scored against IELTS criteria, with a breakdown of what to fix to raise your band.",
+     P('<h3>Writing results</h3><p class="s">Completed October 7</p><div class="blk c-fire"><div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" style="--o:70" cx="60" cy="60" r="50"/></svg><b>7.0</b></div><h4 style="text-align:center;margin:10px 0 8px">Overall IELTS band</h4><div class="g2"><div><b>7.0</b>Task</div><div><b>7.5</b>Coherence</div><div><b>6.5</b>Vocabulary</div><div><b>7.0</b>Grammar</div></div></div>'+R('!','Fix articles','3 errors in Task 2'))],
+    ["Stats","Progress stats","See which skill drags your band down and how it grows from mock to mock.",
+     P('<h3>Stats</h3><p class="s">Track your progress by skill</p><div class="seg"><span>Week</span><span class="on">Month</span><span>3 mo</span><span>All</span></div><div class="blk c-mint"><h4>Your insights</h4><small>Built from your real results</small><div class="bar2"><i style="--w:78%"></i></div></div>'+R('✓','Starting band','~6.5','+0.5')+R('✓','Weak skill','Listening')+R('✓','Common errors','Writing review opened'))],
+    ["Games","Games under pressure","Short rounds on words and speech. Practice on the go.",
+     P('<h3>Arcade</h3><p class="s">Mini-games that train English under pressure</p><div class="blk c-ink"><span class="pill">New game</span><h4>Shadow Speak</h4><small>Listen to a model and repeat with the same intonation.</small><a class="btn-app" style="margin-top:12px;display:inline-block;padding:10px 22px">▶ Play</a></div><div class="blk c-plum"><span class="pill">New mode</span><h4>Listening Trap</h4><small>The speaker changes the answer mid-sentence — don\'t fall for it.</small></div>')],
+    ["Vocabulary","Personal dictionary","Words from tasks go into your set and repeat until you remember them.",
+     P('<h3>Vocabulary</h3><p class="s">Your personal dictionary</p><div class="blk c-vio"><svg class="fl"><use href="#flame"/></svg><span class="pill">Daily</span><h4>Daily<br>review</h4><small>Repeat words and add new ones</small><a class="btn-app w" style="margin-top:12px">Start review · 4</a></div>'+R('A','resilient','resistant','new')+R('A','mitigate','to soften')+R('A','substantial','significant'))],
+    ["Exam mode","Exam mode","The test runs entirely in English, with a timer and pause, just like on exam day.",
+     P('<div class="blk c-fire" style="padding-top:20px"><svg class="fl"><use href="#flame"/></svg><h4 style="margin-top:36px">IELTS Academic<br>Writing</h4><small>2 tasks: chart description and essay</small></div><div class="g2" style="color:var(--ink)"><div style="background:var(--peach)"><b style="color:var(--fire)">60 min</b>time</div><div style="background:var(--peach)"><b style="color:var(--fire)">2</b>tasks</div></div>'+R('1','Task 1','chart description · 150+ words')+R('2','Task 2','essay · 250+ words')+'<a class="btn-app">Start Writing test →</a>')]
+  ],
+  kz: [
+    ["Lexy AI","Lexy AI — сөйлесу серіктесі","Тілдесу тәжірибесі үшін тірі AI-серіктес. Мінезді таңдап, сөйлеуді бастаңыз.",
+     P('<div class="hero-ai">'+F+'<h4>Lexy AI-мен танысыңыз</h4><small>Дайын болғанда бастаймыз</small></div><div class="pers"><div class="c-vio"><b>Сарказмді</b>Өткір юмор сергек ұстайды</div><div class="c-mint"><b>Мейірімді</b>Жұмсақ қолдап, кеңес береді</div><div class="c-fire"><b>Қатаң</b>Нағыз емтихан алушыдай</div></div><div class="bub">Tell me about a place you love visiting.</div><div class="bub me">I love the old town in my city…</div><a class="btn-app">Сөйлесуді бастау</a>')],
+    ["Жоспар","Жеке жоспар","Емтиханға уақыт қалды, ал Lexy оны күндер бойынша бөледі: бүгін не оқу керек және мақсатқа үлгересіз бе.",
+     P('<div class="blk c-fire"><h4>Емтиханға 52 күн</h4><small>6 желтоқсан</small><div class="trk"><i style="--w:58%"></i></div><div class="nums"><div>6.5<small>ҚАЗІР</small></div><div style="text-align:right">7.0<small>МАҚСАТ</small></div></div><small style="margin-top:8px">Дерлік үлгересіз. Кішкене серпіліс — және мақсат сіздікі.</small></div><h3 style="font-size:17px">Бүгінгі жоспарыңыз</h3>'+R('1','Reading: 2 мәтін','15 мин')+R('2','Vocabulary: 20 сөз','10 мин')+R('3','Writing Task 1','20 мин')+R('4','Қате талдауы','5 мин'))],
+    ["Сынақтар","Сынақ емтихандары","Нақты тест форматындағы толық емтихан және жеке бөлімдер, таймер және балл болжамымен.",
+     P('<h3>IELTS сынақ тесттері</h3><p class="s">Тест түрін таңдап, бастаңыз</p><div class="blk c-vio"><span class="pill">~2.5 сағат</span><h4>Толық емтихан</h4><small>Емтихан жағдайындағы барлық төрт бөлім және бір болжамды балл.</small></div><div class="seg"><span class="on">Reading</span><span>Listening</span><span>Writing</span></div>'+R('⇄','Кездейсоқ тест','Lexy сіз үшін таңдайды','Бастау')+R('▶','Academic Reading 12','3 мәтін · 60 мин')+R('▶','Academic Reading 13','3 мәтін · 60 мин'))],
+    ["Фидбек","Толық фидбек","IELTS критерийлері бойынша баға және нені түзеу керектігін талдау.",
+     P('<h3>Нәтижелер: Writing</h3><p class="s">7 қазанда аяқталды</p><div class="blk c-fire"><div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" style="--o:70" cx="60" cy="60" r="50"/></svg><b>7.0</b></div><h4 style="text-align:center;margin:10px 0 8px">Жалпы IELTS балы</h4><div class="g2"><div><b>7.0</b>Task</div><div><b>7.5</b>Coherence</div><div><b>6.5</b>Vocabulary</div><div><b>7.0</b>Grammar</div></div></div>'+R('!','Артикльдерді түзеңіз','Task 2-де 3 қате'))],
+    ["Статистика","Прогресс статистикасы","Қай дағды баллды төмен тартып жатқанын және ол сынақтан сынаққа қалай өсетінін көрсетеді.",
+     P('<h3>Статистика</h3><p class="s">Дағдылар бойынша прогресті қадағалаңыз</p><div class="seg"><span>Апта</span><span class="on">Ай</span><span>3 ай</span><span>Барлығы</span></div><div class="blk c-mint"><h4>Сіздің инсайттарыңыз</h4><small>Нақты нәтижелеріңізден жиналған</small><div class="bar2"><i style="--w:78%"></i></div></div>'+R('✓','Бастапқы band','~6.5','+0.5')+R('✓','Әлсіз дағды','Тыңдау')+R('✓','Жиі қателер','Writing талдауы ашылды'))],
+    ["Ойындар","Қысымдағы ойындар","Сөздер мен сөйлеуге арналған қысқа раундтар. Жолда да жаттығуға болады.",
+     P('<h3>Аркада</h3><p class="s">Қысымда ағылшын тілін жаттықтыратын мини-ойындар</p><div class="blk c-ink"><span class="pill">Жаңа ойын</span><h4>Shadow Speak</h4><small>Эталонды тыңдап, сол интонациямен қайтала.</small><a class="btn-app" style="margin-top:12px;display:inline-block;padding:10px 22px">▶ Ойнау</a></div><div class="blk c-plum"><span class="pill">Жаңа режим</span><h4>Listening Trap</h4><small>Диктор жауапты сөйлем ортасында өзгертеді — алданба.</small></div>')],
+    ["Сөздік","Жеке сөздік","Тапсырмалардан сөздер сіздің жинағыңызға кіріп, есте қалғанша қайталанады.",
+     P('<h3>Сөздік</h3><p class="s">Жеке сөздігіңіз</p><div class="blk c-vio"><svg class="fl"><use href="#flame"/></svg><span class="pill">Күн сайын</span><h4>Күнделікті<br>қайталау</h4><small>Сөздерді қайталап, жаңаларын қосыңыз</small><a class="btn-app w" style="margin-top:12px">Қайталауды бастау · 4</a></div>'+R('A','resilient','төзімді','жаңа')+R('A','mitigate','жұмсарту')+R('A','substantial','елеулі'))],
+    ["Емтихан режимі","Емтихан режимі","Тест толығымен ағылшын тілінде, таймермен және үзіліспен, емтихан күніндегідей.",
+     P('<div class="blk c-fire" style="padding-top:20px"><svg class="fl"><use href="#flame"/></svg><h4 style="margin-top:36px">IELTS Academic<br>Writing</h4><small>2 тапсырма: графикті сипаттау және эссе</small></div><div class="g2" style="color:var(--ink)"><div style="background:var(--peach)"><b style="color:var(--fire)">60 мин</b>уақыт</div><div style="background:var(--peach)"><b style="color:var(--fire)">2</b>тапсырма</div></div>'+R('1','Task 1','графикті сипаттау · 150+ сөз')+R('2','Task 2','эссе · 250+ сөз')+'<a class="btn-app">Writing тестін бастау →</a>')]
+  ],
+  uz: [
+    ["Lexy AI","Lexy AI — suhbat sherigi","Gapirish amaliyoti uchun jonli AI-sherik. Xarakterni tanlang va gapirishni boshlang.",
+     P('<div class="hero-ai">'+F+'<h4>Lexy AI bilan tanishing</h4><small>Tayyor bo‘lganingizda boshlaymiz</small></div><div class="pers"><div class="c-vio"><b>Sarkastik</b>O‘tkir hazil sizni tetik tutadi</div><div class="c-mint"><b>Mehribon</b>Yumshoq qo‘llab-quvvatlaydi</div><div class="c-fire"><b>Qattiqqo‘l</b>Haqiqiy imtihon oluvchidek</div></div><div class="bub">Tell me about a place you love visiting.</div><div class="bub me">I love the old town in my city…</div><a class="btn-app">Suhbatni boshlash</a>')],
+    ["Reja","Shaxsiy reja","Imtihonga vaqt qoldi, Lexy uni kunlarga bo‘ladi: bugun nimani o‘rganish kerak va maqsadga ulgurasizmi.",
+     P('<div class="blk c-fire"><h4>Imtihonga 52 kun</h4><small>6 dekabr</small><div class="trk"><i style="--w:58%"></i></div><div class="nums"><div>6.5<small>HOZIR</small></div><div style="text-align:right">7.0<small>MAQSAD</small></div></div><small style="margin-top:8px">Deyarli ulgurasiz. Kichik bir turtki — va maqsad sizniki.</small></div><h3 style="font-size:17px">Bugungi rejangiz</h3>'+R('1','Reading: 2 matn','15 daq')+R('2','Vocabulary: 20 so‘z','10 daq')+R('3','Writing Task 1','20 daq')+R('4','Xatolar tahlili','5 daq'))],
+    ["Sinovlar","Sinov imtihonlari","Haqiqiy test formatidagi to‘liq imtihon va alohida bo‘limlar, taymer va ball prognozi bilan.",
+     P('<h3>IELTS sinov testlari</h3><p class="s">Test turini tanlang va boshlang</p><div class="blk c-vio"><span class="pill">~2.5 soat</span><h4>To‘liq imtihon</h4><small>Imtihon sharoitidagi barcha to‘rt bo‘lim va bitta prognoz ball.</small></div><div class="seg"><span class="on">Reading</span><span>Listening</span><span>Writing</span></div>'+R('⇄','Tasodifiy test','Lexy siz uchun tanlaydi','Boshlash')+R('▶','Academic Reading 12','3 matn · 60 daq')+R('▶','Academic Reading 13','3 matn · 60 daq'))],
+    ["Fikr","Batafsil fikr-mulohaza","IELTS mezonlari bo‘yicha baho va nimani tuzatish kerakligi tahlili.",
+     P('<h3>Natijalar: Writing</h3><p class="s">7 oktyabrda tugatildi</p><div class="blk c-fire"><div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" style="--o:70" cx="60" cy="60" r="50"/></svg><b>7.0</b></div><h4 style="text-align:center;margin:10px 0 8px">Umumiy IELTS bali</h4><div class="g2"><div><b>7.0</b>Task</div><div><b>7.5</b>Coherence</div><div><b>6.5</b>Vocabulary</div><div><b>7.0</b>Grammar</div></div></div>'+R('!','Artikllarni tuzating','Task 2 da 3 xato'))],
+    ["Statistika","Progress statistikasi","Qaysi ko‘nikma ballni pastga tortayotganini va u sinovdan sinovga qanday o‘sishini ko‘rsatadi.",
+     P('<h3>Statistika</h3><p class="s">Ko‘nikmalar bo‘yicha progressni kuzating</p><div class="seg"><span>Hafta</span><span class="on">Oy</span><span>3 oy</span><span>Hammasi</span></div><div class="blk c-mint"><h4>Sizning tushunchalaringiz</h4><small>Haqiqiy natijalaringizdan yig‘ilgan</small><div class="bar2"><i style="--w:78%"></i></div></div>'+R('✓','Boshlang‘ich band','~6.5','+0.5')+R('✓','Zaif ko‘nikma','Tinglash')+R('✓','Odatiy xatolar','Writing tahlili ochildi'))],
+    ["O‘yinlar","Bosim ostidagi o‘yinlar","So‘zlar va nutq uchun qisqa raundlar. Yo‘lda ham mashq qilish mumkin.",
+     P('<h3>Arkada</h3><p class="s">Bosim ostida ingliz tilini mashq qildiradigan mini-o‘yinlar</p><div class="blk c-ink"><span class="pill">Yangi o‘yin</span><h4>Shadow Speak</h4><small>Namunani tinglab, xuddi shu intonatsiya bilan takrorla.</small><a class="btn-app" style="margin-top:12px;display:inline-block;padding:10px 22px">▶ O‘ynash</a></div><div class="blk c-plum"><span class="pill">Yangi rejim</span><h4>Listening Trap</h4><small>Diktor javobni gap o‘rtasida o‘zgartiradi — aldanma.</small></div>')],
+    ["Lug‘at","Shaxsiy lug‘at","Vazifalardan so‘zlar sizning to‘plamingizga kirib, eslab qolguncha takrorlanadi.",
+     P('<h3>Lug‘at</h3><p class="s">Shaxsiy lug‘atingiz</p><div class="blk c-vio"><svg class="fl"><use href="#flame"/></svg><span class="pill">Har kuni</span><h4>Kunlik<br>takrorlash</h4><small>So‘zlarni takrorlang va yangilarini qo‘shing</small><a class="btn-app w" style="margin-top:12px">Takrorlashni boshlash · 4</a></div>'+R('A','resilient','bardoshli','yangi')+R('A','mitigate','yumshatish')+R('A','substantial','sezilarli'))],
+    ["Imtihon rejimi","Imtihon rejimi","Test to‘liq ingliz tilida, taymer va pauza bilan, imtihon kunidagidek.",
+     P('<div class="blk c-fire" style="padding-top:20px"><svg class="fl"><use href="#flame"/></svg><h4 style="margin-top:36px">IELTS Academic<br>Writing</h4><small>2 vazifa: grafik tavsifi va esse</small></div><div class="g2" style="color:var(--ink)"><div style="background:var(--peach)"><b style="color:var(--fire)">60 daq</b>vaqt</div><div style="background:var(--peach)"><b style="color:var(--fire)">2</b>vazifa</div></div>'+R('1','Task 1','grafik tavsifi · 150+ so‘z')+R('2','Task 2','esse · 250+ so‘z')+'<a class="btn-app">Writing testini boshlash →</a>')]
+  ]
+};
+
+var tabs=document.getElementById("tabs"),scr=document.getElementById("scr"),cp=document.getElementById("copy");
+var currentTab = 0;
+
+function renderPlatform(){
+  var D = TAB_CONTENT[currentLang] || TAB_CONTENT.ru;
+  tabs.innerHTML = '';
+  D.forEach(function(d,i){
+    var b=document.createElement("button");
+    b.className="tab"; b.role="tab"; b.textContent=d[0];
+    b.onclick=function(){ currentTab=i; show(i); };
+    tabs.appendChild(b);
+  });
+  if(currentTab >= D.length) currentTab = 0;
+  show(currentTab);
+}
+
+function show(i){
+  var D = TAB_CONTENT[currentLang] || TAB_CONTENT.ru;
+  var d = D[i];
+  if(!d) return;
+  [].forEach.call(tabs.children,function(b,k){b.setAttribute("aria-selected",k==i)});
+  scr.innerHTML=H(d[0])+d[3];scr.scrollTop=0;
+  [].forEach.call(scr.querySelectorAll(".pg>*"),function(e,k){e.style.setProperty("--i",k)});
+  document.getElementById("ct").textContent=d[1];
+  document.getElementById("cp").textContent=d[2];
+  cp.style.animation="none";void cp.offsetWidth;cp.style.animation="";
+}
+
+/* universities — не переводим, это имена собственные */
+var U=["Harvard University","Massachusetts Institute of Technology","Stanford University","Columbia University","Princeton University","Yale University","University of Pennsylvania","UC Berkeley","University of Texas at Austin","New York University"],tk=document.getElementById("trk");
+tk.innerHTML=U.concat(U).map(function(n){return'<span class="u"><i>'+n[0]+'</i>'+n+'</span>'}).join("");
+
+/* drawer */
+function t(o){document.body.classList.toggle("open",o)}
+document.getElementById("open").onclick=function(){t(true)};
+document.getElementById("close").onclick=document.getElementById("veil").onclick=function(){t(false)};
+[].forEach.call(document.querySelectorAll(".drawer a.item"),function(a,k){a.style.setProperty("--i",k)});
+[].forEach.call(document.querySelectorAll(".drawer a.item, .drawer .btn-fire"),function(a){a.onclick=function(){t(false)}});
+
+/* scroll: header + progress */
+var hd=document.querySelector("header");
+function sc(){var y=scrollY,m=document.documentElement.scrollHeight-innerHeight;hd.classList.toggle("sc",y>8);hd.style.setProperty("--p",m>0?y/m:0)}
+addEventListener("scroll",sc,{passive:true});sc();
+
+/* reveal */
+[].forEach.call(document.querySelectorAll(".stars"),function(s){s.innerHTML=[0,1,2,3,4].map(function(k){return'<span style="--k:'+k+'">★</span>'}).join("")});
+var rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target;io.unobserve(el);el.classList.add("in","go");el.addEventListener("transitionend",function(){el.classList.remove("rv","in")},{once:true})})},{threshold:.15});
+[].forEach.call(document.querySelectorAll("section h2,section .lead,.tabs,.phone,.reel,.score,.rev,.guar,details,.ugc,.cols>div,.legal,.game-tile,.games-hero"),function(el){
+ if(el.closest(".hero"))return;
+ el.style.setProperty("--d",Math.min(5,[].indexOf.call(el.parentNode.children,el)));
+ el.classList.add("rv");io.observe(el)});
+
+/* count-up */
+var co=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;co.unobserve(e.target);if(rm)return;var el=e.target,x=el.textContent,v=parseFloat(x),d=(x.split(".")[1]||"").length,s=performance.now();(function f(n){var k=Math.min(1,(n-s)/1300);el.textContent=(v*(1-Math.pow(1-k,3))).toFixed(d);if(k<1)requestAnimationFrame(f)})(s)})});
+[].forEach.call(document.querySelectorAll(".stats strong,.score strong,.games-stats strong"),function(el){co.observe(el)});
+
+/* mascot */
+var ms=document.querySelector(".mascot");
+addEventListener("pointermove",function(e){var r=ms.getBoundingClientRect();
+ ms.style.setProperty("--ex",Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/260)));
+ ms.style.setProperty("--ey",Math.max(-1,Math.min(1,(e.clientY-r.top-r.height/2)/260)))},{passive:true});
+ms.onclick=function(){ms.classList.remove("boop");void ms.offsetWidth;ms.classList.add("boop")};
+
+/* ============================================================
+   INIT: подхватить язык из localStorage → navigator → ru
+   ============================================================ */
+(function(){
+  var saved;
+  try{ saved = localStorage.getItem('lang'); }catch(e){}
+  if(!saved){
+    var nav = (navigator.language || 'ru').slice(0,2).toLowerCase();
+    saved = TRANSLATIONS[nav] ? nav : 'ru';
+  }
+  if(!TRANSLATIONS[saved]) saved = 'ru';
+  setLang(saved);
+})();
+</script>
+</body>
+</html>
