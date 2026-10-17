@@ -340,6 +340,7 @@ document.getElementById('btnVerify').addEventListener('click', function(){
   var code = '';
   inputs.forEach(function(i){ code += i.value; });
   if(code.length === 4){
+    localStorage.setItem('user_logged_in', 'true');
     // Имитация успешного входа
     window.location.href = 'main.html';
   } else {

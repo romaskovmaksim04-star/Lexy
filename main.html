@@ -681,12 +681,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      </div>
      <p data-i18n="g3.desc">Слушаешь короткий фрагмент, где диктор меняет ответ посреди фразы: «...on Monday — actually no, Wednesday». Поймай финальный ответ — и больше не купишься на экзамене.</p>
      <div class="tags"><span>Listening</span><span>Anti-trap</span><span>15 сек</span></div>
-     <a class="go" href="game-trap.html" data-i18n="btn.train">Тренировать →</a>
+     <a class="go" href="trap-preview.html" data-i18n="btn.train">Тренировать →</a>
     </article>
    </div>
 
    <div style="text-align:center;margin-top:34px">
-    <a class="btn btn-fire" href="game-shadow.html" data-i18n="btn.tryGames">ПОПРОБОВАТЬ ИГРЫ →</a>
+
    </div>
   </div>
  </section>
@@ -793,7 +793,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      <h4 data-i18n="ft.games">Игры</h4>
      <a href="game-shadow.html">Shadow Speak</a>
      <a href="game-connector.html">Connector Rush</a>
-     <a href="game-trap.html">Listening Trap</a>
+     <a href="trap-preview.html">Listening Trap</a>
    </div>
    <div>
      <h4 data-i18n="ft.tools">Инструменты</h4>
@@ -1269,8 +1269,27 @@ function t(o){document.body.classList.toggle("open",o)}
 document.getElementById("open").onclick=function(){t(true)};
 document.getElementById("close").onclick=document.getElementById("veil").onclick=function(){t(false)};
 [].forEach.call(document.querySelectorAll(".drawer a.item"),function(a,k){a.style.setProperty("--i",k)});
-[].forEach.call(document.querySelectorAll(".drawer a.item, .drawer .btn-fire"),function(a){a.onclick=function(){t(false)}});
+document.querySelectorAll(".drawer a.item, .drawer .btn-fire").forEach(function(a) {
+  a.addEventListener("click", function(e) {
+    var href = a.getAttribute("href");
+    t(false); // Закрываем меню
 
+    // Если это ссылка-якорь (начинается с #)
+    if (href && href.startsWith("#")) {
+      e.preventDefault();
+      setTimeout(function() {
+        if (href === "#top") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          var target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+      }, 300);
+    }
+  });
+});
 /* scroll: header + progress */
 var hd=document.querySelector("header");
 function sc(){var y=scrollY,m=document.documentElement.scrollHeight-innerHeight;hd.classList.toggle("sc",y>8);hd.style.setProperty("--p",m>0?y/m:0)}
