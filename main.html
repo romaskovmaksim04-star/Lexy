@@ -28,6 +28,7 @@ h2{font-size:clamp(24px,5vw,38px);font-weight:700;margin-bottom:12px}
 .btn-fire:hover{transform:translateY(-2px)}
 .btn-ghost{background:#fff;border:1.5px solid var(--line)}
 .btn-sm{padding:11px 18px;font-size:13px}
+.btn-ghost:hover{border-color:var(--fire);color:var(--fire)}
 
 /* header */
 header{position:sticky;top:0;z-index:20;background:rgba(247,245,252,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
@@ -40,6 +41,23 @@ header{position:sticky;top:0;z-index:20;background:rgba(247,245,252,.9);backdrop
 .burger span::before{position:absolute;top:-6px}.burger span::after{position:absolute;top:6px}
 nav.desk{display:none;gap:26px;font-weight:500}
 nav.desk a:hover{color:var(--fire)}
+
+nav.desk{display:none;gap:26px;font-weight:500;align-items:center}
+nav.desk a:hover{color:var(--fire)}
+
+/* ДЕСКТОПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА */
+.desk-lang{position:relative;margin-left:10px}
+.desk-lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:600 13px var(--body);transition:border-color .2s, background .2s;color:var(--ink);cursor:pointer}
+.desk-lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.desk-lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.desk-lang.open .desk-lang-btn svg{transform:rotate(180deg)}
+.desk-lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.desk-lang.open .desk-lang-menu{opacity:1;transform:none;pointer-events:auto}
+.desk-lang-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s;cursor:pointer}
+.desk-lang-menu button:hover{background:var(--peach)}
+.desk-lang-menu button.on{background:#FFF3EC;color:var(--fire)}
+.desk-lang-menu button.on::after{content:"✓";margin-left:auto;font-weight:700}
+.desk-lang-menu button .flag{font-size:16px}
 
 /* drawer */
 .veil{position:fixed;inset:0;background:rgba(27,20,51,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
@@ -454,6 +472,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  <symbol id="ic-ig" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c2.7 0 3.1 0 4.1.06 1.1.05 1.8.23 2.5.5.7.27 1.2.63 1.8 1.18.55.55.9 1.1 1.18 1.8.27.65.45 1.4.5 2.45C22 9 22 9.4 22 12s0 3-.06 4.05c-.05 1.05-.23 1.8-.5 2.45a4.9 4.9 0 0 1-1.18 1.8 4.9 4.9 0 0 1-1.8 1.18c-.65.27-1.4.45-2.45.5C15 22 14.6 22 12 22s-3 0-4.05-.06c-1.05-.05-1.8-.23-2.45-.5a4.9 4.9 0 0 1-1.8-1.18 4.9 4.9 0 0 1-1.18-1.8c-.27-.65-.45-1.4-.5-2.45C2 15 2 14.6 2 12s0-3 .06-4.05c.05-1.05.23-1.8.5-2.45a4.9 4.9 0 0 1 1.18-1.8A4.9 4.9 0 0 1 5.54 2.5c.65-.27 1.4-.45 2.45-.5C9 2 9.4 2 12 2zm0 3c-1.8 0-3.2 1.4-3.2 3.2s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2S13.8 5 12 5zm0 8.6c-2.2 0-4 1.8-4 4v.6c1.3.3 2.7.5 4 .5s2.7-.2 4-.5v-.6c0-2.2-1.8-4-4-4zm5-7.2a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6z"/></symbol>
  <symbol id="ic-yt" viewBox="0 0 24 24"><path fill="currentColor" d="M23 12s0-3.3-.4-4.9a2.6 2.6 0 0 0-1.8-1.8C19.2 5 12 5 12 5s-7.2 0-8.8.3a2.6 2.6 0 0 0-1.8 1.8C1 8.7 1 12 1 12s0 3.3.4 4.9c.2.85.9 1.5 1.8 1.8C4.8 19 12 19 12 19s7.2 0 8.8-.3a2.6 2.6 0 0 0 1.8-1.8C23 15.3 23 12 23 12zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z"/></symbol>
  <symbol id="ic-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></symbol>
+ <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <div class="veil" id="veil"></div>
@@ -485,7 +504,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     <button data-lang="uz"><span class="flag">🇺🇿</span><span class="name">O‘zbekcha</span><span class="code">UZ</span></button>
    </div>
   </div>
-  <a class="btn btn-fire" href="reg.html" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
+  <a class="btn btn-ghost auth-btn" style="width:100%;justify-content:center;margin-bottom:8px;" href="login.html" data-i18n="btn.login">Войти</a>  <a class="btn btn-fire" href="reg.html" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
  </div>
 </aside>
 
@@ -498,7 +517,27 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     <a href="#reviews" data-i18n="nav.reviews">Отзывы</a>
     <a href="#guarantee" data-i18n="nav.guarantee">Гарантия</a>
     <a href="#faq" data-i18n="nav.faq">Вопросы</a>
+
+    <!-- ПК: ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА -->
+    <div class="desk-lang" id="deskLang">
+      <button class="desk-lang-btn" id="deskLangBtn">
+        <span id="deskCurFlag">🇷🇺</span>
+        <span id="deskCurLang">RU</span>
+        <svg><use href="#ic-chev"/></svg>
+      </button>
+      <div class="desk-lang-menu" id="deskLangMenu">
+        <button data-lang="ru" class="on"><span class="flag">🇷🇺</span> Русский</button>
+        <button data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
   </nav>
+
+  <!-- ПК: ВОЙТИ + ОТКРЫТЬ LEXY -->
+    <!-- Кнопка Войти получает margin-left:auto, чтобы отталкиваться от логотипа/меню и прижимать всю группу вправо -->
+  <a class="btn btn-ghost btn-sm auth-btn" href="login.html" style="margin-left:auto; margin-right:10px;" data-i18n="btn.login">Войти</a>
+  <!-- У Открыть Lexy margin-left:auto убираем, чтобы они стояли плотно друг к другу -->
   <a class="btn btn-fire btn-sm" href="reg.html" id="start" data-i18n="btn.openLexyShort">ОТКРЫТЬ LEXY</a>
  </div>
 </header>
@@ -536,7 +575,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
    <div class="wrap"><h2 style="text-align:center" data-i18n="uni.title">С нами ты достигнешь большего</h2></div>
    <div class="uni" style="margin-top:22px"><div class="track" id="trk"></div></div>
  </section>
-
+войти
  <!-- ============ REELS — умная карусель ============ -->
  <section id="reels-section" style="padding-top:8px">
   <div class="wrap">
@@ -603,7 +642,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      </div>
      <p data-i18n="g1.desc">Слушаешь эталонную фразу и повторяешь вслух. Lexy сравнивает твою речь с оригиналом по темпу, паузам и интонации — и подсвечивает, где ты «проглотил» слова.</p>
      <div class="tags"><span>Speaking</span><span>Pronunciation</span><span data-i18n="g1.tag3">Микрофон</span></div>
-     <a class="go" href="reg.html" data-i18n="btn.train">Тренировать →</a>
+     <a class="go" href="game-shadow.html" data-i18n="btn.train">Тренировать →</a>
     </article>
 
     <article class="game-tile">
@@ -700,7 +739,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     </div>
     <div style="display:grid;gap:10px">
       <a class="btn btn-fire" href="reg.html" data-i18n="btn.startPrep">НАЧАТЬ ПОДГОТОВКУ →</a>
-      <a class="btn btn-ghost" href="#faq" style="color:var(--ink)" data-i18n="btn.guarTerms">УСЛОВИЯ ГАРАНТИИ</a>
+      <a class="btn btn-ghost" href="guarantee.html" style="color:var(--ink)" data-i18n="btn.guarTerms">УСЛОВИЯ ГАРАНТИИ</a>
     </div>
    </div>
   </div>
@@ -752,9 +791,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
    <div>
      <h4 data-i18n="ft.lexy">Lexy</h4>
      <a href="guides.html" data-i18n="ft.lexy1">Гайды</a>
-     <a href="#" data-i18n="ft.lexy2">Гарантия результата</a>
-     <a href="#" data-i18n="ft.lexy3">Поддержка</a>
-     <a href="#" data-i18n="ft.lexy4">Приложение для iPhone</a>
+     <a href="guarantee.html" data-i18n="ft.lexy2">Гарантия результата</a>
+     <a href="support.html" data-i18n="ft.lexy3">Поддержка</a>
    </div>
     <div>
     <h4 data-i18n="ft.lang">Язык</h4>
@@ -832,7 +870,8 @@ var TRANSLATIONS = {
     "ft.games":"Игры","ft.tools":"Инструменты","ft.tools1":"Speaking с таймером","ft.tools2":"Writing с таймером","ft.tools3":"Все инструменты",    "ft.lexy":"Lexy","ft.lexy1":"Гайды","ft.lexy2":"Гарантия результата","ft.lexy3":"Поддержка","ft.lexy4":"Приложение для iPhone",
     "ft.lang":"Язык",
     "ft.legal":"© 2026 Lexy. Подставь сюда юридическое лицо и дисклеймер: IELTS® — зарегистрированный товарный знак его владельцев, Lexy не связан с ними, если это так.",
-    "ft.terms":"Условия","ft.privacy":"Конфиденциальность","ft.refund":"Возврат"
+    "ft.terms":"Условия","ft.privacy":"Конфиденциальность","ft.refund":"Возврат",
+    "btn.login":"Войти"
   },
   en: {
     "meta.title":"Lexy — hit your target IELTS score on the first try",
@@ -877,7 +916,8 @@ var TRANSLATIONS = {
     "ft.games":"Games","ft.tools":"Tools","ft.tools1":"Speaking with timer","ft.tools2":"Writing with timer","ft.tools3":"All tools",    "ft.lexy":"Lexy","ft.lexy1":"Guides","ft.lexy2":"Result guarantee","ft.lexy3":"Support","ft.lexy4":"iPhone app",
     "ft.lang":"Language",
     "ft.legal":"© 2026 Lexy. Put your legal entity and disclaimer here: IELTS® is a registered trademark of its owners, Lexy is not affiliated with them, if that is the case.",
-    "ft.terms":"Terms","ft.privacy":"Privacy","ft.refund":"Refund"
+    "ft.terms":"Terms","ft.privacy":"Privacy","ft.refund":"Refund",
+    "btn.login":"Log in"
   },
   kz: {
     "meta.title":"Lexy — IELTS мақсатты балын бірінші ретте алыңыз",
@@ -922,7 +962,8 @@ var TRANSLATIONS = {
     "ft.games":"Ойындар","ft.tools":"Құралдар","ft.tools1":"Таймермен Speaking","ft.tools2":"Таймермен Writing","ft.tools3":"Барлық құралдар",    "ft.lexy":"Lexy","ft.lexy1":"Нұсқаулықтар","ft.lexy2":"Нәтиже кепілдігі","ft.lexy3":"Қолдау","ft.lexy4":"iPhone қосымшасы",
     "ft.lang":"Тіл",
     "ft.legal":"© 2026 Lexy. Осы жерге заңды тұлға мен дисклеймерді қойыңыз: IELTS® — оның иелерінің тіркелген сауда белгісі, Lexy олармен байланысты емес, егер солай болса.",
-    "ft.terms":"Шарттар","ft.privacy":"Құпиялылық","ft.refund":"Қайтару"
+    "ft.terms":"Шарттар","ft.privacy":"Құпиялылық","ft.refund":"Қайтару",
+    "btn.login":"Кіру"
   },
   uz: {
     "meta.title":"Lexy — IELTS maqsad ballingizni birinchi urinishda oling",
@@ -967,7 +1008,8 @@ var TRANSLATIONS = {
     "ft.games":"O‘yinlar","ft.tools":"Vositalar","ft.tools1":"Taymer bilan Speaking","ft.tools2":"Taymer bilan Writing","ft.tools3":"Barcha vositalar",    "ft.lexy":"Lexy","ft.lexy1":"Qo‘llanmalar","ft.lexy2":"Natija kafolati","ft.lexy3":"Qo‘llab-quvvatlash","ft.lexy4":"iPhone ilovasi",
     "ft.lang":"Til",
     "ft.legal":"© 2026 Lexy. Bu yerga yuridik shaxs va diskleymerni qo‘ying: IELTS® — uning egalarining ro‘yxatdan o‘tgan savdo belgisi, Lexy ular bilan bog‘liq emas, agar shunday bo‘lsa.",
-    "ft.terms":"Shartlar","ft.privacy":"Maxfiylik","ft.refund":"Qaytarish"
+    "ft.terms":"Shartlar","ft.privacy":"Maxfiylik","ft.refund":"Qaytarish",
+    "btn.login":"Kirish"
   }
 };
 
@@ -987,10 +1029,22 @@ function setLang(lang){
   });
   var mt = TRANSLATIONS[lang]["meta.title"]; if(mt) document.title = mt;
   var meta = LANGS[lang];
-  document.getElementById('langFlag').textContent = meta.flag;
-  document.getElementById('langName').textContent = meta.name;
-  document.getElementById('langCode').textContent = meta.code;
-  document.querySelectorAll('#langMenu button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+
+  // Мобильный
+  if(document.getElementById('langFlag')){
+    document.getElementById('langFlag').textContent = meta.flag;
+    document.getElementById('langName').textContent = meta.name;
+    document.getElementById('langCode').textContent = meta.code;
+    document.querySelectorAll('#langMenu button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+  }
+
+  // Десктопный
+  if(document.getElementById('deskCurFlag')){
+    document.getElementById('deskCurFlag').textContent = meta.flag;
+    document.getElementById('deskCurLang').textContent = meta.code;
+    document.querySelectorAll('#deskLangMenu button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
+  }
+
   document.documentElement.lang = lang;
   try{ localStorage.setItem('lang', lang); }catch(e){}
   if(typeof renderPlatform === 'function') renderPlatform();
@@ -998,7 +1052,6 @@ function setLang(lang){
     var b = a.querySelector('b'); if(b) b.style.color = (a.dataset.langLink === lang) ? 'var(--ink)' : '';
   });
 }
-
 /* ============ Language switcher ============ */
 var langPick = document.getElementById('langPick');
 var langPickBtn = document.getElementById('langPickBtn');
@@ -1012,6 +1065,19 @@ langMenu.addEventListener('click', function(e){ e.stopPropagation(); });
 document.querySelectorAll('[data-lang-link]').forEach(function(a){
   a.addEventListener('click', function(e){ e.preventDefault(); setLang(a.dataset.langLink); });
 });
+
+/* ============ Language switcher (Desktop) ============ */
+var deskLang = document.getElementById('deskLang');
+var deskLangBtn = document.getElementById('deskLangBtn');
+var deskLangMenu = document.getElementById('deskLangMenu');
+if (deskLangBtn && deskLangMenu) {
+  deskLangBtn.addEventListener('click', function(e){ e.stopPropagation(); deskLang.classList.toggle('open'); });
+  deskLangMenu.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.dataset.lang); deskLang.classList.remove('open'); });
+  });
+  document.addEventListener('click', function(){ deskLang.classList.remove('open'); });
+  deskLangMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+}
 
 /* ============================================================
    REELS RENDER + умное поведение
@@ -1225,13 +1291,28 @@ ms.onclick=function(){ms.classList.remove("boop");void ms.offsetWidth;ms.classLi
   setLang(saved);
   renderReels();
 })();
+
+/* Проверка авторизации */
+(function checkAuth() {
+  // Если в localStorage есть флаг isLoggedIn (мы поставим его на странице login.html)
+  if (localStorage.getItem('isLoggedIn') === 'true') {
+    // Скрываем все кнопки с классом auth-btn
+    document.querySelectorAll('.auth-btn').forEach(function(btn) {
+      btn.style.display = 'none';
+    });
+
+    // Опционально: вместо "Войти" в шапке можно показать кнопку "Профиль"
+    var deskAuth = document.querySelector('.bar .auth-btn');
+    if (deskAuth) {
+      var profileBtn = document.createElement('a');
+      profileBtn.href = 'profile.html'; // или куда вести
+      profileBtn.className = 'btn btn-ghost btn-sm';
+      profileBtn.innerHTML = 'Профиль';
+      deskAuth.parentNode.insertBefore(profileBtn, deskAuth.nextSibling);
+    }
+  }
+})();
+
 </script>
 </body>
 </html>
-
-
-<h4 data-i18n="ft.lexy">Lexy</h4>
-<a href="#" data-i18n="ft.lexy1">Гайды</a>
-<a href="#" data-i18n="ft.lexy2">Гарантия результата</a>
-<a href="#" data-i18n="ft.lexy3">Поддержка</a>
-<a href="#" data-i18n="ft.lexy4">Приложение для iPhone</a>

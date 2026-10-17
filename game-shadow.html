@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shadow Speak — Lexy Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--fire:#FF5A1F;--fire2:#FF9A0A;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--peach:#FFE9DF;--ok:#12A15C;--bad:#E5443E;
+--display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 16px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(circle at 50% 30%,#FFF5F0,#F7F5FC 70%)}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38;animation:orb 12s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:420px;height:420px;background:var(--fire2);top:-120px;left:-120px}
+.bg i:nth-child(2){width:320px;height:320px;background:#8A5CFF;bottom:-80px;right:-60px;animation-delay:-6s}
+@keyframes orb{to{transform:translate(60px,50px) scale(1.12)}}
+
+.top{position:sticky;top:0;z-index:50;background:rgba(247,245,252,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:12px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);transition:.2s}
+.menu-btn:hover{border-color:var(--fire);color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);transition:.2s}
+.lang-btn:hover{border-color:var(--fire)}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:150px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:.2s}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 18px 70px}
+
+.box{position:relative;isolation:isolate;overflow:hidden;min-height:600px;display:flex;flex-direction:column;padding:26px;text-align:center;background:rgba(255,255,255,.92);border-radius:32px;box-shadow:0 40px 70px -34px rgba(27,20,51,.35),inset 0 0 0 1px var(--line)}
+.box::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--fire2),var(--fire),#8A5CFF)}
+.hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.hud-i{text-align:left}.hud-i.r{text-align:right}
+.lbl{font:600 11px var(--body);color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+.val{font:800 26px/1.2 var(--display);letter-spacing:-.03em;display:inline-block}
+.val.bump{animation:bump .35s}
+.val.danger{color:var(--bad);animation:bump 1s infinite}
+.combo{padding:8px 14px;border-radius:999px;background:var(--mist);font:800 13px var(--display);color:var(--soft);transition:.3s}
+.combo.hot{background:linear-gradient(135deg,var(--fire2),var(--fire));color:#fff;box-shadow:0 10px 20px -10px var(--fire);animation:bump .4s}
+.tbar{height:6px;border-radius:6px;background:var(--mist);margin:14px 0 0;overflow:hidden}
+.tbar i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--fire2),var(--fire));transition:transform 1s linear}
+
+.stage{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px 0}
+#mascot{width:62px;height:74px;filter:drop-shadow(0 10px 14px rgba(255,90,31,.35));animation:bob 3.6s ease-in-out infinite}
+#mascot.listen{animation:lean 1.1s ease-in-out infinite}
+#mascot.jump{animation:jump .6s}
+#mascot.sad{animation:shake .5s}
+.heard{min-height:26px;font:600 16px var(--body);color:var(--soft);max-width:92%;background:var(--mist);padding:8px 16px;border-radius:12px;margin-bottom:10px}
+.heard b{color:var(--fire);font-weight:700}
+.phrase{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:620px}
+.w{padding:7px 13px;border-radius:14px;background:var(--mist);color:var(--ink);font:700 clamp(16px,3.6vw,24px)/1.2 var(--display);letter-spacing:-.02em;transition:background .25s,color .25s,transform .25s}
+.w.ok{background:#DDF6EC;color:var(--ok);animation:pop .4s}
+.w.miss{background:#FDE4E2;color:var(--bad)}
+.pbar{width:100%;max-width:320px;height:6px;border-radius:6px;background:var(--mist);overflow:hidden;margin-top:14px}
+.pbar i{display:block;height:100%;width:0;border-radius:6px;background:var(--fire)}
+.fl{position:absolute;left:50%;top:38%;font:800 28px var(--display);color:var(--ok);pointer-events:none;animation:flt .9s forwards}
+.p{position:absolute;left:50%;top:40%;width:9px;height:9px;border-radius:50%;background:var(--fire2);pointer-events:none;animation:burst .8s forwards}
+.p:nth-child(3n){background:var(--fire)}.p:nth-child(3n+1){background:#8A5CFF}
+
+.mic-area{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:20px}
+.mic-btn{position:relative;width:80px;height:80px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--fire2),var(--fire));box-shadow:0 16px 30px -12px rgba(255,90,31,.7),inset 0 0 18px rgba(255,255,255,.3);transition:transform .2s;cursor:default}
+.mic-btn svg{width:32px;height:32px}
+.mic-btn::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,90,31,.4);opacity:0}
+.mic-btn.listening::after{animation:radar 1.6s linear infinite}
+.status{font:700 14px var(--display);color:var(--soft);min-height:24px}
+.type{display:none;width:100%;max-width:420px;margin:20px auto 0}
+.type input{width:100%;padding:16px 20px;border-radius:16px;border:2px solid var(--line);font:500 17px var(--body);text-align:center;outline:none;transition:border-color .2s,box-shadow .2s}
+.type input:focus{border-color:var(--fire);box-shadow:0 0 0 5px rgba(255,90,31,.12)}
+.box.typing .type{display:block}.box.typing .mic-area{display:none}
+
+.ov{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);transition:opacity .4s,visibility .4s,transform .4s}
+.ov.hide{opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.03)}
+.ov svg.big{width:78px;height:94px;margin-bottom:14px;animation:bob 3.6s ease-in-out infinite}
+.ov h1{font:800 clamp(30px,6vw,42px)/1.1 var(--display);letter-spacing:-.03em;margin-bottom:12px}
+.ov p{color:var(--soft);max-width:46ch;margin-bottom:22px}
+.note{color:var(--bad);font-weight:600;font-size:14px;min-height:20px;margin:0 0 12px!important}
+.lv{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;justify-content:center}
+.lv button{padding:10px 18px;border-radius:14px;border:2px solid var(--line);background:#fff;font:700 14px var(--body);transition:.2s}
+.lv button small{display:block;font:600 11px var(--body);color:var(--soft)}
+.lv button:hover{border-color:var(--fire2)}
+.lv button.on{border-color:var(--fire);background:#FFF3EC;transform:translateY(-2px);box-shadow:0 10px 18px -12px var(--fire)}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:17px 34px;border-radius:16px;background:var(--fire);color:#fff;font:700 16px var(--display);box-shadow:0 14px 26px -12px rgba(255,90,31,.8);transition:.15s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.2s infinite}
+.btn svg{width:20px;height:20px}
+.link{margin-top:14px;font:600 14px var(--body);color:var(--soft);text-decoration:underline;text-underline-offset:4px}
+.link:hover{color:var(--fire)}
+.bestline{margin-top:14px;font:600 13px var(--body);color:var(--soft)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px;margin-bottom:18px}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;animation:up .5s both}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
+.card .lbl{margin-bottom:4px}.card .v{font:800 30px var(--display);color:var(--fire)}
+.rank{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--peach);color:var(--fire);font:800 13px var(--display);margin-bottom:12px}
+.rec{color:var(--ok);font:800 14px var(--display);margin-bottom:10px;animation:pop .6s}
+.prac{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:420px;margin-bottom:18px}
+.prac span{padding:5px 10px;border-radius:10px;background:#FDE4E2;color:var(--bad);font:600 13px var(--body)}
+.prac-t{font:600 11px var(--body);color:var(--soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+
+.how{margin-top:34px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:24px;padding:26px}
+.how h3{font:800 19px var(--display);letter-spacing:-.02em;margin-bottom:14px}
+.how ul{list-style:none;display:grid;gap:10px}
+.how li{display:flex;gap:12px;color:var(--soft);font-size:14.5px}
+.how li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:7px;background:#DDF6EC;color:var(--ok);font-weight:800;display:grid;place-items:center;font-size:12px}
+
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes lean{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg) scale(1.06)}}
+@keyframes jump{30%{transform:translateY(-26px) scale(.92,1.1)}60%{transform:translateY(0) scale(1.1,.9)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes bump{50%{transform:scale(1.18)}}
+@keyframes pop{50%{transform:scale(1.2)}}
+@keyframes radar{from{transform:scale(.85);opacity:1}to{transform:scale(1.6);opacity:0}}
+@keyframes shine{to{left:170%}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@keyframes flt{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-70px)}}
+@keyframes burst{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+@media(max-width:520px){.box{padding:20px 16px;min-height:620px}.val{font-size:21px}.mic-btn{width:70px;height:70px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs><linearGradient id="fg" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+ <symbol id="flame" viewBox="0 0 100 120"><path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+ <symbol id="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+ <symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+ <symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+ <symbol id="play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="top"><div class="bar">
+ <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>Lexy</a>
+ <a class="menu-btn" href="main.html"><svg><use href="#home"/></svg><span data-i18n="menu"></span></a>
+ <div class="lang-wrap" id="lw">
+  <button class="lang-btn" id="lb" aria-haspopup="true"><span id="cf">🇷🇺</span><span id="cl">RU</span><svg><use href="#chev"/></svg></button>
+  <div class="lang-menu" id="lm">
+   <button class="lang-item" data-l="ru">🇷🇺 Русский</button><button class="lang-item" data-l="en">🇬🇧 English</button>
+   <button class="lang-item" data-l="kz">🇰🇿 Қазақша</button><button class="lang-item" data-l="uz">🇺🇿 O‘zbekcha</button>
+  </div>
+ </div>
+</div></header>
+
+<main>
+ <div class="box" id="box">
+  <div class="hud">
+   <div class="hud-i"><div class="lbl" data-i18n="score"></div><div class="val" id="score">0</div></div>
+   <div class="combo" id="combo">x1.0</div>
+   <div class="hud-i r"><div class="lbl" data-i18n="time"></div><div class="val" id="time">01:00</div></div>
+  </div>
+  <div class="tbar"><i id="tbar"></i></div>
+
+  <div class="stage" id="stage">
+   <svg id="mascot" viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>
+
+   <!-- Отладка: что слышит браузер -->
+   <div class="heard" id="heardW">Слышу: <span id="heard">...</span></div>
+
+   <div class="phrase" id="phrase" aria-live="polite"></div>
+   <div class="pbar"><i id="pbar"></i></div>
+  </div>
+
+  <div class="mic-area">
+   <div class="mic-btn" id="micBtn" aria-label="Микрофон">
+     <svg><use href="#mic"/></svg>
+   </div>
+   <div class="status" id="status">Нажми на микрофон</div>
+  </div>
+
+  <div class="type"><input id="typeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-i18n-ph="typeph"></div>
+
+  <div class="ov" id="startOv">
+   <svg class="big" viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>
+   <h1>Shadow Speak</h1>
+   <p data-i18n="desc"></p>
+   <p class="note" id="note"></p>
+   <div class="lv" id="lv">
+    <button data-d="0"><span data-i18n="easy"></span><small>≤ 6</small></button>
+    <button data-d="1" class="on"><span data-i18n="mid"></span><small>7–8</small></button>
+    <button data-d="2"><span data-i18n="hard"></span><small>9+</small></button>
+   </div>
+   <button class="btn" id="goVoice"><svg><use href="#play"/></svg><span data-i18n="start"></span></button>
+   <button class="link" id="goType" data-i18n="nomic"></button>
+   <div class="bestline"><span data-i18n="best"></span>: <b id="bestS">0</b></div>
+  </div>
+
+  <div class="ov hide" id="endOv">
+   <div class="rank" id="rank"></div>
+   <h1 data-i18n="res"></h1>
+   <div class="rec" id="rec" style="display:none" data-i18n="newrec"></div>
+   <div class="grid">
+    <div class="card"><div class="lbl" data-i18n="score"></div><div class="v" id="rS">0</div></div>
+    <div class="card"><div class="lbl" data-i18n="phr"></div><div class="v" id="rP">0</div></div>
+    <div class="card"><div class="lbl" data-i18n="acc"></div><div class="v" id="rA">0%</div></div>
+    <div class="card"><div class="lbl" data-i18n="streak"></div><div class="v" id="rC">0</div></div>
+   </div>
+   <div id="pracW" style="display:none"><div class="prac-t" data-i18n="prac"></div><div class="prac" id="prac"></div></div>
+   <button class="btn" id="again"><svg><use href="#play"/></svg><span data-i18n="again"></span></button>
+  </div>
+ </div>
+
+ <section class="how"><h3 data-i18n="how"></h3>
+  <ul><li data-i18n="t1"></li><li data-i18n="t2"></li><li data-i18n="t3"></li><li data-i18n="t4"></li></ul>
+ </section>
+</main>
+
+<script>
+var PHRASES=("The weather is particularly pleasant today.|I would like to order a cup of coffee, please.|She decided to take a walk in the park.|Technology has changed the way we communicate.|Could you please repeat that a little slower?|The meeting is scheduled for next Wednesday.|He is reading an interesting book about history.|We should consider all the available options.|My favorite season is autumn because of the colors.|They are planning to travel abroad next summer.|Please make sure to turn off the lights.|The restaurant serves delicious Italian food.|I have been studying English for three years.|It is important to maintain a healthy lifestyle.|The train departs from platform number five.|She always arrives early to avoid traffic.|What are your plans for the weekend?|The museum has a wonderful collection of art.|Do you prefer tea or coffee in the morning?|The project requires a lot of dedication.|We need to find a solution to this problem.|He plays the guitar very well.|The children are playing in the garden.|I forgot my umbrella at the office.|This is the best movie I have ever seen.|The company announced a new product launch.|She is a very talented musician.|We had a great time at the party last night.|The library is a quiet place to study.|Can you help me carry these bags?|The weather forecast predicts rain tomorrow.|He is working on a new programming language.|The city is known for its beautiful architecture.|I need to buy some groceries for dinner.|They have been friends since childhood.|The movie starts at eight o'clock.|Learning a new language takes time and effort.|The coffee shop is just around the corner.|She received an award for her research.|We should protect the environment for future generations.|The dog is barking loudly at the mailman.|I am looking forward to the holidays.|The exam was more difficult than I expected.|He apologized for being late to the meeting.|The flowers in the garden are blooming beautifully.|Could you give me some advice on this matter?|The internet connection is very slow today.|She is an excellent public speaker.|The book provides a deep insight into human nature.|We decided to stay at home because of the storm.|The chef prepared a delicious five-course meal.|I have never been to that part of the city.|The students are preparing for their final exams.|He drives a red sports car.|The concert was absolutely amazing.|We need to reduce our carbon footprint.|The mountain peak was covered in snow.|I appreciate your help with this project.|The new restaurant is getting good reviews.|They went hiking in the forest last weekend.|The presentation was clear and well-structured.|I am trying to learn how to play chess.|The baby is sleeping peacefully in the crib.|We should take advantage of this opportunity.|The train was delayed by twenty minutes.|He is a very responsible employee.|The painting is worth millions of dollars.|I usually wake up at seven in the morning.|The ocean waves are crashing against the rocks.|She has a great sense of humor.|We need to book the tickets in advance.|The hospital is located in the city center.|He is fluent in three foreign languages.|The sun sets in the west.|I need to charge my phone before we leave.|The children were excited to see the animals.|She writes poetry in her free time.|The economic situation is improving gradually.|We must respect other people's opinions.|The plane landed safely despite the turbulence.|I am looking for a new apartment.|The teacher explained the lesson very clearly.|He is always willing to help his colleagues.|The festival attracts thousands of visitors.|I prefer reading books to watching television.|The company offers excellent benefits to its employees.|We should eat more fruits and vegetables.|The police officer directed the traffic.|She is studying medicine at the university.|The building is equipped with modern technology.|He won the race by a narrow margin.|The music was so loud that I couldn't hear you.|We need to save money for our vacation.|The bird flew high into the sky.|I completely agree with your point of view.|The store is having a big sale this weekend.|He is an incredibly talented artist.|The view from the top of the hill is spectacular.|We should invest in renewable energy sources.|The meeting has been postponed until further notice.").split("|");
+
+var T={
+menu:["Главное меню","Main Menu","Басты мәзір","Asosiy menyu"],
+score:["Счёт","Score","Ұпай","Ball"],
+time:["Время","Time","Уақыт","Vaqt"],
+best:["Рекорд","Best","Рекорд","Rekord"],
+heard:["Слышу:","Heard:","Естілді:","Eshitildi:"],
+desc:["Повторяй фразы вслух. Lexy слушает, подсвечивает верные слова и начисляет очки. Идеальные фразы подряд повышают множитель. У тебя 60 секунд!","Repeat the phrases out loud. Lexy listens, highlights correct words and awards points. Perfect phrases in a row raise your multiplier. You have 60 seconds!","Сөйлемдерді дауыстап қайталаңыз. Lexy тыңдап, дұрыс сөздерді белгілеп, ұпай береді. Қатарынан мінсіз сөйлемдер көбейткішті арттырады. 60 секундыңыз бар!","Jumlalarni ovoz chiqarib takrorlang. Lexy tinglaydi, to‘g‘ri so‘zlarni belgilaydi va ball beradi. Ketma-ket mukammal jumlalar ko‘paytirgichni oshiradi. 60 soniyangiz bor!"],
+easy:["Лёгкая","Easy","Жеңіл","Oson"],mid:["Средняя","Medium","Орташа","O‘rta"],hard:["Сложная","Hard","Күрделі","Qiyin"],
+start:["Начать игру","Start Game","Ойынды бастау","O‘yinni boshlash"],
+nomic:["Играть без микрофона","Play without microphone","Микрофонсыз ойнау","Mikrofonsiz o‘ynash"],
+listen:["Говори!","Speak!","Сөйле!","Gapir!"],
+perf:["Идеально!","Perfect!","Керемет!","Ajoyib!"],
+late:["Не успел","Too slow","Үлгермедің","Ulgurmading"],
+denied:["Нет доступа к микрофону или распознаванию речи. Проверь разрешения и интернет.","No access to the microphone or speech recognition. Check permissions and internet.","Микрофонға немесе сөйлеуді тануға қол жетпейді. Рұқсаттар мен интернетті тексеріңіз.","Mikrofon yoki nutqni aniqlashga ruxsat yo‘q. Ruxsatlar va internetni tekshiring."],
+unsup:["Браузер не поддерживает распознавание речи. Открой в Chrome или Edge.","Your browser doesn't support speech recognition. Use Chrome or Edge.","Браузер сөйлеуді танымайды. Chrome немесе Edge ашыңыз.","Brauzer nutqni aniqlamaydi. Chrome yoki Edge’dan foydalaning."],
+file:["Страница открыта как файл (file://). Запусти через localhost или https.","The page is opened as a file (file://). Run it via localhost or https.","Бет файл ретінде ашылған (file://). localhost немесе https арқылы іске қосыңыз.","Sahifa fayl sifatida ochilgan (file://). localhost yoki https orqali ishga tushiring."],
+typeph:["Напиши фразу…","Type the phrase…","Сөйлемді жазыңыз…","Jumlani yozing…"],
+res:["Время вышло!","Time's up!","Уақыт бітті!","Vaqt tugadi!"],
+rank0:["Новичок","Rookie","Жаңадан бастаушы","Yangi"],rank1:["Говорун","Speaker","Шешен","Notiq"],rank2:["Мастер речи","Speech Master","Сөз шебері","Nutq ustasi"],
+phr:["Фраз","Phrases","Сөйлем","Jumla"],acc:["Точность","Accuracy","Дәлдік","Aniqlik"],streak:["Лучшая серия","Best streak","Үздік серия","Eng yaxshi seriya"],
+newrec:["🏆 Новый рекорд!","🏆 New record!","🏆 Жаңа рекорд!","🏆 Yangi rekord!"],
+prac:["Слова для тренировки","Words to practice","Жаттығуға арналған сөздер","Mashq uchun so‘zlar"],
+again:["Играть снова","Play Again","Қайта ойнау","Yana o‘ynash"],
+how:["Как играть","How to play","Қалай ойнау керек","Qanday o‘ynash"],
+t1:["Говори чётко и не торопись: слова засчитываются по звучанию.","Speak clearly and don't rush: words count by sound.","Анық сөйлеңіз, асықпаңыз: сөздер дыбысталуы бойынша есептеледі.","Aniq gapiring, shoshilmang: so‘zlar tovushi bo‘yicha hisoblanadi."],
+t2:["Идеальные фразы подряд повышают множитель очков.","Perfect phrases in a row raise the score multiplier.","Қатарынан мінсіз сөйлемдер ұпай көбейткішін арттырады.","Ketma-ket mukammal jumlalar ball ko‘paytirgichini oshiradi."],
+t3:["Чем быстрее закончишь фразу, тем больше бонус.","The faster you finish a phrase, the bigger the bonus.","Сөйлемді қаншалықты тез айтсаңыз, бонус соғұрлым көп.","Jumlani qanchalik tez tugatsangiz, bonus shunchalik katta."],
+t4:["Лучше всего работает в Chrome и Edge.","Works best in Chrome and Edge.","Chrome және Edge-те жақсы жұмыс істейді.","Chrome va Edge’da yaxshi ishlaydi."]
+};
+var LK=["ru","en","kz","uz"],FL=["🇷🇺","🇬🇧","🇰🇿","🇺🇿"],LI=0;
+var $=function(i){return document.getElementById(i)};
+function tr(k){return T[k][LI]}
+function setLang(l){
+ LI=Math.max(0,LK.indexOf(l));
+ [].forEach.call(document.querySelectorAll("[data-i18n]"),function(e){e.textContent=tr(e.dataset.i18n)});
+ $("typeIn").placeholder=tr("typeph");
+ [].forEach.call(document.querySelectorAll(".lang-item"),function(b){b.classList.toggle("on",b.dataset.l==LK[LI])});
+ $("cf").textContent=FL[LI];$("cl").textContent=LK[LI].toUpperCase();
+ document.documentElement.lang=LK[LI]=="kz"?"kk":LK[LI];
+ try{localStorage.setItem("lang",LK[LI])}catch(e){}
+ if(S.play&&S.live)$("status").textContent=S.mode=="voice"?tr("listen"):"";
+}
+$("lb").onclick=function(e){e.stopPropagation();$("lw").classList.toggle("open")};
+[].forEach.call(document.querySelectorAll(".lang-item"),function(b){b.onclick=function(){setLang(b.dataset.l);$("lw").classList.remove("open")}});
+document.addEventListener("click",function(){$("lw").classList.remove("open")});
+
+var S={play:false,live:false,mode:"voice",diff:1,rec:null},AC=null;
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var isListening = false;
+
+function beep(f,tp,d){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=="suspended")AC.resume();
+ var o=AC.createOscillator(),g=AC.createGain();o.type=tp;o.frequency.value=f;o.connect(g);g.connect(AC.destination);
+ g.gain.setValueAtTime(.09,AC.currentTime);g.gain.exponentialRampToValueAtTime(1e-5,AC.currentTime+d);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function norm(s){return s.toLowerCase().replace(/[’‘]/g,"'").replace(/-/g," ").replace(/[^a-z0-9'\s]/g," ").split(/\s+/).filter(Boolean)}
+function lev(a,b){var m=[],i,j;for(i=0;i<=a.length;i++)m[i]=[i];for(j=1;j<=b.length;j++)m[0][j]=j;
+ for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return m[a.length][b.length]}
+function same(a,b){return a==b||(a.length>3&&lev(a,b)<=(a.length>6?2:1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function mood(c){var m=$("mascot");m.classList.remove("listen","jump","sad");void m.offsetWidth;if(c)m.classList.add(c)}
+function bump(el){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
+function hud(){$("score").textContent=S.score;var m=1+Math.min(S.combo,5)*.25;$("combo").textContent="x"+m.toFixed(2).replace(/0$/,"");$("combo").classList.toggle("hot",S.combo>0)}
+function best(){try{return+localStorage.getItem("lexy_shadow_best")||0}catch(e){return 0}}
+function floatTxt(t){var d=document.createElement("div");d.className="fl";d.textContent=t;$("stage").appendChild(d);setTimeout(function(){d.remove()},900)}
+function burst(){var st=$("stage");for(var i=0;i<16;i++){var p=document.createElement("i"),a=Math.random()*6.28,r=70+Math.random()*90;p.className="p";
+ p.style.setProperty("--dx",Math.cos(a)*r+"px");p.style.setProperty("--dy",Math.sin(a)*r+"px");st.appendChild(p);setTimeout(function(q){return function(){q.remove()}}(p),800)}}
+
+/* ---------- SPEECH ---------- */
+function initRec() {
+  if (!SR) { $("note").textContent = tr("unsup"); return false; }
+  if (!S.rec) {
+    S.rec = new SR();
+    S.rec.lang = "en-US";
+    S.rec.interimResults = true;
+    S.rec.continuous = true;
+
+    S.rec.onstart = function() {
+      isListening = true;
+      $("micBtn").classList.add("listening");
+      $("status").textContent = "Слушаю... Говори!";
+      mood("listen");
+    };
+
+    S.rec.onresult = function(e) {
+      var txt = "";
+      for(var i=e.resultIndex; i<e.results.length; i++){
+        txt += e.results[i][0].transcript + " ";
+      }
+      $("heard").textContent = txt.trim() || "...";
+      check(txt);
+    };
+
+    S.rec.onend = function() {
+      isListening = false;
+      $("micBtn").classList.remove("listening");
+      $("status").textContent = "Запись завершена";
+      // Если игра идет — перезапускаем микрофон
+      if (S.play && S.mode === "voice") {
+        setTimeout(function() { try { S.rec.start(); } catch(e){} }, 500);
+      }
+    };
+
+    S.rec.onerror = function(e) {
+      isListening = false;
+      $("micBtn").classList.remove("listening");
+      if (e.error === 'not-allowed') {
+        $("status").textContent = "Нет доступа к микрофону!";
+        $("note").textContent = tr("denied");
+      } else if (e.error === 'network') {
+        $("status").textContent = "Ошибка сети";
+        $("note").textContent = "Нет связи с сервером распознавания. Попробуй режим без микрофона.";
+      }
+    };
+  }
+  return true;
+}
+
+function toggleMic() {
+  if (!S.play || S.mode !== "voice") return;
+  if (isListening) {
+    try { S.rec.stop(); } catch(e){}
+  } else {
+    try { S.rec.start(); } catch(e){}
+  }
+}
+
+/* ---------- GAME LOGIC ---------- */
+function start(mode) {
+  if (mode === "voice" && !initRec()) return;
+  S.mode = mode;
+  $("box").classList.toggle("typing", mode === "type");
+
+  var n = function(p) { var w = p.split(" ").length; return S.diff == 0 ? w <= 6 : S.diff == 1 ? w == 7 || w == 8 : w >= 9; };
+  S.pool = PHRASES.filter(n);
+  if (S.pool.length < 8) S.pool = PHRASES.slice();
+  S.deck = [];
+  S.score = 0; S.combo = 0; S.bestC = 0; S.done = 0; S.hit = 0; S.tot = 0; S.prac = []; S.left = 60; S.play = true; S.live = false;
+
+  $("note").textContent = "";
+  $("startOv").classList.add("hide");
+  $("endOv").classList.add("hide");
+  $("time").textContent = "01:00"; $("time").classList.remove("danger"); $("tbar").style.transform = "scaleX(1)";
+  hud();
+
+  clearInterval(S.gt);
+  S.gt = setInterval(function() {
+    S.left--;
+    var m = Math.floor(S.left / 60), s = S.left % 60;
+    $("time").textContent = "0" + m + ":" + (s < 10 ? "0" : "") + s;
+    $("tbar").style.transform = "scaleX(" + Math.max(0, S.left / 60) + ")";
+    if (S.left <= 10) $("time").classList.add("danger");
+    if (S.left <= 0) finish();
+  }, 1000);
+
+  if (mode === "voice") {
+    try { S.rec.start(); } catch(e){}
+  }
+  nextPhrase();
+}
+
+function nextPhrase() {
+  if (!S.play) return;
+  if (!S.deck.length) S.deck = shuffle(S.pool.slice());
+  var ph = S.deck.pop();
+  S.words = ph.split(" ");
+  S.parts = S.words.map(norm);
+  S.mt = S.words.map(function(){ return 0; });
+  S.cur = 0;
+  S.matchedCount = 0;
+
+  $("phrase").innerHTML = S.words.map(function(w){ return '<span class="w">' + w + "</span>"; }).join("");
+  $("heard").textContent = "...";
+  $("typeIn").value = "";
+
+  var ms = Math.round([2.6 + .75 * S.words.length, 2.4 + .62 * S.words.length, 2.2 + .55 * S.words.length][S.diff] * 1000);
+  var bar = $("pbar");
+  bar.style.transition = "none"; bar.style.width = "100%"; bar.style.background = "var(--fire)"; void bar.offsetWidth;
+  bar.style.transition = "width " + ms + "ms linear,background .3s"; bar.style.width = "0";
+  setTimeout(function(){ if (S.live) bar.style.background = "var(--bad)"; }, ms * .7);
+
+  S.live = true;
+  S.pend = Date.now() + ms;
+  mood("listen");
+  $("status").textContent = S.mode === "voice" ? "Говори!" : "";
+
+  clearTimeout(S.pt);
+  S.pt = setTimeout(function(){ endPhrase(false); }, ms);
+
+  if (S.mode === "type") $("typeIn").focus();
+}
+
+function check(text) {
+  if (!S.live) return;
+  var pool = norm(text), n = 0;
+  S.parts.forEach(function(ps, i) {
+    if (S.mt[i]) return;
+    var tmp = pool.slice();
+    var ok = ps.every(function(p) {
+      var k = tmp.findIndex(function(x){ return same(p, x); });
+      if (k < 0) return false;
+      tmp.splice(k, 1); return true;
+    });
+    if (ok) {
+      pool = tmp; S.mt[i] = 1; n++;
+      document.querySelectorAll(".w")[i].classList.add("ok");
+    }
+  });
+
+  if (!n) return;
+
+  S.matchedCount += n;
+  var pts = Math.round(n * 10 * (1 + Math.min(S.combo, 5) * .25));
+  S.hit += n; S.cur += n; S.score += pts;
+  bump($("score")); beep(560 + S.cur * 40, "sine", .1);
+
+  if (S.mt.every(Boolean)) {
+    var bonus = 25 + Math.round(Math.max(0, S.pend - Date.now()) / 1000) * 5;
+    S.score += bonus; S.combo++; S.bestC = Math.max(S.bestC, S.combo); S.done++;
+    floatTxt("+" + (pts + bonus)); burst(); beep(880, "triangle", .3);
+    $("status").textContent = tr("perf");
+    endPhrase(true);
+  }
+  hud();
+}
+
+function endPhrase(ok) {
+  if (!S.live) return;
+  S.live = false;
+  clearTimeout(S.pt);
+  S.tot += S.words.length;
+
+  if (ok) {
+    mood("jump");
+  } else {
+    var ch = document.querySelectorAll(".w");
+    S.mt.forEach(function(m, i) {
+      if (!m) {
+        ch[i].classList.add("miss");
+        var w = S.parts[i].join(" ");
+        if (S.prac.indexOf(w) < 0 && S.prac.length < 12) S.prac.push(w);
+      }
+    });
+    S.combo = 0; hud(); mood("sad"); beep(200, "sawtooth", .25);
+    $("status").textContent = tr("late");
+  }
+
+  clearTimeout(S.nt);
+  S.nt = setTimeout(nextPhrase, ok ? 800 : 1100);
+}
+
+function finish() {
+  if (S.live && S.cur > 0) S.tot += S.words.length;
+  S.play = S.live = false;
+  clearInterval(S.gt); clearTimeout(S.pt);
+
+  if (S.rec) { try { S.rec.stop(); } catch(e){} }
+  $("micBtn").classList.remove("listening");
+  $("status").textContent = "";
+
+  var b = best(), nr = S.score > b && S.score > 0;
+  if (nr) try { localStorage.setItem("lexy_shadow_best", S.score); } catch(e){}
+
+  $("rS").textContent = S.score; $("rP").textContent = S.done;
+  $("rA").textContent = (S.tot ? Math.round(S.hit / S.tot * 100) : 0) + "%";
+  $("rC").textContent = S.bestC;
+  $("rank").textContent = tr("rank" + (S.score < 150 ? 0 : S.score < 400 ? 1 : 2));
+  $("rec").style.display = nr ? "block" : "none";
+  $("pracW").style.display = S.prac.length ? "block" : "none";
+  $("prac").innerHTML = S.prac.map(function(w){ return "<span>" + w + "</span>"; }).join("");
+  $("bestS").textContent = Math.max(b, S.score); beep(520, "triangle", .4);
+  $("endOv").classList.remove("hide");
+}
+
+/* EVENTS */
+[].forEach.call(document.querySelectorAll("#lv button"), function(b) {
+  b.onclick = function() {
+    S.diff = +b.dataset.d;
+    [].forEach.call(document.querySelectorAll("#lv button"), function(x){ x.classList.toggle("on", x == b); });
+  };
+});
+
+$("goVoice").onclick = function(){ start("voice"); };
+$("goType").onclick = function(){ start("type"); };
+$("again").onclick = function(){ $("endOv").classList.add("hide"); $("startOv").classList.remove("hide"); };
+
+// Микрофон управляется кликом
+$("micBtn").onclick = toggleMic;
+$("typeIn").addEventListener("input", function(){ check(this.value); });
+
+(function() {
+  var l; try { l = localStorage.getItem("lang"); } catch(e){}
+  if (!l) { l = (navigator.language || "ru").slice(0, 2).toLowerCase(); if (l == "kk") l = "kz"; }
+  setLang(LK.indexOf(l) < 0 ? "ru" : l);
+  $("bestS").textContent = best();
+  $("phrase").innerHTML = '<span class="w">Shadow</span><span class="w">Speak</span>';
+  if (!SR) $("note").textContent = tr("unsup");
+  else if (location.protocol == "file:") $("note").textContent = tr("file");
+})();
+</script>
+</body>
+</html>
