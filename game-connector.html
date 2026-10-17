@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connector Rush — Lexy Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--fire:#FF5A1F;--fire2:#FF9A0A;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--peach:#FFE9DF;--ok:#12A15C;--bad:#E5443E;
+--display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 16px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(circle at 50% 30%,#FFF5F0,#F7F5FC 70%)}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38;animation:orb 12s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:420px;height:420px;background:var(--fire2);top:-120px;left:-120px}
+.bg i:nth-child(2){width:320px;height:320px;background:#8A5CFF;bottom:-80px;right:-60px;animation-delay:-6s}
+@keyframes orb{to{transform:translate(60px,50px) scale(1.12)}}
+
+.top{position:sticky;top:0;z-index:50;background:rgba(247,245,252,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:12px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);transition:.2s}
+.menu-btn:hover{border-color:var(--fire);color:var(--fire);transform:translateY(-1px)}
+.menu-btn svg{width:16px;height:16px}
+.lang-wrap{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);transition:.2s}
+.lang-btn:hover{border-color:var(--fire)}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:150px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:.2s}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s}
+.lang-item:hover{background:var(--peach)}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
+
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:28px 18px 70px}
+.box{position:relative;isolation:isolate;overflow:hidden;min-height:640px;display:flex;flex-direction:column;padding:26px;background:rgba(255,255,255,.93);border-radius:32px;box-shadow:0 40px 70px -34px rgba(27,20,51,.35),inset 0 0 0 1px var(--line);transition:transform .08s}
+.box::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--fire2),var(--fire),#8A5CFF)}
+.box.danger::after{content:"";position:absolute;inset:0;border-radius:32px;pointer-events:none;box-shadow:inset 0 0 80px rgba(229,68,62,.5);animation:hb .8s ease-in-out infinite;z-index:4}
+@keyframes hb{50%{opacity:.35}}
+
+/* hud */
+.hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.hud-i.r{text-align:right}
+.lbl{font:600 11px var(--body);color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+.val{font:800 26px/1.2 var(--display);letter-spacing:-.03em;display:inline-block}
+.val.bump{animation:bump .35s}.val.bad{color:var(--bad)}.val.danger{color:var(--bad);animation:bump 1s infinite}
+.combo{padding:8px 14px;border-radius:999px;background:var(--mist);font:800 13px var(--display);color:var(--soft);transition:.3s}
+.combo.hot{background:linear-gradient(135deg,var(--fire2),var(--fire));color:#fff;box-shadow:0 10px 20px -10px var(--fire)}
+.tbar{height:6px;border-radius:6px;background:var(--mist);margin-top:14px;overflow:hidden}
+.tbar i{display:block;height:100%;transform-origin:left;background:linear-gradient(90deg,var(--fire2),var(--fire))}
+
+/* arena */
+.arena{--p:0;position:relative;height:128px;margin:18px 0 6px;border-radius:22px;overflow:hidden;background:linear-gradient(#2E2452,#1B1433);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 22px 30px -24px rgba(27,20,51,.7)}
+.arena::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 90%,rgba(255,154,10,.28),transparent 45%)}
+.belt{position:absolute;left:0;right:0;bottom:0;height:30px;background:repeating-linear-gradient(90deg,#3D3263 0 22px,#33295A 22px 44px);border-top:2px solid rgba(255,255,255,.12);animation:belt .9s linear infinite}
+@keyframes belt{to{background-position:44px 0}}
+.heat{position:absolute;inset:0;background:linear-gradient(90deg,transparent 25%,rgba(255,90,31,calc(var(--p)*.5)));pointer-events:none}
+.saw{position:absolute;bottom:14px;left:calc(-70px + var(--p)*(100% - 60px));width:82px;height:82px;z-index:2}
+.saw svg{width:100%;height:100%;animation:spin .6s linear infinite;filter:drop-shadow(0 0 calc(var(--p)*16px) rgba(255,90,31,.9)) drop-shadow(0 6px 8px rgba(0,0,0,.4))}
+.saw.fast svg{animation-duration:.22s}
+.lexy{position:absolute;right:16px;bottom:24px;width:58px;height:70px;z-index:1;transition:transform .5s,filter .5s}
+.lexy svg{width:100%;height:100%;filter:drop-shadow(0 10px 14px rgba(255,90,31,.45));animation:bob 3.6s ease-in-out infinite}
+.lexy.scared svg{animation:tremble .18s linear infinite}
+.lexy.jump svg{animation:jump .7s}
+.lexy.out{filter:grayscale(1) brightness(.55);transform:scale(.8) translateY(10px) rotate(14deg)}
+.lexy.out svg{animation:none}
+.sp{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--fire2);box-shadow:0 0 8px var(--fire2);pointer-events:none;animation:spark .55s forwards;z-index:3}
+.puff{position:absolute;width:34px;height:34px;border-radius:50%;background:radial-gradient(#cfc9e0,transparent 70%);pointer-events:none;animation:puff 1.3s forwards;z-index:3}
+
+/* question */
+.qw{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:18px 0 4px}
+.sent{font:700 clamp(20px,4.2vw,27px)/1.45 var(--body);text-align:center;max-width:620px;margin:0 auto;min-height:78px;animation:up .35s both}
+.blank{display:inline-block;min-width:84px;height:34px;border-bottom:3px dashed var(--fire);vertical-align:middle;margin:0 6px;color:var(--fire);font-weight:800;line-height:30px;padding:0 6px}
+.blank.ok{border:0;background:#DDF6EC;color:var(--ok);border-radius:10px;animation:pop .35s}
+.blank.bad{border:0;background:#FDE4E2;color:var(--bad);border-radius:10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px;margin:0 auto}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border:2px solid var(--line);border-radius:18px;background:#fff;font:700 16px var(--body);text-align:left;transition:border-color .2s,transform .2s,box-shadow .2s,background .2s;animation:up .4s both}
+.opt:nth-child(2){animation-delay:.05s}.opt:nth-child(3){animation-delay:.1s}.opt:nth-child(4){animation-delay:.15s}
+.opt i{flex:none;width:30px;height:30px;border-radius:10px;background:var(--mist);display:grid;place-items:center;font:800 12px var(--display);font-style:normal;color:var(--soft);transition:.2s}
+.opt:hover{border-color:var(--fire2);transform:translateY(-3px);box-shadow:0 14px 22px -14px rgba(255,90,31,.5)}
+.opt:hover i{background:var(--peach);color:var(--fire)}
+.opt:active{transform:scale(.97)}
+.opt.ok{border-color:var(--ok);background:#DDF6EC;color:var(--ok);animation:pop .35s}.opt.ok i{background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:#FDE4E2;color:var(--bad);animation:shake .4s}.opt.bad i{background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}.opt:disabled:hover{transform:none;box-shadow:none}
+.fl{position:absolute;left:50%;top:6px;font:800 26px var(--display);color:var(--ok);pointer-events:none;animation:flt .9s forwards}
+.keys{text-align:center;font:500 12px var(--body);color:var(--soft);margin-top:4px}
+
+/* feedback sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:3px solid var(--bad);border-radius:26px 26px 0 0;padding:22px 24px 26px;text-align:center;transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.9,.3,1);box-shadow:0 -20px 40px -20px rgba(27,20,51,.25)}
+.sheet.show{transform:none}
+.sheet h4{font:800 19px var(--display);color:var(--bad);margin-bottom:8px}
+.sheet .ans{font:600 15px var(--body);color:var(--soft);margin-bottom:6px}.sheet .ans b{color:var(--ok)}
+.sheet .rule{font:500 15px/1.5 var(--body);color:var(--ink);max-width:520px;margin:0 auto 16px}
+.sheet .rule b{color:var(--fire)}
+
+/* overlays */
+.ov{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 22px;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);text-align:center;overflow-y:auto;transition:opacity .4s,visibility .4s,transform .4s}
+.ov.hide{opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.03)}
+.ov h1{font:800 clamp(30px,6vw,42px)/1.1 var(--display);letter-spacing:-.03em;margin-bottom:12px}
+.ov p.d{color:var(--soft);max-width:44ch;margin-bottom:20px}
+.hero{display:flex;align-items:center;justify-content:center;gap:10px;height:96px;margin-bottom:10px}
+.hero svg.f{width:62px;height:76px;animation:bob 3.6s ease-in-out infinite}
+.hero svg.s{width:74px;height:74px;animation:spin 1.4s linear infinite}
+.hero .arrow{font:800 22px var(--display);color:var(--fire);animation:nudge 1s ease-in-out infinite}
+.dcs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:520px;margin-bottom:22px}
+.dc{padding:14px 8px;border-radius:18px;border:2px solid var(--line);background:#fff;transition:.2s}
+.dc b{display:block;font:800 13px var(--display);letter-spacing:-.02em;margin-bottom:4px}
+.dc small{display:block;font:500 12px var(--body);color:var(--soft)}
+.dc .bs{margin-top:8px;font:600 11px var(--body);color:var(--soft)}
+.dc:hover{border-color:var(--fire2);transform:translateY(-2px)}
+.dc.on{border-color:var(--fire);background:#FFF3EC;transform:translateY(-3px);box-shadow:0 14px 24px -16px var(--fire)}
+.dc.on b{color:var(--fire)}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:17px 34px;border-radius:16px;background:var(--fire);color:#fff;font:700 16px var(--display);box-shadow:0 14px 26px -12px rgba(255,90,31,.8);transition:.15s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.sm{padding:12px 26px;font-size:14px;border-radius:14px}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.2s infinite}
+.btn svg{width:20px;height:20px}
+.stars{font-size:38px;letter-spacing:6px;color:var(--line);margin-bottom:8px}
+.stars span.on{color:#FFB400;display:inline-block;animation:star .5s both;animation-delay:calc(var(--k)*.15s + .3s)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:420px;margin:12px 0 16px}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:14px;animation:up .5s both}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
+.card .v{font:800 28px var(--display);color:var(--fire)}
+.rec{color:var(--ok);font:800 14px var(--display);animation:pop .6s}
+.rv{width:100%;max-width:440px;text-align:left;margin-bottom:18px}
+.rv h5{font:600 11px var(--body);color:var(--soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;text-align:center}
+.rv div{padding:10px 14px;border-radius:14px;background:var(--mist);margin-bottom:8px;font-size:13.5px;color:var(--soft)}
+.rv div b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}.rv div u{text-decoration:none;color:var(--ok);font-weight:700}
+.rv div em{font-style:normal}.rv div em b{display:inline;color:var(--fire)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes tremble{25%{transform:translate(-2px,1px) rotate(-3deg)}75%{transform:translate(2px,-1px) rotate(3deg)}}
+@keyframes jump{30%{transform:translateY(-30px) scale(.92,1.1)}60%{transform:none scale(1.1,.9)}}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes pop{50%{transform:scale(1.07)}}
+@keyframes bump{50%{transform:scale(1.18)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+@keyframes flt{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-60px)}}
+@keyframes spark{to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+@keyframes puff{to{opacity:0;transform:translate(var(--dx),-70px) scale(3)}}
+@keyframes shine{to{left:170%}}
+@keyframes nudge{50%{transform:translateX(6px)}}
+@keyframes star{from{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.3)}to{transform:none}}
+@media(max-width:520px){.box{padding:20px 14px}.opts{grid-template-columns:1fr}.val{font-size:21px}.dc b{font-size:12px}.sent{min-height:96px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs><linearGradient id="fg" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient>
+ <radialGradient id="mg"><stop offset="0" stop-color="#F6F3FC"/><stop offset="1" stop-color="#A39CBC"/></radialGradient></defs>
+ <symbol id="flame" viewBox="0 0 100 120"><path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+ <symbol id="blade" viewBox="0 0 100 100"><polygon class="teeth" fill="url(#mg)" stroke="#6B6585" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="50" r="27" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-dasharray="9 11"/><circle cx="50" cy="50" r="10" fill="#1B1433"/><circle cx="50" cy="50" r="4" fill="#FF9A0A"/></symbol>
+ <symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+ <symbol id="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+ <symbol id="play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="top"><div class="bar">
+ <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>Lexy</a>
+ <a class="menu-btn" href="main.html"><svg><use href="#home"/></svg><span data-i18n="menu"></span></a>
+ <div class="lang-wrap" id="lw">
+  <button class="lang-btn" id="lb" aria-haspopup="true"><span id="cf">🇷🇺</span><span id="cl">RU</span><svg><use href="#chev"/></svg></button>
+  <div class="lang-menu">
+   <button class="lang-item" data-l="ru">🇷🇺 Русский</button><button class="lang-item" data-l="en">🇬🇧 English</button>
+   <button class="lang-item" data-l="kz">🇰🇿 Қазақша</button><button class="lang-item" data-l="uz">🇺🇿 O‘zbekcha</button>
+  </div>
+ </div>
+</div></header>
+
+<main>
+ <div class="box" id="box">
+  <div class="hud">
+   <div class="hud-i"><div class="lbl" data-i18n="score"></div><div class="val" id="score">0</div></div>
+   <div class="combo" id="combo">🔥 x1</div>
+   <div class="hud-i r"><div class="lbl" data-i18n="time"></div><div class="val" id="time">60s</div></div>
+  </div>
+  <div class="tbar"><i id="tbar"></i></div>
+
+  <div class="arena" id="arena">
+   <div class="belt"></div><div class="heat"></div>
+   <div class="saw" id="saw"><svg viewBox="0 0 100 100"><use href="#blade"/></svg></div>
+   <div class="lexy" id="lexy"><svg viewBox="0 0 100 120"><use href="#flame"/></svg></div>
+  </div>
+
+  <div class="qw" id="qw">
+   <div class="sent" id="sent"></div>
+   <div class="opts" id="opts"></div>
+   <div class="keys" data-i18n="keys"></div>
+  </div>
+
+  <div class="sheet" id="sheet">
+   <h4 data-i18n="fbt"></h4>
+   <div class="ans"><span data-i18n="right"></span> <b id="rightW"></b></div>
+   <div class="rule" id="rule"></div>
+   <button class="btn sm" id="cont"><span data-i18n="cont"></span></button>
+  </div>
+
+  <div class="ov" id="startOv">
+   <div class="hero"><svg class="s" viewBox="0 0 100 100"><use href="#blade"/></svg><span class="arrow">›››</span><svg class="f" viewBox="0 0 100 120"><use href="#flame"/></svg></div>
+   <h1>Connector Rush</h1>
+   <p class="d" data-i18n="desc"></p>
+   <div class="dcs" id="dcs">
+    <button class="dc on" data-d="easy"><b>IELTS 4–5.5</b><small data-i18n="e.sub"></small><div class="bs"><span data-i18n="best"></span> <span id="b0">0</span></div></button>
+    <button class="dc" data-d="medium"><b>IELTS 6–7</b><small data-i18n="m.sub"></small><div class="bs"><span data-i18n="best"></span> <span id="b1">0</span></div></button>
+    <button class="dc" data-d="hard"><b>IELTS 7.5+</b><small data-i18n="h.sub"></small><div class="bs"><span data-i18n="best"></span> <span id="b2">0</span></div></button>
+   </div>
+   <button class="btn" id="go"><svg><use href="#play"/></svg><span data-i18n="start"></span></button>
+  </div>
+
+  <div class="ov hide" id="endOv">
+   <div class="stars" id="stars"><span style="--k:0">★</span><span style="--k:1">★</span><span style="--k:2">★</span></div>
+   <h1 id="endT"></h1>
+   <div class="rec" id="rec" style="display:none" data-i18n="rec"></div>
+   <div class="grid">
+    <div class="card"><div class="lbl" data-i18n="score"></div><div class="v" id="rS">0</div></div>
+    <div class="card"><div class="lbl" data-i18n="corr"></div><div class="v" id="rC">0</div></div>
+    <div class="card"><div class="lbl" data-i18n="acc"></div><div class="v" id="rA">0%</div></div>
+    <div class="card"><div class="lbl" data-i18n="bst"></div><div class="v" id="rB">0</div></div>
+   </div>
+   <div class="rv" id="rv"></div>
+   <button class="btn" id="again"><svg><use href="#play"/></svg><span data-i18n="again"></span></button>
+  </div>
+ </div>
+</main>
+
+<script>
+/* ---------- questions: [sentence, answer, wrong, wrong, wrong, rule] ---------- */
+var BANK={
+easy:[
+["I was tired, ___ I went to bed early.","so","but","because","although","<b>So</b> вводит результат: устал, поэтому лёг спать."],
+["I stayed at home ___ I was ill.","because","so","but","or","<b>Because</b> объясняет причину."],
+["She is rich, ___ she is not happy.","but","so","because","until","<b>But</b> показывает контраст."],
+["___ it was raining, we played football.","Although","Because","So","But","<b>Although</b> + предложение = «хотя». В начале предложения <b>but</b> не ставят."],
+["We cancelled the picnic ___ the rain.","because of","because","although","so","<b>Because of</b> + существительное, <b>because</b> + целое предложение."],
+["She went out ___ the cold weather.","despite","because","although","so","<b>Despite</b> + существительное = «несмотря на»."],
+["Please wait here ___ I come back.","until","by","since","for","<b>Until</b> = до тех пор, пока."],
+["I must finish this report ___ Friday.","by","until","since","for","<b>By</b> = не позже указанного срока."],
+["He has lived in London ___ 2015.","since","for","from","during","<b>Since</b> + точка во времени (с 2015 года)."],
+["He has lived in London ___ five years.","for","since","from","until","<b>For</b> + период времени (пять лет)."],
+["You will fail the exam ___ you study.","unless","if","because","so","<b>Unless</b> = if not: «если не будешь учиться»."],
+["I will call you ___ I arrive home.","as soon as","until","although","because","<b>As soon as</b> = как только."],
+["She speaks Spanish ___ English.","as well as","as well","also","too","<b>As well as</b> + существительное = «а также»."],
+["It was late; ___, we took a taxi.","therefore","however","although","because","<b>Therefore</b> = поэтому, вводит результат."],
+["The food was cheap; ___, it was awful.","however","therefore","so","because","<b>However</b> = однако, вводит контраст."],
+["Take a jacket ___ it gets cold.","in case","unless","although","however","<b>In case</b> = на случай, если."],
+["He studied hard ___ he could pass the test.","so that","although","however","despite","<b>So that</b> = для того чтобы (цель)."],
+["Hurry up, ___ you will be late.","or","and","but","because","<b>Or</b> после приказа = «а то, иначе»."]],
+medium:[
+["___ the bad reviews, the film made millions.","In spite of","Because of","Due to","Owing to","<b>In spite of</b> + существительное = несмотря на. Остальные три — причина."],
+["The match was postponed ___ heavy rain.","due to","despite","although","however","<b>Due to</b> + существительное = из-за."],
+["The results were promising; ___, more research is needed.","nevertheless","because","unless","since","<b>Nevertheless</b> = тем не менее (формальный контраст)."],
+["I'll lend you my car ___ you drive carefully.","provided that","unless","although","despite","<b>Provided that</b> = при условии, что."],
+["___ I know, the meeting has been cancelled.","As far as","As long as","As soon as","As well as","<b>As far as I know</b> = насколько мне известно."],
+["She behaved ___ nothing had happened.","as if","despite","unless","whereas","<b>As if</b> = как будто."],
+["The more you practise, ___ you become.","the better","better","the best","best","Двойное сравнение: <b>the + сравнит. степень</b>, <b>the + сравнит. степень</b>."],
+["He got the job ___ his lack of experience.","despite","although","because","so","<b>Despite</b> + существительное (lack of experience)."],
+["___ he was very tired, he finished the report.","Even though","Despite","In spite","Because of","<b>Even though</b> + предложение, усиленное <b>although</b>."],
+["Prices have risen ___ the cost of materials has increased.","because","because of","despite","due to","Дальше идёт целое предложение, значит нужен <b>because</b>."],
+["She didn't go to the party, ___ she was invited.","although","despite","because of","so","<b>Although</b> + предложение = хотя."],
+["He works hard, ___ his brother is lazy.","whereas","because","unless","so","<b>Whereas</b> = тогда как, противопоставление двух фактов."],
+["You'll miss the train ___ you leave now.","unless","if","although","so","<b>Unless</b> = if not: «если не выйдешь сейчас»."],
+["We were late ___ the heavy traffic.","because of","because","although","so","<b>Because of</b> + существительное."],
+["The firm hired more staff ___ it could meet demand.","so that","although","despite","unless","<b>So that</b> = чтобы (цель)."],
+["Neither the manager ___ the staff knew about the change.","nor","or","and","but","Конструкция <b>neither… nor…</b> = ни… ни…"],
+["She is ___ talented that everyone admires her.","so","such","very","too","<b>So + прилагательное + that</b> = настолько… что."],
+["It was ___ a difficult exam that many students failed.","such","so","too","very","<b>Such a + прил. + сущ. + that</b>."]],
+hard:[
+["___ the widespread belief, unemployment is not falling.","Notwithstanding","Because of","Owing to","Whereas","<b>Notwithstanding</b> + существительное = несмотря на (формально)."],
+["The data show a correlation, ___ not necessarily a causal link.","albeit","whereas","hence","unless","<b>Albeit</b> = хотя и, часто перед фразой без глагола."],
+["The law changed; ___, all employers must now offer paid leave.","consequently","nevertheless","whereas","albeit","<b>Consequently</b> = следовательно, вводит результат."],
+["The project was rejected ___ it lacked funding.","on the grounds that","notwithstanding","albeit","despite","<b>On the grounds that</b> = на том основании, что."],
+["___ that the evidence is limited, the conclusion seems premature.","Given","Despite","Whereas","Hence","<b>Given that</b> = учитывая, что."],
+["The findings matter ___ they challenge established theories.","in that","although","despite","whereas","<b>In that</b> = в том смысле, что."],
+["Not only ___ the plan expensive, but it was also risky.","was","did","has","is","После <b>not only</b> в начале идёт инверсия: <b>was the plan</b>."],
+["Rarely ___ such a talented speaker.","have I heard","I have heard","I heard","did I heard","После <b>rarely</b> порядок слов обратный: <b>have I heard</b>."],
+["Had we known about the delay, we ___ earlier.","would have left","will leave","would leave","had left","Инверсия в третьем условном: <b>would have + V3</b>."],
+["The report, ___ was published last week, caused controversy.","which","that","who","what","После запятой в придаточном пояснительном нужен <b>which</b>, не <b>that</b>."],
+["The scientist ___ research won the prize is my neighbour.","whose","who","which","whom","<b>Whose</b> показывает принадлежность: чьё исследование."],
+["Hardly ___ the meeting begun when the alarm rang.","had","has","did","was","Конструкция <b>hardly had… when…</b> = едва… как…"],
+["The government is committed ___ reducing emissions.","to","for","in","with","<b>Committed to</b> + герундий."],
+["The decline was attributed ___ poor management.","to","for","with","by","<b>Attribute… to</b> = объяснять чем-то."],
+["The new rules apply ___ all employees.","to","for","at","with","<b>Apply to</b> = распространяться на."],
+["The experiment succeeded ___ proving the theory.","in","at","to","for","<b>Succeed in</b> + герундий."],
+["The measures are ___ line with international standards.","in","on","at","by","<b>In line with</b> = в соответствии с."],
+["___ having studied for months, she failed the exam.","Despite","Because","Unless","Whereas","<b>Despite</b> + герундий = несмотря на."]]
+};
+
+/* ---------- i18n: [ru, en, kz, uz] ---------- */
+var T={
+menu:["Главное меню","Main menu","Басты мәзір","Asosiy menyu"],
+score:["Счёт","Score","Ұпай","Ball"],time:["Время","Time","Уақыт","Vaqt"],
+best:["Рекорд:","Best:","Рекорд:","Rekord:"],
+desc:["Пила едет на Лекси. Выбирай правильные связки и слова, чтобы отталкивать её. Продержись 60 секунд!","The saw is racing towards Lexy. Pick the right linking words to push it back. Survive 60 seconds!","Ара Лексиге қарай жылжып келеді. Оны итеру үшін дұрыс байланыстырғыштарды таңдаңыз. 60 секунд шыдаңыз!","Arra Leksiga qarab ketmoqda. Uni surish uchun to‘g‘ri bog‘lovchilarni tanlang. 60 soniya bardosh bering!"],
+"e.sub":["Медленная пила","Slow saw","Баяу ара","Sekin arra"],"m.sub":["Средняя пила","Medium saw","Орташа ара","O‘rta arra"],"h.sub":["Бешеная пила","Furious saw","Ақылсыз ара","Telba arra"],
+start:["Начать игру","Start Game","Ойынды бастау","O‘yinni boshlash"],
+keys:["Можно жать клавиши 1–4","You can press keys 1–4","1–4 пернелерін басуға болады","1–4 tugmalarini bosish mumkin"],
+fbt:["Ошибка! Пила ближе","Mistake! The saw is closer","Қате! Ара жақындады","Xato! Arra yaqinlashdi"],
+right:["Правильно:","Correct:","Дұрысы:","To‘g‘risi:"],
+cont:["Продолжить","Continue","Жалғастыру","Davom etish"],
+lose:["Пила добралась до Лекси!","The saw got to Lexy!","Ара Лексиге жетті!","Arra Leksiga yetib keldi!"],
+win:["Лекси выжил!","Lexy survived!","Лекси аман қалды!","Lexy omon qoldi!"],
+corr:["Верных","Correct","Дұрыс","To‘g‘ri"],acc:["Точность","Accuracy","Дәлдік","Aniqlik"],bst:["Лучшая серия","Best streak","Үздік серия","Eng yaxshi seriya"],
+rec:["🏆 Новый рекорд!","🏆 New record!","🏆 Жаңа рекорд!","🏆 Yangi rekord!"],
+rev:["Над чем поработать","Worth reviewing","Қайталау керек","Takrorlash kerak"],
+again:["Играть снова","Play Again","Қайта ойнау","Yana o‘ynash"]
+};
+var LK=["ru","en","kz","uz"],FL=["🇷🇺","🇬🇧","🇰🇿","🇺🇿"],LI=0;
+var $=function(i){return document.getElementById(i)};
+function tr(k){return T[k][LI]}
+function setLang(l){
+ LI=Math.max(0,LK.indexOf(l));
+ [].forEach.call(document.querySelectorAll("[data-i18n]"),function(e){e.textContent=tr(e.dataset.i18n)});
+ [].forEach.call(document.querySelectorAll(".lang-item"),function(b){b.classList.toggle("on",b.dataset.l==LK[LI])});
+ $("cf").textContent=FL[LI];$("cl").textContent=LK[LI].toUpperCase();
+ document.documentElement.lang=LK[LI]=="kz"?"kk":LK[LI];
+ try{localStorage.setItem("lang",LK[LI])}catch(e){}
+ if(S.over){$("endT").textContent=tr(S.won?"win":"lose");var h=$("rv").querySelector("h5");if(h)h.textContent=tr("rev")}
+}
+$("lb").onclick=function(e){e.stopPropagation();$("lw").classList.toggle("open")};
+[].forEach.call(document.querySelectorAll(".lang-item"),function(b){b.onclick=function(){setLang(b.dataset.l);$("lw").classList.remove("open")}});
+document.addEventListener("click",function(){$("lw").classList.remove("open")});
+
+/* ---------- helpers ---------- */
+var C={easy:{v:2.1,push:9,pen:12},medium:{v:3.1,push:8,pen:16},hard:{v:4.2,push:7,pen:20}};
+var S={d:"easy",run:false,pause:false,over:false},AC=null;
+function beep(f,tp,d,v){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=="suspended")AC.resume();
+ var o=AC.createOscillator(),g=AC.createGain();o.type=tp;o.frequency.value=f;o.connect(g);g.connect(AC.destination);
+ g.gain.setValueAtTime(v||.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(1e-5,AC.currentTime+d);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function best(d){try{return+localStorage.getItem("lexy_cr_"+d)||0}catch(e){return 0}}
+function showBest(){["easy","medium","hard"].forEach(function(d,i){$("b"+i).textContent=best(d)})}
+function bump(el,c){el.classList.remove(c||"bump");void el.offsetWidth;el.classList.add(c||"bump")}
+function sparkAt(x,y,cls,n){var a=$("arena");for(var i=0;i<(n||1);i++){var s=document.createElement("i");s.className=cls||"sp";
+ s.style.left=x+"px";s.style.top=y+"px";s.style.setProperty("--dx",(Math.random()*90-30)+"px");s.style.setProperty("--dy",(-Math.random()*50-10)+"px");
+ a.appendChild(s);setTimeout(function(q){return function(){q.remove()}}(s),1300)}}
+(function(){var pts=[],n=20;for(var i=0;i<n*2;i++){var r=i%2?38:50,a=i*Math.PI/n;pts.push((50+r*Math.cos(a)).toFixed(1)+","+(50+r*Math.sin(a)).toFixed(1))}
+ document.querySelector(".teeth").setAttribute("points",pts.join(" "))})();
+
+/* ---------- game ---------- */
+function start(){
+ S.deck=[];S.last=null;S.score=0;S.ok=0;S.n=0;S.streak=0;S.bestS=0;S.p=0;S.vis=0;S.left=60;S.el=0;S.mis=[];S.shown=60;S.sp=0;
+ S.run=true;S.pause=false;S.busy=false;S.over=false;
+ $("startOv").classList.add("hide");$("endOv").classList.add("hide");$("sheet").classList.remove("show");
+ $("score").textContent="0";$("time").textContent="60s";$("time").classList.remove("danger");$("tbar").style.transform="scaleX(1)";hud();
+ $("lexy").className="lexy";[].forEach.call(document.querySelectorAll(".puff"),function(e){e.remove()});
+ nextQ();cancelAnimationFrame(S.raf);S.t=performance.now();S.raf=requestAnimationFrame(loop)}
+function hud(){var m=1+Math.min(S.streak,6)*.2;$("combo").textContent="🔥 x"+(Math.round(m*10)/10);$("combo").classList.toggle("hot",S.streak>0)}
+function loop(t){
+ if(!S.run)return;
+ var dt=Math.min(.05,(t-S.t)/1000);S.t=t;
+ if(!S.pause){
+  S.el+=dt;S.left-=dt;
+  S.p+=C[S.d].v*Math.min(1,S.el/3)*(1+S.el/120)*dt;
+  var sec=Math.max(0,Math.ceil(S.left));
+  if(sec!=S.shown){S.shown=sec;$("time").textContent=sec+"s";$("time").classList.toggle("danger",sec<=10)}
+  $("tbar").style.transform="scaleX("+Math.max(0,S.left/60)+")";
+  if(S.p>=100){S.p=100;S.vis=1;paint(0);finish(false);return}
+  if(S.left<=0){finish(true);return}
+ }
+ S.vis+=(S.p/100-S.vis)*Math.min(1,dt*9);
+ paint(dt);S.raf=requestAnimationFrame(loop)}
+function paint(dt){
+ var a=$("arena");a.style.setProperty("--p",S.vis.toFixed(4));
+ $("box").classList.toggle("danger",S.vis>.72&&S.run);
+ $("saw").classList.toggle("fast",S.vis>.6);
+ var lx=$("lexy");if(!/out|jump/.test(lx.className))lx.classList.toggle("scared",S.vis>.62);
+ S.sp+=dt;if(S.vis>.25&&S.sp>.07&&!S.pause){S.sp=0;sparkAt(-70+S.vis*(a.clientWidth-60)+62,a.clientHeight-40,"sp",1)}}
+function nextQ(){
+ if(!S.run)return;
+ if(!S.deck.length){S.deck=shuffle(BANK[S.d].slice());if(S.deck[S.deck.length-1]===S.last&&S.deck.length>1)S.deck.unshift(S.deck.pop())}
+ var q=S.deck.pop();S.last=q;S.q={s:q[0],a:q[1],rule:q[5],o:shuffle(q.slice(1,5))};S.busy=false;
+ $("sent").style.animation="none";void $("sent").offsetWidth;$("sent").style.animation="";
+ $("sent").innerHTML=q[0].replace("___",'<span class="blank" id="bl"></span>');
+ $("opts").innerHTML="";
+ S.q.o.forEach(function(o,i){var b=document.createElement("button");b.className="opt";b.innerHTML="<i>"+"ABCD"[i]+"</i>"+o;b.onclick=function(){pick(i)};$("opts").appendChild(b)})}
+function filled(w){return S.q.s.replace("___","<u>"+w+"</u>")}
+function pick(i){
+ if(!S.run||S.busy||S.pause)return;S.busy=true;S.n++;
+ var bs=$("opts").children,w=S.q.o[i],ok=w==S.q.a,bl=$("bl");
+ [].forEach.call(bs,function(b){b.disabled=true});bl.textContent=w;
+ if(ok){
+  bs[i].classList.add("ok");bl.classList.add("ok");S.ok++;S.streak++;S.bestS=Math.max(S.bestS,S.streak);
+  var pts=Math.round(10*(1+Math.min(S.streak,6)*.2));S.score+=pts;
+  S.p=Math.max(0,S.p-(C[S.d].push+Math.min(S.streak,5)*1.5));
+  $("score").textContent=S.score;bump($("score"));hud();beep(520+Math.min(S.streak,8)*60,"sine",.12,.14);
+  var f=document.createElement("div");f.className="fl";f.textContent="+"+pts;$("qw").appendChild(f);setTimeout(function(){f.remove()},900);
+  if(S.streak%5==0){var l=$("lexy");l.classList.remove("scared");l.classList.add("jump");setTimeout(function(){l.classList.remove("jump")},700)}
+  setTimeout(nextQ,520)
+ }else{
+  bs[i].classList.add("bad");bl.classList.add("bad");
+  [].forEach.call(bs,function(b,k){if(S.q.o[k]==S.q.a)b.classList.add("ok")});
+  S.streak=0;hud();S.score=Math.max(0,S.score-5);$("score").textContent=S.score;bump($("score"),"bad");
+  S.p=Math.min(99.5,S.p+C[S.d].pen);beep(190,"sawtooth",.3,.14);shake();
+  if(!S.mis.some(function(m){return m.s==S.q.s}))S.mis.push({s:S.q.s,a:S.q.a,r:S.q.rule});
+  $("rightW").textContent=S.q.a;$("rule").innerHTML=S.q.rule;$("sheet").classList.add("show");S.pause=true;
+  setTimeout(function(){$("cont").focus({preventScroll:true})},380)}}
+function cont(){if(!S.pause)return;$("sheet").classList.remove("show");S.pause=false;nextQ()}
+function shake(){var b=$("box"),k=0,iv=setInterval(function(){b.style.transform="translateX("+(k%2?6:-6)+"px)";if(++k>5){clearInterval(iv);b.style.transform=""}},45)}
+function finish(win){
+ S.run=false;S.over=true;S.won=win;cancelAnimationFrame(S.raf);$("box").classList.remove("danger");$("sheet").classList.remove("show");
+ var lx=$("lexy"),a=$("arena");lx.classList.remove("scared","jump");
+ if(win){lx.classList.add("jump");beep(660,"triangle",.4,.16);setTimeout(function(){beep(880,"triangle",.5,.16)},180);
+  for(var i=0;i<22;i++)sparkAt(a.clientWidth-45,a.clientHeight-60,"sp",1)}
+ else{lx.classList.add("out");beep(120,"sawtooth",1,.25);
+  for(var j=0;j<6;j++)setTimeout(function(){sparkAt(a.clientWidth-45+Math.random()*20,a.clientHeight-50,"puff",1)},j*110)}
+ var acc=S.n?Math.round(S.ok/S.n*100):0,stars=win?1+(acc>=70)+(acc>=90):0,b=best(S.d),nr=S.score>b&&S.score>0;
+ if(nr)try{localStorage.setItem("lexy_cr_"+S.d,S.score)}catch(e){}
+ $("endT").textContent=tr(win?"win":"lose");
+ [].forEach.call($("stars").children,function(s,k){s.classList.toggle("on",k<stars)});
+ $("rS").textContent=S.score;$("rC").textContent=S.ok;$("rA").textContent=acc+"%";$("rB").textContent=S.bestS;$("rec").style.display=nr?"block":"none";
+ $("rv").innerHTML=S.mis.length?"<h5>"+tr("rev")+"</h5>"+S.mis.slice(0,3).map(function(m){return"<div><b>"+m.s.replace("___","<u>"+m.a+"</u>")+"</b><em>"+m.r+"</em></div>"}).join(""):"";
+ showBest();
+ setTimeout(function(){$("endOv").classList.remove("hide")},win?900:1200)}
+
+/* ---------- events ---------- */
+[].forEach.call(document.querySelectorAll(".dc"),function(b){b.onclick=function(){S.d=b.dataset.d;[].forEach.call(document.querySelectorAll(".dc"),function(x){x.classList.toggle("on",x==b)})}});
+$("go").onclick=start;
+$("again").onclick=function(){$("endOv").classList.add("hide");$("startOv").classList.remove("hide")};
+$("cont").onclick=cont;
+document.addEventListener("keydown",function(e){
+ if(S.pause&&(e.key=="Enter"||e.key==" ")){e.preventDefault();cont();return}
+ if(!S.run||S.busy||S.pause)return;
+ var i="1234".indexOf(e.key);if(i<0)i="abcd".indexOf(e.key.toLowerCase());
+ if(i>-1&&i<4)pick(i)});
+
+(function(){var l;try{l=localStorage.getItem("lang")}catch(e){}
+ if(!l){l=(navigator.language||"ru").slice(0,2).toLowerCase();if(l=="kk")l="kz"}
+ setLang(LK.indexOf(l)<0?"ru":l);showBest()})();
+</script>
+</body>
+</html>

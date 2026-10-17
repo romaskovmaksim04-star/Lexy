@@ -37,8 +37,22 @@ header{position:sticky;top:0;z-index:20;background:rgba(247,245,252,.9);backdrop
 .burger{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;flex-shrink:0}
 .burger span,.burger span::before,.burger span::after{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;position:relative;content:""}
 .burger span::before{position:absolute;top:-6px}.burger span::after{position:absolute;top:6px}
-nav.desk{display:none;gap:26px;font-weight:500}
+nav.desk{display:none;gap:26px;font-weight:500;align-items:center}
 nav.desk a:hover{color:var(--fire)}
+
+/* ДЕСКТОПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА */
+.desk-lang{position:relative;margin-left:10px}
+.desk-lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:600 13px var(--body);transition:border-color .2s, background .2s;color:var(--ink);cursor:pointer}
+.desk-lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.desk-lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.desk-lang.open .desk-lang-btn svg{transform:rotate(180deg)}
+.desk-lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.desk-lang.open .desk-lang-menu{opacity:1;transform:none;pointer-events:auto}
+.desk-lang-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s;cursor:pointer}
+.desk-lang-menu button:hover{background:var(--peach)}
+.desk-lang-menu button.on{background:#FFF3EC;color:var(--fire)}
+.desk-lang-menu button.on::after{content:"✓";margin-left:auto;font-weight:700}
+.desk-lang-menu button .flag{font-size:16px}
 
 /* drawer */
 .veil{position:fixed;inset:0;background:rgba(27,20,51,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
@@ -426,15 +440,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  .guar{grid-template-columns:auto 1fr auto;padding:48px}
  .cols{grid-template-columns:repeat(4,1fr)}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
-@media(prefers-reduced-motion:reduce){.stars span{transform:none!important}.bar2 i,.trk i{width:var(--w)!important}.ring .fg{stroke-dashoffset:var(--o)!important}.mascot{opacity:1!important}.drawer a.item{opacity:1;transform:none}.reels-track{animation:none!important}}
 
-/* ФИКСЫ ДЛЯ МОБИЛЬНОЙ ШАПКИ */
 @media(max-width: 600px){
+  body { overflow-x: hidden; }
   .bar { gap: 8px; }
   .logo { font-size: 20px; }
   .logo svg { width: 24px; height: 28px; }
-  /* Кнопка "Открыть Lexy" */
   #start {
     padding: 10px 14px !important;
     font-size: 12px !important;
@@ -443,15 +454,16 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     min-width: auto;
     margin-left: auto;
   }
-  /* Кнопка "Войти" */
   .btn-ghost.btn-sm {
     padding: 10px 14px !important;
     font-size: 12px !important;
     margin-right: 4px;
   }
-  /* Иконка бургера */
   .burger { width: 32px; height: 32px; }
 }
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.stars span{transform:none!important}.bar2 i,.trk i{width:var(--w)!important}.ring .fg{stroke-dashoffset:var(--o)!important}.mascot{opacity:1!important}.drawer a.item{opacity:1;transform:none}.reels-track{animation:none!important}}
 </style>
 <script>document.documentElement.classList.add("js")</script>
 </head>
