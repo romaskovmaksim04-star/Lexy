@@ -12,7 +12,7 @@
 --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
-body{font:400 16px/1.55 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased}
+body{font:400 16px/1.55 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%;position:relative}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
@@ -23,41 +23,22 @@ h2{font-size:clamp(24px,5vw,38px);font-weight:700;margin-bottom:12px}
 .lead{color:var(--soft);max-width:52ch}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 28px;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .15s,box-shadow .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 28px;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .15s,box-shadow .15s;white-space:nowrap}
 .btn-fire{background:var(--fire);color:#fff;box-shadow:0 8px 20px -8px rgba(255,90,31,.7)}
 .btn-fire:hover{transform:translateY(-2px)}
 .btn-ghost{background:#fff;border:1.5px solid var(--line)}
 .btn-sm{padding:11px 18px;font-size:13px}
-.btn-ghost:hover{border-color:var(--fire);color:var(--fire)}
 
 /* header */
 header{position:sticky;top:0;z-index:20;background:rgba(247,245,252,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
-.bar{display:flex;align-items:center;gap:14px;height:64px}
-.logo{display:flex;align-items:center;gap:9px;font:800 24px var(--display);letter-spacing:-.04em}
+.bar{display:flex;align-items:center;gap:14px;height:64px;width:100%}
+.logo{display:flex;align-items:center;gap:9px;font:800 24px var(--display);letter-spacing:-.04em;flex-shrink:0}
 .logo svg{width:30px;height:36px}
-.bar .btn{margin-left:auto}
-.burger{width:40px;height:40px;display:grid;place-items:center;border-radius:12px}
+.burger{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;flex-shrink:0}
 .burger span,.burger span::before,.burger span::after{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;position:relative;content:""}
 .burger span::before{position:absolute;top:-6px}.burger span::after{position:absolute;top:6px}
 nav.desk{display:none;gap:26px;font-weight:500}
 nav.desk a:hover{color:var(--fire)}
-
-nav.desk{display:none;gap:26px;font-weight:500;align-items:center}
-nav.desk a:hover{color:var(--fire)}
-
-/* ДЕСКТОПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА */
-.desk-lang{position:relative;margin-left:10px}
-.desk-lang-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:600 13px var(--body);transition:border-color .2s, background .2s;color:var(--ink);cursor:pointer}
-.desk-lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
-.desk-lang-btn svg{width:14px;height:14px;transition:transform .25s}
-.desk-lang.open .desk-lang-btn svg{transform:rotate(180deg)}
-.desk-lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:140px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
-.desk-lang.open .desk-lang-menu{opacity:1;transform:none;pointer-events:auto}
-.desk-lang-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;transition:background .15s;cursor:pointer}
-.desk-lang-menu button:hover{background:var(--peach)}
-.desk-lang-menu button.on{background:#FFF3EC;color:var(--fire)}
-.desk-lang-menu button.on::after{content:"✓";margin-left:auto;font-weight:700}
-.desk-lang-menu button .flag{font-size:16px}
 
 /* drawer */
 .veil{position:fixed;inset:0;background:rgba(27,20,51,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
@@ -108,14 +89,12 @@ body.open .drawer{transform:none}
 .stats div{font-size:13px;color:var(--soft);line-height:1.3}
 .stats strong{display:block;font:700 26px var(--display);color:var(--ink);letter-spacing:-.03em}
 
-/* ============ REELS CAROUSEL (NEW) ============ */
+/* ============ REELS CAROUSEL ============ */
 .reels-wrap{position:relative;overflow:hidden;padding:8px 0 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .reels-track{display:flex;gap:16px;padding:0 20px;width:max-content;will-change:transform}
-/* когда роликов много — едет */
 .reels-track.moving{animation:reelsDrift linear infinite}
 .reels-track.moving.paused{animation-play-state:paused}
 @keyframes reelsDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-/* когда всё влезает — по центру */
 .reels-track.centered{justify-content:center;width:100%}
 
 .reel{
@@ -160,14 +139,13 @@ body.open .drawer{transform:none}
 }
 .reel .play b svg{width:22px;height:22px;margin-left:3px}
 
-/* заглушка если thumb нет */
 .reel .placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
 .reel[data-plat="tiktok"] .placeholder{background:linear-gradient(160deg,#25F4EE 0%,#000 50%,#FE2C55 100%)}
 .reel[data-plat="instagram"] .placeholder{background:linear-gradient(160deg,#FEDA75,#D62976 55%,#962FBF)}
 .reel[data-plat="youtube"] .placeholder{background:linear-gradient(160deg,#FF0000,#900000)}
 .reel .placeholder svg{width:64px;height:64px;opacity:.85}
 
-/* ============ GAMES SECTION — прокачанный ============ */
+/* ============ GAMES SECTION ============ */
 .games-hero{display:grid;gap:24px;align-items:center;margin-bottom:34px}
 .games-hero .copy h2{margin-bottom:10px}
 .games-hero .tag{display:inline-flex;align-items:center;gap:6px;background:var(--peach);color:var(--fire);font:700 12px var(--display);letter-spacing:.04em;padding:6px 12px;border-radius:999px;margin-bottom:14px;text-transform:uppercase}
@@ -177,7 +155,7 @@ body.open .drawer{transform:none}
 .games-stats strong{display:block;font:700 24px var(--display);color:var(--ink);letter-spacing:-.03em}
 
 /* веер карточек */
-.games-deck{position:relative;height:320px;display:grid;place-items:center;perspective:1000px}
+.games-deck{position:relative;height:320px;display:grid;place-items:center;perspective:1000px;max-width:100%}
 .game-card{
   position:absolute;
   width:220px;aspect-ratio:9/14;
@@ -191,14 +169,12 @@ body.open .drawer{transform:none}
   overflow:hidden;
   isolation:isolate;
 }
-/* фоновый паттерн — точки */
 .game-card::before{
   content:"";position:absolute;inset:0;z-index:-1;
   background-image:radial-gradient(rgba(255,255,255,.22) 1.4px, transparent 1.4px);
   background-size:14px 14px;
   opacity:.6;
 }
-/* крупный watermark-символ */
 .game-card::after{
   content:"";position:absolute;right:-40px;bottom:-50px;width:170px;height:170px;z-index:-1;
   background-repeat:no-repeat;background-size:contain;opacity:.16;
@@ -207,7 +183,6 @@ body.open .drawer{transform:none}
 .game-card.g-shadow::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12h-2z'/></svg>")}
 .game-card.g-conn::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M3.9 12a5 5 0 0 1 5-5H12V5H8.9A7 7 0 0 0 8.9 19H12v-2H8.9a5 5 0 0 1-5-5zm4.1 1h8v-2H8v2zm8-8H12v2h4.1a5 5 0 0 1 0 10H12v2h4.1a7 7 0 0 0 0-14z'/></svg>")}
 .game-card.g-trap::after{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 3a7 7 0 0 0-7 7v4a5 5 0 0 0 5 5h4a5 5 0 0 0 5-5v-4a7 7 0 0 0-7-7zm-4 7a4 4 0 0 1 8 0v4a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3v-4z'/></svg>")}
-/* аватарка игры */
 .game-card .av{
   width:60px;height:60px;border-radius:18px;
   display:grid;place-items:center;position:relative;
@@ -216,7 +191,6 @@ body.open .drawer{transform:none}
   box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);
 }
 .game-card .av svg{width:34px;height:34px;position:relative;z-index:1}
-/* свечение за аватаркой */
 .game-card .av::after{
   content:"";position:absolute;inset:-14px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,255,255,.35),transparent 60%);
@@ -230,12 +204,12 @@ body.open .drawer{transform:none}
 .game-card.g-conn{background:linear-gradient(160deg,#8A5CFF,#3B2A8F 80%)}
 .game-card.g-trap{background:linear-gradient(160deg,#1FC28B,#0B6B52 80%)}
 
-.game-card:nth-child(1){transform:rotate(-9deg) translateX(-78px)}
+.game-card:nth-child(1){transform:rotate(-9deg) translateX(-60px)}
 .game-card:nth-child(2){transform:rotate(0deg) translateY(-12px);z-index:2}
-.game-card:nth-child(3){transform:rotate(9deg) translateX(78px)}
-.games-deck:hover .game-card:nth-child(1){transform:rotate(-14deg) translateX(-98px) translateY(-8px)}
+.game-card:nth-child(3){transform:rotate(9deg) translateX(60px)}
+.games-deck:hover .game-card:nth-child(1){transform:rotate(-14deg) translateX(-80px) translateY(-8px)}
 .games-deck:hover .game-card:nth-child(2){transform:rotate(0deg) translateY(-22px) scale(1.05)}
-.games-deck:hover .game-card:nth-child(3){transform:rotate(14deg) translateX(98px) translateY(-8px)}
+.games-deck:hover .game-card:nth-child(3){transform:rotate(14deg) translateX(80px) translateY(-8px)}
 @keyframes pulseGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:.35;transform:scale(1.12)}}
 
 /* плитки игр ниже */
@@ -260,6 +234,10 @@ body.open .drawer{transform:none}
   .games-hero{grid-template-columns:1.1fr 1fr;gap:40px}
   .games-grid{grid-template-columns:repeat(3,1fr)}
   .reel{width:210px}
+  .game-card:nth-child(1){transform:rotate(-9deg) translateX(-78px)}
+  .game-card:nth-child(3){transform:rotate(9deg) translateX(78px)}
+  .games-deck:hover .game-card:nth-child(1){transform:rotate(-14deg) translateX(-98px) translateY(-8px)}
+  .games-deck:hover .game-card:nth-child(3){transform:rotate(14deg) translateX(98px) translateY(-8px)}
 }
 
 /* platform */
@@ -442,7 +420,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
 .legal{font-size:12px;color:var(--soft);max-width:70ch}
 
 @media(min-width:820px){
- .burger{display:none}nav.desk{display:flex}.bar .btn{margin-left:0}.bar{justify-content:space-between}
+ .burger{display:none}nav.desk{display:flex}.bar{justify-content:space-between}
  .hero .wrap{grid-template-columns:1.2fr 1fr}.mascot{width:100%;max-width:360px}
  .stage{grid-template-columns:1fr 1fr}.reviews{grid-template-columns:repeat(3,1fr)}
  .guar{grid-template-columns:auto 1fr auto;padding:48px}
@@ -450,6 +428,30 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 @media(prefers-reduced-motion:reduce){.stars span{transform:none!important}.bar2 i,.trk i{width:var(--w)!important}.ring .fg{stroke-dashoffset:var(--o)!important}.mascot{opacity:1!important}.drawer a.item{opacity:1;transform:none}.reels-track{animation:none!important}}
+
+/* ФИКСЫ ДЛЯ МОБИЛЬНОЙ ШАПКИ */
+@media(max-width: 600px){
+  .bar { gap: 8px; }
+  .logo { font-size: 20px; }
+  .logo svg { width: 24px; height: 28px; }
+  /* Кнопка "Открыть Lexy" */
+  #start {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+    min-width: auto;
+    margin-left: auto;
+  }
+  /* Кнопка "Войти" */
+  .btn-ghost.btn-sm {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    margin-right: 4px;
+  }
+  /* Иконка бургера */
+  .burger { width: 32px; height: 32px; }
+}
 </style>
 <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -486,7 +488,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
   <a class="item" href="#games"><span data-i18n="nav.games">Игры</span> <span>›</span></a>
   <a class="item" href="tools.html"><span data-i18n="nav.tools">Инструменты</span> <span>›</span></a>
   <a class="item" href="guides.html"><span data-i18n="nav.guides">Гайды</span> <span>›</span></a>
-  <a class="item" href="#guarantee"><span data-i18n="nav.guarantee">Гарантия</span> <span>›</span></a>
+  <a class="item" href="guarantee.html"><span data-i18n="nav.guarantee">Гарантия</span> <span>›</span></a>
   <a class="item" href="#faq"><span data-i18n="nav.faq">Вопросы</span> <span>›</span></a>
  </div>
  <div class="foot">
@@ -504,7 +506,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     <button data-lang="uz"><span class="flag">🇺🇿</span><span class="name">O‘zbekcha</span><span class="code">UZ</span></button>
    </div>
   </div>
-  <a class="btn btn-ghost auth-btn" style="width:100%;justify-content:center;margin-bottom:8px;" href="login.html" data-i18n="btn.login">Войти</a>  <a class="btn btn-fire" href="reg.html" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
+  <a class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px;" href="login.html" data-i18n="btn.login">Войти</a>
+  <a class="btn btn-fire" href="reg.html" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
  </div>
 </aside>
 
@@ -512,13 +515,14 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  <div class="wrap bar">
   <button class="burger" id="open" aria-label="Открыть меню"><span></span></button>
   <a class="logo" href="#top"><svg><use href="#flame"/></svg>Lexy</a>
+
   <nav class="desk">
     <a href="#games" data-i18n="nav.games">Игры</a>
     <a href="#reviews" data-i18n="nav.reviews">Отзывы</a>
-    <a href="#guarantee" data-i18n="nav.guarantee">Гарантия</a>
+    <a href="guarantee.html" data-i18n="nav.guarantee">Гарантия</a>
     <a href="#faq" data-i18n="nav.faq">Вопросы</a>
 
-    <!-- ПК: ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА -->
+    <!-- ДЕСКТОПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА -->
     <div class="desk-lang" id="deskLang">
       <button class="desk-lang-btn" id="deskLangBtn">
         <span id="deskCurFlag">🇷🇺</span>
@@ -534,10 +538,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     </div>
   </nav>
 
-  <!-- ПК: ВОЙТИ + ОТКРЫТЬ LEXY -->
-    <!-- Кнопка Войти получает margin-left:auto, чтобы отталкиваться от логотипа/меню и прижимать всю группу вправо -->
-  <a class="btn btn-ghost btn-sm auth-btn" href="login.html" style="margin-left:auto; margin-right:10px;" data-i18n="btn.login">Войти</a>
-  <!-- У Открыть Lexy margin-left:auto убираем, чтобы они стояли плотно друг к другу -->
+  <a class="btn btn-ghost btn-sm" href="login.html" style="margin-left:auto;margin-right:10px;" data-i18n="btn.login">Войти</a>
   <a class="btn btn-fire btn-sm" href="reg.html" id="start" data-i18n="btn.openLexyShort">ОТКРЫТЬ LEXY</a>
  </div>
 </header>
@@ -575,7 +576,6 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
    <div class="wrap"><h2 style="text-align:center" data-i18n="uni.title">С нами ты достигнешь большего</h2></div>
    <div class="uni" style="margin-top:22px"><div class="track" id="trk"></div></div>
  </section>
-<!-- МУСОР УДАЛЕН -->
 
  <!-- ============ REELS — умная карусель ============ -->
  <section id="reels-section" style="padding-top:8px">
@@ -656,7 +656,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      </div>
      <p data-i18n="g2.desc">В предложении пропущена связка — выбери правильную из четырёх за 5 секунд. Ошибся? Сразу видишь правило. За 60 секунд нужно набрать максимум очков.</p>
      <div class="tags"><span>Writing</span><span>Task 1</span><span>60 сек</span></div>
-     <a class="go" href="reg.html" data-i18n="btn.train">Тренировать →</a>
+     <a class="go" href="game-connector.html" data-i18n="btn.train">Тренировать →</a>
     </article>
 
     <article class="game-tile">
@@ -669,12 +669,12 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      </div>
      <p data-i18n="g3.desc">Слушаешь короткий фрагмент, где диктор меняет ответ посреди фразы: «...on Monday — actually no, Wednesday». Поймай финальный ответ — и больше не купишься на экзамене.</p>
      <div class="tags"><span>Listening</span><span>Anti-trap</span><span>15 сек</span></div>
-     <a class="go" href="reg.html" data-i18n="btn.train">Тренировать →</a>
+     <a class="go" href="game-trap.html" data-i18n="btn.train">Тренировать →</a>
     </article>
    </div>
 
    <div style="text-align:center;margin-top:34px">
-    <a class="btn btn-fire" href="reg.html" data-i18n="btn.tryGames">ПОПРОБОВАТЬ ИГРЫ →</a>
+    <a class="btn btn-fire" href="game-shadow.html" data-i18n="btn.tryGames">ПОПРОБОВАТЬ ИГРЫ →</a>
    </div>
   </div>
  </section>
@@ -779,9 +779,9 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
   <div class="cols">
    <div>
      <h4 data-i18n="ft.games">Игры</h4>
-     <a href="#games">Shadow Speak</a>
-     <a href="#games">Connector Rush</a>
-     <a href="#games">Listening Trap</a>
+     <a href="game-shadow.html">Shadow Speak</a>
+     <a href="game-connector.html">Connector Rush</a>
+     <a href="game-trap.html">Listening Trap</a>
    </div>
    <div>
      <h4 data-i18n="ft.tools">Инструменты</h4>
@@ -1053,19 +1053,19 @@ function setLang(lang){
     var b = a.querySelector('b'); if(b) b.style.color = (a.dataset.langLink === lang) ? 'var(--ink)' : '';
   });
 }
-/* ============ Language switcher ============ */
+
+/* ============ Language switcher (Mobile) ============ */
 var langPick = document.getElementById('langPick');
 var langPickBtn = document.getElementById('langPickBtn');
 var langMenu = document.getElementById('langMenu');
-langPickBtn.addEventListener('click', function(e){ e.stopPropagation(); langPick.classList.toggle('open'); });
-langMenu.querySelectorAll('button').forEach(function(b){
-  b.addEventListener('click', function(){ setLang(b.dataset.lang); langPick.classList.remove('open'); });
-});
-document.addEventListener('click', function(){ langPick.classList.remove('open'); });
-langMenu.addEventListener('click', function(e){ e.stopPropagation(); });
-document.querySelectorAll('[data-lang-link]').forEach(function(a){
-  a.addEventListener('click', function(e){ e.preventDefault(); setLang(a.dataset.langLink); });
-});
+if(langPickBtn) {
+  langPickBtn.addEventListener('click', function(e){ e.stopPropagation(); langPick.classList.toggle('open'); });
+  langMenu.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.dataset.lang); langPick.classList.remove('open'); });
+  });
+  document.addEventListener('click', function(){ langPick.classList.remove('open'); });
+  langMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+}
 
 /* ============ Language switcher (Desktop) ============ */
 var deskLang = document.getElementById('deskLang');
@@ -1080,8 +1080,12 @@ if (deskLangBtn && deskLangMenu) {
   deskLangMenu.addEventListener('click', function(e){ e.stopPropagation(); });
 }
 
+document.querySelectorAll('[data-lang-link]').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); setLang(a.dataset.langLink); });
+});
+
 /* ============================================================
-   REELS RENDER + умное поведение
+   REELS RENDER
    ============================================================ */
 function platIcon(p){
   if(p === 'tiktok') return '<svg><use href="#ic-tt"/></svg>';
@@ -1292,28 +1296,6 @@ ms.onclick=function(){ms.classList.remove("boop");void ms.offsetWidth;ms.classLi
   setLang(saved);
   renderReels();
 })();
-
-/* Проверка авторизации */
-(function checkAuth() {
-  // Если в localStorage есть флаг isLoggedIn (мы поставим его на странице login.html)
-  if (localStorage.getItem('isLoggedIn') === 'true') {
-    // Скрываем все кнопки с классом auth-btn
-    document.querySelectorAll('.auth-btn').forEach(function(btn) {
-      btn.style.display = 'none';
-    });
-
-    // Опционально: вместо "Войти" в шапке можно показать кнопку "Профиль"
-    var deskAuth = document.querySelector('.bar .auth-btn');
-    if (deskAuth) {
-      var profileBtn = document.createElement('a');
-      profileBtn.href = 'profile.html'; // или куда вести
-      profileBtn.className = 'btn btn-ghost btn-sm';
-      profileBtn.innerHTML = 'Профиль';
-      deskAuth.parentNode.insertBefore(profileBtn, deskAuth.nextSibling);
-    }
-  }
-})();
-
 </script>
 </body>
 </html>
