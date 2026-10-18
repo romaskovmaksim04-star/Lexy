@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexy — Подготовка к IELTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy.css">
+<script src="lexy-core.js"></script>
+</head>
+<body>
+<!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
+<script>Lexy.guard("ielts");</script>
+
+<main class="main">
+  <section class="sec" id="s-home"></section>
+  <section class="sec" id="s-tests"></section>
+  <section class="sec" id="s-stats"></section>
+  <!-- СЛОВАРЬ: рисуется ядром; действия закрыты замком, пока нет Premium -->
+  <section class="sec" id="s-vocab"></section>
+
+  <!-- LEXY AI: под замком -->
+  <section class="sec" id="s-ai">
+    <div data-gate="ai"></div>
+    <div data-pro="ai" hidden>
+      <h1 class="t">Lexy AI</h1>
+      <div class="card" style="margin-top:20px">
+        <h3 style="font:800 20px var(--display);letter-spacing:-.02em">Живой разговор с ИИ</h3>
+        <p class="s">Выбери характер собеседника и практикуй Speaking. Чат в разработке — а пока потренируйся в игре Shadow Speak.</p>
+        <a class="btn v" href="shadow-speak.html">Открыть Shadow Speak</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ИГРЫ: под замком -->
+  <section class="sec" id="s-games">
+    <div data-gate="games"></div>
+    <div data-pro="games" hidden>
+      <h1 class="t">Игры</h1><p class="s">Мини-игры, которые тренируют английский под давлением</p>
+      <div class="gm">
+        <a href="shadow-speak.html" style="background:linear-gradient(135deg,#FF5A1F,#FF9A0A)"><b>Shadow Speak</b><small>Speaking · повторяй фразы вслух</small></a>
+        <a href="connector-rush.html" style="background:linear-gradient(135deg,#6D5BFF,#A64DFF)"><b>Connector Rush</b><small>Writing · слова-связки и грамматика</small></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="s-profile"></section>
+</main>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl, T = Lexy.cfg.test;
+  var TEST_N = 24;   // сколько тестов показывать в каждой вкладке (замени на реальное число)
+
+  function dword(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "день" : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? "дня" : "дней"; }
+  function daysTo(s) { var t = new Date(); t.setHours(0, 0, 0, 0); return Math.ceil((new Date(s + "T00:00:00") - t) / 864e5); }
+  function fmt(s) { return new Date(s + "T00:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long" }); }
+  function ico(i, bg, c) { return '<span class="ico" style="background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
+
+  /* ---------- ГЛАВНАЯ ---------- */
+  function home() {
+    var u = Lexy.user, d = daysTo(u.examDate), done = Object.keys(u.tests).length;
+    var rows = [["mic", "#FFF0C8", "#E59A00", "Спикинг", "Части 1, 2 и 3", "~25 мин", "speaking"], ["head", "#FFD9D2", "#E5443E", "Аудирование", "4 аудио, 40 вопросов", "~37 мин", "listening"],
+      ["book", "#D8EBFF", "#1E8FE8", "Чтение", "3 отрывка, 40 вопросов", "~53 мин", "reading"], ["pencil", "#FFE0CF", "#F7620B", "Письмо", "Задание 1 + Задание 2", "~60 мин", "writing"]];
+    $("#s-home").innerHTML =
+      '<div class="hx"><div class="mp">' + fl(52) + "</div><div><h2>" + (d <= 0 ? "Экзамен сегодня" : "До экзамена " + d + " " + dword(d)) + ' <span style="font:500 14px var(--body);opacity:.85">' + fmt(u.examDate) + '</span><button data-act="exam" aria-label="Изменить дату">' + ic("pencil") + "</button></h2>" +
+      '<div class="trk"><i style="width:50%"></i><b style="left:50%"></b><em style="left:50%">?</em></div><div class="tl"><span>СЕГОДНЯ</span><span>' + fmt(u.examDate).toUpperCase() + "</span></div><p>Пройди первый замер уровня, и здесь появится прогноз к экзамену.</p></div>" +
+      '<div class="tg-box"><div class="st">' + ic("star") + "</div><strong>" + u.target.toFixed(1) + "</strong><small>ЦЕЛЬ</small></div></div>" +
+      '<div class="card" style="padding:0"><div class="hg"><div class="lt"><div class="tile"><i></i><i></i><i></i><i></i><div class="fc"><div>' + fl(34) + "</div></div></div><h3>Замер уровня</h3><p><b>" + done + "/4 выполнено · ~175 мин</b><br>4 полных теста: каждый открывает твой балл и инсайты</p>" +
+      '<a class="btn p sm" href="' + T + '?mode=baseline">' + ic("play") + " Начать</a></div><div>" +
+      rows.map(function (r) { return '<div class="pw">' + ico(r[0], r[1], r[2]) + '<div class="tx"><b>' + r[3] + '</b><span class="tag">Полная практика</span><br>' + r[4] + "<br>" + r[5] + '</div><a class="go" href="' + T + "?skill=" + r[6] + '&mode=full" aria-label="Начать">' + ic("play") + "</a></div>"; }).join("") + "</div></div>" +
+      '<div class="plan"><div class="bl"><div></div><div></div><div></div></div><div class="ov"><div style="margin:0 auto 6px">' + fl(30) + "</div><b>Твой ежедневный план</b><small>Откроется после замера: соберём его на твоих реальных уровнях, а не на средних</small></div></div></div>" +
+      '<a class="card hist" href="' + T + '?history=1"><span class="ico" style="background:#FFE3DC;color:var(--fire)">' + ic("hist") + '</span><div class="tx"><b>История тестов</b><small>Все прошлые попытки с ответами и разбором ошибок</small></div>' + ic("chev") + "</a>";
+  }
+  Lexy.acts.exam = function () {
+    var u = Lexy.user, opts = ""; for (var b = 5; b <= 9; b += 0.5) opts += '<option value="' + b + '"' + (b === u.target ? " selected" : "") + ">" + b.toFixed(1) + "</option>";
+    Lexy.modal({ title: "Дата экзамена и цель", body: '<label>Дата экзамена</label><input type="date" id="ed" value="' + u.examDate + '"><label>Целевой балл</label><select id="et">' + opts + "</select>", ok: "Сохранить", cancel: "Отмена",
+      onOk: function () { var v = $("#ed").value; if (!v) { Lexy.toast("Выбери дату"); return false; } Lexy.save({ examDate: v, target: parseFloat($("#et").value) }); home(); Lexy.toast("Сохранено"); } });
+  };
+
+  /* ---------- ТЕСТЫ ---------- */
+  var TABS = [["reading", "Чтение", "book", "#1E9BFF", "Тесты Academic Reading", "Academic"], ["listening", "Аудир.", "head", "#E5443E", "Тесты Listening", "Listening"],
+    ["writing", "Письмо", "pencil", "#F7620B", "Тесты Academic Writing", "Academic"], ["speaking", "Говор.", "mic", "#E59A00", "Тесты Speaking", "Speaking"]];
+  var tab = "reading";
+  function tests() {
+    var u = Lexy.user, t = TABS.filter(function (x) { return x[0] === tab; })[0], n, passed = 0, g = "";
+    Object.keys(u.tests).forEach(function (k) { if (k.indexOf(tab + "-") === 0) passed++; });
+    for (n = 1; n <= TEST_N; n++) g += '<a class="ti" href="' + T + "?skill=" + tab + "&n=" + n + '"><span class="ico" style="background:#E3F0FF;color:#1E8FE8">' + ic(t[2]) + "</span><div><b>" + t[0].charAt(0).toUpperCase() + t[0].slice(1) + " Test " + n + "</b><br><small>" + t[5] + '</small></div><span class="go">' + ic("play") + '</span><span class="cta">Начать тест</span></a>';
+    $("#s-tests").innerHTML = '<h1 class="t">Пробные тесты IELTS</h1><p class="s">Выберите тип теста и начните практику</p>' +
+      '<div class="fx"><span class="ico">' + ic("play") + '</span><div class="tx"><b>Полный экзамен — генеральная репетиция</b><small>Все четыре навыка, условия как на экзамене и прогноз общего балла. ~2,5 ч.</small></div><a class="btn p sm" href="' + T + '?mode=full">Начать ' + ic("chev") + "</a></div>" +
+      '<div class="tabs" role="tablist">' + TABS.map(function (x) { return '<button class="tab' + (x[0] === tab ? " on" : "") + '" style="--c:' + x[3] + '" data-t="' + x[0] + '">' + ic(x[2]) + x[1] + " <em>" + TEST_N + "</em></button>"; }).join("") + "</div>" +
+      '<h2 class="vt" style="font-size:24px">' + t[4] + '</h2><p class="s" style="margin-bottom:0">' + TEST_N + " тестов · " + passed + ' пройдено</p>' +
+      '<div class="rnd"><span class="ico">' + ic("swap") + '</span><div class="tx"><b>Случайный тест</b><small>Сначала непройденные, затем давно пройденные</small></div><a class="btn sm" style="background:#1E9BFF;color:#fff" href="' + T + "?skill=" + tab + '&random=1">' + ic("swap") + " Начать</a></div>" +
+      '<div class="tgrid">' + g + "</div>";
+  }
+  $("#s-tests").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { tab = b.dataset.t; tests(); } });
+
+  /* ---------- СТАТИСТИКА ---------- */
+  var st = { p: "month", s: "overview" };
+  var PER = [["week", "Неделя"], ["month", "Месяц"], ["m3", "3 мес"], ["m6", "6 мес"], ["all", "Всё время"]];
+  var SKL = [["overview", "Обзор", "home"], ["reading", "Reading", "book"], ["listening", "Listening", "head"], ["writing", "Writing", "pencil"], ["speaking", "Speaking", "mic"], ["vocab", "Словарь", "vocab"]];
+  function stats() {
+    var u = Lexy.user, m = Lexy.mins(), n = Lexy.streakN(), DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+    var dots = Lexy.weekDots(), wk = dots.filter(function (d) { return d.on; }).length;
+    var head = '<div class="top" style="align-items:flex-start;flex-wrap:wrap"><div><h1 class="t">Статистика</h1><p class="s" style="margin-bottom:0">Отслеживайте свой прогресс по навыкам</p></div><div class="pp">' +
+      PER.map(function (p) { return '<button class="' + (st.p === p[0] ? "on" : "") + '" data-p="' + p[0] + '">' + p[1] + "</button>"; }).join("") + "</div></div>" +
+      '<div class="sk">' + SKL.map(function (s) { return '<button class="' + (st.s === s[0] ? "on" : "") + '" data-s="' + s[0] + '">' + ic(s[2]) + s[1] + "</button>"; }).join("") + "</div>";
+    if (st.s !== "overview") {
+      var nm = SKL.filter(function (s) { return s[0] === st.s; })[0][1];
+      $("#s-stats").innerHTML = head + '<div class="card emp"><div class="eb">' + fl(30) + "</div><h3 style=\"text-align:center\">" + nm + "</h3><p>" + (st.s === "vocab" ? "Слов в словаре: " + u.words.length : "Пока нет данных. Пройди тест, и здесь появится динамика.") + '</p><a class="btn p sm" href="#tests" data-go="tests" style="margin-top:14px">К тестам</a></div>';
+      return;
+    }
+    var ins = [["Твой стартовый band", "Откроется после оставшихся юнитов замера (4)", "25'"], ["Твой слабейший навык", "Откроется после 2 замеренных навыков", "25'"], ["Твои типичные ошибки", "Откроется после Writing-юнита (60 мин)", "60'"], ["Прогноз к экзамену", "Откроется после оставшихся юнитов замера (4)", "25'"], ["План, собранный под тебя", "Откроется после оставшихся юнитов замера (4)", "25'"]];
+    $("#s-stats").innerHTML = head +
+      '<div class="card ins"><div class="hd"><span class="fc">' + fl(22) + '</span><div><b>Твои инсайты</b><small>Открыто 0 из 5 — остальное откроет замер</small></div></div><div class="ib2"><i></i><i></i><i></i><i></i><i></i></div>' +
+      ins.map(function (r) { return '<a class="ir" href="' + T + '?mode=baseline"><span class="ico">' + ic("lock") + '</span><div class="tx"><b>' + r[0] + "</b><small>" + r[1] + '</small></div><div class="go2"><span></span>' + r[2] + " →</div></a>"; }).join("") + "</div>" +
+      '<div class="tri"><div class="card c1"><small>СЕРИЯ</small><div class="big">' + n + '<em>' + dword(n) + ' подряд</em></div><div class="dots">' + dots.map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + (d.today ? " td" : "") + '"><i></i>' + DN[i] + "</div>"; }).join("") + '</div><small style="display:block;margin-top:10px;font-weight:400">' + wk + " из 7 дней на этой неделе</small></div>" +
+      '<div class="card"><small style="color:var(--soft)">ОЦЕНКА БАЛЛА</small><div class="big" style="color:var(--soft)">—</div><div class="bs"><div><i style="background:#1E9BFF"></i>R<b>—</b></div><div><i style="background:#E5443E"></i>L<b>—</b></div><div><i style="background:#F7620B"></i>W<b>—</b></div><div><i style="background:#F2B100"></i>S<b>—</b></div></div></div>' +
+      '<div class="card c3"><small>ТВОЯ ЦЕЛЬ</small><div class="big">' + u.target.toFixed(1) + "<em>цель</em></div><div class=\"trk\" style=\"margin:18px 0 8px\"><i style=\"width:0\"></i></div><div class=\"tl\"><span>0.0 сейчас</span><span>осталось " + u.target.toFixed(1) + "</span></div></div></div>" +
+      '<div class="tgl">Только полные моки <label class="sw"><input type="checkbox" id="fo"' + (u.fullOnly ? " checked" : "") + "><span></span></label></div>" +
+      '<div class="skg">' + [["Reading", "book", "#E3F0FF", "#1E8FE8"], ["Listening", "head", "#FFE0DB", "#E5443E"], ["Writing", "pencil", "#FFE6D6", "#F7620B"], ["Speaking", "mic", "#FFF3CC", "#E59A00"]].map(function (s) { return '<div class="skc">' + ico(s[1], s[2], s[3]) + '<div class="tx"><b>' + s[0] + "</b><small>0 тестов</small></div><span class=\"v\">—</span></div>"; }).join("") + "</div>" +
+      '<div class="skc" style="margin-bottom:20px">' + ico("vocab", "#F6E1F6", "#C02FB0") + '<div class="tx"><b>Словарь</b><small>' + u.words.length + " слов в словаре</small></div></div>" +
+      '<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span class="ico" style="width:34px;height:34px">' + fl(20) + '</span><small style="color:var(--soft)">Время с Lexy</small></div><div class="tm"><div>' + m.day + ' мин<small>Сегодня</small></div><div>' + m.wk + ' мин<small>Неделя</small></div><div>' + m.all + ' мин<small>Всего</small></div></div></div>' +
+      '<div class="card emp"><h3>Активность</h3><div class="eb" style="margin-top:20px">' + fl(30) + "</div><p>Нет данных за выбранный период</p></div>" +
+      '<div class="card"><h3 style="font:800 20px var(--display)">Динамика баллов</h3><div class="lgd"><span><i style="background:#1E9BFF"></i>Reading</span><span><i style="background:#E5443E"></i>Listening</span><span><i style="background:#F7620B"></i>Writing</span><span><i style="background:#F2B100"></i>Speaking</span><span><i style="background:#999"></i>Цель</span></div><p class="s" style="margin:16px 0 0">Нет данных за выбранный период</p></div>';
+  }
+  $("#s-stats").addEventListener("click", function (e) {
+    var p = e.target.closest("[data-p]"), s = e.target.closest("[data-s]");
+    if (p) { st.p = p.dataset.p; stats(); } else if (s) { st.s = s.dataset.s; stats(); }
+  });
+  $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
+
+  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats }, vocabGated: true });
+})();
+</script>
+</body>
+</html>

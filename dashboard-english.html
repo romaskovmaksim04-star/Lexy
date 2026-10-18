@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexy — Разговорный английский</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy.css">
+<script src="lexy-core.js"></script>
+</head>
+<body>
+<!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
+<script>Lexy.guard("english");</script>
+
+<main class="main">
+  <!-- ПУТЬ: опросник (если путь не собран) или карта уроков -->
+  <section class="sec" id="s-path"></section>
+
+  <!-- РАЗГОВОР: под замком, пока нет Premium -->
+  <section class="sec" id="s-talk">
+    <h1 class="t">Разговор</h1>
+    <div data-gate="ai"></div>
+    <div data-pro="ai" hidden>
+      <div class="card" style="margin-top:20px">
+        <h3 style="font:800 20px var(--display);letter-spacing:-.02em">Чат с Lexy AI</h3>
+        <p class="s">Выбери характер собеседника и говори. Пока тренируйся в игре Shadow Speak, пока чат в разработке.</p>
+        <a class="btn v" href="shadow-speak.html">Открыть Shadow Speak</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЛОВАРЬ: рисуется ядром (lexy-core.js) -->
+  <section class="sec" id="s-vocab"></section>
+
+  <!-- ПРОГРЕСС -->
+  <section class="sec" id="s-progress"></section>
+
+  <!-- ЛИЧНЫЙ КАБИНЕТ: рисуется ядром -->
+  <section class="sec" id="s-profile"></section>
+</main>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl;
+
+  var GOALS = [["study", "🎓", "Учёба"], ["travel", "✈️", "Путешествия"], ["work", "💼", "Работа"], ["move", "🏠", "Переезд"]];
+  var LEVELS = [["A1", "Начинающий", "Знаю отдельные слова"], ["A2", "Элементарный", "Строю простые фразы"], ["B1", "Средний", "Объясняюсь, но с трудом"], ["B2", "Выше среднего", "Говорю, но с ошибками и паузами"], ["C1", "Продвинутый", "Говорю свободно, хочу отшлифовать"]];
+  var INT = [["🎬", "Фильмы и сериалы"], ["🎵", "Музыка"], ["✈️", "Путешествия"], ["💼", "Бизнес и карьера"], ["💻", "Технологии"], ["🏀", "Спорт"], ["🎮", "Игры"], ["🍜", "Еда"], ["👕", "Мода"], ["🔬", "Наука"], ["📖", "Книги"], ["❤️", "Отношения"], ["💡", "Психология"], ["💰", "Финансы"]];
+  var LES = {
+    study: ["Знакомство и первые фразы", "Расписание и аудитории", "Вопросы преподавателю", "Групповая работа", "Экзамены и дедлайны"],
+    travel: ["В аэропорту", "Отель и заселение", "Заказ в кафе", "Дорога и транспорт", "Если что-то пошло не так"],
+    work: ["Знакомство с коллегами", "Письма и созвоны", "Собеседование", "Переговоры", "Small talk в офисе"],
+    move: ["Документы и банк", "Жильё и аренда", "Магазины и сервисы", "Врач и аптека", "Новые друзья"]
+  };
+  var PH = {
+    study: [["Could you explain that once more?", "Не могли бы вы объяснить ещё раз?"], ["When is the deadline?", "Когда дедлайн?"], ["I'm taking a course in…", "Я учусь на курсе по…"], ["Can I join your group?", "Можно к вам в группу?"]],
+    travel: [["Where is the check-in desk?", "Где стойка регистрации?"], ["I'd like a table for two.", "Столик на двоих, пожалуйста."], ["How much is the ticket?", "Сколько стоит билет?"], ["I've lost my luggage.", "Я потерял багаж."]],
+    work: [["Let's schedule a quick call.", "Давайте назначим короткий созвон."], ["I'll get back to you by Friday.", "Вернусь к вам до пятницы."], ["Could you send me the details?", "Пришлите подробности?"], ["I'm happy to help.", "Рад помочь."]],
+    move: [["I'm looking for a flat to rent.", "Ищу квартиру в аренду."], ["Where can I open a bank account?", "Где открыть счёт в банке?"], ["I need to see a doctor.", "Мне нужно к врачу."], ["Nice to meet you!", "Приятно познакомиться!"]]
+  };
+  var sel = { g: null, l: null, i: [] };
+
+  function dayWord(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "день" : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? "дня" : "дней"; }
+  function goalName(k) { return GOALS.filter(function (g) { return g[0] === k; })[0]; }
+  function lessonDone(g, i) { return !!Lexy.user.lessons[g + "-" + i]; }
+
+  /* ---------- ПУТЬ ---------- */
+  function renderPath() {
+    var u = Lexy.user, n = Lexy.streakN(), el = $("#s-path");
+    var head = '<div class="top"><h1 class="t">Привет' + (u.name ? ", " + esc(u.name) : "") + '!</h1><div class="cs">' + ic("fire") + "<div><b>" + n + " " + dayWord(n) + "</b><small>подряд</small></div></div></div>";
+    if (!u.onboard) {
+      el.innerHTML = head + '<div class="card ob"><h3>Пара вопросов, чтобы собрать твой путь</h3><p class="sb">Подберём уроки под цель, уровень и интересы.</p>' +
+        "<h4>Зачем тебе английский?</h4><div class=\"og\">" + GOALS.map(function (g) { return '<button class="op' + (sel.g === g[0] ? " on" : "") + '" data-g="' + g[0] + '"><span class="em">' + g[1] + "</span>" + g[2] + "</button>"; }).join("") + "</div>" +
+        "<h4>Какой у тебя уровень английского сейчас?</h4><div class=\"ol\">" + LEVELS.map(function (l) { return '<button class="op' + (sel.l === l[0] ? " on" : "") + '" data-l="' + l[0] + '"><span class="lb2">' + l[0] + "</span><div>" + l[1] + "<small>" + l[2] + "</small></div></button>"; }).join("") + "</div>" +
+        "<h4>Что тебе интересно?</h4><div class=\"oi\">" + INT.map(function (x) { return '<button class="op' + (sel.i.indexOf(x[1]) > -1 ? " on" : "") + '" data-i="' + esc(x[1]) + '"><span>' + x[0] + "</span>" + x[1] + "</button>"; }).join("") + "</div>" +
+        '<button class="btn p" id="obgo"' + (sel.g && sel.l ? "" : " disabled") + ">Собрать мой путь</button></div>";
+      return;
+    }
+    var ob = u.onboard, g = goalName(ob.g), lv = ob.l, titles = LES[ob.g], done = 0;
+    titles.forEach(function (_, i) { if (lessonDone(ob.g, i)) done++; });
+    var next = 0; while (next < titles.length && lessonDone(ob.g, next)) next++;
+    el.innerHTML = head + '<div class="pth"><div class="hero"><h2>' + g[1] + " " + g[2] + " · " + lv + "</h2><p>" +
+      (ob.i.length ? "Интересы: " + ob.i.map(esc).join(", ") : "Интересы можно добавить, пройдя опрос заново") + '</p><div class="bar"><i style="width:' + Math.round(done / titles.length * 100) + '%"></i></div>' +
+      (done < titles.length ? '<button class="btn" id="cont">' + ic("play") + " Продолжить: " + esc(titles[next]) + "</button>" : '<b>Весь путь пройден 🎉</b>') +
+      '<button class="lnk" id="redo">Пройти опрос заново</button></div>' +
+      titles.map(function (t, i) {
+        var dn = lessonDone(ob.g, i), lk = i > next;
+        return '<button class="un' + (dn ? " done" : "") + (lk ? " lock" : "") + '" data-les="' + i + '"' + (lk ? " disabled" : "") + '><span class="nm">' + (dn ? ic("check") : i + 1) + "</span><div><b>" + t + "</b><small>Урок " + (i + 1) + " · " + lv + (dn ? ' · <span class="dn">пройден</span>' : "") + "</small></div></button>";
+      }).join("") + "</div>";
+  }
+  function openLesson(i) {
+    var ob = Lexy.user.onboard, t = LES[ob.g][i], done = lessonDone(ob.g, i);
+    Lexy.modal({
+      title: t, body: "<p>Повтори вслух и запомни фразы урока:</p><ul class=\"ph4\">" + PH[ob.g].map(function (p) { return "<li>" + esc(p[0]) + "<span>" + esc(p[1]) + "</span></li>"; }).join("") + "</ul>",
+      ok: done ? "Закрыть" : "Завершить урок", cancel: done ? "" : "Позже",
+      onOk: function () {
+        if (done) return;
+        var l = Lexy.user.lessons; l[ob.g + "-" + i] = 1;
+        Lexy.save({ lessons: l, phrases: Lexy.user.phrases + PH[ob.g].length }); Lexy.addMin(5);
+        Lexy.toast("Урок пройден: +" + PH[ob.g].length + " фразы"); renderPath();
+      }
+    });
+  }
+  $("#s-path").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-g],[data-l],[data-i]");
+    if (b) {
+      if (b.dataset.g) { sel.g = b.dataset.g; document.querySelectorAll("[data-g]").forEach(function (x) { x.classList.toggle("on", x === b); }); }
+      else if (b.dataset.l) { sel.l = b.dataset.l; document.querySelectorAll("[data-l]").forEach(function (x) { x.classList.toggle("on", x === b); }); }
+      else { var k = b.dataset.i, ix = sel.i.indexOf(k); if (ix < 0) sel.i.push(k); else sel.i.splice(ix, 1); b.classList.toggle("on"); }
+      $("#obgo").disabled = !(sel.g && sel.l); return;
+    }
+    if (e.target.closest("#obgo")) { Lexy.save({ onboard: { g: sel.g, l: sel.l, i: sel.i.slice() } }); Lexy.toast("Твой путь готов!"); renderPath(); return; }
+    if (e.target.closest("#redo")) { Lexy.save({ onboard: null }); sel = { g: null, l: null, i: [] }; renderPath(); return; }
+    if (e.target.closest("#cont")) { var ob = Lexy.user.onboard, nx = 0; while (nx < 5 && lessonDone(ob.g, nx)) nx++; openLesson(nx); return; }
+    var u = e.target.closest("[data-les]"); if (u) openLesson(+u.dataset.les);
+  });
+
+  /* ---------- ПРОГРЕСС ---------- */
+  function renderProgress() {
+    var u = Lexy.user, n = Lexy.streakN(), m = Lexy.mins(), ob = u.onboard, DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+    var dots = Lexy.weekDots().map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + '"><i>' + (d.on ? ic("fire") : "") + "</i>" + DN[i] + "</div>"; }).join("");
+    var li = ob ? ["A1", "A2", "B1", "B2", "C1", "C2"].indexOf(ob.l) : -1;
+    var total = ob ? LES[ob.g].length : 0, done = 0;
+    if (ob) LES[ob.g].forEach(function (_, i) { if (lessonDone(ob.g, i)) done++; });
+    $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">Прогресс</h1>' +
+      '<div class="stk"><div class="fc">' + fl(46) + "</div><small>Серия</small><h2>" + ic("fire") + " " + n + " " + dayWord(n) + ' подряд</h2><div class="wd">' + dots + "</div></div>" +
+      '<div class="two"><div class="card"><div class="pc"><span class="ico" style="background:#DDF0FF;color:#1E8FE8">' + ic("clock") + '</span><div><small>Время разговора</small><div class="n">' + m.day + ' мин <em>сегодня</em></div><small>За неделю: ' + m.wk + " мин<br>За всё время: " + m.all + " мин</small></div></div></div>" +
+      '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><small style="color:var(--soft)">Твой уровень</small><b style="font:800 20px var(--display)">' + (ob ? ob.l : "Не указан") + '</b></div><div class="lv">' +
+      ["A1", "A2", "B1", "B2", "C1", "C2"].map(function (x, i) { return '<div class="' + (i <= li ? "on" : "") + '"><i></i>' + x + "</div>"; }).join("") + "</div></div></div>" +
+      '<div class="card ls"><div class="r"><b>Уроки</b><span class="n">' + done + " из " + total + '</span></div><div class="r"><b>Выучено фраз</b><span class="n">' + u.phrases + '</span></div><div class="r"><b>Слов и фраз в карточках</b><span class="n">' + u.words.length + "</span></div></div>";
+  }
+
+  Lexy.init("english", { render: { path: renderPath, progress: renderProgress } });
+})();
+</script>
+</body>
+</html>
