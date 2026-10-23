@@ -1,0 +1,18 @@
+[Unit]
+Description=Lexy speech service (Whisper STT + Silero TTS)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/lexy/ai
+EnvironmentFile=/opt/lexy/ai/.env
+ExecStart=/opt/lexy/ai/venv/bin/python server.py
+Restart=always
+RestartSec=3
+# Share the machine with Ghostly: cap memory and keep CPU priority below the VPN
+MemoryMax=3G
+MemorySwapMax=256M
+Nice=10
+CPUWeight=50
+
+[Install]
+WantedBy=multi-user.target
