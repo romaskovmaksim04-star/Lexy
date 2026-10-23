@@ -54,3 +54,6 @@ __pycache__/
 # local database
 prisma/*.db
 prisma/*.db-journal
+
+# server deploy scripts (hosts, ports, server paths): kept local only
+/deploy/
