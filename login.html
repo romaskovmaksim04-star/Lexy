@@ -22,6 +22,7 @@ body{
 }
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+[hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--fire);outline-offset:3px}
 
 /* HEADER */
@@ -53,13 +54,16 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 
 .auth-header p{color:var(--soft);font-size:14.5px;margin-bottom:8px}
 .auth-header h1{font:800 28px var(--display);letter-spacing:-.02em;margin-bottom:6px}
 .auth-header .desc{color:var(--soft);font-size:14.5px}
+.auth-header .desc b{color:var(--ink)}
 
 .field{position:relative;margin-bottom:12px}
 .field input{width:100%;font:500 15px var(--body);padding:16px;background:#fff;border:1.5px solid var(--line);border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s;color:var(--ink)}
 .field input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
 .field input::placeholder{color:#B5AEC9}
 
-.btn{display:block;width:100%;padding:16px;border-radius:14px;font:700 15px var(--body);letter-spacing:.02em;text-align:center;transition:transform .15s,box-shadow .2s;text-decoration:none}
+.btn{display:block;width:100%;padding:16px;border-radius:14px;font:700 15px var(--body);letter-spacing:.02em;text-align:center;transition:transform .15s,box-shadow .2s,opacity .2s;text-decoration:none}
+.btn:disabled{opacity:.55;cursor:wait;transform:none;box-shadow:none}
+.btn + .btn{margin-top:10px}
 .btn-fire{background:var(--fire);color:#fff;box-shadow:0 12px 24px -12px rgba(255,90,31,.75)}
 .btn-fire:hover{transform:translateY(-2px)}
 .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;gap:10px}
@@ -70,26 +74,17 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 
 .divider::before{margin-right:12px}
 .divider::after{margin-left:12px}
 
-.help{text-align:center;font-size:13px;color:var(--soft);margin-top:32px;line-height:1.6}
+.form-msg{min-height:18px;font-size:13px;font-weight:600;line-height:1.4;color:#E5443E;margin:0 0 10px}
+.form-msg.ok{color:var(--ok)}
+.auth-switch{text-align:center;font-size:13.5px;color:var(--soft);margin-top:18px}
+.auth-switch a{color:var(--fire);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.help{text-align:center;font-size:13px;color:var(--soft);margin-top:28px;line-height:1.6}
 .help a{color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;gap:4px;margin-top:4px}
 .help a:hover{color:var(--fire)}
 
 .legal-footer{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:11px;color:var(--soft);max-width:500px;margin:0 auto;padding:0 20px;line-height:1.5;pointer-events:none}
 .legal-footer a{pointer-events:auto;text-decoration:underline}
-
-/* OTP screen */
-.otp-screen{display:none;animation:fadeUp .3s both}
-.otp-screen.on{display:block}
-.email-screen.hide{display:none}
-.otp-inputs{display:flex;gap:10px;justify-content:space-between;margin-bottom:20px}
-.otp-inputs input{width:100%;height:56px;font:800 22px var(--display);text-align:center;padding:0;border:1.5px solid var(--line);border-radius:14px;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
-.otp-inputs input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
-.otp-inputs input.filled{border-color:var(--ink);background:var(--mist)}
-.btn-back{display:inline-flex;align-items:center;gap:6px;color:var(--soft);font-size:14px;font-weight:600;margin-bottom:20px;cursor:pointer}
-.btn-back:hover{color:var(--ink)}
-.btn-back svg{width:16px;height:16px}
-.timer-text{text-align:center;font-size:14px;color:var(--soft);margin-top:16px}
-.timer-text b{color:var(--ink)}
+body{padding-bottom:70px}
 
 @media(max-width:520px){
   .top .bar{padding:0 16px}
@@ -107,7 +102,6 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 
   <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="ic-google" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></symbol>
   <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 7l10 6 10-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="ic-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <header class="top">
@@ -128,55 +122,51 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 
 <main>
   <div class="auth-box">
 
-    <!-- ЭКРАН 1: Ввод Email -->
-    <div class="email-screen" id="emailScreen">
+    <!-- Уже вошли -->
+    <div id="signedScreen" hidden>
       <div class="auth-header">
-        <p data-i18n="welcome">Рады видеть вас снова — с возвращением к подготовке к IELTS.</p>
+        <p data-i18n="signed.welcome">Рады видеть вас снова.</p>
+        <h1 data-i18n="signed.title">Вы уже вошли</h1>
+        <p class="desc"><b id="signedName">—</b><br><span id="signedEmail">—</span></p>
+      </div>
+      <a class="btn btn-fire" href="dashboard.html" data-i18n="signed.go">Перейти в кабинет →</a>
+      <button class="btn btn-ghost" id="signedSwitch" data-i18n="signed.switch">Войти в другой аккаунт</button>
+      <button class="btn btn-ghost" id="signedLogout" data-i18n="signed.logout">Выйти</button>
+    </div>
+
+    <!-- Вход -->
+    <div id="loginScreen">
+      <div class="auth-header">
+        <p data-i18n="welcome">Рады видеть вас снова — с возвращением к подготовке.</p>
         <h1 data-i18n="login.title">Войти в аккаунт</h1>
-        <p class="desc" data-i18n="login.desc">Введите email для входа</p>
+        <p class="desc" data-i18n="login.desc">Введите email и пароль</p>
       </div>
 
       <div class="field">
-        <input type="email" id="emailInput" placeholder="email@example.com" autocomplete="email" inputmode="email">
+        <input type="email" id="emailInput" placeholder="email@example.com" autocomplete="email" inputmode="email" data-i18n-ph="login.email_ph">
+      </div>
+      <div class="field">
+        <input type="password" id="passInput" placeholder="Пароль" autocomplete="current-password" data-i18n-ph="login.pass_ph">
       </div>
 
-      <button class="btn btn-fire" id="btnSendCode" data-i18n="login.btnSend">Отправить код</button>
+      <p class="form-msg" id="loginMsg" role="alert"></p>
+      <button class="btn btn-fire" id="btnLogin" data-i18n="login.btn">Войти</button>
 
       <div class="divider" data-i18n="login.or">или</div>
 
-      <button class="btn btn-ghost" onclick="alert('Здесь будет Google OAuth')">
+      <button class="btn btn-ghost" id="btnGoogle">
         <svg style="width:20px;height:20px;"><use href="#ic-google"/></svg>
         <span data-i18n="login.google">Войти через Google</span>
       </button>
 
+      <p class="auth-switch">
+        <span data-i18n="login.no_account">Нет аккаунта?</span>
+        <a href="reg.html" data-i18n="login.create">Создать бесплатно</a>
+      </p>
+
       <div class="help">
         <span data-i18n="login.help">Проблемы со входом? Напишите нам</span><br>
         <a href="mailto:support@lexy.app"><svg style="width:14px;height:14px;"><use href="#ic-mail"/></svg> support@lexy.app</a>
-      </div>
-    </div>
-
-    <!-- ЭКРАН 2: Ввод кода -->
-    <div class="otp-screen" id="otpScreen">
-      <div class="btn-back" id="btnBack">
-        <svg><use href="#ic-back"/></svg>
-        <span data-i18n="otp.back">Назад</span>
-      </div>
-      <div class="auth-header">
-        <h1 data-i18n="otp.title">Введите код</h1>
-        <p class="desc" data-i18n="otp.desc">Мы отправили 4-значный код на <b id="sentEmail">email</b></p>
-      </div>
-
-      <div class="otp-inputs" id="otpInputs">
-        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
-        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
-        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
-        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
-      </div>
-
-      <button class="btn btn-fire" id="btnVerify" data-i18n="otp.btn">Войти</button>
-
-      <div class="timer-text">
-        <span data-i18n="otp.resend">Отправить снова через</span> <b id="timer">00:59</b>
       </div>
     </div>
 
@@ -187,70 +177,107 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 
   <span data-i18n="footer.legal">Независимая платформа — не аффилирована с IELTS и не одобрена им. IELTS® — зарегистрированный товарный знак правообладателей.</span>
 </div>
 
+<script src="lexy-auth.js"></script>
 <script>
 var TRANSLATIONS = {
   ru: {
     "meta.title":"Вход — Lexy",
-    "welcome":"Рады видеть вас снова — с возвращением к подготовке к IELTS.",
+    "welcome":"Рады видеть вас снова — с возвращением к подготовке.",
     "login.title":"Войти в аккаунт",
-    "login.desc":"Введите email для входа",
-    "login.btnSend":"Отправить код",
+    "login.desc":"Введите email и пароль",
+    "login.email_ph":"email@example.com",
+    "login.pass_ph":"Пароль",
+    "login.btn":"Войти",
     "login.or":"или",
     "login.google":"Войти через Google",
     "login.help":"Проблемы со входом? Напишите нам",
-    "otp.title":"Введите код",
-    "otp.desc":"Мы отправили 4-значный код на",
-    "otp.btn":"Войти",
-    "otp.back":"Назад",
-    "otp.resend":"Отправить снова через",
+    "login.no_account":"Нет аккаунта?",
+    "login.create":"Создать бесплатно",
+    "login.err_email":"Проверь email — кажется, в нём ошибка.",
+    "login.err_pass":"Неверный пароль. Попробуй ещё раз.",
+    "login.err_nouser":"Аккаунт с таким email не найден. Создай новый.",
+    "login.err_legacy":"Аккаунт старой версии. Задай пароль: зарегистрируйся снова с тем же email.",
+    "login.err_generic":"Не получилось войти. Попробуй ещё раз.",
+    "signed.welcome":"Вы уже авторизованы.",
+    "signed.title":"С возвращением!",
+    "signed.go":"Перейти в кабинет →",
+    "signed.switch":"Войти в другой аккаунт",
+    "signed.logout":"Выйти",
     "footer.legal":"Независимая платформа — не аффилирована с IELTS и не одобрена им. IELTS® — зарегистрированный товарный знак правообладателей."
   },
   en: {
     "meta.title":"Log in — Lexy",
-    "welcome":"Glad to see you again — welcome back to your IELTS prep.",
+    "welcome":"Glad to see you again — welcome back to your prep.",
     "login.title":"Log in to your account",
-    "login.desc":"Enter your email to log in",
-    "login.btnSend":"Send code",
+    "login.desc":"Enter your email and password",
+    "login.email_ph":"email@example.com",
+    "login.pass_ph":"Password",
+    "login.btn":"Log in",
     "login.or":"or",
     "login.google":"Log in with Google",
     "login.help":"Trouble logging in? Contact us",
-    "otp.title":"Enter the code",
-    "otp.desc":"We sent a 4-digit code to",
-    "otp.btn":"Log in",
-    "otp.back":"Back",
-    "otp.resend":"Resend code in",
+    "login.no_account":"No account yet?",
+    "login.create":"Create one for free",
+    "login.err_email":"Check your email — it looks invalid.",
+    "login.err_pass":"Wrong password. Please try again.",
+    "login.err_nouser":"No account with this email. Create one.",
+    "login.err_legacy":"This is a legacy account. Set a password by registering again with the same email.",
+    "login.err_generic":"Could not log in. Please try again.",
+    "signed.welcome":"You are already signed in.",
+    "signed.title":"Welcome back!",
+    "signed.go":"Go to dashboard →",
+    "signed.switch":"Log in to another account",
+    "signed.logout":"Log out",
     "footer.legal":"Independent platform — not affiliated with or endorsed by IELTS. IELTS® is a registered trademark of its owners."
   },
   kz: {
     "meta.title":"Кіру — Lexy",
-    "welcome":"Қайта көргенімізге қуаныштымыз — IELTS-ке дайындыққа оралуыңызбен.",
+    "welcome":"Қайта көргенімізге қуаныштымыз — дайындыққа оралуыңызбен.",
     "login.title":"Аккаунтқа кіру",
-    "login.desc":"Кіру үшін emailіңізді енгізіңіз",
-    "login.btnSend":"Кодты жіберу",
+    "login.desc":"Email және құпиясөзді енгізіңіз",
+    "login.email_ph":"email@example.com",
+    "login.pass_ph":"Құпиясөз",
+    "login.btn":"Кіру",
     "login.or":"немесе",
     "login.google":"Google арқылы кіру",
     "login.help":"Кіруге қатысты мәселелер? Бізге жазыңыз",
-    "otp.title":"Кодты енгізіңіз",
-    "otp.desc":"Біз 4 таңбалы кодты мына мекенжайға жібердік:",
-    "otp.btn":"Кіру",
-    "otp.back":"Артқа",
-    "otp.resend":"Қайта жіберу",
+    "login.no_account":"Аккаунтың жоқ па?",
+    "login.create":"Тегін жасау",
+    "login.err_email":"Emailді тексер — қате болуы мүмкін.",
+    "login.err_pass":"Құпиясөз дұрыс емес. Қайта көр.",
+    "login.err_nouser":"Бұл emailмен аккаунт табылмады. Жаңасын жаса.",
+    "login.err_legacy":"Бұл ескі нұсқадағы аккаунт. Құпиясөз орнату үшін сол emailмен қайта тіркел.",
+    "login.err_generic":"Кіру мүмкін болмады. Қайта көр.",
+    "signed.welcome":"Сіз кіріп қойғансыз.",
+    "signed.title":"Қайта келуіңізбен!",
+    "signed.go":"Кабинетке өту →",
+    "signed.switch":"Басқа аккаунтқа кіру",
+    "signed.logout":"Шығу",
     "footer.legal":"Тәуелсіз платформа — IELTS-пен байланысты емес және ол мақұлдамаған. IELTS® — құқық иелерінің тіркелген сауда белгісі."
   },
   uz: {
     "meta.title":"Kirish — Lexy",
-    "welcome":"Sizni yana ko‘rganimizdan xursandmiz — IELTSga tayyorgarlikka qaytdingiz.",
+    "welcome":"Sizni yana ko‘rganimizdan xursandmiz — tayyorgarlikka qaytdingiz.",
     "login.title":"Hisobga kirish",
-    "login.desc":"Kirish uchun emailingizni kiriting",
-    "login.btnSend":"Kod yuborish",
+    "login.desc":"Email va parolni kiriting",
+    "login.email_ph":"email@example.com",
+    "login.pass_ph":"Parol",
+    "login.btn":"Kirish",
     "login.or":"yoki",
     "login.google":"Google orqali kirish",
     "login.help":"Kirishda muammo bormi? Bizga yozing",
-    "otp.title":"Kodni kiriting",
-    "otp.desc":"Biz 4 xonali kodni quyidagi manzilga yubordik:",
-    "otp.btn":"Kirish",
-    "otp.back":"Orqaga",
-    "otp.resend":"Qayta yuborish",
+    "login.no_account":"Akkauntingiz yo‘qmi?",
+    "login.create":"Bepul yaratish",
+    "login.err_email":"Emailni tekshiring — xato bo‘lishi mumkin.",
+    "login.err_pass":"Parol noto‘g‘ri. Qayta urinib ko‘ring.",
+    "login.err_nouser":"Bu email bilan akkaunt topilmadi. Yangisini yarating.",
+    "login.err_legacy":"Bu eski versiyadagi akkaunt. Parol o‘rnatish uchun shu email bilan qayta ro‘yxatdan o‘ting.",
+    "login.err_generic":"Kirishning iloji bo‘lmadi. Qayta urinib ko‘ring.",
+    "signed.welcome":"Siz allaqachon kirgansiz.",
+    "signed.title":"Qaytganingiz bilan!",
+    "signed.go":"Kabinetga o‘tish →",
+    "signed.switch":"Boshqa akkauntga kirish",
+    "signed.logout":"Chiqish",
     "footer.legal":"Mustaqil platforma — IELTS bilan bog‘liq emas va u tomonidan tasdiqlanmagan. IELTS® — huquq egalarining ro‘yxatdan o‘tgan savdo belgisi."
   }
 };
@@ -262,8 +289,11 @@ function setLang(lang){
   var t = TRANSLATIONS[lang];
   document.querySelectorAll('[data-i18n]').forEach(function(el){
     var key = el.getAttribute('data-i18n');
-    if(t[key] == null) return;
-    el.textContent = t[key];
+    if(t[key] != null) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-ph');
+    if(t[key] != null) el.setAttribute('placeholder', t[key]);
   });
   var mt = t["meta.title"]; if(mt) document.title = mt;
   document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === lang); });
@@ -281,91 +311,74 @@ document.querySelectorAll('.lang-item').forEach(function(b){
 });
 document.addEventListener('click', function(){ langWrap.classList.remove('open'); });
 
-/* ============ ЛОГИКА ВХОДА ============ */
-var emailScreen = document.getElementById('emailScreen');
-var otpScreen = document.getElementById('otpScreen');
+/* ============ АВТОРИЗАЦИЯ ============ */
+var loginScreen = document.getElementById('loginScreen');
+var signedScreen = document.getElementById('signedScreen');
 var emailInput = document.getElementById('emailInput');
-var sentEmail = document.getElementById('sentEmail');
-var btnSendCode = document.getElementById('btnSendCode');
+var passInput = document.getElementById('passInput');
+var loginMsg = document.getElementById('loginMsg');
+var btnLogin = document.getElementById('btnLogin');
+var signedName = document.getElementById('signedName');
+var signedEmail = document.getElementById('signedEmail');
 
-btnSendCode.addEventListener('click', function(){
-  var email = emailInput.value.trim();
-  if(!/^\S+@\S+\.\S+$/.test(email)){
-    emailInput.style.borderColor = '#E5443E';
-    emailInput.focus();
-    return;
-  }
-  emailInput.style.borderColor = '';
-  sentEmail.textContent = email;
-
-  emailScreen.classList.add('hide');
-  otpScreen.classList.add('on');
-
-  // Фокус на первое поле
-  var firstInput = document.querySelector('#otpInputs input');
-  setTimeout(function(){ if(firstInput) firstInput.focus(); }, 50);
-
-  startTimer();
-});
-
-document.getElementById('btnBack').addEventListener('click', function(){
-  otpScreen.classList.remove('on');
-  emailScreen.classList.remove('hide');
-});
-
-/* OTP Inputs logic */
-var inputs = document.querySelectorAll('#otpInputs input');
-inputs.forEach(function(input, index){
-  input.addEventListener('input', function(e){
-    if(input.value.length >= 1){
-      input.classList.add('filled');
-      if(index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      } else {
-        input.blur();
-      }
-    } else {
-      input.classList.remove('filled');
-    }
-  });
-  input.addEventListener('keydown', function(e){
-    if(e.key === 'Backspace' && !input.value && index > 0){
-      inputs[index - 1].focus();
-    }
-  });
-});
-
-/* Verify */
-document.getElementById('btnVerify').addEventListener('click', function(){
-  var code = '';
-  inputs.forEach(function(i){ code += i.value; });
-  if(code.length === 4){
-    localStorage.setItem('user_logged_in', 'true');
-    // Имитация успешного входа
-    window.location.href = 'main.html';
-  } else {
-    alert('Введите 4 цифры');
-  }
-});
-
-/* Timer */
-var timerInterval;
-function startTimer(){
-  clearInterval(timerInterval);
-  var timeLeft = 59;
-  var timerEl = document.getElementById('timer');
-  timerEl.textContent = '00:' + (timeLeft < 10 ? '0' : '') + timeLeft;
-
-  timerInterval = setInterval(function(){
-    timeLeft--;
-    if(timeLeft < 0){
-      clearInterval(timerInterval);
-      timerEl.parentElement.innerHTML = '<a href="#" style="color:var(--fire);font-weight:600;" onclick="startTimer();return false;">Отправить снова</a>';
-      return;
-    }
-    timerEl.textContent = '00:' + (timeLeft < 10 ? '0' : '') + timeLeft;
-  }, 1000);
+function showLoginForm(){
+  signedScreen.hidden = true;
+  loginScreen.hidden = false;
+  loginMsg.textContent = '';
+  setTimeout(function(){ emailInput.focus(); }, 50);
 }
+
+function showSigned(u){
+  loginScreen.hidden = true;
+  signedScreen.hidden = false;
+  signedName.textContent = u.name || u.email;
+  signedEmail.textContent = u.email;
+}
+
+function fail(code){
+  var t = TRANSLATIONS[currentLang];
+  loginMsg.textContent = t['login.err_' + code] || t.login.err_generic;
+  passInput.focus();
+}
+
+btnLogin.addEventListener('click', function(){
+  var email = emailInput.value.trim();
+  var pass = passInput.value;
+  if(!/^\S+@\S+\.\S+$/.test(email)){ fail('email'); return; }
+  if(!pass){ fail('pass'); return; }
+  loginMsg.textContent = '';
+  btnLogin.disabled = true;
+  var label = btnLogin.textContent;
+  btnLogin.textContent = '…';
+
+  if(!window.LexyAuth){ btnLogin.disabled = false; btnLogin.textContent = label; fail('generic'); return; }
+  LexyAuth.login(email, pass).then(function(){
+    window.location.href = 'dashboard.html';
+  }).catch(function(err){
+    btnLogin.disabled = false;
+    btnLogin.textContent = label;
+    fail(err && err.code ? err.code : 'generic');
+  });
+});
+
+[emailInput, passInput].forEach(function(el){
+  el.addEventListener('keydown', function(e){ if(e.key === 'Enter') btnLogin.click(); });
+  el.addEventListener('input', function(){ loginMsg.textContent = ''; });
+});
+
+document.getElementById('signedLogout').addEventListener('click', function(){
+  if(window.LexyAuth) LexyAuth.logout();
+  showLoginForm();
+});
+document.getElementById('signedSwitch').addEventListener('click', function(){
+  if(window.LexyAuth) LexyAuth.logout();
+  emailInput.value = '';
+  passInput.value = '';
+  showLoginForm();
+});
+document.getElementById('btnGoogle').addEventListener('click', function(){
+  alert('Google OAuth появится позже. Пока используй email и пароль.');
+});
 
 /* INIT */
 (function(){
@@ -377,6 +390,9 @@ function startTimer(){
   }
   if(!TRANSLATIONS[saved]) saved = 'ru';
   setLang(saved);
+
+  var u = window.LexyAuth ? LexyAuth.user() : null;
+  if(u) showSigned(u); else showLoginForm();
 })();
 </script>
 </body>

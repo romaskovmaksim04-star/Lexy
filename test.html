@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пробный тест — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 16px/1.55 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.top .sp{flex:1}
+.top .who{font-size:13px;color:var(--soft);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .back{font-size:13.5px;font-weight:700;color:var(--soft)}
+.top .back:hover{color:var(--ink)}
+.wrap{max-width:920px;margin:0 auto;padding:34px 20px 80px}
+h1{font:800 clamp(24px,4.5vw,36px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:8px}
+.s{color:var(--soft);font-size:14.5px}
+.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 40px -34px rgba(27,20,51,.45)}
+.hub{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.skill{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:18px;transition:border-color .2s,transform .15s,box-shadow .2s}
+.skill:hover{border-color:var(--fire);transform:translateY(-2px);box-shadow:0 18px 32px -26px rgba(27,20,51,.5)}
+.skill .em{width:48px;height:48px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--peach)}
+.skill .tx{flex:1;min-width:0}
+.skill .tx b{display:block;font-size:15.5px}
+.skill .tx small{display:block;color:var(--soft);font-size:12.5px;margin-top:2px}
+.skill .arrow{color:var(--soft);font-size:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:999px;background:var(--fire);color:#fff;font-weight:700;font-size:14.5px;box-shadow:0 12px 24px -12px rgba(255,90,31,.75);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:#C9BEE0}
+.btn.sm{padding:11px 18px;font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.progress{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin:22px 0 8px}
+.progress i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--fire2),var(--fire));transition:width .3s}
+.qmeta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--soft);font-weight:600}
+.qtext{font:700 clamp(19px,3vw,25px)/1.35 var(--display);letter-spacing:-.02em;margin:24px 0 8px}
+.transcript{background:var(--mist);border:1px dashed var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--soft);margin-bottom:6px}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:15px 16px;background:#fff;border:1.5px solid var(--line);border-radius:16px;font-size:14.5px;transition:border-color .15s,background .15s,transform .15s}
+.opt:hover{border-color:#C9BEE0;transform:translateY(-1px)}
+.opt .key{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--mist);font-weight:800;font-size:12.5px;color:var(--soft)}
+.opt.on{border-color:var(--fire);background:#FFF8F3}
+.opt.on .key{background:var(--fire);color:#fff}
+.opt.right{border-color:var(--ok);background:#F1FBF6}
+.opt.wrong{border-color:#E5443E;background:#FFF2F1}
+textarea{width:100%;min-height:220px;resize:vertical;font:400 15px/1.55 var(--body);color:var(--ink);padding:16px;border:1.5px solid var(--line);border-radius:16px;outline:none;background:#fff}
+textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+.meta{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:12.5px;color:var(--soft)}
+.meta b{color:var(--ink)}
+.check{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:#fff;border:1.5px solid var(--line);border-radius:16px;margin-bottom:10px;cursor:pointer;font-size:14px}
+.check input{margin-top:3px;accent-color:var(--fire);width:18px;height:18px;flex:none}
+.note{background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:16px;padding:14px 16px;font-size:13.5px;margin-top:16px}
+.result{text-align:center;max-width:560px;margin:30px auto 0}
+.result .band{font:800 64px/1 var(--display);letter-spacing:-.05em;color:var(--fire);margin:14px 0 4px}
+.result .lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:700}
+.result p{color:var(--soft);font-size:14px;margin-top:14px}
+.hist{margin-top:20px;display:grid;gap:10px}
+.hrow{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:16px}
+.hrow .em{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--peach);font-size:18px}
+.hrow .tx{flex:1;min-width:0}
+.hrow b{display:block;font-size:14.5px}
+.hrow small{color:var(--soft);font-size:12.5px}
+.hrow .b{font:800 18px var(--display);color:var(--fire)}
+.empty{text-align:center;color:var(--soft);padding:40px 10px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:640px){
+  .hub{grid-template-columns:1fr}
+  .top .who{display:none}
+  .wrap{padding:24px 16px 60px}
+  .card{padding:20px;border-radius:20px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <div class="sp"></div>
+    <span class="who" id="who"></span>
+    <a class="back" href="dashboard.html">← В кабинет</a>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script src="lexy-auth.js"></script>
+<script>
+(function(){
+  var user = window.LexyAuth ? LexyAuth.user() : null;
+  if(!user){ location.replace('login.html'); return; }
+
+  var app = document.getElementById('app');
+  var who = document.getElementById('who');
+  who.textContent = user.name || user.email;
+
+  var SKILLS = {
+    reading:   { name:'Reading',   em:'📖', mins:10, desc:'3 текста · вопросы на понимание' },
+    listening: { name:'Listening', em:'🎧', mins:8,  desc:'аудио-ловушки и детали' },
+    writing:   { name:'Writing',   em:'✍️', mins:20, desc:'эссе Task 2 · 250+ слов' },
+    speaking:  { name:'Speaking',  em:'🗣', mins:10, desc:'карточка Part 2 · монолог' }
+  };
+  var ORDER = ['reading','listening','writing','speaking'];
+
+  var READING = [
+    { q:'The word "mitigate" in "New trees can mitigate the effects of pollution" most nearly means:', o:['reduce','increase','measure','ignore'], a:0 },
+    { q:'The museum is closed on Mondays. When can you visit it?', o:['On Monday','On Tuesday','Only on weekends','It is always closed'], a:1 },
+    { q:'Passage: "Many students study late at night, yet research shows that sleep improves memory." What is the main idea?', o:['Students should study more','Sleep supports memory','Research is difficult','Night study is always bad'], a:1 },
+    { q:'"The results were substantial." The word "substantial" is closest to:', o:['tiny','significant','unclear','temporary'], a:1 },
+    { q:'Passage: "The library extended its opening hours after students complained." Why did it change?', o:['To save money','Because of student complaints','To close earlier','Because of a holiday'], a:1 },
+    { q:'Which sentence is grammatically correct?', o:['She don\'t like coffee.','She doesn\'t likes coffee.','She doesn\'t like coffee.','She not like coffee.'], a:2 }
+  ];
+
+  var LISTENING = [
+    { q:'The tour leaves at 9:30, not 9:00. What time does the tour leave?', o:['9:00','9:15','9:30','10:00'], a:2 },
+    { q:'"Friday — actually, let\'s make it Saturday." When is the meeting?', o:['Friday','Saturday','Sunday','Monday'], a:1 },
+    { q:'"It\'s £45, but students pay £30." How much do students pay?', o:['£45','£30','£15','£60'], a:1 },
+    { q:'"Gate 12... sorry, Gate 14." Which gate should you go to?', o:['Gate 12','Gate 13','Gate 14','Gate 4'], a:2 },
+    { q:'"The library closes at 8 on weekdays and 6 at weekends." When does it close on Sunday?', o:['6','7','8','9'], a:0 },
+    { q:'"The meeting moved from Room 204 to Room 210." Where is the meeting now?', o:['Room 204','Room 210','Room 240','Room 214'], a:1 }
+  ];
+
+  var WRITING = {
+    prompt:'Some people believe that technology makes everyday life more complicated, while others think it makes life simpler. Discuss both views and give your own opinion.',
+    min:250
+  };
+
+  var SPEAKING = {
+    prompt:'Describe a place you love visiting.',
+    points:['where it is','how often you go there','what you usually do there','why you love this place'],
+    note:'Совет: включи диктофон и говори 1,5–2 минуты без пауз. Потом прослушай и отметь пункты, которые раскрыл.'
+  };
+
+  var qs = new URLSearchParams(location.search);
+  var skill = qs.get('skill');
+  var mode = qs.get('mode');
+  var num = qs.get('n');
+  var full = qs.get('full') === '1';
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function today(){
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+  }
+  function toast(t){
+    var el = document.getElementById('toast');
+    el.textContent = t; el.classList.add('on');
+    clearTimeout(toast.t); toast.t = setTimeout(function(){ el.classList.remove('on'); }, 2600);
+  }
+  function roundBand(b){
+    b = Math.max(4, Math.min(9, b));
+    return Math.round(b * 2) / 2;
+  }
+  function tests(){ return (LexyAuth.user() || {}).tests || {}; }
+  function nextNum(s){
+    var n = 1, t = tests();
+    while(t[s + '-' + n]) n++;
+    return n;
+  }
+  function saveResult(s, key, data){
+    var u = LexyAuth.user();
+    var t = Object.assign({}, u.tests || {});
+    t[key] = Object.assign({ date: Date.now() }, data);
+    var mins = Object.assign({}, u.mins || {}), d = today();
+    mins[d] = (mins[d] || 0) + (SKILLS[s].mins || 5);
+    LexyAuth.update({ tests: t, mins: mins });
+  }
+
+  function renderHub(kind){
+    var title = kind === 'full' ? 'Полный экзамен' : kind === 'baseline' ? 'Замер уровня' : 'Пробные тесты';
+    var sub = kind === 'full'
+      ? 'Пройди все четыре секции подряд — в конце Lexy соберёт общий результат.'
+      : kind === 'baseline'
+        ? 'Пройди по одному тесту каждого навыка, чтобы открыть стартовый балл и инсайты.'
+        : 'Выбери навык и потренируйся в формате IELTS. Результат сохранится в кабинете.';
+    var cards = ORDER.map(function(k){
+      var s = SKILLS[k];
+      var n = kind === 'baseline' ? 'baseline' : kind === 'full' ? 'full' : nextNum(k);
+      var link = 'test.html?skill=' + k + '&n=' + n + (kind === 'full' ? '&full=1' : '');
+      return '<a class="skill" href="' + link + '">' +
+        '<span class="em">' + s.em + '</span>' +
+        '<span class="tx"><b>' + s.name + '</b><small>' + s.desc + ' · ~' + s.mins + ' мин</small></span>' +
+        '<span class="arrow">›</span></a>';
+    }).join('');
+    app.innerHTML = '<h1>' + title + '</h1><p class="s">' + sub + '</p>' +
+      '<div class="hub">' + cards + '</div>' +
+      '<div class="row"><a class="btn ghost sm" href="dashboard.html">← В кабинет</a>' +
+      '<a class="btn ghost sm" href="test.html?history=1">История тестов</a></div>';
+  }
+
+  function renderHistory(){
+    var t = tests(), keys = Object.keys(t).sort(function(a,b){ return (t[b].date||0) - (t[a].date||0); });
+    var html = '<h1>История тестов</h1><p class="s">Все пройденные секции и результаты.</p>';
+    if(!keys.length){
+      html += '<div class="card" style="margin-top:22px"><div class="empty">Пока пусто. Пройди первый тест — результат появится здесь.</div></div>';
+    } else {
+      html += '<div class="hist">' + keys.map(function(k){
+        var x = t[k], s = SKILLS[x.skill || k.split('-')[0]] || SKILLS.reading;
+        var date = x.date ? new Date(x.date).toLocaleDateString('ru-RU', {day:'numeric', month:'long'}) : '—';
+        var val = x.band != null ? x.band.toFixed(1) : (x.score != null ? x.score + '/' + x.total : '—');
+        return '<div class="hrow"><span class="em">' + s.em + '</span>' +
+          '<div class="tx"><b>' + s.name + '</b><small>' + date + (x.words ? ' · ' + x.words + ' слов' : '') + '</small></div>' +
+          '<div class="b">' + val + '</div></div>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="row"><a class="btn sm" href="test.html">К тестам</a><a class="btn ghost sm" href="dashboard.html">В кабинет</a></div>';
+    app.innerHTML = html;
+  }
+
+  function renderQuiz(k, list, n, isFull){
+    var i = 0, picked = null, score = 0, answered = false;
+    function draw(){
+      var q = list[i];
+      app.innerHTML = '<h1>' + SKILLS[k].name + ' · тест</h1>' +
+        '<p class="s">Вопрос ' + (i+1) + ' из ' + list.length + ' · выбери один вариант</p>' +
+        '<div class="progress"><i style="width:' + Math.round(i/list.length*100) + '%"></i></div>' +
+        '<div class="card" style="margin-top:16px">' +
+          (k === 'listening' ? '<div class="transcript">🎧 Представь, что слышишь: «' + esc(q.q) + '»</div>' : '') +
+          '<div class="qtext">' + (k === 'listening' ? 'Что верно?' : esc(q.q)) + '</div>' +
+          '<div class="opts">' + q.o.map(function(o, x){
+            return '<button class="opt" data-x="' + x + '"><span class="key">' + 'ABCD'[x] + '</span>' + esc(o) + '</button>';
+          }).join('') + '</div>' +
+          '<div class="row"><button class="btn" id="next" disabled>Далее →</button></div>' +
+        '</div>';
+      picked = null; answered = false;
+      app.querySelectorAll('.opt').forEach(function(b){
+        b.addEventListener('click', function(){
+          if(answered) return;
+          app.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
+          b.classList.add('on');
+          picked = +b.dataset.x;
+          document.getElementById('next').disabled = false;
+        });
+      });
+      document.getElementById('next').addEventListener('click', function(){
+        if(picked == null) return;
+        if(!answered){
+          answered = true;
+          var correct = app.querySelectorAll('.opt')[q.a];
+          correct.classList.add('right');
+          if(picked !== q.a){
+            app.querySelectorAll('.opt')[picked].classList.add('wrong');
+          } else score++;
+          var btn = document.getElementById('next');
+          btn.textContent = i === list.length - 1 ? 'Показать результат →' : 'Следующий вопрос →';
+          btn.disabled = false;
+        } else {
+          i++;
+          if(i < list.length) draw();
+          else finishQuiz();
+        }
+      });
+    }
+    function finishQuiz(){
+      var total = list.length;
+      var band = roundBand(5 + (score/total) * 3.5);
+      var key = k + '-' + (n || nextNum(k));
+      saveResult(k, key, { skill:k, score:score, total:total, band:band, full:isFull });
+      renderResult(k, band, 'Правильных ответов: ' + score + ' из ' + total + '.', isFull);
+    }
+    draw();
+  }
+
+  function renderWriting(k, n, isFull){
+    app.innerHTML = '<h1>Writing · Task 2</h1><p class="s">Напиши эссе по теме. Ориентир — 250+ слов.</p>' +
+      '<div class="card" style="margin-top:16px">' +
+        '<div class="qtext">' + esc(WRITING.prompt) + '</div>' +
+        '<textarea id="essay" placeholder="Начни писать здесь…"></textarea>' +
+        '<div class="meta"><span>Слов: <b id="wc">0</b></span><span>Минимум: <b>' + WRITING.min + '</b></span></div>' +
+        '<div class="row"><button class="btn" id="done" disabled>Завершить Writing</button></div>' +
+      '</div>';
+    var ta = document.getElementById('essay'), wc = document.getElementById('wc'), done = document.getElementById('done');
+    ta.addEventListener('input', function(){
+      var words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+      wc.textContent = words;
+      done.disabled = words < 30;
+    });
+    done.addEventListener('click', function(){
+      var words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+      var band = words >= WRITING.min ? 6.5 : words >= 150 ? 6.0 : 5.0;
+      var key = k + '-' + (n || nextNum(k));
+      saveResult(k, key, { skill:k, words:words, band:band, full:isFull });
+      renderResult(k, band, 'Объём: ' + words + ' слов. ' + (words >= WRITING.min ? 'Отличный объём для Task 2.' : 'Попробуй раскрыть тему подробнее — желательно 250+ слов.'), isFull);
+    });
+  }
+
+  function renderSpeaking(k, n, isFull){
+    app.innerHTML = '<h1>Speaking · Part 2</h1><p class="s">Подготовь монолог на 1,5–2 минуты по карточке.</p>' +
+      '<div class="card" style="margin-top:16px">' +
+        '<div class="qtext">' + esc(SPEAKING.prompt) + '</div>' +
+        '<p class="s" style="margin-bottom:14px">You should say:</p>' +
+        SPEAKING.points.map(function(p, i){
+          return '<label class="check"><input type="checkbox" data-p="' + i + '"><span>' + esc(p) + '</span></label>';
+        }).join('') +
+        '<div class="note">' + SPEAKING.note + '</div>' +
+        '<div class="row"><button class="btn" id="done" disabled>Завершить Speaking</button></div>' +
+      '</div>';
+    var checks = app.querySelectorAll('.check input');
+    var done = document.getElementById('done');
+    checks.forEach(function(c){ c.addEventListener('change', function(){ done.disabled = false; }); });
+    done.addEventListener('click', function(){
+      var nDone = 0; checks.forEach(function(c){ if(c.checked) nDone++; });
+      var band = nDone >= 4 ? 7.0 : nDone >= 3 ? 6.5 : 6.0;
+      var key = k + '-' + (n || nextNum(k));
+      saveResult(k, key, { skill:k, points:nDone, band:band, full:isFull });
+      renderResult(k, band, 'Раскрыто пунктов: ' + nDone + ' из 4. ' + (nDone >= 4 ? 'Хорошая структура ответа.' : 'Постарайся затронуть все пункты карточки.'), isFull);
+    });
+  }
+
+  function renderResult(k, band, note, isFull){
+    var idx = ORDER.indexOf(k);
+    var next = isFull && idx < ORDER.length - 1 ? ORDER[idx+1] : null;
+    app.innerHTML = '<div class="card result">' +
+      '<div style="font-size:38px">🎉</div>' +
+      '<h1 style="margin-top:8px">Секция пройдена!</h1>' +
+      '<div class="lbl">Оценка</div>' +
+      '<div class="band">' + band.toFixed(1) + '</div>' +
+      '<p>' + esc(note) + '</p>' +
+      '<div class="row" style="justify-content:center">' +
+        (next
+          ? '<a class="btn" href="test.html?skill=' + next + '&n=full&full=1">Следующая секция: ' + SKILLS[next].name + ' →</a>'
+          : '<a class="btn" href="dashboard.html">Вернуться в кабинет</a>') +
+        '<a class="btn ghost" href="test.html?skill=' + k + (isFull ? '&full=1&n=full' : '&n=' + nextNum(k)) + '">Пройти ещё раз</a>' +
+      '</div></div>';
+  }
+
+  function startSkill(k, n, isFull){
+    if(k === 'reading' || k === 'listening'){
+      renderQuiz(k, k === 'reading' ? READING : LISTENING, n, isFull);
+    } else if(k === 'writing') renderWriting(k, n, isFull);
+    else renderSpeaking(k, n, isFull);
+  }
+
+  if(qs.get('history')) renderHistory();
+  else if(skill && SKILLS[skill]) startSkill(skill, num || String(nextNum(skill)), full);
+  else renderHub(mode);
+})();
+</script>
+</body>
+</html>

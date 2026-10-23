@@ -190,6 +190,9 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 .field input::placeholder{color:#B5AEC9}
 .bonus{display:flex;align-items:center;gap:12px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--ink);margin-bottom:16px}
 .bonus span:first-child{font-size:20px}
+.form-msg{min-height:18px;font-size:13px;font-weight:600;line-height:1.4;color:#E5443E;margin:0 0 10px}
+.auth-alt{font-size:13px;color:var(--soft);text-align:center;margin-top:14px}
+.auth-alt a{color:var(--fire);font-weight:700;text-decoration:underline;text-underline-offset:2px}
 
 /* BUTTONS */
 .btn{display:block;width:100%;padding:18px;border-radius:16px;background:var(--fire);color:#fff;font:700 15px var(--body);letter-spacing:.02em;text-align:center;transition:transform .15s,box-shadow .2s,opacity .2s;box-shadow:0 12px 26px -12px rgba(255,90,31,.75)}
@@ -458,22 +461,28 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 
   <section class="screen" data-step="final">
     <h1 data-i18n="fin_h">Твой план готов!</h1>
-    <p class="sub" data-i18n="fin_s">Введи email, чтобы получить его и бонусный набор.</p>
-    <div class="field"><input type="email" id="email" placeholder="email@example.com" autocomplete="email" inputmode="email"></div>
+    <p class="sub" data-i18n="fin_s">Создай аккаунт, чтобы сохранить план и вернуться к нему с любого устройства.</p>
+    <div class="field"><input type="text" id="name" maxlength="40" placeholder="Как тебя зовут" autocomplete="name" data-i18n-ph="fin_name_ph"></div>
+    <div class="field"><input type="email" id="email" placeholder="email@example.com" autocomplete="email" inputmode="email" data-i18n-ph="fin_email_ph"></div>
+    <div class="field"><input type="password" id="password" placeholder="Пароль (минимум 6 символов)" autocomplete="new-password" data-i18n-ph="fin_pass_ph"></div>
     <div class="bonus"><span>🎁</span><span data-i18n="fin_bonus">Убедись, что email верный — не упусти свой бонус</span></div>
+    <p class="form-msg" id="finMsg" role="alert"></p>
     <button class="btn" id="finish" disabled data-i18n="fin_btn">Получить бонусный набор</button>
-    <p class="legal" data-i18n-html="fin_legal">Нажимая кнопку, ты соглашаешься с <a href="#">условиями</a>, <a href="#">политикой конфиденциальности</a> и <a href="#">политикой возврата</a>.</p>
+    <p class="legal" data-i18n-html="fin_legal">Нажимая кнопку, ты соглашаешься с <a href="terms.html">условиями</a>, <a href="privacy.html">политикой конфиденциальности</a> и <a href="terms.html">политикой возврата</a>.</p>
+    <p class="auth-alt"><span data-i18n="fin_have">Уже есть аккаунт?</span> <a href="login.html" data-i18n="fin_login">Войти</a></p>
   </section>
 
   <section class="screen" data-step="done">
     <div class="won">
       <div class="done-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-      <h3 data-i18n="done_h">План отправлен!</h3>
-      <div class="note" style="margin-bottom:0" data-i18n="done_n">Проверь почту — там твой персональный план и бонусный набор.</div>
+      <h3 data-i18n="done_h">Аккаунт создан!</h3>
+      <div class="note" style="margin-bottom:0" data-i18n="done_n">Твой план сохранён в личном кабинете. Войти можно в любой момент по email и паролю.</div>
+      <a class="btn" href="dashboard.html" style="margin-top:18px" data-i18n="done_btn">Перейти в кабинет →</a>
     </div>
   </section>
 </main>
 
+<script src="lexy-auth.js"></script>
 <script>
 (function(){
   var TRANSLATIONS = {
@@ -519,11 +528,18 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       wheel_s:"Не упусти шанс подготовиться к IELTS с персональным предложением 🎁",
       wheel_btn:"Крутить",
       won_h:"Ура! Ты выиграл(а) скидку", won_l:"Твой бонус", won_n:"Скидка применится автоматически", won_btn:"Забрать скидку",
-      fin_h:"Твой план готов!", fin_s:"Введи email, чтобы получить его и бонусный набор.",
+      fin_h:"Твой план готов!", fin_s:"Создай аккаунт, чтобы сохранить план и вернуться к нему с любого устройства.",
+      fin_name_ph:"Как тебя зовут", fin_email_ph:"email@example.com", fin_pass_ph:"Пароль (минимум 6 символов)",
       fin_bonus:"Убедись, что email верный — не упусти свой бонус",
-      fin_btn:"Получить бонусный набор",
-      fin_legal:'Нажимая кнопку, ты соглашаешься с <a href="#">условиями</a>, <a href="#">политикой конфиденциальности</a> и <a href="#">политикой возврата</a>.',
-      done_h:"План отправлен!", done_n:"Проверь почту — там твой персональный план и бонусный набор.",
+      fin_btn:"Создать аккаунт и сохранить план", fin_creating:"Создаём аккаунт…",
+      fin_have:"Уже есть аккаунт?", fin_login:"Войти",
+      fin_legal:'Нажимая кнопку, ты соглашаешься с <a href="terms.html">условиями</a>, <a href="privacy.html">политикой конфиденциальности</a> и <a href="terms.html">политикой возврата</a>.',
+      err_name:"Напиши своё имя.", err_email:"Проверь email — кажется, в нём ошибка.",
+      err_pass:"Пароль должен быть не короче 6 символов.",
+      err_exists:"Аккаунт с таким email уже есть. Войди в него или укажи другой email.",
+      err_generic:"Не получилось создать аккаунт. Попробуй ещё раз.",
+      done_h:"Аккаунт создан!", done_n:"Твой план сохранён в личном кабинете. Войти можно в любой момент по email и паролю.",
+      done_btn:"Перейти в кабинет →",
       btn_continue:"Продолжить",
       b_ai:"Лучший ИИ для анализа", b_free:"Бесплатный старт",
       b_analysis:"ИИ-анализ ошибок", b_personal:"Персонально под тебя",
@@ -582,11 +598,18 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       wheel_s:"Don't miss your chance to prepare for IELTS with a personal offer 🎁",
       wheel_btn:"Spin",
       won_h:"Yay! You won a discount", won_l:"Your bonus", won_n:"Applied automatically", won_btn:"Claim discount",
-      fin_h:"Your plan is ready!", fin_s:"Enter your email to get it and the bonus pack.",
+      fin_h:"Your plan is ready!", fin_s:"Create an account to save your plan and come back on any device.",
+      fin_name_ph:"Your name", fin_email_ph:"email@example.com", fin_pass_ph:"Password (min. 6 characters)",
       fin_bonus:"Make sure the email is correct — don't miss your bonus",
-      fin_btn:"Get the bonus pack",
-      fin_legal:'By clicking, you agree to the <a href="#">terms</a>, <a href="#">privacy policy</a> and <a href="#">refund policy</a>.',
-      done_h:"Plan sent!", done_n:"Check your inbox — your personal plan and bonus pack are there.",
+      fin_btn:"Create account and save my plan", fin_creating:"Creating account…",
+      fin_have:"Already have an account?", fin_login:"Log in",
+      fin_legal:'By clicking, you agree to the <a href="terms.html">terms</a>, <a href="privacy.html">privacy policy</a> and <a href="terms.html">refund policy</a>.',
+      err_name:"Please enter your name.", err_email:"Check your email — it looks invalid.",
+      err_pass:"Password must be at least 6 characters.",
+      err_exists:"An account with this email already exists. Log in or use another email.",
+      err_generic:"Could not create the account. Please try again.",
+      done_h:"Account created!", done_n:"Your plan is saved in your dashboard. Log in anytime with your email and password.",
+      done_btn:"Go to dashboard →",
       btn_continue:"Continue",
       b_ai:"Best AI for analysis", b_free:"Free start",
       b_analysis:"AI error analysis", b_personal:"Personalized for you",
@@ -645,11 +668,18 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       wheel_s:"IELTS-ке жеке ұсыныспен дайындалу мүмкіндігін жіберіп алма 🎁",
       wheel_btn:"Айналдыру",
       won_h:"Ура! Жеңілдік ұтып алдың", won_l:"Сенің бонусың", won_n:"Тіркелу кезінде автоматты түрде қолданылады", won_btn:"Жеңілдікті алу",
-      fin_h:"Жоспарың дайын!", fin_s:"Оны және бонустық жинақты алу үшін email енгіз.",
+      fin_h:"Жоспарың дайын!", fin_s:"Жоспарды сақтап, кез келген құрылғыдан оралу үшін аккаунт жаса.",
+      fin_name_ph:"Атың", fin_email_ph:"email@example.com", fin_pass_ph:"Құпиясөз (кемінде 6 таңба)",
       fin_bonus:"Email дұрыс екеніне көз жеткіз — бонусты жіберіп алма",
-      fin_btn:"Бонустық жинақты алу",
-      fin_legal:'Батырманы басу арқылы сен <a href="#">шарттармен</a>, <a href="#">құпиялылық саясатымен</a> және <a href="#">қайтару саясатымен</a> келісесің.',
-      done_h:"Жоспар жіберілді!", done_n:"Поштаңды тексер — жеке жоспарың мен бонустық жинағың сонда.",
+      fin_btn:"Аккаунт жасап, жоспарды сақтау", fin_creating:"Аккаунт жасалып жатыр…",
+      fin_have:"Аккаунтың бар ма?", fin_login:"Кіру",
+      fin_legal:'Батырманы басу арқылы сен <a href="terms.html">шарттармен</a>, <a href="privacy.html">құпиялылық саясатымен</a> және <a href="terms.html">қайтару саясатымен</a> келісесің.',
+      err_name:"Атыңды жаз.", err_email:"Emailді тексер — қате болуы мүмкін.",
+      err_pass:"Құпиясөз кемінде 6 таңбадан тұруы керек.",
+      err_exists:"Бұл emailмен аккаунт бар. Кір немесе басқа emailді көрсет.",
+      err_generic:"Аккаунт жасалмады. Қайта көріп көр.",
+      done_h:"Аккаунт жасалды!", done_n:"Жоспарың жеке кабинетте сақталды. Email және құпиясөзбен кез келген уақытта кіре аласың.",
+      done_btn:"Кабинетке өту →",
       btn_continue:"Жалғастыру",
       b_ai:"Талдауға арналған үздік AI", b_free:"Тегін бастау",
       b_analysis:"AI қате талдауы", b_personal:"Саған жеке",
@@ -708,11 +738,18 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       wheel_s:"IELTSga shaxsiy taklif bilan tayyorlanish imkoniyatini boy berma 🎁",
       wheel_btn:"Aylantirish",
       won_h:"Ura! Chegirma yutding", won_l:"Sening bonus", won_n:"Ro'yxatdan o'tishda avtomatik qo'llanadi", won_btn:"Chegirmani olish",
-      fin_h:"Rejang tayyor!", fin_s:"Uni va bonus to'plamini olish uchun emailni kirit.",
+      fin_h:"Rejang tayyor!", fin_s:"Rejani saqlash va istalgan qurilmadan qaytish uchun akkaunt yarat.",
+      fin_name_ph:"Ismingiz", fin_email_ph:"email@example.com", fin_pass_ph:"Parol (kamida 6 ta belgi)",
       fin_bonus:"Email to'g'riligiga ishonch hosil qil — bonusingni boy berma",
-      fin_btn:"Bonus to'plamini olish",
-      fin_legal:'Tugmani bosish orqali sen <a href="#">shartlar</a>, <a href="#">maxfiylik siyosati</a> va <a href="#">qaytarish siyosati</a>ga rozilik bildirasan.',
-      done_h:"Reja yuborildi!", done_n:"Pochtangni tekshir — shaxsiy rejang va bonus to'plaming u yerda.",
+      fin_btn:"Akkaunt yaratib, rejani saqlash", fin_creating:"Akkaunt yaratilmoqda…",
+      fin_have:"Akkauntingiz bormi?", fin_login:"Kirish",
+      fin_legal:'Tugmani bosish orqali sen <a href="terms.html">shartlar</a>, <a href="privacy.html">maxfiylik siyosati</a> va <a href="terms.html">qaytarish siyosati</a>ga rozilik bildirasan.',
+      err_name:"Ismingizni kiriting.", err_email:"Emailni tekshiring — xato bo'lishi mumkin.",
+      err_pass:"Parol kamida 6 ta belgidan iborat bo'lishi kerak.",
+      err_exists:"Bu email bilan akkaunt bor. Kiring yoki boshqa email kiriting.",
+      err_generic:"Akkaunt yaratilmadi. Qayta urinib ko'ring.",
+      done_h:"Akkaunt yaratildi!", done_n:"Rejangiz shaxsiy kabinetda saqlandi. Email va parol bilan istalgan vaqtda kirishingiz mumkin.",
+      done_btn:"Kabinetga o‘tish →",
       btn_continue:"Davom etish",
       b_ai:"Tahlil uchun eng yaxshi AI", b_free:"Bepul start",
       b_analysis:"AI xatolar tahlili", b_personal:"Senga moslashtirilgan",
@@ -748,6 +785,10 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     document.querySelectorAll('[data-i18n-html]').forEach(function(el){
       var key = el.getAttribute('data-i18n-html');
       if(t[key] != null) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-ph');
+      if(t[key] != null) el.setAttribute('placeholder', t[key]);
     });
     var mt = t["meta.title"];
     if(mt) document.title = mt;
@@ -1039,12 +1080,59 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     window.location.href = 'pricing.html?discount=' + encodeURIComponent(discount);
   });
 
+  var nameEl = document.getElementById('name');
   var email = document.getElementById('email');
+  var passwordEl = document.getElementById('password');
   var finish = document.getElementById('finish');
-  email.addEventListener('input', function(){
-    finish.disabled = !/^\S+@\S+\.\S+$/.test(email.value.trim());
+  var finMsg = document.getElementById('finMsg');
+
+  function authValid(){
+    return !!nameEl.value.trim() &&
+      /^\S+@\S+\.\S+$/.test(email.value.trim()) &&
+      passwordEl.value.length >= 6;
+  }
+  function refreshFinish(){ finish.disabled = !authValid(); }
+
+  [nameEl, email, passwordEl].forEach(function(el){
+    el.addEventListener('input', function(){ finMsg.textContent = ''; refreshFinish(); });
   });
-  finish.addEventListener('click', function(){ showStep('done'); });
+
+  function examDateFrom(when){
+    var days = { "1m": 30, "1-3m": 90, "3-6m": 180, "no-date": 180 }[when] || 90;
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+
+  finish.addEventListener('click', function(){
+    if(!authValid()) return;
+    var t = TRANSLATIONS[currentLang];
+    finMsg.textContent = '';
+    finish.disabled = true;
+    finish.textContent = t.fin_creating;
+
+    function fail(code){
+      finish.textContent = t.fin_btn;
+      finish.disabled = false;
+      finMsg.textContent = t['err_' + code] || t.err_generic;
+    }
+
+    if(!window.LexyAuth){ fail('generic'); return; }
+    LexyAuth.register({
+      name: nameEl.value.trim(),
+      email: email.value.trim(),
+      password: passwordEl.value,
+      path: answers.goal === 'english' ? 'english' : 'ielts',
+      target: answers.target ? parseFloat(answers.target) : 7.5,
+      examDate: examDateFrom(answers.when),
+      survey: answers,
+      lang: currentLang
+    }).then(function(){
+      showStep('done');
+    }).catch(function(err){
+      fail(err && err.code ? err.code : 'generic');
+    });
+  });
 
   (function(){
     var saved;
@@ -1055,6 +1143,17 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     }
     if(!TRANSLATIONS[saved]) saved = 'ru';
     setLang(saved);
+  })();
+
+  (function(){
+    if(window.LexyAuth){
+      var cu = LexyAuth.user();
+      if(cu){
+        if(!nameEl.value) nameEl.value = cu.name || '';
+        if(!email.value) email.value = cu.email || '';
+        refreshFinish();
+      }
+    }
   })();
 
   (function(){

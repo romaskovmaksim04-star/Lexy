@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Условия пользования — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--fire:#FF5A1F;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 16px/1.6 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.top{position:sticky;top:0;background:rgba(247,245,252,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .bar{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.top .back{margin-left:auto;font-size:13.5px;font-weight:700;color:var(--soft)}
+.top .back:hover{color:var(--ink)}
+main{max-width:760px;margin:0 auto;padding:44px 20px 80px}
+h1{font:800 clamp(26px,5vw,38px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:8px}
+.upd{color:var(--soft);font-size:13px;margin-bottom:28px}
+h2{font:700 20px var(--display);letter-spacing:-.02em;margin:28px 0 10px}
+p{color:var(--soft);margin-bottom:12px}
+ul{color:var(--soft);margin:0 0 14px 20px}
+li{margin-bottom:6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px}
+.foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:999px;background:var(--fire);color:#fff;font-weight:700;font-size:13.5px}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><path fill="#FF5A1F" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.5 10s-6-4-6.5-10z" fill="#151515"/></svg>Lexy</a>
+    <a class="back" href="main.html">← На главную</a>
+  </div>
+</header>
+<main>
+  <h1>Условия пользования</h1>
+  <p class="upd">Обновлено: 23 октября 2026 года</p>
+
+  <div class="card">
+    <p>Используя Lexy, ты соглашаешься с этими условиями. Если не согласен — пожалуйста, не создавай аккаунт.</p>
+
+    <h2>1. Что такое Lexy</h2>
+    <p>Lexy — тренажёр для подготовки к IELTS и практики английского. Сервис включает пробные тесты, игры, словарь и персональный план.</p>
+
+    <h2>2. Аккаунт</h2>
+    <ul>
+      <li>указывай корректный email и не передавай пароль третьим лицам;</li>
+      <li>один аккаунт предназначен для личного использования;</li>
+      <li>ты несёшь ответственность за действия, совершённые под своим аккаунтом.</li>
+    </ul>
+
+    <h2>3. Демо-режим и результаты</h2>
+    <p>Статическая версия сайта работает в демонстрационном режиме: данные хранятся в браузере, а баллы и фидбек являются учебной оценкой, а не официальным результатом IELTS.</p>
+
+    <h2>4. Возврат и гарантия</h2>
+    <p>Условия возврата и «двойной гарантии» описаны на странице гарантии. Для возврата обратись в поддержку.</p>
+
+    <h2>5. Ограничение ответственности</h2>
+    <p>Lexy не гарантирует конкретный балл на экзамене. Материалы предоставляются «как есть» для учебных целей.</p>
+
+    <h2>6. Товарные знаки</h2>
+    <p>IELTS® — зарегистрированный товарный знак его правообладателей. Lexy не аффилирован с IELTS и не одобрен им.</p>
+
+    <h2>7. Контакты</h2>
+    <p>Вопросы по условиям: <a href="mailto:support@lexy.app" style="color:var(--fire);font-weight:600">support@lexy.app</a>.</p>
+  </div>
+
+  <div class="foot">
+    <a class="btn ghost" href="privacy.html">Политика конфиденциальности</a>
+    <a class="btn" href="reg.html">Создать аккаунт</a>
+  </div>
+</main>
+</body>
+</html>

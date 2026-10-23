@@ -13,7 +13,7 @@
 /* ---------- настройки ---------- */
 var CFG = Object.assign({
   demo: true,              // показывать кнопку «включить Premium (демо)» в профиле
-  requireAuth: false,      // true = без сессии отправлять на login.html
+  requireAuth: true,       // true = без сессии отправлять на login.html
   login: "login.html", pricing: "pricing.html", home: "main.html",
   privacy: "privacy.html", terms: "terms.html", test: "test.html",
   support: "support@lexy.app", tg: "https://t.me/",
@@ -43,9 +43,22 @@ function fresh(email) {
     words: [], decks: [], tests: {}, dismiss: {}, vsort: false };
 }
 function session() {
-  var m = localStorage.getItem(SES);
-  if (!m && localStorage.getItem("user_logged_in") === "true") m = localStorage.getItem("user_email") || "student@lexy.app";
-  if (!m) { if (CFG.requireAuth) { REDIR = true; location.replace(CFG.login); return null; } m = "demo@lexy.app"; }
+  var m = null;
+  try {
+    m = localStorage.getItem(SES);
+    if (!m && localStorage.getItem("user_logged_in") === "true") m = localStorage.getItem("user_email") || "";
+    var rec = m ? DB.load(m) : null;
+    if (m && (!rec || !rec.passHash || !rec.salt)) {
+      localStorage.removeItem(SES);
+      localStorage.removeItem("user_logged_in");
+      localStorage.removeItem("user_email");
+      m = null;
+    }
+  } catch (e) { m = null; }
+  if (!m) {
+    if (CFG.requireAuth) { REDIR = true; location.replace(CFG.login); return null; }
+    m = "demo@lexy.app";
+  }
   localStorage.setItem(SES, m);
   return m;
 }
@@ -287,10 +300,21 @@ A.lang = function (el) { save({ lang: el.dataset.l }); side(); renderProfile(); 
 A.sub = function () { $("#xp-sub").hidden = !$("#xp-sub").hidden; };
 A.guar = function () { $("#xp-guar").hidden = !$("#xp-guar").hidden; };
 A.demoPro = function () { save({ premium: !U.premium }); gates(); show(CUR); toast(U.premium ? "Premium включён (демо)" : "Premium выключен"); };
-A.logout = function () { localStorage.removeItem(SES); localStorage.removeItem("user_logged_in"); location.href = CFG.login; };
+A.logout = function () {
+  localStorage.removeItem(SES);
+  localStorage.removeItem("user_logged_in");
+  localStorage.removeItem("user_email");
+  location.href = CFG.login;
+};
 A.del = function () {
   modal({ title: "Удалить аккаунт?", body: "<p>Доступ закроется сразу, данные удалим через 30 дней.</p>", ok: "Удалить", cancel: "Отмена",
-    onOk: function () { DB.remove(U.email); localStorage.removeItem(SES); localStorage.removeItem("user_logged_in"); location.href = CFG.login; } });
+    onOk: function () {
+      DB.remove(U.email);
+      localStorage.removeItem(SES);
+      localStorage.removeItem("user_logged_in");
+      localStorage.removeItem("user_email");
+      location.href = CFG.login;
+    } });
 };
 A.upsell = function (el) { upsell(el.dataset.f); };
 A.vdeck = function (el) { if (gate("vocab")) return; U.decks.push(el.dataset.n); save(); renderVocab(); toast("Набор добавлен"); };

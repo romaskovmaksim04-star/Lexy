@@ -64,6 +64,7 @@ body.open .drawer{transform:none}
 .drawer a.item{display:flex;justify-content:space-between;padding:15px 14px;border-radius:16px;font-weight:600;font-size:17px;transition:background .2s}
 .drawer a.item:hover{background:var(--peach)}
 .drawer .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.drawer-user{font-size:12.5px;line-height:1.4;color:var(--soft);padding:10px 14px;background:var(--mist);border-radius:14px}
 
 /* language picker inside drawer */
 .lang-pick{position:relative}
@@ -518,7 +519,8 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     <button data-lang="uz"><span class="flag">🇺🇿</span><span class="name">O‘zbekcha</span><span class="code">UZ</span></button>
    </div>
   </div>
-  <a class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px;" href="login.html" data-i18n="btn.login">Войти</a>
+  <div class="drawer-user" id="drawerUser" hidden></div>
+  <a class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px;" href="login.html" data-i18n="btn.login" data-auth-login>Войти</a>
   <a class="btn btn-fire" href="reg.html" data-i18n="btn.openLexy">ОТКРЫТЬ LEXY →</a>
  </div>
 </aside>
@@ -550,7 +552,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
     </div>
   </nav>
 
-  <a class="btn btn-ghost btn-sm" href="login.html" style="margin-left:auto;margin-right:10px;" data-i18n="btn.login">Войти</a>
+  <a class="btn btn-ghost btn-sm" href="login.html" style="margin-left:auto;margin-right:10px;" data-i18n="btn.login" data-auth-login>Войти</a>
   <a class="btn btn-fire btn-sm" href="reg.html" id="start" data-i18n="btn.openLexyShort">ОТКРЫТЬ LEXY</a>
  </div>
 </header>
@@ -822,6 +824,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
  </div>
 </footer>
 
+<script src="lexy-auth.js"></script>
 <script>
 /* ============================================================
    REELS — массив твоих роликов
@@ -884,7 +887,9 @@ var TRANSLATIONS = {
     "ft.lang":"Язык",
     "ft.legal":"© 2026 Lexy. Подставь сюда юридическое лицо и дисклеймер: IELTS® — зарегистрированный товарный знак его владельцев, Lexy не связан с ними, если это так.",
     "ft.terms":"Условия","ft.privacy":"Конфиденциальность","ft.refund":"Возврат",
-    "btn.login":"Войти"
+    "btn.login":"Войти","btn.logout":"Выйти",
+    "btn.go":"ПЕРЕЙТИ →","btn.goShort":"ПЕРЕЙТИ","btn.goLong":"ПЕРЕЙТИ В КАБИНЕТ →",
+    "drawer.loggedInAs":"Вы вошли как"
   },
   en: {
     "meta.title":"Lexy — hit your target IELTS score on the first try",
@@ -930,7 +935,9 @@ var TRANSLATIONS = {
     "ft.lang":"Language",
     "ft.legal":"© 2026 Lexy. Put your legal entity and disclaimer here: IELTS® is a registered trademark of its owners, Lexy is not affiliated with them, if that is the case.",
     "ft.terms":"Terms","ft.privacy":"Privacy","ft.refund":"Refund",
-    "btn.login":"Log in"
+    "btn.login":"Log in","btn.logout":"Log out",
+    "btn.go":"GO →","btn.goShort":"GO","btn.goLong":"GO TO DASHBOARD →",
+    "drawer.loggedInAs":"Signed in as"
   },
   kz: {
     "meta.title":"Lexy — IELTS мақсатты балын бірінші ретте алыңыз",
@@ -976,7 +983,9 @@ var TRANSLATIONS = {
     "ft.lang":"Тіл",
     "ft.legal":"© 2026 Lexy. Осы жерге заңды тұлға мен дисклеймерді қойыңыз: IELTS® — оның иелерінің тіркелген сауда белгісі, Lexy олармен байланысты емес, егер солай болса.",
     "ft.terms":"Шарттар","ft.privacy":"Құпиялылық","ft.refund":"Қайтару",
-    "btn.login":"Кіру"
+    "btn.login":"Кіру","btn.logout":"Шығу",
+    "btn.go":"ӨТУ →","btn.goShort":"ӨТУ","btn.goLong":"КАБИНЕТКЕ ӨТУ →",
+    "drawer.loggedInAs":"Кірген аккаунт:"
   },
   uz: {
     "meta.title":"Lexy — IELTS maqsad ballingizni birinchi urinishda oling",
@@ -1022,7 +1031,9 @@ var TRANSLATIONS = {
     "ft.lang":"Til",
     "ft.legal":"© 2026 Lexy. Bu yerga yuridik shaxs va diskleymerni qo‘ying: IELTS® — uning egalarining ro‘yxatdan o‘tgan savdo belgisi, Lexy ular bilan bog‘liq emas, agar shunday bo‘lsa.",
     "ft.terms":"Shartlar","ft.privacy":"Maxfiylik","ft.refund":"Qaytarish",
-    "btn.login":"Kirish"
+    "btn.login":"Kirish","btn.logout":"Chiqish",
+    "btn.go":"O‘TISH →","btn.goShort":"O‘TISH","btn.goLong":"KABINETGA O‘TISH →",
+    "drawer.loggedInAs":"Kirgan hisob:"
   }
 };
 
@@ -1064,7 +1075,60 @@ function setLang(lang){
   document.querySelectorAll('[data-lang-link]').forEach(function(a){
     var b = a.querySelector('b'); if(b) b.style.color = (a.dataset.langLink === lang) ? 'var(--ink)' : '';
   });
+  applyAuth();
 }
+
+/* ============ Состояние авторизации ============ */
+function authUser(){
+  try{ return window.LexyAuth ? LexyAuth.user() : null; }catch(e){ return null; }
+}
+function authText(k, fallback){
+  var t = TRANSLATIONS[currentLang] || {};
+  return t[k] || fallback;
+}
+function applyAuth(){
+  var u = authUser();
+  var longTxt = authText('btn.goLong', 'ПЕРЕЙТИ В КАБИНЕТ →');
+
+  document.querySelectorAll('a[data-i18n="btn.startPrep"]').forEach(function(a){
+    a.href = u ? 'dashboard.html' : 'reg.html';
+    a.textContent = u ? longTxt : (authText('btn.startPrep', 'НАЧАТЬ ПОДГОТОВКУ →'));
+  });
+
+  var drawerCta = document.querySelector('a[data-i18n="btn.openLexy"]');
+  if(drawerCta){
+    drawerCta.href = u ? 'dashboard.html' : 'reg.html';
+    drawerCta.textContent = u ? authText('btn.go', 'ПЕРЕЙТИ →') : authText('btn.openLexy', 'ОТКРЫТЬ LEXY →');
+  }
+
+  var topCta = document.getElementById('start');
+  if(topCta){
+    topCta.href = u ? 'dashboard.html' : 'reg.html';
+    topCta.textContent = u ? authText('btn.goShort', 'ПЕРЕЙТИ') : authText('btn.openLexyShort', 'ОТКРЫТЬ LEXY');
+  }
+
+  document.querySelectorAll('[data-auth-login]').forEach(function(a){
+    a.href = u ? '#' : 'login.html';
+    a.textContent = u ? authText('btn.logout', 'Выйти') : authText('btn.login', 'Войти');
+    a.setAttribute('data-auth', u ? 'in' : 'out');
+  });
+
+  var du = document.getElementById('drawerUser');
+  if(du){
+    du.hidden = !u;
+    du.textContent = u ? (authText('drawer.loggedInAs', 'Вы вошли как') + ' ' + (u.name || u.email)) : '';
+  }
+}
+document.querySelectorAll('[data-auth-login]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    if(a.getAttribute('data-auth') === 'in'){
+      e.preventDefault();
+      try{ if(window.LexyAuth) LexyAuth.logout(); }catch(err){}
+      location.href = 'main.html';
+    }
+  });
+});
+addEventListener('storage', function(e){ if(e.key === 'lexy_session') applyAuth(); });
 
 /* ============ Language switcher (Mobile) ============ */
 var langPick = document.getElementById('langPick');

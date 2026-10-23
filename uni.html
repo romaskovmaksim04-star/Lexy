@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Требования вузов к IELTS — Lexy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fire:#FF5A1F; --fire2:#FF9A0A; --ink:#1B1433; --soft:#6B6585;
+  --mist:#F7F5FC; --line:#E6E1F0; --peach:#FFE9DF; --ok:#12A15C;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font:400 16px/1.55 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--fire);outline-offset:3px}
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:10px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.menu-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13px var(--body);transition:border-color .2s,color .2s,transform .15s}
+.menu-btn:hover{border-color:var(--fire);color:var(--fire);transform:translateY(-1px)}
+.menu-btn:last-child{margin-left:auto}
+main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:32px 20px 64px}
+.hero{position:relative;border-radius:28px;background:radial-gradient(120% 140% at 0% 0%,#FFF3EB 0%,transparent 55%),radial-gradient(120% 140% at 100% 100%,#F0E9FF 0%,transparent 55%),#fff;border:1.5px solid var(--line);padding:34px 30px 30px;margin-bottom:24px;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,154,10,.26),transparent 65%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--peach);color:var(--fire);font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:14px}
+.badge i{width:6px;height:6px;border-radius:50%;background:var(--fire)}
+h1{font:800 clamp(28px,5vw,44px)/1.12 var(--display);letter-spacing:-.03em;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--fire)}
+.sub{color:var(--soft);font-size:15.5px;max-width:66ch;line-height:1.55}
+.hero .sub{margin-bottom:0}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:22px 0 14px}
+.search{position:relative;flex:1;min-width:220px}
+.search input{width:100%;font:500 14.5px var(--body);padding:13px 16px 13px 40px;border:1.5px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s}
+.search input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.1)}
+.search svg{position:absolute;left:15px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--soft)}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{padding:9px 13px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 12.5px var(--body);color:var(--soft);transition:background .2s,border-color .2s,color .2s}
+.pill:hover{border-color:#FFC2A1;color:var(--fire)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--soft);margin-bottom:14px}
+.meta b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr;gap:13px}
+.uni{position:relative;display:flex;flex-direction:column;gap:9px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.uni:hover{transform:translateY(-2px);border-color:#FFC2A1;box-shadow:0 22px 40px -30px rgba(27,20,51,.5)}
+.uni .topline{display:flex;align-items:flex-start;gap:12px}
+.uni .flag{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--mist);font-size:21px;flex:none}
+.uni h2{font:800 16px/1.25 var(--display);letter-spacing:-.02em}
+.uni .country{display:block;color:var(--soft);font-size:12.5px;margin-top:3px;font-family:var(--body);font-weight:500;letter-spacing:0}
+.band{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.band b{font:800 24px/1 var(--display);color:var(--fire);letter-spacing:-.04em}
+.band span{font-size:12px;color:var(--soft);font-weight:600}
+.uni p{font-size:13px;color:var(--soft);line-height:1.45}
+.uni .go{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:4px;font:700 12.5px var(--body);color:var(--fire)}
+.uni .go:hover{text-decoration:underline;text-underline-offset:3px}
+.note-box{margin-top:26px;padding:18px 20px;border-radius:18px;background:#FFF8F3;border:1px dashed #FFC2A1;font-size:13px;color:var(--soft);line-height:1.55}
+.note-box b{color:var(--ink)}
+.empty{display:none;padding:44px 20px;text-align:center;background:#fff;border:1px dashed var(--line);border-radius:20px;color:var(--soft);font-size:14px}
+.empty.on{display:block}
+footer{border-top:1px solid var(--line);background:#fff;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+footer .bar{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;color:var(--soft);font-size:12.5px}
+footer a:hover{color:var(--fire)}
+footer .sp{margin-left:auto}
+@media(min-width:760px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){
+  .top .bar{padding:0 14px;gap:6px}
+  .logo{font-size:18px}.logo svg{width:22px;height:26px}
+  .menu-btn{padding:8px 10px;font-size:11.5px}
+  .menu-btn:last-child{display:none}
+  main{padding:22px 16px 54px}
+  .hero{padding:26px 20px 24px;border-radius:22px}
+  .uni{padding:17px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
+  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
+    <a class="menu-btn" href="tools.html">← Все инструменты</a>
+    <a class="menu-btn" href="main.html">Главное меню</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="badge"><i></i>База вузов</span>
+    <h1>Требования вузов <em>к IELTS</em></h1>
+    <p class="sub">Ориентировочные минимумы для поступления и ссылки на официальные страницы. Требования зависят от программы, уровня и года приёма — всегда проверяй сайт вуза.</p>
+  </section>
+
+  <div class="controls">
+    <label class="search">
+      <svg aria-hidden="true"><use href="#ic-search"/></svg>
+      <input id="q" type="search" placeholder="Найти университет или страну…" autocomplete="off">
+    </label>
+    <div class="pills" id="pills">
+      <button class="pill on" data-region="all">Все</button>
+      <button class="pill" data-region="США">США</button>
+      <button class="pill" data-region="Великобритания">Великобритания</button>
+      <button class="pill" data-region="Канада">Канада</button>
+      <button class="pill" data-region="Австралия">Австралия</button>
+      <button class="pill" data-region="Азия">Азия</button>
+      <button class="pill" data-region="Европа">Европа</button>
+    </div>
+  </div>
+
+  <div class="meta"><span>Найдено: <b id="count">0</b></span><span>Проверено: октябрь 2026</span></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">Ничего не нашлось. Попробуй другое название или страну.</div>
+
+  <div class="note-box"><b>Как читать баллы.</b> Это типичный минимум для бакалавриата или магистратуры, а не гарантия зачисления. На конкурсные программы может требоваться выше, а на отдельные курсы — ниже. Для точного ответа открой официальную страницу вуза.</div>
+</main>
+
+<footer>
+  <div class="bar">
+    <span>© 2026 Lexy</span>
+    <a href="main.html">Главная</a>
+    <a href="tools.html">Инструменты</a>
+    <a href="privacy.html">Конфиденциальность</a>
+    <a href="terms.html">Условия</a>
+    <span class="sp">IELTS® — товарный знак его владельцев.</span>
+  </div>
+</footer>
+
+<script>
+var DATA = [
+  { n:'Harvard University', c:'США', region:'США', f:'🇺🇸', b:'Нет минимума', label:'фиксированного порога нет', note:'Нужен сильный английский; IELTS принимается.', url:'https://college.harvard.edu/admissions/apply/international-applicants' },
+  { n:'Massachusetts Institute of Technology', c:'США', region:'США', f:'🇺🇸', b:'7.0', label:'рекомендуемый минимум', note:'MIT рекомендует IELTS 7.0; решение индивидуальное.', url:'https://mitadmissions.org/apply/' },
+  { n:'Stanford University', c:'США', region:'США', f:'🇺🇸', b:'Нет минимума', label:'фиксированного порога нет', note:'IELTS принимается, но официального минимума нет.', url:'https://admission.stanford.edu/' },
+  { n:'University of Oxford', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'7.0–7.5', label:'зависит от курса', note:'Стандартный уровень — 7.0, высокий — 7.5.', url:'https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/for-international-students/english-language-requirements' },
+  { n:'University of Cambridge', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'7.5', label:'обычно, не ниже 7.0 по частям', note:'Требования различаются по курсам.', url:'https://www.undergraduate.study.cam.ac.uk/international-students' },
+  { n:'Imperial College London', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5–7.0', label:'зависит от программы', note:'Проверь уровень для конкретного курса.', url:'https://www.imperial.ac.uk/study/apply/english-language/' },
+  { n:'University College London', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5–7.5', label:'по уровням программы', note:'UCL использует несколько уровней английского.', url:'https://www.ucl.ac.uk/prospective-students/undergraduate/how-apply/english-language-requirements' },
+  { n:'University of Edinburgh', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5', label:'обычно, не ниже 5.5 по частям', note:'Для некоторых программ требования выше.', url:'https://www.ed.ac.uk/studying/international/english' },
+  { n:'University of Manchester', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.0–7.0', label:'зависит от курса', note:'Смотри требования своего направления.', url:'https://www.manchester.ac.uk/study/international/english-education-system/' },
+  { n:'University of Toronto', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'обычно, не ниже 6.0 по частям', note:'Отдельные факультеты могут требовать выше.', url:'https://future.utoronto.ca/apply/english-language-requirements/' },
+  { n:'University of British Columbia', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'не ниже 6.0 по частям', note:'Требования зависят от программы.', url:'https://you.ubc.ca/applying-ubc/requirements/english-language-competency/' },
+  { n:'McGill University', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'обычно', note:'Проверь требования факультета.', url:'https://www.mcgill.ca/undergraduate-admissions/apply/english-proficiency' },
+  { n:'University of Melbourne', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Для конкурсных программ может быть выше.', url:'https://study.unimelb.edu.au/how-to-apply/english-language-requirements' },
+  { n:'University of Sydney', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Уточняй по своей программе.', url:'https://www.sydney.edu.au/study/how-to-apply/english-language-requirements.html' },
+  { n:'UNSW Sydney', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Требования различаются по факультетам.', url:'https://www.unsw.edu.au/study/how-to-apply/english-language-requirements' },
+  { n:'National University of Singapore', c:'Сингапур', region:'Азия', f:'🇸🇬', b:'6.5', label:'обычно', note:'Проверь требования выбранной программы.', url:'https://nus.edu.sg/oam/apply-to-nus' },
+  { n:'ETH Zurich', c:'Швейцария', region:'Европа', f:'🇨🇭', b:'7.0', label:'обычно C1', note:'Требования зависят от уровня и языка программы.', url:'https://ethz.ch/en/studies/registration-application/master/application/language-requirements.html' }
+];
+
+var grid = document.getElementById('grid');
+var count = document.getElementById('count');
+var empty = document.getElementById('empty');
+var q = document.getElementById('q');
+var region = 'all';
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+function render(){
+  var needle = q.value.trim().toLowerCase();
+  var list = DATA.filter(function(d){
+    var inRegion = region === 'all' || d.region === region;
+    var inSearch = !needle || (d.n + ' ' + d.c).toLowerCase().indexOf(needle) > -1;
+    return inRegion && inSearch;
+  });
+  count.textContent = list.length;
+  empty.classList.toggle('on', list.length === 0);
+  grid.innerHTML = list.map(function(d){
+    return '<article class="uni">' +
+      '<div class="topline"><span class="flag" aria-hidden="true">' + d.f + '</span><div><h2>' + esc(d.n) + '</h2><span class="country">' + esc(d.c) + '</span></div></div>' +
+      '<div class="band"><b>' + esc(d.b) + '</b><span>' + esc(d.label) + '</span></div>' +
+      '<p>' + esc(d.note) + '</p>' +
+      '<a class="go" href="' + d.url + '" target="_blank" rel="noopener">Официальная страница вуза ↗</a>' +
+      '</article>';
+  }).join('');
+}
+
+document.querySelectorAll('.pill').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
+    btn.classList.add('on');
+    region = btn.getAttribute('data-region');
+    render();
+  });
+});
+q.addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
