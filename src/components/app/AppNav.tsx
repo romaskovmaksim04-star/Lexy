@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Cards, ChartLineUp, House, Barbell, UserCircle } from "@phosphor-icons/react";
+import { Cards, ChartLineUp, ChatsCircle, Exam, House } from "@phosphor-icons/react";
 
 const ITEMS = [
-  { href: "/app", label: "Сегодня", icon: House, exact: true },
-  { href: "/app/practice", label: "Практика", icon: Barbell, match: ["/app/practice", "/app/reading", "/app/listening", "/app/writing", "/app/speaking"] },
-  { href: "/app/words", label: "Слова", icon: Cards },
+  { href: "/app", label: "Главная", icon: House, exact: true },
+  { href: "/app/tests", label: "Тесты", icon: Exam, match: ["/app/tests", "/app/reading", "/app/listening", "/app/writing", "/app/speaking", "/app/results"] },
+  { href: "/app/lexi", label: "Lexi", icon: ChatsCircle },
+  { href: "/app/words", label: "Словарь", icon: Cards },
   { href: "/app/progress", label: "Прогресс", icon: ChartLineUp },
-  { href: "/app/profile", label: "Профиль", icon: UserCircle },
 ];
 
 export function AppNav({ variant }: { variant: "side" | "bottom" }) {
@@ -19,7 +19,7 @@ export function AppNav({ variant }: { variant: "side" | "bottom" }) {
 
   if (variant === "side") {
     return (
-      <nav className="mt-10 grid gap-1">
+      <nav className="mt-10 grid gap-1" aria-label="Основное меню">
         {ITEMS.map((it) => {
           const on = active(it);
           return (
@@ -34,8 +34,10 @@ export function AppNav({ variant }: { variant: "side" | "bottom" }) {
     );
   }
 
+  // Hidden while a test is running so it does not cover the answer controls
+  if (/^\/app\/(reading|listening|writing|speaking)\//.test(path)) return null;
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+    <nav aria-label="Основное меню" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
       <div className="mx-auto grid max-w-lg grid-cols-5">
         {ITEMS.map((it) => {
           const on = active(it);

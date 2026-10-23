@@ -3,14 +3,14 @@ import { Reveal } from "@/components/ui/Reveal";
 
 const STEPS = [
   { icon: ListChecks, title: "Расскажи о цели", text: "8 коротких вопросов: формат, нужный балл, дата экзамена, сколько времени у тебя есть." },
-  { icon: CalendarCheck, title: "Получи план", text: "Каждый день новый набор заданий. Больше всего времени уходит на твою слабую секцию." },
-  { icon: Timer, title: "Занимайся от 15 минут", text: "Короткие сессии с таймером. Серия дней держит в ритме, пропуск не сжигает прогресс." },
-  { icon: ChartLineUp, title: "Смотри на балл", text: "Каждый ответ даёт оценку по критериям IELTS. Видно, какая секция тянет вниз." },
+  { icon: Timer, title: "Пройди замер", text: "Короткие задания по каждой секции покажут стартовый балл. После них план становится персональным." },
+  { icon: CalendarCheck, title: "Занимайся по плану", text: "Каждый день новый набор заданий, больше всего времени на слабую секцию. От 15 минут в день." },
+  { icon: ChartLineUp, title: "Смотри на прогноз", text: "Каждый ответ даёт оценку по критериям IELTS, а прогноз показывает, успеваешь ли ты к дате экзамена." },
 ];
 
 export function How() {
   return (
-    <section id="how" className="border-y border-line bg-surface">
+    <section id="how" className="scroll-mt-24">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 md:px-8 md:py-28 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <Reveal>
@@ -23,7 +23,7 @@ export function How() {
           {STEPS.map((s, i) => (
             <li key={s.title}>
               <Reveal delay={i * 0.06}>
-                <div className="flex gap-5 rounded-3xl border border-line bg-bg p-6 md:p-8">
+                <div className="veil heat flex gap-5 rounded-3xl p-6 md:p-8">
                   <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-fire-soft text-fire-text">
                     <s.icon size={26} weight="duotone" />
                   </span>

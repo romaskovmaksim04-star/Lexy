@@ -1,5 +1,4 @@
-// SQLite for local development. For production switch the provider to "postgresql"
-// and point DATABASE_URL at the server database.
+// SQLite both locally and on the server: one app process, one file, nightly backups.
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,26 +12,45 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   name         String
-  passwordHash String
+  passwordHash String?  // null for Google-only accounts
+  googleId     String?  @unique
   createdAt    DateTime @default(now())
 
   // Answers from the onboarding quiz
-  goal         String   @default("ielts")    // ielts | english
-  format       String   @default("academic") // academic | general
-  targetBand   Float    @default(6.5)
-  focusSkill   String   @default("speaking") // reading | listening | writing | speaking
-  examWindow   String   @default("1-3m")     // 1m | 1-3m | 3-6m | no-date
-  experience   String   @default("yes")      // yes (first time) | mock | real
-  dailyMinutes Int      @default(30)
-  worry        String   @default("confidence")
-  locale       String   @default("ru")
+  goal         String    @default("ielts")    // ielts | english
+  format       String    @default("academic") // academic | general
+  targetBand   Float     @default(6.5)
+  focusSkill   String    @default("speaking") // reading | listening | writing | speaking
+  examWindow   String    @default("1-3m")     // 1m | 1-3m | 3-6m | no-date
+  examDate     DateTime?
+  experience   String    @default("yes")      // yes (first time) | mock | real
+  dailyMinutes Int       @default(30)
+  worry        String    @default("confidence")
+  locale       String    @default("ru")
+  emailOptIn   Boolean   @default(true)
 
-  xp           Int      @default(0)
-  streak       Int      @default(0)
-  lastActive   String?  // YYYY-MM-DD of the last practice day, drives the streak
+  persona      String    @default("classic")  // Lexi's character
+  lexiVoice    String    @default("")         // Gemini voice the user picked, "" = the character's own
+  lexiLang     String    @default("mix")      // mix (talks Russian, practice in English) | en
+  lexiSwear    Boolean   @default(false)      // profanity allowed in Lexi's replies
+  xp           Int       @default(0)
+  streak       Int       @default(0)
+  lastActive   String?   // YYYY-MM-DD of the last practice day, drives the streak
 
-  attempts     Attempt[]
-  cards        Card[]
+  // Access: "free" or "premium" until premiumUntil
+  plan         String    @default("free")
+  premiumUntil DateTime?
+  discount     Int       @default(0)          // percent won on the quiz wheel
+  referralCode String    @unique @default(cuid())
+  referredBy   String?
+
+  attempts      Attempt[]
+  cards         Card[]
+  words         UserWord[]
+  conversations Conversation[]
+  usage         Usage[]
+  orders        Order[]
+  tickets       Ticket[]
 }
 
 // One finished exercise: a reading/listening test, an essay, a speaking answer
@@ -45,14 +63,16 @@ model Attempt {
   band      Float
   raw       Int?     // correct answers for reading/listening
   total     Int?
-  details   String   // JSON: answers, metrics, essay text
+  details   String   // JSON: answers, metrics, essay text, report
   minutes   Int      @default(0)
   createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
+  @@index([userId, section])
 }
 
-// Spaced-repetition state of one vocabulary word for one user
+// Spaced-repetition state of one word for one user. wordId is a built-in word id
+// or "u:<UserWord.id>" for a word the user saved.
 model Card {
   id       String   @id @default(cuid())
   userId   String
@@ -61,7 +81,90 @@ model Card {
   ease     Float    @default(2.5)
   interval Int      @default(0) // days
   reps     Int      @default(0)
+  lapses   Int      @default(0)
   due      DateTime @default(now())
 
   @@unique([userId, wordId])
+  @@index([userId, due])
+}
+
+// A word or phrase the user saved from a text, a test or a Preppy conversation
+model UserWord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  term      String
+  meaning   String   @default("")
+  example   String   @default("")
+  source    String   @default("manual") // manual | reading | listening | preppy | writing
+  createdAt DateTime @default(now())
+
+  @@unique([userId, term])
+}
+
+// A spoken conversation with Preppy, kept for the review screen
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  persona   String
+  topic     String
+  turns     String   // JSON: [{role, text, at, metrics?}]
+  state     String   @default("{}") // JSON: engine state between turns
+  seconds   Int      @default(0)    // user's speaking time
+  review    String?  // JSON, filled when the conversation ends
+  createdAt DateTime @default(now())
+  endedAt   DateTime?
+
+  @@index([userId, createdAt])
+}
+
+// Per-day counters for limits (Preppy seconds, AI checks)
+model Usage {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    String // YYYY-MM-DD
+  kind   String // preppy_seconds | speech_checks | essay_checks
+  count  Int    @default(0)
+
+  @@id([userId, day, kind])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planKey   String   // month | quarter | year
+  amount    Int      // roubles
+  status    String   @default("pending") // pending | paid | failed
+  provider  String   @default("platega")
+  extId     String?
+  createdAt DateTime @default(now())
+  paidAt    DateTime?
+
+  @@index([userId])
+}
+
+// A message to support from the site form; owners are notified in Telegram
+model Ticket {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email     String
+  topic     String   @default("other")
+  text      String
+  status    String   @default("open") // open | answered
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Spending on paid AI APIs per day and purpose (llm:turn, llm:review, stt, tts)
+model Cost {
+  day     String // YYYY-MM-DD
+  purpose String
+  rub     Float  @default(0)
+  count   Int    @default(0)
+
+  @@id([day, purpose])
 }

@@ -3,10 +3,11 @@
 import { useActionState } from "react";
 import { login } from "@/app/actions";
 
-export function LoginForm() {
+export function LoginForm({ next = "/app" }: { next?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
   return (
     <form action={action} className="grid gap-5">
+      <input type="hidden" name="next" value={next} />
       <div className="grid gap-2">
         <label htmlFor="email" className="label">Email</label>
         <input id="email" name="email" type="email" autoComplete="email" required className="field" />

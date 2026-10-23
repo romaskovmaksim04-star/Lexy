@@ -27,7 +27,7 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <Mascot className="h-8 w-auto" title="" />
-      <span className="display text-[22px] font-extrabold leading-none tracking-[-0.05em]">Lexy</span>
+      <span className="display text-[22px] font-extrabold leading-none tracking-[-0.05em]">GoLexi</span>
     </span>
   );
 }

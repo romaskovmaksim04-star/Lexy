@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AppNav } from "@/components/app/AppNav";
 import { Flame } from "@phosphor-icons/react/dist/ssr";
 
-export const metadata: Metadata = { title: { default: "Мой план", template: "%s · Lexy" } };
+export const metadata: Metadata = { title: { default: "Мой план", template: "%s · GoLexi" } };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();
@@ -37,6 +37,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Flame size={16} weight="fill" /> {streak}
             </span>
             <ThemeToggle />
+            <Link href="/app/profile" aria-label="Профиль" className="grid size-9 place-items-center rounded-full bg-fire-soft text-sm font-bold text-fire-text">
+              {user.name.slice(0, 1).toUpperCase()}
+            </Link>
           </div>
         </header>
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 md:px-8 md:py-10">{children}</main>

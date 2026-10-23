@@ -34,7 +34,7 @@ export type ListeningTest = {
   title: string;
   part: number;
   context: string;
-  speakers: Record<"A" | "B", { name: string; voice: "female" | "male" }>;
+  speakers: Record<"A" | "B", { name: string; voice: "female" | "male" | "female2" | "male2" }>;
   script: ListeningLine[];
   groups: QuestionGroup[];
 };

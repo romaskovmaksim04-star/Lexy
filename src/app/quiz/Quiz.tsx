@@ -1,14 +1,16 @@
 "use client";
 
+import { useCalm } from "@/lib/motion-pref";
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import {
-  ArrowLeft, ArrowRight, BookOpenText, Briefcase, CalendarBlank, Exam, GraduationCap, Headphones,
+  ArrowLeft, ArrowRight, BookOpenText, Briefcase, CalendarBlank, CheckCircle, Exam, GraduationCap, Headphones,
   Microphone, PencilLine, Translate,
 } from "@phosphor-icons/react";
 import { Mascot } from "@/components/ui/Mascot";
 import { signup } from "@/app/actions";
+import { Wheel } from "./Wheel";
 import { BANDS, EXPERIENCE, MINUTES, SKILL_HINT, WINDOWS, WORRIES, type Skill } from "@/lib/profile";
 
 type Answers = {
@@ -74,18 +76,21 @@ const WORRY_ANSWER: Record<string, string> = {
   confidence: "Speaking тренируем голосом с таймером, как на настоящем экзамене.",
 };
 
-export function Quiz() {
-  const reduce = useReducedMotion();
+export function Quiz({ refCode, plan }: { refCode?: string; plan?: string }) {
+  const reduce = useCalm();
   const [answers, setAnswers] = useState<Answers>({});
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState(1);
   const [pending, start] = useTransition();
   const [error, setError] = useState<{ error?: string; field?: string }>();
+  const [wheel, setWheel] = useState("");
 
   const steps = useMemo(() => STEPS.filter((s) => !s.skip?.(answers)), [answers]);
-  const total = steps.length + 2; // summary + account
-  const atSummary = index === steps.length;
-  const atAccount = index === steps.length + 1;
+  const total = steps.length + 4; // analysis + summary + wheel + account
+  const atAnalysis = index === steps.length;
+  const atSummary = index === steps.length + 1;
+  const atWheel = index === steps.length + 2;
+  const atAccount = index === steps.length + 3;
   const step = steps[index];
 
   const go = (d: number) => {
@@ -104,6 +109,7 @@ export function Quiz() {
       const res = await signup({
         ...answers,
         name: form.get("name"), email: form.get("email"), password: form.get("password"),
+        wheel, ref: refCode, plan,
       });
       if (res?.error) setError(res);
     });
@@ -115,7 +121,7 @@ export function Quiz() {
     center: { opacity: 1, x: 0 },
     exit: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: d * -48 }),
   };
-  const say = atSummary ? "Готово, вот что получилось." : atAccount ? "Сохраню план в твой аккаунт." : step.say;
+  const say = atAnalysis ? "Секунду, считаю." : atSummary ? "Готово, вот что получилось." : atWheel ? "А теперь бонус!" : atAccount ? "Сохраню план в твой аккаунт." : step.say;
 
   return (
     <div className="mx-auto flex min-h-[100dvh] max-w-2xl flex-col px-4 pb-10 pt-4">
@@ -154,7 +160,7 @@ export function Quiz() {
       <div className="relative mt-8 flex-1">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
-            key={atSummary ? "summary" : atAccount ? "account" : step.key}
+            key={atAnalysis ? "analysis" : atSummary ? "summary" : atWheel ? "wheel" : atAccount ? "account" : step.key}
             custom={dir}
             variants={variants}
             initial="enter"
@@ -162,7 +168,17 @@ export function Quiz() {
             exit="exit"
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
-            {step && !atSummary && !atAccount && (
+            {atAnalysis && <Analysis onDone={() => go(1)} />}
+
+            {atWheel && (
+              <>
+                <h1 className="display text-center text-[28px] font-bold leading-tight md:text-4xl">Крути и открой свою скидку</h1>
+                <p className="mx-auto mt-3 max-w-[40ch] text-center text-muted">Один раз, на первый месяц занятий.</p>
+                <div className="mt-8"><Wheel onWin={(_, token) => { setWheel(token); go(1); }} /></div>
+              </>
+            )}
+
+            {step && !atAnalysis && !atSummary && !atWheel && !atAccount && (
               <>
                 <h1 className="display text-[28px] font-bold leading-tight md:text-4xl">{step.title}</h1>
                 <div className={`mt-8 grid gap-3 ${step.grid ? "grid-cols-2 sm:grid-cols-4" : ""}`}>
@@ -244,6 +260,37 @@ export function Quiz() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+const CHECKS = ["Анализируем твои ответы", "Подбираем задания под твой уровень", "Собираем план под твою дату"];
+
+function Analysis({ onDone }: { onDone: () => void }) {
+  const reduce = useCalm();
+  const [done, setDone] = useState(0);
+  useEffect(() => {
+    if (done >= CHECKS.length) {
+      const t = setTimeout(onDone, reduce ? 100 : 500);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setDone((d) => d + 1), reduce ? 150 : 900);
+    return () => clearTimeout(t);
+  }, [done, onDone, reduce]);
+  return (
+    <>
+      <h1 className="display text-[28px] font-bold leading-tight md:text-4xl">Готовим твой план…</h1>
+      <div className="mt-6 h-2 overflow-hidden rounded-full bg-surface-2">
+        <motion.div className="h-full rounded-full bg-fire" animate={{ width: `${(done / CHECKS.length) * 100}%` }} transition={{ duration: 0.8, ease: "easeOut" }} />
+      </div>
+      <ul className="mt-8 grid gap-4" aria-live="polite">
+        {CHECKS.map((c, i) => (
+          <li key={c} className={`flex items-center gap-3 text-lg font-semibold transition ${i < done ? "" : "opacity-40"}`}>
+            {i < done ? <CheckCircle size={26} weight="fill" className="text-ok" /> : <span className="size-[26px] animate-pulse rounded-full border-2 border-line calm:animate-none" />}
+            {c}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

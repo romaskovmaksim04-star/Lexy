@@ -1,10 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useCalm } from "@/lib/motion-pref";
+import { motion } from "motion/react";
 
 // Fades content up as it enters the viewport: used to pace long pages.
 export function Reveal({ children, delay = 0, className, y = 24 }: { children: React.ReactNode; delay?: number; className?: string; y?: number }) {
-  const reduce = useReducedMotion();
+  const reduce = useCalm();
   return (
     <motion.div
       className={className}

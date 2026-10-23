@@ -1,22 +1,25 @@
 "use client";
 
+import { useCalm } from "@/lib/motion-pref";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { List, X } from "@phosphor-icons/react";
 import { Logo } from "@/components/ui/Mascot";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const LINKS = [
+  { href: "/games", label: "Игры" },
+  { href: "/#lexi", label: "Lexi" },
   { href: "/#platform", label: "Платформа" },
-  { href: "/#how", label: "Как это работает" },
-  { href: "/tools/band", label: "Калькулятор" },
+  { href: "/pricing", label: "Тарифы" },
+  { href: "/guarantee", label: "Гарантия" },
   { href: "/#faq", label: "Вопросы" },
 ];
 
 export function Header({ signedIn }: { signedIn: boolean }) {
   const [open, setOpen] = useState(false);
-  const reduce = useReducedMotion();
+  const reduce = useCalm();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -24,9 +27,9 @@ export function Header({ signedIn }: { signedIn: boolean }) {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-line/60 bg-bg/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 md:px-8">
-        <Link href="/" aria-label="Lexy, на главную"><Logo /></Link>
+        <Link href="/" aria-label="GoLexi, на главную"><Logo /></Link>
         <nav className="ml-6 hidden items-center gap-7 text-[15px] font-medium text-muted lg:flex">
           {LINKS.map((l) => (
             <Link key={l.href} href={l.href} className="transition hover:text-ink">{l.label}</Link>
@@ -38,8 +41,8 @@ export function Header({ signedIn }: { signedIn: boolean }) {
             <Link href="/app" className="btn btn-fire btn-sm">Мой план</Link>
           ) : (
             <>
-              <Link href="/login" className="hidden px-3 text-[15px] font-semibold sm:inline">Войти</Link>
-              <Link href="/quiz" className="btn btn-fire btn-sm hidden sm:inline-flex">Начать подготовку</Link>
+              <Link href="/login" className="btn btn-ghost btn-sm hidden sm:inline-flex">Войти</Link>
+              <Link href="/quiz" className="btn btn-fire btn-sm hidden uppercase tracking-wide sm:inline-flex">Открыть GoLexi</Link>
             </>
           )}
           <button

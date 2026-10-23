@@ -1,90 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Microphone } from "@phosphor-icons/react";
-import { Mascot } from "@/components/ui/Mascot";
-import { analyseSpeech } from "@/lib/analysis";
-import { formatBand } from "@/lib/band";
+import { motion } from "motion/react";
+import { ArrowRight, BookOpenText, Headphones, Microphone, PencilLine } from "@phosphor-icons/react";
+import { useCalm } from "@/lib/motion-pref";
+import { FireSpirit } from "@/components/fx/FireSpirit";
 
-// A real report from the same analyser the app uses, run on a sample answer.
-const SAMPLE =
-  "I learned to cook properly when I moved to another city for university. At first it was quite difficult, because I had never prepared anything more complex than pasta. However, I watched videos every evening and practised on my flatmates, who were very patient. As a result, I can now make a proper dinner for six people, and I am proud of it because it made me independent.";
-const report = analyseSpeech(SAMPLE, 34);
+const ease = [0.22, 1, 0.36, 1] as const;
 
-const ease = [0.16, 1, 0.3, 1] as const;
+// Stickers of the four sections around the flame, like stickers on a notebook cover
+const STICKERS = [
+  { label: "Speaking", icon: Microphone, cls: "left-[2%] top-[24%] -rotate-[8deg]", delay: 0 },
+  { label: "Writing", icon: PencilLine, cls: "right-[0%] top-[14%] rotate-[7deg]", delay: 0.6 },
+  { label: "Reading", icon: BookOpenText, cls: "left-[-4%] bottom-[22%] rotate-[5deg]", delay: 1.2 },
+  { label: "Listening", icon: Headphones, cls: "right-[-2%] bottom-[30%] -rotate-[6deg]", delay: 1.8 },
+];
 
-export function Hero() {
-  const reduce = useReducedMotion();
-  const enter = (delay: number) =>
-    ({ initial: { opacity: 0, y: reduce ? 0 : 28 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, delay, ease } });
+export function Hero({ signedIn }: { signedIn: boolean }) {
+  const calm = useCalm();
+  const enter = (delay: number) => ({
+    initial: { opacity: 0, y: calm ? 0 : 18 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, delay, ease },
+  });
 
+  // Layout and words from Maks's landing: a big two-line promise, two pill buttons and a
+  // stats row on the left, the living flame on the right.
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-40 -top-40 size-[640px] rounded-full opacity-60 blur-3xl"
-        style={{ background: "radial-gradient(circle, color-mix(in oklab, var(--fire-2) 35%, transparent), transparent 65%)" }}
-      />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-10 md:px-8 md:pt-16 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[1.1fr_1fr] lg:pb-24 lg:pt-8">
-        <div>
-          <motion.h1 {...enter(0)} className="display text-[40px] font-extrabold leading-[1.05] sm:text-5xl lg:text-[64px]">
-            Нужный балл IELTS <span className="text-fire-text">с первой попытки</span>
+    <section className="relative">
+      <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 pb-12 pt-8 md:px-8 md:pt-12 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[1.25fr_0.95fr] lg:pb-16 lg:pt-0">
+        <div className="order-2 lg:order-1">
+          <motion.h1 {...enter(0.05)} className="display text-[40px] font-extrabold leading-[1.02] sm:text-6xl xl:text-[76px]">
+            Нужный балл IELTS
+            <span className="block text-fire">с первой попытки</span>
           </motion.h1>
-          <motion.p {...enter(0.1)} className="mt-6 max-w-[34ch] text-lg leading-relaxed text-muted md:text-xl">
-            План на каждый день и тренажёры всех четырёх секций. Отвечаешь, пишешь и сразу видишь свой балл.
+          <motion.p {...enter(0.2)} className="mt-6 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">
+            ИИ-тренажёр для Academic и General Training. Все четыре секции, живой голосовой репетитор Lexi, разбор ошибок и пробные экзамены в одном приложении.
           </motion.p>
-          <motion.div {...enter(0.2)} className="mt-9 flex flex-wrap gap-3">
-            <Link href="/quiz" className="btn btn-fire px-7 py-4 text-base">
-              Начать подготовку <ArrowRight size={18} weight="bold" />
+          <motion.div {...enter(0.32)} className="mt-9 flex flex-wrap gap-3">
+            <Link href={signedIn ? "/app" : "/quiz"} className="btn btn-fire px-7 py-4 text-base uppercase tracking-wide">
+              {signedIn ? "Мой план" : "Начать подготовку"} <ArrowRight size={18} weight="bold" />
             </Link>
-            <Link href="/tools/band" className="btn btn-ghost px-7 py-4 text-base">Посчитать балл</Link>
+            <Link href="/games" className="btn btn-ghost px-7 py-4 text-base uppercase tracking-wide">Посмотреть игры</Link>
           </motion.div>
+          <motion.dl {...enter(0.44)} className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
+            {[["4", "секции экзамена"], ["7", "характеров Lexi"], ["3", "игры на слабые места"]].map(([n, t]) => (
+              <div key={t}>
+                <dt className="sr-only">{t}</dt>
+                <dd className="display text-4xl font-extrabold">{n}</dd>
+                <dd className="text-sm text-muted">{t}</dd>
+              </div>
+            ))}
+          </motion.dl>
         </div>
 
         <motion.div
-          className="relative mx-auto w-full max-w-[520px]"
-          initial={{ opacity: 0, scale: reduce ? 1 : 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.15, ease }}
+          className="relative order-1 mx-auto w-full max-w-[230px] sm:max-w-[320px] lg:order-2 lg:max-w-[420px]"
+          initial={{ opacity: 0, scale: calm ? 1 : 0.85, y: calm ? 0 : 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 90, damping: 14, delay: 0.15 }}
         >
-          <Mascot animated className="bob absolute -left-6 -top-10 z-10 w-28 drop-shadow-[0_24px_30px_rgba(255,90,31,0.35)] sm:-left-14 sm:w-36" />
-          <div className="card relative overflow-hidden p-6 sm:p-8">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-muted">Speaking, Part 2</p>
-                <p className="mt-1 font-semibold">Describe a skill you are proud of</p>
-              </div>
-              <div className="text-right">
-                <p className="display text-5xl font-extrabold leading-none text-fire-text">{formatBand(report.band)}</p>
-                <p className="mt-1 text-xs font-semibold text-muted">оценка ответа</p>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-3">
-              {report.criteria.map((c, i) => (
-                <motion.div
-                  key={c.key}
-                  className="flex items-center justify-between rounded-2xl bg-surface-2 px-4 py-3"
-                  initial={{ opacity: 0, x: reduce ? 0 : 16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 + i * 0.12, ease }}
-                >
-                  <span className="text-[15px] font-medium">{c.title}</span>
-                  <span className="display text-lg font-bold">{formatBand(c.band)}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-6 flex items-center gap-3 border-t border-line pt-5 text-sm text-muted">
-              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-fire text-[#1b1433]">
-                <Microphone size={18} weight="fill" />
-              </span>
-              <span>
-                {report.wpm} слов в минуту, связки: <span className="font-semibold text-ink">{report.linkers.slice(0, 3).join(", ")}</span>
-              </span>
-            </div>
-          </div>
+          <div aria-hidden className="halo pointer-events-none absolute inset-[6%] rounded-full blur-3xl" style={{ background: "radial-gradient(closest-side, rgb(255 122 46 / 0.30), rgb(255 154 10 / 0.08) 60%, transparent)" }} />
+          <FireSpirit />
+          {STICKERS.map((s) => (
+            <motion.a
+              key={s.label}
+              href="#platform"
+              className={`absolute hidden items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-2 text-sm font-bold shadow-[0_14px_30px_-16px_rgb(var(--shadow)/0.55)] sm:inline-flex ${s.cls}`}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={calm ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1, y: [0, -8, 0] }}
+              transition={calm ? { duration: 0.4 } : { opacity: { duration: 0.5, delay: 0.6 + s.delay * 0.3 }, scale: { type: "spring", stiffness: 260, damping: 14, delay: 0.6 + s.delay * 0.3 }, y: { duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: s.delay } }}
+              whileHover={calm ? undefined : { scale: 1.08, rotate: 0 }}
+            >
+              <s.icon size={16} weight="fill" className="text-fire-text" /> {s.label}
+            </motion.a>
+          ))}
         </motion.div>
       </div>
     </section>

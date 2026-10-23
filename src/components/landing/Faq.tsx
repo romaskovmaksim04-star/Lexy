@@ -1,21 +1,22 @@
 "use client";
 
+import { useCalm } from "@/lib/motion-pref";
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Plus } from "@phosphor-icons/react";
 
 const ITEMS = [
   { q: "Подходит для Academic и General Training?", a: "Да. В начале выбираешь формат, и Reading и Writing подстраиваются под него. Listening и Speaking в обоих форматах одинаковые." },
-  { q: "Как Lexy оценивает Writing и Speaking?", a: "Текст и расшифровку речи разбираем по критериям IELTS: объём, связки, разнообразие лексики, длина и сложность предложений, темп речи. Это ориентир для тренировки, а не оценка экзаменатора." },
+  { q: "Как GoLexi оценивает Writing и Speaking?", a: "Текст и расшифровку речи разбираем по критериям IELTS: объём, связки, разнообразие лексики, длина и сложность предложений, темп речи. Это ориентир для тренировки, а не оценка экзаменатора." },
   { q: "Нужен микрофон?", a: "Для Speaking да, подойдёт микрофон телефона или наушников. Всё остальное работает без него." },
   { q: "Можно заниматься с телефона?", a: "Да, сайт сделан в первую очередь под телефон. Открываешь, видишь план на сегодня, занимаешься." },
   { q: "С какого уровня начинать?", a: "Если ты читаешь простые тексты на английском, можно начинать. План строится от твоего целевого балла и даты экзамена." },
-  { q: "Сколько нужно заниматься?", a: "Сколько выберешь в тесте: от 15 минут до двух часов в день. Важнее регулярность, поэтому Lexy считает серию дней." },
+  { q: "Сколько нужно заниматься?", a: "Сколько выберешь в тесте: от 15 минут до двух часов в день. Важнее регулярность, поэтому GoLexi считает серию дней." },
 ];
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
-  const reduce = useReducedMotion();
+  const reduce = useCalm();
   return (
     <section id="faq" className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:px-8 md:py-28 lg:grid-cols-[0.8fr_1.2fr]">
       <h2 className="display text-3xl font-bold leading-[1.1] md:text-5xl lg:sticky lg:top-28 lg:self-start">Частые вопросы</h2>
