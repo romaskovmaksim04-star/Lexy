@@ -69,7 +69,7 @@
     C1: "Продвинутый: нюансы, стиль, академическая речь, IELTS 7+."
   };
   function levelDesc(level, lang) {
-    var map = w.LEXY_A1_I18N;
+    var map = i18nFor(level) || w.LEXY_A1_I18N;
     if (map && map.levelDesc && map.levelDesc[lang] && map.levelDesc[lang][level]) return map.levelDesc[lang][level];
     return LEVEL_DESC[level] || "";
   }
@@ -77,7 +77,7 @@
     var ls = lessons(level);
     if (!ls) return null;
     var idx = (day - 1) % ls.length, L = ls[idx];
-    var e = L.th.e, ex = L.th.ex, t = L.t, map = w.LEXY_A1_I18N;
+    var e = L.th.e, ex = L.th.ex, t = L.t, map = i18nFor(level);
     if (map) {
       if (map[lang] && map[lang][idx]) e = map[lang][idx];
       if (map.titles && map.titles[lang] && map.titles[lang][idx]) t = map.titles[lang][idx];
@@ -85,7 +85,7 @@
     return { t: t, e: e, ex: ex };
   }
   function lessonTitle(level, day, lang) {
-    var idx = day - 1, map = w.LEXY_A1_I18N;
+    var idx = day - 1, map = i18nFor(level);
     if (map && map.titles && map.titles[lang] && map.titles[lang][idx]) return map.titles[lang][idx];
     var ls = lessons(level);
     if (ls) return ls[idx % ls.length].t;
@@ -297,6 +297,7 @@
 
   /* ---------- УРОКИ (полный курс уровня) ---------- */
   function lessons(level) { return (w.LEXY_LESSONS && w.LEXY_LESSONS[level]) || null; }
+  function i18nFor(level) { return w["LEXY_" + level + "_I18N"] || null; }
   function lessonCount(level) { var ls = lessons(level); return ls ? ls.length : DAYS; }
   function isTestDay(day) { return false; }
 
