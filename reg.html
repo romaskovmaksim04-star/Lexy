@@ -188,6 +188,10 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 .field input{width:100%;font:500 15px var(--body);padding:18px 16px;background:#fff;border:1.5px solid var(--line);border-radius:16px;outline:none;transition:border-color .2s,box-shadow .2s}
 .field input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
 .field input::placeholder{color:#B5AEC9}
+.otp{display:flex;gap:8px;justify-content:center;margin:6px 0 12px}
+.otp input{width:48px;height:58px;text-align:center;font:800 24px var(--display);border:1.5px solid var(--line);border-radius:14px;background:#fff;outline:none;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.otp input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+@media(max-width:520px){.otp{gap:6px}.otp input{width:42px;height:52px;font-size:20px}}
 .bonus{display:flex;align-items:center;gap:12px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--ink);margin-bottom:16px}
 .bonus span:first-child{font-size:20px}
 .form-msg{min-height:18px;font-size:13px;font-weight:600;line-height:1.4;color:#E5443E;margin:0 0 10px}
@@ -479,7 +483,14 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     </div>
     <div id="finStepCode" hidden>
       <p class="sub" id="finCodeSent" style="margin-bottom:10px" data-i18n="code_sent">Код отправлен на email</p>
-      <div class="field"><input type="text" id="finCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Код из письма" data-i18n-ph="code_ph"></div>
+      <div class="otp" id="finOtp">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+      </div>
       <p class="form-msg" id="finCodeMsg" role="alert"></p>
       <button class="btn" id="finVerify" data-i18n="fin_verify">Создать аккаунт</button>
       <button class="btn" id="finResend" style="background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;margin-top:10px" data-i18n="resend">Отправить код ещё раз</button>
@@ -501,7 +512,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 </main>
 
 <script src="lexy-config.js?v=7"></script>
-<script src="lexy-auth.js?v=7"></script>
+<script src="lexy-auth.js?v=8"></script>
 <script>
 (function(){
   var TRANSLATIONS = {
@@ -1112,8 +1123,28 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   var finMsg = document.getElementById('finMsg');
   var finStepEmail = document.getElementById('finStepEmail');
   var finStepCode = document.getElementById('finStepCode');
-  var finCode = document.getElementById('finCode');
+  var finOtp = document.getElementById('finOtp');
+  var finOtpBoxes = finOtp ? finOtp.querySelectorAll('input') : [];
   var finCodeMsg = document.getElementById('finCodeMsg');
+  function readFinOtp(){ var s = ''; finOtpBoxes.forEach(function(b){ s += (b.value || '').replace(/\D/g, ''); }); return s; }
+  function clearFinOtp(){ finOtpBoxes.forEach(function(b){ b.value = ''; }); }
+  function finOtpFocus(i){ if(finOtpBoxes[i]) finOtpBoxes[i].focus(); }
+  finOtpBoxes.forEach(function(b, i){
+    b.addEventListener('input', function(){
+      b.value = b.value.replace(/\D/g, '').slice(0, 1);
+      finCodeMsg.textContent = '';
+      if(b.value && i < finOtpBoxes.length - 1) finOtpFocus(i + 1);
+      if(readFinOtp().length === finOtpBoxes.length) finVerify.click();
+    });
+    b.addEventListener('keydown', function(e){
+      if(e.key === 'Backspace' && !b.value && i > 0) finOtpFocus(i - 1);
+      if(e.key === 'Enter') finVerify.click();
+    });
+    b.addEventListener('paste', function(e){
+      var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      if(t){ e.preventDefault(); finOtpBoxes.forEach(function(x, j){ x.value = t[j] || ''; }); if(t.length >= finOtpBoxes.length) finVerify.click(); else finOtpFocus(Math.min(t.length, finOtpBoxes.length - 1)); }
+    });
+  });
   var finCodeSent = document.getElementById('finCodeSent');
   var finVerify = document.getElementById('finVerify');
   var finResend = document.getElementById('finResend');
@@ -1159,7 +1190,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       finish.disabled = false; finish.textContent = label;
       finStepEmail.hidden = true; finStepCode.hidden = false;
       finCodeSent.textContent = (t.code_sent || 'Код отправлен на email') + ': ' + email.value.trim() + '. ' + (t.code_hint || 'Нажми ссылку в письме или введи код ниже.');
-      setTimeout(function(){ finCode.focus(); }, 50);
+      setTimeout(function(){ finOtpFocus(0); }, 50);
       startResend();
     }).catch(function(err){
       finish.disabled = false; finish.textContent = label;
@@ -1169,8 +1200,8 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 
   finVerify.addEventListener('click', function(){
     var t = TRANSLATIONS[currentLang];
-    var code = finCode.value.trim();
-    if(!code){ finCodeMsg.textContent = (t.err_code || 'Неверный код.'); return; }
+    var code = readFinOtp();
+    if(code.length < 4){ finCodeMsg.textContent = (t.err_code || 'Неверный код.'); return; }
     finCodeMsg.textContent = '';
     finVerify.disabled = true;
     var label = t.fin_verify || 'Создать аккаунт';
@@ -1190,9 +1221,6 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       finCodeMsg.textContent = (t['err_' + (err && err.code ? err.code : 'code')]) || (t.err_code) || t.err_generic;
     });
   });
-  finCode.addEventListener('keydown', function(e){ if(e.key === 'Enter') finVerify.click(); });
-  finCode.addEventListener('input', function(){ finCodeMsg.textContent = ''; });
-
   finResend.addEventListener('click', function(){
     if(!window.LexyAuth) return;
     var t = TRANSLATIONS[currentLang];
@@ -1206,7 +1234,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   document.getElementById('finChange').addEventListener('click', function(e){
     e.preventDefault();
     finStepEmail.hidden = false; finStepCode.hidden = true;
-    finCode.value = ''; finCodeMsg.textContent = '';
+    clearFinOtp(); finCodeMsg.textContent = '';
     refreshFinish();
   });
 

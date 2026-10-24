@@ -134,7 +134,8 @@
     if (message.indexOf("already registered") > -1 || message.indexOf("already exists") > -1) return { code: "exists" };
     if (message.indexOf("password") > -1) return { code: "pass" };
     if (message.indexOf("email") > -1 && message.indexOf("valid") > -1) return { code: "email" };
-    if (message.indexOf("rate limit") > -1 || message.indexOf("too many") > -1) return { code: "rate" };
+    if (message.indexOf("rate limit") > -1 || message.indexOf("too many") > -1 || message.indexOf("security purposes") > -1 || message.indexOf("only request") > -1) return { code: "rate" };
+    if (message.indexOf("email_address_invalid") > -1 || (message.indexOf("email") > -1 && message.indexOf("invalid") > -1)) return { code: "email" };
     if (message.indexOf("token") > -1 || message.indexOf("otp") > -1 || message.indexOf("expired") > -1 || message.indexOf("invalid") > -1) return { code: "code" };
     if (message.indexOf("provider is not enabled") > -1) return { code: "google" };
     return { code: "generic" };
@@ -294,7 +295,7 @@
     email = norm(email);
     token = String(token || "").replace(/\s+/g, "");
     if (!validEmail(email)) return Promise.reject({ code: "email" });
-    if (!/^\d{6,8}$/.test(token)) return Promise.reject({ code: "code" });
+    if (!/^\d{4,8}$/.test(token)) return Promise.reject({ code: "code" });
     if (!client) return Promise.reject({ code: "generic" });
     return client.auth.verifyOtp({ email: email, token: token, type: "email" }).then(function (res) {
       if (res.error) throw res.error;
@@ -352,7 +353,10 @@
     var target = redirect || (w.location.pathname.indexOf("reg.html") > -1 ? "reg.html" : "login.html");
     return client.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: (cfg.siteUrl || w.location.origin + "/") + target }
+      options: {
+        redirectTo: (cfg.siteUrl || w.location.origin + "/") + target,
+        queryParams: { prompt: "select_account" }
+      }
     }).then(function (res) {
       if (res.error) throw res.error;
       return true;

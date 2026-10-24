@@ -61,6 +61,10 @@ html.await .auth-box{visibility:hidden}
 .field input{width:100%;font:500 15px var(--body);padding:16px;background:#fff;border:1.5px solid var(--line);border-radius:14px;outline:none;transition:border-color .2s,box-shadow .2s;color:var(--ink)}
 .field input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
 .field input::placeholder{color:#B5AEC9}
+.otp{display:flex;gap:8px;justify-content:center;margin:6px 0 12px}
+.otp input{width:48px;height:58px;text-align:center;font:800 24px var(--display);border:1.5px solid var(--line);border-radius:14px;background:#fff;outline:none;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.otp input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+@media(max-width:520px){.otp{gap:6px}.otp input{width:42px;height:52px;font-size:20px}}
 
 .btn{display:block;width:100%;padding:16px;border-radius:14px;font:700 15px var(--body);letter-spacing:.02em;text-align:center;transition:transform .15s,box-shadow .2s,opacity .2s;text-decoration:none}
 .btn:disabled{opacity:.55;cursor:wait;transform:none;box-shadow:none}
@@ -158,8 +162,13 @@ body{padding-bottom:70px}
 
       <div id="stepCode" hidden>
         <p class="desc" id="codeSent" style="margin-bottom:12px" data-i18n="login.code_sent">Код отправлен на email</p>
-        <div class="field">
-          <input type="text" id="codeInput" placeholder="Код из письма" inputmode="numeric" autocomplete="one-time-code" maxlength="8" data-i18n-ph="login.code_ph">
+        <div class="otp" id="otp">
+          <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1">
+          <input type="text" inputmode="numeric" maxlength="1">
         </div>
         <p class="form-msg" id="codeMsg" role="alert"></p>
         <button class="btn btn-fire" id="btnVerify" data-i18n="login.verify">Войти</button>
@@ -186,7 +195,7 @@ body{padding-bottom:70px}
 </div>
 
 <script src="lexy-config.js?v=7"></script>
-<script src="lexy-auth.js?v=7"></script>
+<script src="lexy-auth.js?v=8"></script>
 <script>
 var TRANSLATIONS = {
   ru: {
@@ -369,8 +378,28 @@ var loginMsg = document.getElementById('loginMsg');
 var btnSend = document.getElementById('btnSend');
 var btnVerify = document.getElementById('btnVerify');
 var btnResend = document.getElementById('btnResend');
-var codeInput = document.getElementById('codeInput');
+var otp = document.getElementById('otp');
+var otpBoxes = otp ? otp.querySelectorAll('input') : [];
 var codeMsg = document.getElementById('codeMsg');
+function readOtp(){ var s = ''; otpBoxes.forEach(function(b){ s += (b.value || '').replace(/\D/g, ''); }); return s; }
+function clearOtp(){ otpBoxes.forEach(function(b){ b.value = ''; }); }
+function otpFocus(i){ if(otpBoxes[i]) otpBoxes[i].focus(); }
+otpBoxes.forEach(function(b, i){
+  b.addEventListener('input', function(){
+    b.value = b.value.replace(/\D/g, '').slice(0, 1);
+    codeMsg.textContent = '';
+    if(b.value && i < otpBoxes.length - 1) otpFocus(i + 1);
+    if(readOtp().length === otpBoxes.length) doVerify();
+  });
+  b.addEventListener('keydown', function(e){
+    if(e.key === 'Backspace' && !b.value && i > 0) otpFocus(i - 1);
+    if(e.key === 'Enter') doVerify();
+  });
+  b.addEventListener('paste', function(e){
+    var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+    if(t){ e.preventDefault(); otpBoxes.forEach(function(x, j){ x.value = t[j] || ''; }); if(t.length >= otpBoxes.length) doVerify(); else otpFocus(Math.min(t.length, otpBoxes.length - 1)); }
+  });
+});
 var codeSent = document.getElementById('codeSent');
 var stepEmail = document.getElementById('stepEmail');
 var stepCode = document.getElementById('stepCode');
@@ -400,7 +429,7 @@ function showSigned(u){
 function fail(code, el){
   var t = TRANSLATIONS[currentLang];
   (el || loginMsg).textContent = t['login.err_' + code] || t.login.err_generic;
-  (el ? codeInput : emailInput).focus();
+  if (el) otpFocus(0); else emailInput.focus();
 }
 function startResend(){
   var t = TRANSLATIONS[currentLang];
@@ -426,7 +455,7 @@ function doSend(){
     btnSend.disabled = false; btnSend.textContent = label;
     stepEmail.hidden = true; stepCode.hidden = false;
     codeSent.textContent = (TRANSLATIONS[currentLang].login.code_sent || 'Код отправлен на email') + ': ' + email + '. ' + 'Нажми ссылку в письме или введи код ниже.';
-    setTimeout(function(){ codeInput.focus(); }, 50);
+    setTimeout(function(){ otpFocus(0); }, 50);
     startResend();
   }).catch(function(err){
     btnSend.disabled = false; btnSend.textContent = label;
@@ -440,8 +469,8 @@ emailInput.addEventListener('input', function(){ loginMsg.textContent = ''; });
 
 function doVerify(){
   var email = emailInput.value.trim();
-  var code = codeInput.value.trim();
-  if(!code){ fail('code', codeMsg); return; }
+  var code = readOtp();
+  if(code.length < 4){ fail('code', codeMsg); return; }
   codeMsg.textContent = '';
   btnVerify.disabled = true;
   var label = btnVerify.textContent; btnVerify.textContent = '…';
@@ -454,8 +483,6 @@ function doVerify(){
   });
 }
 btnVerify.addEventListener('click', doVerify);
-codeInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') doVerify(); });
-codeInput.addEventListener('input', function(){ codeMsg.textContent = ''; });
 
 btnResend.addEventListener('click', function(){
   var email = emailInput.value.trim();
@@ -475,7 +502,7 @@ document.getElementById('signedLogout').addEventListener('click', function(){
 });
 document.getElementById('signedSwitch').addEventListener('click', function(){
   if(window.LexyAuth) LexyAuth.logout();
-  emailInput.value = ''; codeInput.value = '';
+  emailInput.value = ''; clearOtp();
   showLoginForm();
 });
 
@@ -524,7 +551,7 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
   } else if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){
     LexyAuth.ready.then(function(){
       var cu = LexyAuth.user();
-      if(cu){ window.location.replace('dashboard.html'); return; }
+      if(cu){ if(hadAuthHash){ window.location.replace('dashboard.html'); return; } handleUser(cu); return; }
       handleUser(null);
     });
   } else {
