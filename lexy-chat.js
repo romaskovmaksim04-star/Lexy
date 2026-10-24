@@ -145,6 +145,30 @@
 
   var ui = { busy: false, typing: false };
 
+  /* учёт времени общения с чатом (секунды, копим и раз в 30с сохраняем) */
+  var chatT = { iv: null, last: 0, pend: 0 };
+  function trackStart() {
+    if (chatT.iv) return;
+    chatT.last = Date.now();
+    chatT.iv = setInterval(tick, 8000);
+    w.addEventListener("pagehide", flushChat);
+  }
+  function tick() {
+    var now = Date.now(), d = (now - chatT.last) / 1000; chatT.last = now;
+    if (document.visibilityState !== "visible" || d > 30) return;
+    var s = document.getElementById("lxaStream");
+    if (!(s && s.offsetParent !== null)) return;
+    chatT.pend += d;
+    if (chatT.pend >= 30) flushChat();
+  }
+  function flushChat() {
+    if (chatT.pend <= 0) return;
+    var u = w.Lexy && w.Lexy.user; if (!u) return;
+    var sec = Math.round((u.chatSec || 0) + chatT.pend);
+    chatT.pend = 0;
+    try { w.Lexy.save({ chatSec: sec }); } catch (e) {}
+  }
+
   function render(el, opts) {
     opts = opts || {};
     var level = opts.level || "B1";
@@ -163,6 +187,7 @@
       draw(el, st, level, exam);
     });
     draw(el, st, level, exam);
+    trackStart();
   }
 
   function renderLock(el, exam) {

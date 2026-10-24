@@ -29,7 +29,7 @@
 <script src="lexy-vocab-data2.js?v=1"></script>
 <script src="lexy-vocab.js?v=5"></script>
 <script src="lexy-answers.js?v=2"></script>
-<script src="lexy-chat.js?v=3"></script>
+<script src="lexy-chat.js?v=4"></script>
 </head>
 <body>
 <script>Lexy.guard("english");</script>
@@ -428,14 +428,98 @@
   }
 
   /* ---------- ПРОГРЕСС ---------- */
+  var PG = {
+    ru: { level: "Текущий уровень", lessons: "Уроки завершены", words: "Слов выучено", chat: "Время с Lexy AI", withLexy: "Время с Lexy", days: "дней подряд", weekOf: "из 7 дней на этой неделе", today: "Сегодня", weekT: "Неделя", allT: "Всего", min: "мин", inCards: "в карточках" },
+    en: { level: "Current level", lessons: "Lessons completed", words: "Words learned", chat: "Time with Lexy AI", withLexy: "Time with Lexy", days: "days in a row", weekOf: "of 7 days this week", today: "Today", weekT: "Week", allT: "All time", min: "min", inCards: "in cards" },
+    kz: { level: "Ағымдағы деңгей", lessons: "Аяқталған сабақтар", words: "Үйренілген сөздер", chat: "Lexy AI-мен уақыт", withLexy: "Lexy-мен уақыт", days: "күн қатарынан", weekOf: "осы аптадағы 7 күннен", today: "Бүгін", weekT: "Апта", allT: "Барлығы", min: "мин", inCards: "карточкаларда" },
+    uz: { level: "Joriy daraja", lessons: "Tugatilgan darslar", words: "O'rganilgan so'zlar", chat: "Lexy AI bilan vaqt", withLexy: "Lexy bilan vaqt", days: "kun ketma-ket", weekOf: "bu haftadagi 7 kundan", today: "Bugun", weekT: "Hafta", allT: "Hammasi", min: "daq", inCards: "kartochkalarda" }
+  };
+  function PGt(k) { return (PG[lang()] || PG.ru)[k] || PG.ru[k]; }
+  function progressCss() {
+    if (document.getElementById("pg-css")) return;
+    var s = document.createElement("style"); s.id = "pg-css";
+    s.textContent = `
+.pgh{position:relative;overflow:hidden;border-radius:26px;padding:24px;margin-bottom:16px;background:linear-gradient(135deg,#3A102A 0%,#5A1E1E 45%,#7A2B0A 100%);color:#fff;box-shadow:0 30px 60px -40px rgba(58,16,42,.95);display:flex;align-items:center;gap:18px}
+.pgh::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 20% 20%,rgba(255,154,10,.42),transparent 42%),radial-gradient(circle at 85% 80%,rgba(255,60,20,.42),transparent 46%);animation:pg-drift 14s ease-in-out infinite alternate;pointer-events:none}
+@keyframes pg-drift{from{transform:translate3d(-6%,-4%,0) scale(1)}to{transform:translate3d(6%,4%,0) scale(1.14)}}
+.pgh>*{position:relative;z-index:1}
+.pghfl{width:86px;height:86px;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.1);border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);animation:pg-float 3.5s ease-in-out infinite}
+@keyframes pg-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pgh small{font:700 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.pgh h2{font:800 36px/1 var(--display);letter-spacing:-.03em;margin:6px 0 2px;display:flex;align-items:center;gap:8px}
+.pgh h2 svg{width:26px;height:26px}
+.pgh .pgdays{color:rgba(255,255,255,.82);font-size:13px}
+.pgdots{display:flex;gap:6px;margin-top:14px}
+.pgdots div{width:30px;height:36px;border-radius:10px;background:rgba(255,255,255,.13);display:grid;place-items:center;font:600 11px var(--body);opacity:0;transform:translateY(8px);animation:pg-pop .45s cubic-bezier(.2,.8,.3,1) forwards}
+.pgdots div.on{background:linear-gradient(180deg,#FF9A0A,#FF4E1A);color:#fff;box-shadow:0 10px 20px -10px rgba(255,78,26,.9)}
+.pgdots div.td{outline:2px solid rgba(255,255,255,.6);outline-offset:1px}
+@keyframes pg-pop{to{opacity:1;transform:none}}
+.pgwk{display:block;margin-top:10px;color:rgba(255,255,255,.65);font-size:12px}
+.pggrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:560px){.pggrid{grid-template-columns:1fr}}
+.pgc{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:18px;position:relative;overflow:hidden;animation:pg-in .5s cubic-bezier(.2,.8,.3,1) both}
+@keyframes pg-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pgc::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--ac,var(--fire))}
+.pgc .lb{font:700 11px var(--display);letter-spacing:.06em;color:var(--soft);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.pgc .v{font:800 30px/1.1 var(--display);letter-spacing:-.03em;margin-top:8px;color:var(--ink)}
+.pgc .v em{font:600 13px var(--body);font-style:normal;color:var(--soft);letter-spacing:0}
+.pgc .bar{height:8px;border-radius:999px;background:var(--mist);overflow:hidden;margin-top:14px}
+.pgc .bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,#FF4E1A);transition:width 1s cubic-bezier(.3,1,.4,1)}
+.pgscales{display:flex;gap:6px;margin-top:14px}
+.pgs{flex:1;height:8px;border-radius:999px;background:var(--mist);transition:background .4s}
+.pgs.on{background:linear-gradient(90deg,#12A15C,#39D98A);box-shadow:0 6px 14px -8px rgba(18,161,92,.8)}
+.pgslabels{display:flex;gap:6px;margin-top:7px}
+.pgslabels span{flex:1;text-align:center;font:700 10px var(--display);color:var(--soft)}
+.pgc.pgtb{grid-column:1 / -1}
+.pgtm{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+.pgtm div{flex:1;text-align:center;background:var(--mist);border-radius:14px;padding:12px 6px}
+.pgtm b{font:800 22px var(--display);display:block;color:var(--ink)}
+.pgtm small{color:var(--soft);font-size:11.5px}
+`;
+    document.head.appendChild(s);
+  }
+  function countUp(el, to, dur) {
+    if (!el) return;
+    to = Number(to) || 0; dur = dur || 900;
+    var t0 = null;
+    function step(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function knownCards() {
+    var v = (Lexy.user.vocab && Lexy.user.vocab.st) || {}, n = 0;
+    Object.keys(v).forEach(function (k) { var x = v[k]; if (x === 2 || (x && x.b >= 5)) n++; });
+    return n;
+  }
   function renderProgress() {
-    var u = Lexy.user, n = Lexy.streakN(), m = Lexy.mins(), c = course();
+    progressCss();
+    var c = course(), n = Lexy.streakN(), m = Lexy.mins();
     var DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-    var dots = Lexy.weekDots().map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + '"><i>' + (d.on ? ic("fire") : "") + "</i>" + DN[i] + "</div>"; }).join("");
-    var doneCount = Object.keys(c.done).length;
-    var head = '<h1 class="t" style="margin-bottom:20px">' + T("progress") + '</h1><div class="stk"><div class="fc">' + fl(46) + "</div><small>" + T("streak") + "</small><h2>" + ic("fire") + " " + n + '</h2><div class="wd">' + dots + "</div></div>";
-    if (!paid()) { $("#s-progress").innerHTML = head + '<div class="card emp"><div class="eb">' + fl(30) + '</div><h3 style="text-align:center">' + T("statPrem") + "</h3><p>" + T("statPremBody") + '</p><a class="btn p" href="pricing.html" style="margin-top:14px">Premium</a></div>'; return; }
-    $("#s-progress").innerHTML = head + '<div class="card ls"><div class="r"><b>' + T("level") + '</b><span class="n">' + c.level + '</span></div><div class="r"><b>' + T("lessonsDone") + '</b><span class="n">' + doneCount + " / " + C.totalDays(c.level) + '</span></div><div class="r"><b>' + T("time") + '</b><span class="n">' + m.day + " / " + m.all + " " + T("minutes") + "</span></div></div>";
+    var dots = Lexy.weekDots(), weekOn = dots.filter(function (d) { return d.on; }).length;
+    var ORD = ["A1", "A2", "B1", "B2", "C1"], idx = Math.max(0, ORD.indexOf(c.level));
+    var total = C.totalDays(c.level), done = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) done++;
+    var known = knownCards(), cardsTotal = (window.LexyVocab && LexyVocab.WORDS && LexyVocab.WORDS[c.level]) ? LexyVocab.WORDS[c.level].length : (known || 1);
+    var chatMin = Math.round((Lexy.user.chatSec || 0) / 60);
+    var hero = '<div class="pgh"><div class="pghfl">' + fl(60) + '</div><div><small>' + T("streak") + '</small><h2>' + ic("fire") + '<b id="pgStreak">0</b></h2><span class="pgdays">' + PGt("days") + '</span><div class="pgdots">' +
+      dots.map(function (d, k) { return '<div class="' + (d.on ? "on" : "") + (d.today ? " td" : "") + '" style="animation-delay:' + (k * 0.06).toFixed(2) + 's">' + DN[k] + '</div>'; }).join("") +
+      '</div><span class="pgwk">' + weekOn + " " + PGt("weekOf") + '</span></div></div>';
+    var lvlCard = '<div class="pgc" style="--ac:#7A40FF"><div class="lb">' + PGt("level") + '</div><div class="v">' + c.level + ' <em>' + lvName(c.level, 0) + '</em></div><div class="pgscales">' +
+      ORD.map(function (l, k) { return '<div class="pgs' + (k <= idx ? " on" : "") + '"></div>'; }).join("") + '</div><div class="pgslabels">' + ORD.map(function (l) { return "<span>" + l + "</span>"; }).join("") + '</div></div>';
+    var lesCard = '<div class="pgc" style="--ac:#1E8FE8"><div class="lb">' + PGt("lessons") + '</div><div class="v"><b id="pgLessons">0</b> <em>/ ' + total + '</em></div><div class="bar"><i id="pgLessonsBar"></i></div></div>';
+    var wCard = '<div class="pgc" style="--ac:#12A15C"><div class="lb">' + PGt("words") + '</div><div class="v"><b id="pgWords">0</b> <em>' + PGt("inCards") + '</em></div><div class="bar"><i id="pgWordsBar"></i></div></div>';
+    var chatCard = '<div class="pgc" style="--ac:#F7620B"><div class="lb">' + PGt("chat") + '</div><div class="v"><b id="pgChat">0</b> <em>' + PGt("min") + '</em></div><div class="bar"><i id="pgChatBar"></i></div></div>';
+    var timeCard = '<div class="pgc pgtb" style="--ac:#C02FB0"><div class="lb">' + fl(16) + " " + PGt("withLexy") + '</div><div class="pgtm"><div><b id="pgAll">0</b><small>' + PGt("allT") + '</small></div><div><b>' + m.wk + '</b><small>' + PGt("weekT") + '</small></div><div><b>' + m.day + '</b><small>' + PGt("today") + '</small></div></div></div>';
+    $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">' + T("progress") + "</h1>" + hero + '<div class="pggrid">' + lvlCard + lesCard + wCard + chatCard + timeCard + "</div>";
+    setTimeout(function () {
+      countUp($("#pgStreak"), n, 1000); countUp($("#pgLessons"), done, 900); countUp($("#pgWords"), known, 900); countUp($("#pgChat"), chatMin, 900); countUp($("#pgAll"), m.all, 1200);
+      var lb = $("#pgLessonsBar"); if (lb) lb.style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+      var wb = $("#pgWordsBar"); if (wb) wb.style.width = (cardsTotal ? Math.min(100, Math.round(known / cardsTotal * 100)) : 0) + "%";
+      var cb = $("#pgChatBar"); if (cb) cb.style.width = Math.min(100, Math.round(chatMin / 120 * 100)) + "%";
+    }, 60);
   }
 
   /* ---------- ЗАПУСК ---------- */
