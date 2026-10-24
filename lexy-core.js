@@ -332,11 +332,16 @@ A.demoPro = function () {
   toast(U.premium ? "Premium включён (демо)" : "Premium выключен");
 };
 A.logout = function () {
-  if (w.LexyAuth) w.LexyAuth.logout();
-  localStorage.removeItem(SES);
-  localStorage.removeItem("user_logged_in");
-  localStorage.removeItem("user_email");
-  location.href = CFG.home;
+  try {
+    localStorage.removeItem(SES);
+    localStorage.removeItem("user_logged_in");
+    localStorage.removeItem("user_email");
+  } catch (e) {}
+  var go = function () { location.href = CFG.home; };
+  if (w.LexyAuth) {
+    try { Promise.resolve(w.LexyAuth.logout()).then(go, go); return; } catch (e) {}
+  }
+  go();
 };
 A.del = function () {
   var m = M();

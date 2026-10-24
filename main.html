@@ -1124,12 +1124,18 @@ document.querySelectorAll('[data-auth-login]').forEach(function(a){
   a.addEventListener('click', function(e){
     if(a.getAttribute('data-auth') === 'in'){
       e.preventDefault();
-      try{ if(window.LexyAuth) LexyAuth.logout(); }catch(err){}
-      location.href = 'main.html';
+      var go = function(){ location.href = 'main.html'; };
+      try{
+        if(window.LexyAuth){ Promise.resolve(LexyAuth.logout()).then(go, go); return; }
+      }catch(err){}
+      go();
     }
   });
 });
-addEventListener('storage', function(e){ if(e.key === 'lexy_session') applyAuth(); });
+addEventListener('storage', function(e){ if(e.key === 'lexy_session' || e.key === 'lexy_db_v1') applyAuth(); });
+addEventListener('pageshow', function(){ applyAuth(); });
+addEventListener('visibilitychange', function(){ if(!document.hidden && window.LexyAuth) applyAuth(); });
+addEventListener('focus', function(){ if(window.LexyAuth) applyAuth(); });
 if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){ LexyAuth.ready.then(function(){ applyAuth(); }); }
 window.addEventListener('lexy:auth', function(){ applyAuth(); });
 
