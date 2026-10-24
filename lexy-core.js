@@ -369,7 +369,26 @@ function pfCss() {
 .pflang button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pfsel{display:none;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);font:700 13px var(--display);background:#fff;color:var(--ink);max-width:150px}
 .pfok{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#12A15C,#1FBF7A);color:#fff;box-shadow:0 8px 16px -8px rgba(18,161,92,.9)}
-@media(max-width:560px){.pflang{display:none}.pfsel{display:inline-block}}
+.pfrow-wrap{flex-wrap:wrap}
+.pfpick{position:relative;min-width:186px}
+.pfpick-btn{display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--mist);border:1.5px solid var(--line);border-radius:14px;font:600 14px var(--body);color:var(--ink);cursor:pointer;transition:.15s;width:100%}
+.pfpick-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.pfpick-btn .flag{font-size:18px}
+.pfpick-btn .name{flex:1;text-align:left}
+.pfpick-btn .code{color:var(--soft);font-size:12px}
+.pfpick-btn .cv{display:grid;place-items:center;color:var(--soft);transition:transform .25s}
+.pfpick-btn .cv svg{width:14px;height:14px}
+.pfpick.open .pfpick-btn .cv{transform:rotate(180deg)}
+.pfpick-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 46px -26px rgba(27,20,51,.55);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:.2s;z-index:20}
+.pfpick.open .pfpick-menu{opacity:1;transform:none;pointer-events:auto}
+.pfpick-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;color:var(--ink);cursor:pointer;transition:.15s}
+.pfpick-menu button:hover{background:#FFF3EC}
+.pfpick-menu button.on{background:#FFF3EC;color:var(--fire)}
+.pfpick-menu button.on::after{content:"✓";margin-left:auto;font-weight:800;color:var(--fire)}
+.pfpick-menu button .flag{font-size:18px}
+.pfpick-menu button .code{color:var(--soft);font-size:12px;margin-left:auto}
+.pfpick-menu button.on .code{display:none}
+@media(max-width:560px){.pfrow-wrap .pfpick{min-width:0;width:100%;margin-top:8px}.pfrow .tx{min-width:0}.pfrow .tx b,.pfrow .tx small{overflow-wrap:anywhere}}
 .pfpaths{display:grid;gap:10px;padding:16px 18px}
 @media(min-width:620px){.pfpaths{grid-template-columns:1fr 1fr}}
 .pfp{display:flex;align-items:center;gap:13px;padding:15px;border-radius:17px;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:.16s;text-align:left;width:100%}
@@ -426,12 +445,16 @@ function renderProfile() {
 
   var prof = sec("user", t.profile) + '<div class="pfcard">' +
     rowA("user", t.name, esc(U.name || t.none), '<span class="go">' + ic("pencil") + "</span>", "name") +
-    rowA("mail", t.email, esc(U.email), '<span class="nt">' + t.emailNote + "</span>") +
+    rowA("mail", esc(U.email), t.emailNote) +
     rowA("send", t.news, t.newsNote, '<label class="pfsw"><input type="checkbox" data-act="news"' + (U.news ? " checked" : "") + "><i></i></label>") +
     "</div>";
 
+  var LANGS = [["ru", "🇷🇺", "Русский", "RU"], ["en", "🇬🇧", "English", "EN"], ["kz", "🇰🇿", "Қазақша", "KZ"], ["uz", "🇺🇿", "Oʻzbekcha", "UZ"]];
+  var curL = LANGS.filter(function (x) { return x[0] === U.lang; })[0] || LANGS[0];
+  var langPick = '<div class="pfpick" id="pfLangPick"><button class="pfpick-btn" id="pfLangBtn" aria-haspopup="listbox"><span class="flag">' + curL[1] + '</span><span class="name">' + curL[2] + '</span><span class="code">' + curL[3] + '</span><span class="cv">' + ic("down") + '</span></button><div class="pfpick-menu" role="listbox" id="pfLangMenu">' +
+    LANGS.map(function (x) { return '<button data-l="' + x[0] + '"' + (U.lang === x[0] ? ' class="on"' : "") + '><span class="flag">' + x[1] + '</span><span class="name">' + x[2] + '</span><span class="code">' + x[3] + "</span></button>"; }).join("") + "</div></div>";
   var setg = sec("globe", t.settings) + '<div class="pfcard">' +
-    rowA("globe", t.language, "", '<div class="pflang">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + '</div><select class="pfsel" id="pfLangSel">' + [["en", "English"], ["ru", "Русский"], ["kz", "Қазақша"], ["uz", "Oʻzbekcha"]].map(function (x) { return '<option value="' + x[0] + '"' + (U.lang === x[0] ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select>") +
+    '<div class="pfrow pfrow-wrap" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("globe") + '</span><div class="tx"><b>' + t.language + "</b></div>" + langPick + "</div>" +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
       '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
@@ -607,7 +630,13 @@ function init(p, o) {
     if (a && A[a.dataset.act]) A[a.dataset.act](a, e);
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !MLOCK) closeM(); });
-  document.addEventListener("change", function (e) { if (e.target && e.target.id === "pfLangSel") A.lang({ dataset: { l: e.target.value } }); });
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("#pfLangBtn")) { var pk = document.getElementById("pfLangPick"); if (pk) pk.classList.toggle("open"); return; }
+    var it = e.target.closest("#pfLangMenu [data-l]");
+    if (it) { A.lang({ dataset: { l: it.dataset.l } }); return; }
+    var open = document.getElementById("pfLangPick");
+    if (open && open.classList.contains("open") && !e.target.closest("#pfLangPick")) open.classList.remove("open");
+  });
   w.addEventListener("hashchange", function () { show((location.hash || "").slice(1)); });
   w.addEventListener("storage", function (e) {   // профиль сменили в другой вкладке/файле
     if (e.key !== KEY) return;
