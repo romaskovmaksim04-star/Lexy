@@ -32,6 +32,107 @@
   function flame(h) { try { return w.Lexy.fl(h); } catch (e) { return ""; } }
   function toast(t) { try { w.Lexy.toast(t); } catch (e) {} }
 
+  /* ---------- локализация (RU/EN/KZ/UZ) ---------- */
+  var TX = {
+    ru: {
+      heroExam: "Практика разговора и IELTS Writing", heroGen: "Практика разговора и письма", lvl: "уровень",
+      bot: "🤖 ИИ-собеседник", bExam: "IELTS-проверка", bGen: "Общая проверка",
+      tabChat: "💬 Чат", tabWrite: "✍️ Письмо",
+      lockBody: "Живой чат-практика английского и проверка письма с ИИ — на тарифах Pro и Pro+. Проверки письма: 2/день на Pro и 6/день на Pro+.",
+      getPrem: "Получить Premium", online: "онлайн", typing: "печатает…",
+      phInput: "Напиши по-английски…", ariaSend: "Отправить", hintEnter: "Enter — отправить · Shift+Enter — новая строка", reset: "Сбросить чат",
+      emptyHi: "Привет! Я Lexy 👋", emptySub: "Напиши что-нибудь по-английски — и начнём беседу.",
+      chatInfo: '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки.</li><li>Каждый ответ — с вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      okT: "✓ Написано верно", badT: "⚠ Есть, что поправить", fixedL: "Исправлено:",
+      needPrem: "Нужен Premium", chatLimit: "Дневной лимит чата исчерпан", chatFail: "Не удалось ответить, попробуй ещё",
+      resetQ: "Сбросить чат?", resetQBody: "Вся история беседы удалится. Начать заново?", resetOk: "Сбросить", cancel: "Отмена", chatCleared: "Чат очищен",
+      writeGen: "Практика письма",
+      writeInfoExam: '<div class="lxa-info"><b>Как проходит проверка IELTS Writing</b><ol><li>Нажми «Получить тему» — ИИ-экзаменатор выдаст вопрос Task 2.</li><li>Напиши эссе (250+ слов).</li><li>Нажми «Проверить» — ИИ оценит по критериям IELTS и даст балл + разбор.</li></ol><div class="ex"><i>Структура эссе:</i><br>1) Введение — перефраз темы + твоя позиция.<br>2) Абзац 1 — аргумент + пример.<br>3) Абзац 2 — второй аргумент + пример.<br>4) Заключение — вывод.<br><br><i>Связки:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Как проходит практика письма</b><ol><li>Нажми «Получить задание» — Lexy даст короткую тему (абзац, письмо или заметка).</li><li>Напиши текст на английском.</li><li>Нажми «Проверить» — Lexy оценит уровень (A1–C1) и подскажет, что улучшить.</li></ol><div class="ex"><i>Пример задания:</i> Write a short email to a friend about your weekend.<br><br><i>Шаблон:</i><br>Hi {name}, …<br>— основная часть: что, где, когда.<br>Best, {твоё имя}.</div></div>',
+      topicL: "Тема:", phEssay: "Напиши текст здесь…", wordsL: "Слов:", minW: "минимум 250", moreW: "чем больше, тем лучше", otherTopic: "Другая тема", checkBtn: "Проверить",
+      getTopicExam: "Получить тему", getTopicGen: "Получить задание",
+      bandExam: "Оценка IELTS", bandGen: "Примерный уровень", strengths: "Сильные стороны", improve: "Что улучшить", notes: "Замечания",
+      picking: "Подбираем…", topicReady: "Тема готова · осталось тем сегодня: ", topicLimit: "Дневной лимит тем исчерпан", topicFail: "Не удалось получить тему",
+      writeShort: "Напиши хотя бы немного текста", checking: "Проверяем…", checkDone: "Готово", checkDoneN: "Готово · проверок осталось сегодня: ", checkLimit: "Лимит проверок на сегодня исчерпан", checkFail: "Не удалось проверить, попробуй ещё",
+      stepsExam: ["Читаем тему и эссе", "Считаем слова и структуру", "Оцениваем по критериям IELTS", "Составляем разбор"],
+      stepsGen: ["Читаем текст", "Проверяем грамматику и слова", "Определяем уровень", "Собираем советы"]
+    },
+    en: {
+      heroExam: "Conversation practice and IELTS Writing", heroGen: "Conversation and writing practice", lvl: "level",
+      bot: "🤖 AI partner", bExam: "IELTS check", bGen: "General check",
+      tabChat: "💬 Chat", tabWrite: "✍️ Writing",
+      lockBody: "Live English chat practice and AI essay checking — on the Pro and Pro+ plans. Essay checks: 2/day on Pro and 6/day on Pro+.",
+      getPrem: "Get Premium", online: "online", typing: "typing…",
+      phInput: "Write in English…", ariaSend: "Send", hintEnter: "Enter — send · Shift+Enter — new line", reset: "Reset chat",
+      emptyHi: "Hi! I'm Lexy 👋", emptySub: "Write something in English and let's start chatting.",
+      chatInfo: '<div class="lxa-info"><b>How the chat works</b><ol><li>Write in English on any topic — study, plans, hobbies.</li><li>Lexy replies at your level and gently fixes mistakes.</li><li>Every reply ends with a question so the talk keeps going.</li></ol><div class="ex"><i>Example:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      okT: "✓ Written correctly", badT: "⚠ Something to fix", fixedL: "Fixed:",
+      needPrem: "Premium required", chatLimit: "Daily chat limit reached", chatFail: "Couldn't reply, try again",
+      resetQ: "Reset chat?", resetQBody: "The whole conversation will be deleted. Start over?", resetOk: "Reset", cancel: "Cancel", chatCleared: "Chat cleared",
+      writeGen: "Writing practice",
+      writeInfoExam: '<div class="lxa-info"><b>How IELTS Writing checking works</b><ol><li>Tap “Get a topic” — the AI examiner gives a Task 2 question.</li><li>Write your essay (250+ words).</li><li>Tap “Check” — the AI scores it against IELTS criteria and gives feedback.</li></ol><div class="ex"><i>Essay structure:</i><br>1) Intro — paraphrase the task + your position.<br>2) Body 1 — argument + example.<br>3) Body 2 — second argument + example.<br>4) Conclusion — summary.<br><br><i>Linkers:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>How writing practice works</b><ol><li>Tap “Get a task” — Lexy gives a short topic (a paragraph, email or note).</li><li>Write your text in English.</li><li>Tap “Check” — Lexy rates your level (A1–C1) and suggests improvements.</li></ol><div class="ex"><i>Example task:</i> Write a short email to a friend about your weekend.<br><br><i>Template:</i><br>Hi {name}, …<br>— main part: what, where, when.<br>Best, {your name}.</div></div>',
+      topicL: "Topic:", phEssay: "Write your text here…", wordsL: "Words:", minW: "250 minimum", moreW: "the more the better", otherTopic: "Another topic", checkBtn: "Check",
+      getTopicExam: "Get a topic", getTopicGen: "Get a task",
+      bandExam: "IELTS score", bandGen: "Estimated level", strengths: "Strengths", improve: "What to improve", notes: "Notes",
+      picking: "Picking…", topicReady: "Topic ready · topics left today: ", topicLimit: "Daily topic limit reached", topicFail: "Couldn't get a topic",
+      writeShort: "Write at least a little text", checking: "Checking…", checkDone: "Done", checkDoneN: "Done · checks left today: ", checkLimit: "Daily check limit reached", checkFail: "Couldn't check, try again",
+      stepsExam: ["Reading the topic and essay", "Counting words and structure", "Scoring against IELTS criteria", "Writing feedback"],
+      stepsGen: ["Reading the text", "Checking grammar and vocabulary", "Estimating the level", "Gathering tips"]
+    },
+    kz: {
+      heroExam: "Сөйлесу практикасы және IELTS Writing", heroGen: "Сөйлесу және жазу практикасы", lvl: "деңгей",
+      bot: "🤖 ИИ-әңгімелесуші", bExam: "IELTS тексеру", bGen: "Жалпы тексеру",
+      tabChat: "💬 Чат", tabWrite: "✍️ Жазу",
+      lockBody: "Ағылшын тілінде тірі чат-практика және ИИ-мен эссе тексеру — Pro және Pro+ тарифтерінде. Эссе тексеру: Pro-да 2/күн, Pro+-да 6/күн.",
+      getPrem: "Premium алу", online: "желіде", typing: "жазып жатыр…",
+      phInput: "Ағылшынша жаз…", ariaSend: "Жіберу", hintEnter: "Enter — жіберу · Shift+Enter — жаңа жол", reset: "Чатты тазалау",
+      emptyHi: "Сәлем! Мен Lexy 👋", emptySub: "Ағылшынша бірдеңе жазып, сөйлесуді бастайық.",
+      chatInfo: '<div class="lxa-info"><b>Чат қалай жұмыс істейді</b><ol><li>Кез келген тақырыпта ағылшынша жаз — оқу, жоспар, хобби.</li><li>Lexy деңгейіңе сай жауап беріп, қателерді жұмсақ түзетеді.</li><li>Әр жауап сұрақпен аяқталады, сөйлесу жалғасады.</li></ol><div class="ex"><i>Мысал:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      okT: "✓ Дұрыс жазылған", badT: "⚠ Түзететін нәрсе бар", fixedL: "Түзетілді:",
+      needPrem: "Premium қажет", chatLimit: "Чаттың күндік шегі бітті", chatFail: "Жауап берілмеді, қайтала",
+      resetQ: "Чатты тазалау?", resetQBody: "Барлық әңгіме тарихы жойылады. Қайта бастайсың ба?", resetOk: "Тазалау", cancel: "Болдырмау", chatCleared: "Чат тазаланды",
+      writeGen: "Жазу практикасы",
+      writeInfoExam: '<div class="lxa-info"><b>IELTS Writing тексеруі қалай өтеді</b><ol><li>«Тақырып алу» түймесін бас — ИИ-емтиханшы Task 2 сұрағын береді.</li><li>Эссе жаз (250+ сөз).</li><li>«Тексеру» түймесін бас — ИИ IELTS критерийлері бойынша бағалап, талдау береді.</li></ol><div class="ex"><i>Эссе құрылымы:</i><br>1) Кіріспе — тақырыпты қайталау + ұстанымың.<br>2) 1-абзац — дәлел + мысал.<br>3) 2-абзац — екінші дәлел + мысал.<br>4) Қорытынды.<br><br><i>Байланыстырғыштар:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Жазу практикасы қалай өтеді</b><ol><li>«Тапсырма алу» түймесін бас — Lexy қысқа тақырып береді.</li><li>Ағылшынша мәтін жаз.</li><li>«Тексеру» түймесін бас — Lexy деңгейіңді (A1–C1) бағалап, не жақсарту керектігін айтады.</li></ol><div class="ex"><i>Тапсырма мысалы:</i> Write a short email to a friend about your weekend.<br><br><i>Үлгі:</i><br>Hi {name}, …<br>— негізгі бөлім: не, қайда, қашан.<br>Best, {атың}.</div></div>',
+      topicL: "Тақырып:", phEssay: "Мәтінді осында жаз…", wordsL: "Сөз:", minW: "кемінде 250", moreW: "неғұрлым көп болса, соғұрлым жақсы", otherTopic: "Басқа тақырып", checkBtn: "Тексеру",
+      getTopicExam: "Тақырып алу", getTopicGen: "Тапсырма алу",
+      bandExam: "IELTS бағасы", bandGen: "Шамамен деңгей", strengths: "Күшті жақтары", improve: "Нені жақсарту керек", notes: "Ескертулер",
+      picking: "Таңдап жатырмыз…", topicReady: "Тақырып дайын · бүгін қалған тақырып: ", topicLimit: "Тақырыптың күндік шегі бітті", topicFail: "Тақырып алынбады",
+      writeShort: "Кемінде біраз мәтін жаз", checking: "Тексеріп жатырмыз…", checkDone: "Дайын", checkDoneN: "Дайын · бүгін қалған тексеру: ", checkLimit: "Тексерудің күндік шегі бітті", checkFail: "Тексерілмеді, қайтала",
+      stepsExam: ["Тақырып пен эссені оқимыз", "Сөз бен құрылымды санаймыз", "IELTS критерийлері бойынша бағалаймыз", "Талдау жасаймыз"],
+      stepsGen: ["Мәтінді оқимыз", "Грамматика мен сөздерді тексереміз", "Деңгейді анықтаймыз", "Кеңестер жинаймыз"]
+    },
+    uz: {
+      heroExam: "Suhbat amaliyoti va IELTS Writing", heroGen: "Suhbat va yozish amaliyoti", lvl: "daraja",
+      bot: "🤖 AI suhbatdosh", bExam: "IELTS tekshiruvi", bGen: "Umumiy tekshiruv",
+      tabChat: "💬 Chat", tabWrite: "✍️ Yozish",
+      lockBody: "Ingliz tilida jonli chat amaliyoti va AI bilan insho tekshirish — Pro va Pro+ tariflarida. Insho tekshiruvi: Pro'da 2/kun, Pro+'da 6/kun.",
+      getPrem: "Premium olish", online: "onlayn", typing: "yozmoqda…",
+      phInput: "Inglizcha yozing…", ariaSend: "Yuborish", hintEnter: "Enter — yuborish · Shift+Enter — yangi qator", reset: "Chatni tozalash",
+      emptyHi: "Salom! Men Lexy 👋", emptySub: "Inglizcha biror narsa yozing va suhbatni boshlaymiz.",
+      chatInfo: '<div class="lxa-info"><b>Chat qanday ishlaydi</b><ol><li>Istalgan mavzuda inglizcha yozing — o‘qish, rejalar, sevimli mashg‘ulot.</li><li>Lexy darajangizga mos javob berib, xatolarni yumshoq tuzatadi.</li><li>Har bir javob savol bilan tugaydi, suhbat davom etadi.</li></ol><div class="ex"><i>Misol:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      okT: "✓ To‘g‘ri yozilgan", badT: "⚠ Tuzatadigan narsa bor", fixedL: "Tuzatildi:",
+      needPrem: "Premium kerak", chatLimit: "Chatning kunlik limiti tugadi", chatFail: "Javob berilmadi, qayta urinib ko‘ring",
+      resetQ: "Chatni tozalash?", resetQBody: "Butun suhbat tarixi o‘chiriladi. Qaytadan boshlaysizmi?", resetOk: "Tozalash", cancel: "Bekor qilish", chatCleared: "Chat tozalandi",
+      writeGen: "Yozish amaliyoti",
+      writeInfoExam: '<div class="lxa-info"><b>IELTS Writing tekshiruvi qanday o‘tadi</b><ol><li>«Mavzu olish» tugmasini bosing — AI imtihonchi Task 2 savolini beradi.</li><li>Insho yozing (250+ so‘z).</li><li>«Tekshirish» tugmasini bosing — AI IELTS mezonlari bo‘yicha baholab, tahlil beradi.</li></ol><div class="ex"><i>Insho tuzilishi:</i><br>1) Kirish — mavzuni qayta ifodalash + pozitsiyangiz.<br>2) 1-xatboshi — dalil + misol.<br>3) 2-xatboshi — ikkinchi dalil + misol.<br>4) Xulosa.<br><br><i>Bog‘lovchilar:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Yozish amaliyoti qanday o‘tadi</b><ol><li>«Topshiriq olish» tugmasini bosing — Lexy qisqa mavzu beradi.</li><li>Inglizcha matn yozing.</li><li>«Tekshirish» tugmasini bosing — Lexy darajangizni (A1–C1) baholab, nimani yaxshilashni aytadi.</li></ol><div class="ex"><i>Topshiriq misoli:</i> Write a short email to a friend about your weekend.<br><br><i>Shablon:</i><br>Hi {name}, …<br>— asosiy qism: nima, qayerda, qachon.<br>Best, {ismingiz}.</div></div>',
+      topicL: "Mavzu:", phEssay: "Matnni shu yerga yozing…", wordsL: "So‘z:", minW: "kamida 250", moreW: "qancha ko‘p bo‘lsa, shuncha yaxshi", otherTopic: "Boshqa mavzu", checkBtn: "Tekshirish",
+      getTopicExam: "Mavzu olish", getTopicGen: "Topshiriq olish",
+      bandExam: "IELTS bahosi", bandGen: "Taxminiy daraja", strengths: "Kuchli tomonlar", improve: "Nimani yaxshilash", notes: "Izohlar",
+      picking: "Tanlanmoqda…", topicReady: "Mavzu tayyor · bugun qolgan mavzu: ", topicLimit: "Mavzuning kunlik limiti tugadi", topicFail: "Mavzu olinmadi",
+      writeShort: "Kamida biroz matn yozing", checking: "Tekshirilmoqda…", checkDone: "Tayyor", checkDoneN: "Tayyor · bugun qolgan tekshiruv: ", checkLimit: "Tekshiruvning kunlik limiti tugadi", checkFail: "Tekshirilmadi, qayta urinib ko‘ring",
+      stepsExam: ["Mavzu va inshoni o‘qiymiz", "So‘z va tuzilishni sanaymiz", "IELTS mezonlari bo‘yicha baholaymiz", "Tahlil tuzamiz"],
+      stepsGen: ["Matnni o‘qiymiz", "Grammatika va so‘zlarni tekshiramiz", "Darajani aniqlaymiz", "Maslahatlar yig‘amiz"]
+    }
+  };
+  function CT(k) {
+    var l = (w.Lexy && w.Lexy.user && w.Lexy.user.lang) || "ru";
+    var d = TX[l] || TX.ru;
+    return d[k] != null ? d[k] : (TX.ru[k] != null ? TX.ru[k] : k);
+  }
+
   function injectCss() {
     if (document.getElementById("lexy-chat-css")) return;
     var s = document.createElement("style");
@@ -180,8 +281,8 @@
     if (!(w.Lexy.user && w.Lexy.user.premium)) { renderLock(el, exam); return; }
     injectCss();
     var st = store((w.Lexy.user && w.Lexy.user.email) || "anon");
-    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? "Практика разговора и IELTS Writing" : "Практика разговора и письма") + ' · уровень ' + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">🤖 ИИ-собеседник</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? "IELTS-проверка" : "Общая проверка") + '</span></div><div class="lxa-breathe"></div></div>';
-    var tabs = '<div class="lxa-tabs" id="lxaTabs"><button class="lxa-tab' + (st.tab === "chat" ? " on" : "") + '" data-t="chat">💬 Чат</button><button class="lxa-tab' + (st.tab === "writing" ? " on" : "") + '" data-t="writing">✍️ Письмо</button></div>';
+    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + " · " + CT("lvl") + " " + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">' + CT("bot") + '</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? CT("bExam") : CT("bGen")) + '</span></div><div class="lxa-breathe"></div></div>';
+    var tabs = '<div class="lxa-tabs" id="lxaTabs"><button class="lxa-tab' + (st.tab === "chat" ? " on" : "") + '" data-t="chat">' + CT("tabChat") + '</button><button class="lxa-tab' + (st.tab === "writing" ? " on" : "") + '" data-t="writing">' + CT("tabWrite") + "</button></div>";
     el.innerHTML = hero + tabs + '<div id="lxaBody"></div>';
     $("#lxaTabs", el).addEventListener("click", function (e) {
       var b = e.target.closest("[data-t]"); if (!b) return;
@@ -195,10 +296,10 @@
 
   function renderLock(el, exam) {
     injectCss();
-    el.innerHTML = '<div class="lxa-hero" style="margin-bottom:16px"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? "Практика разговора и IELTS Writing" : "Практика разговора и письма") + '</p></div></div></div>' +
+    el.innerHTML = '<div class="lxa-hero" style="margin-bottom:16px"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + '</p></div></div></div>' +
       '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexy AI — Premium</h2>' +
-      '<p class="s">Живой чат-практика английского и проверка письма с ИИ — на тарифах Pro и Pro+. Проверки письма: 2/день на Pro и 6/день на Pro+.</p>' +
-      '<a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>';
+      '<p class="s">' + CT("lockBody") + '</p>' +
+      '<a class="btn p" href="pricing.html" style="margin-top:14px">' + CT("getPrem") + "</a></div>";
   }
 
   function draw(el, st, level, exam) {
@@ -209,25 +310,25 @@
   }
 
   function drawChat(body, st, level) {
-    var info = '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки — просто перефразирует правильно.</li><li>Каждый ответ заканчивается вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>';
+    var info = CT("chatInfo");
     var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
-    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexy</b><small id="lxaStatus">онлайн</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
-      '<div class="lxa-input"><textarea id="lxaIn" placeholder="Напиши по-английски…" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="Отправить">' + ic("send") + "</button></div>" +
-      '<div class="lxa-tools"><span class="lxa-hint">Enter — отправить · Shift+Enter — новая строка</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " Сбросить чат</button></div></div>";
+    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexy</b><small id="lxaStatus">' + CT("online") + '</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
+      '<div class="lxa-input"><textarea id="lxaIn" placeholder="' + CT("phInput") + '" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="' + CT("ariaSend") + '">' + ic("send") + "</button></div>" +
+      '<div class="lxa-tools"><span class="lxa-hint">' + CT("hintEnter") + '</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " " + CT("reset") + "</button></div></div>";
     sc(stream); var box = $("#lxaStream", body); if (box) box.scrollTop = box.scrollHeight;
     wireChat(body, st, level);
   }
 
   function emptyChat() {
-    return '<div class="lxa-empty"><div class="lxa-mascot">' + flame(34) + '</div><b style="font:800 16px var(--display)">Привет! Я Lexy 👋</b><p style="margin-top:6px;color:rgba(244,241,255,.65)">Напиши что-нибудь по-английски или выбери пример ниже.</p></div>';
+    return '<div class="lxa-empty"><div class="lxa-mascot">' + flame(34) + '</div><b style="font:800 16px var(--display)">' + CT("emptyHi") + '</b><p style="margin-top:6px;color:rgba(244,241,255,.65)">' + CT("emptySub") + "</p></div>";
   }
   function msgHtml(m, idx) {
     var d = ' style="animation-delay:' + (Math.min(idx || 0, 12) * 0.04).toFixed(2) + 's"';
     if (m.role === "check") {
       var ok = m.correct;
       var inner = ok
-        ? '<span style="color:#39D98A;font-weight:700">✓ Написано верно</span>'
-        : '<span style="color:#FF8A6A;font-weight:700">⚠ Есть, что поправить</span>' + (m.explanation ? '<div style="color:rgba(244,241,255,.75);font-size:13px;margin-top:4px">' + esc(m.explanation) + "</div>" : "") + (m.corrected ? '<div class="lxa-fix"><b style="color:#FF5A1F">Исправлено:</b> ' + esc(m.corrected) + "</div>" : "");
+        ? '<span style="color:#39D98A;font-weight:700">' + CT("okT") + '</span>'
+        : '<span style="color:#FF8A6A;font-weight:700">' + CT("badT") + '</span>' + (m.explanation ? '<div style="color:rgba(244,241,255,.75);font-size:13px;margin-top:4px">' + esc(m.explanation) + "</div>" : "") + (m.corrected ? '<div class="lxa-fix"><b style="color:#FF5A1F">' + CT("fixedL") + '</b> ' + esc(m.corrected) + "</div>" : "");
       return '<div class="lxa-check' + (ok ? "" : " bad") + '"' + d + ">" + inner + "</div>";
     }
     var me = m.role === "user";
@@ -255,13 +356,13 @@
         persist(st);
       }).catch(function (err) {
         ui.busy = false; hideTyping();
-        if (err && err.code === "premium_required") toast("Нужен Premium");
-        else if (err && err.code === "limit") toast("Дневной лимит чата исчерпан");
-        else toast("Не удалось ответить, попробуй ещё");
+        if (err && err.code === "premium_required") toast(CT("needPrem"));
+        else if (err && err.code === "limit") toast(CT("chatLimit"));
+        else toast(CT("chatFail"));
       });
     }
     $("#lxaReset", body).addEventListener("click", function () {
-      w.Lexy.modal({ title: "Сбросить чат?", body: "<p>Вся история беседы удалится. Начать заново?</p>", ok: "Сбросить", cancel: "Отмена", onOk: function () { st.msgs = []; persist(st); drawChat(body, st, level); toast("Чат очищен"); } });
+      w.Lexy.modal({ title: CT("resetQ"), body: "<p>" + CT("resetQBody") + "</p>", ok: CT("resetOk"), cancel: CT("cancel"), onOk: function () { st.msgs = []; persist(st); drawChat(body, st, level); toast(CT("chatCleared")); } });
     });
   }
 
@@ -281,47 +382,44 @@
     t.innerHTML = '<div class="lxa-msg" id="lxaTyping"><span class="av">' + flame(22) + '</span><div class="bub" style="padding:0"><span class="lxa-typing"><i></i><i></i><i></i></span></div></div>';
     box.appendChild(t.firstChild);
     box.scrollTop = box.scrollHeight;
-    setStatus("печатает…");
+    setStatus(CT("typing"));
   }
-  function hideTyping() { var t = document.getElementById("lxaTyping"); if (t) t.remove(); setStatus("онлайн"); }
+  function hideTyping() { var t = document.getElementById("lxaTyping"); if (t) t.remove(); setStatus(CT("online")); }
   function reStream(st) { var box = $("#lxaStream"); if (!box) return; box.innerHTML = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat(); box.scrollTop = box.scrollHeight; }
 
   function drawWriting(body, st, level, exam) {
-    var title = exam ? "IELTS Writing · Task 2" : "Практика письма";
-    var info = exam
-      ? '<div class="lxa-info"><b>Как проходит проверка IELTS Writing</b><ol><li>Нажми «Получить тему» — ИИ-экзаменатор выдаст вопрос Task 2.</li><li>Напиши эссе (250+ слов).</li><li>Нажми «Проверить» — ИИ оценит по критериям IELTS и даст балл + разбор.</li></ol><div class="ex"><i>Структура эссе:</i><br>1) Введение — перефраз темы + твоя позиция.<br>2) Абзац 1 — аргумент + пример.<br>3) Абзац 2 — второй аргумент + пример.<br>4) Заключение — вывод.<br><br><i>Связки:</i> however, therefore, moreover, for example, in conclusion.</div></div>'
-      : '<div class="lxa-info"><b>Как проходит практика письма</b><ol><li>Нажми «Получить задание» — Lexy даст короткую тему (абзац, письмо или заметка).</li><li>Напиши текст на английском.</li><li>Нажми «Проверить» — Lexy оценит уровень (A1–C1), похвалит и подскажет, что улучшить.</li></ol><div class="ex"><i>Пример задания:</i> Write a short email to a friend about your weekend.<br><br><i>Шаблон:</i><br>Hi {name}, … (короткое приветствие)<br>— основная часть: что, где, когда.<br>Best, {твоё имя}.</div></div>';
-    var topic = st.topic ? '<div class="topic"><b>Тема:</b> ' + esc(st.topic) + "</div>" : "";
+    var info = exam ? CT("writeInfoExam") : CT("writeInfoGen");
+    var topic = st.topic ? '<div class="topic"><b>' + CT("topicL") + '</b> ' + esc(st.topic) + "</div>" : "";
     var editor = st.topic
-      ? topic + '<textarea id="lxaEssay" placeholder="Напиши текст здесь…">' + esc(st.essay || "") + '</textarea><div class="lxa-tools"><span class="lxa-hint">Слов: <b id="lxaWc">0</b> · ' + (exam ? "минимум 250" : "чем больше, тем лучше") + '</span><button class="lxa-reset" id="lxaNewTopic">Другая тема</button></div><button class="btn p big" id="lxaCheck" style="margin-top:12px">Проверить</button>'
+      ? topic + '<textarea id="lxaEssay" placeholder="' + CT("phEssay") + '">' + esc(st.essay || "") + '</textarea><div class="lxa-tools"><span class="lxa-hint">' + CT("wordsL") + ' <b id="lxaWc">0</b> · ' + (exam ? CT("minW") : CT("moreW")) + '</span><button class="lxa-reset" id="lxaNewTopic">' + CT("otherTopic") + '</button></div><button class="btn p big" id="lxaCheck" style="margin-top:12px">' + CT("checkBtn") + "</button>"
       : "";
     var result = st.result ? resultHtml(st.result, exam) : "";
     body.innerHTML = info + '<div class="lxa-chat lxa-write">' +
-      (st.topic ? "" : '<button class="btn p big" id="lxaTopic">' + ic("spark") + " Получить тему</button>") +
+      (st.topic ? "" : '<button class="btn p big" id="lxaTopic">' + ic("spark") + " " + (exam ? CT("getTopicExam") : CT("getTopicGen")) + "</button>") +
       '<div id="lxaSteps"></div>' + editor + result + "</div>";
     wireWriting(body, st, level, exam);
   }
 
   function resultHtml(r, exam) {
-    var big = exam ? (r.band != null ? r.band : "—") : (r.band != null ? r.band : "—");
-    var lbl = exam ? "Оценка IELTS" : "Примерный уровень";
+    var big = (r.band != null ? r.band : "—");
+    var lbl = exam ? CT("bandExam") : CT("bandGen");
     function list(t, arr) { return (arr && arr.length) ? '<div class="lxa-sec"><b>' + t + '</b><ul>' + arr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" : ""; }
     return '<div class="lxa-chat" style="margin-top:14px"><div class="lxa-score"><div class="big">' + esc(big) + '</div><div><b style="font:800 16px var(--display)">' + lbl + '</b><div class="s" style="margin:0">' + esc(r.summary || "") + '</div></div></div>' +
-      list("Сильные стороны", r.strengths) + list("Что улучшить", r.improvements) + list("Замечания", r.corrections) + "</div>";
+      list(CT("strengths"), r.strengths) + list(CT("improve"), r.improvements) + list(CT("notes"), r.corrections) + "</div>";
   }
 
   function wireWriting(body, st, level, exam) {
     var tb = $("#lxaTopic", body);
     if (tb) tb.addEventListener("click", function () {
-      if (ui.busy) return; ui.busy = true; tb.classList.add("on"); tb.innerHTML = ic("spark") + " Подбираем…";
+      if (ui.busy) return; ui.busy = true; tb.classList.add("on"); tb.innerHTML = ic("spark") + " " + CT("picking");
       call({ mode: "writing-topic", level: level, exam: exam }).then(function (d) {
         ui.busy = false; st.topic = (d && d.topic) || ""; st.result = null; st.essay = ""; persist(st); drawWriting(body, st, level, exam);
-        if (d && d.remaining != null) toast("Тема готова · осталось тем сегодня: " + d.remaining);
+        if (d && d.remaining != null) toast(CT("topicReady") + d.remaining);
       }).catch(function (err) {
         ui.busy = false; drawWriting(body, st, level, exam);
-        if (err && err.code === "premium_required") toast("Нужен Premium");
-        else if (err && err.code === "limit") toast("Дневной лимит тем исчерпан");
-        else toast("Не удалось получить тему");
+        if (err && err.code === "premium_required") toast(CT("needPrem"));
+        else if (err && err.code === "limit") toast(CT("topicLimit"));
+        else toast(CT("topicFail"));
       });
     });
     var nt = $("#lxaNewTopic", body);
@@ -333,29 +431,27 @@
       ta.addEventListener("input", function () { st.essay = ta.value; persist(st); cnt(); });
       chk.addEventListener("click", function () {
         var words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
-        if (words < 20) { toast("Напиши хотя бы немного текста"); return; }
+        if (words < 20) { toast(CT("writeShort")); return; }
         if (ui.busy) return; ui.busy = true;
         st.essay = ta.value; persist(st);
-        chk.disabled = true; chk.textContent = "Проверяем…";
+        chk.disabled = true; chk.textContent = CT("checking");
         runSteps(exam, function () {});
         call({ mode: "writing-check", level: level, exam: exam, topic: st.topic, essay: ta.value }).then(function (d) {
           ui.busy = false; st.result = (d && d.result) || null; persist(st); drawWriting(body, st, level, exam);
-          toast(d && d.remaining != null ? "Готово · проверок осталось сегодня: " + d.remaining : "Готово");
+          toast(d && d.remaining != null ? CT("checkDoneN") + d.remaining : CT("checkDone"));
         }).catch(function (err) {
-          ui.busy = false; chk.disabled = false; chk.textContent = "Проверить";
+          ui.busy = false; chk.disabled = false; chk.textContent = CT("checkBtn");
           $("#lxaSteps", body).innerHTML = "";
-          if (err && err.code === "premium_required") toast("Нужен Premium");
-          else if (err && err.code === "limit") toast("Лимит проверок на сегодня исчерпан");
-          else toast("Не удалось проверить, попробуй ещё");
+          if (err && err.code === "premium_required") toast(CT("needPrem"));
+          else if (err && err.code === "limit") toast(CT("checkLimit"));
+          else toast(CT("checkFail"));
         });
       });
     }
   }
 
   function runSteps(exam, done) {
-    var steps = exam
-      ? ["Читаем тему и эссе", "Считаем слова и структуру", "Оцениваем по критериям IELTS", "Составляем разбор"]
-      : ["Читаем текст", "Проверяем грамматику и слова", "Определяем уровень", "Собираем советы"];
+    var steps = exam ? CT("stepsExam") : CT("stepsGen");
     var box = document.getElementById("lxaSteps");
     if (!box) return;
     box.innerHTML = '<div class="lxa-steps">' + steps.map(function (s) { return '<div class="lxa-step"><span class="d"></span>' + s + "</div>"; }).join("") + "</div>";

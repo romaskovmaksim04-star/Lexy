@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=10"></script>
-<script src="lexy-core.js?v=21"></script>
+<script src="lexy-core.js?v=22"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-a1.js?v=1"></script>
@@ -31,7 +31,7 @@
 <script src="lexy-vocab-data4.js?v=1"></script>
 <script src="lexy-vocab.js?v=5"></script>
 <script src="lexy-answers.js?v=2"></script>
-<script src="lexy-chat.js?v=6"></script>
+<script src="lexy-chat.js?v=7"></script>
 </head>
 <body>
 <script>Lexy.guard("english");</script>
@@ -486,6 +486,14 @@
   function speak(text, btn) { if (!("speechSynthesis" in window)) { Lexy.toast("—"); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = (VOICE && VOICE.lang) || "en-GB"; if (VOICE) u.voice = VOICE; u.rate = 0.95; if (btn) { var t = btn.textContent; u.onend = u.onerror = function () { btn.textContent = t; }; } speechSynthesis.speak(u); }
 
   /* ---------- ПРАКТИКА ---------- */
+  var WDS = { ru: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], en: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], kz: ["Дс", "Сс", "Ср", "Бс", "Жм", "Сб", "Жс"], uz: ["Du", "Se", "Cho", "Pay", "Ju", "Sha", "Yak"] };
+  var PR = {
+    ru: { tasks: "заданий", of: "из", free: "бесплатно", ansTitle: "Поиск ответов", ansSub: "Не понял тему? Найди ответ среди 500+ ответов.", ansPh: "Например: Present Perfect, affect / effect…", ansStart: "Начни печатать, чтобы искать…", ansNone: "Ничего не нашлось" },
+    en: { tasks: "tasks", of: "of", free: "free", ansTitle: "Answer search", ansSub: "Didn't understand a topic? Search among 500+ answers.", ansPh: "e.g. Present Perfect, affect / effect…", ansStart: "Start typing to search…", ansNone: "Nothing found" },
+    kz: { tasks: "тапсырма", of: "/", free: "тегін", ansTitle: "Жауап іздеу", ansSub: "Тақырыпты түсінбедің бе? 500+ жауаптың ішінен ізде.", ansPh: "Мысалы: Present Perfect, affect / effect…", ansStart: "Іздеу үшін жаза баста…", ansNone: "Ештеңе табылмады" },
+    uz: { tasks: "topshiriq", of: "/", free: "bepul", ansTitle: "Javob qidirish", ansSub: "Mavzuni tushunmadingizmi? 500+ javob ichidan qidiring.", ansPh: "Masalan: Present Perfect, affect / effect…", ansStart: "Qidirish uchun yozishni boshlang…", ansNone: "Hech narsa topilmadi" }
+  };
+  function PRt(k) { var d = PR[lang()] || PR.ru; return d[k] != null ? d[k] : PR.ru[k]; }
   function renderPractice() {
     injectDsh();
     var C2 = window.LexyContent, p = paid();
@@ -496,24 +504,24 @@
     function bb(k) { var b = null; Object.keys(tests).forEach(function (key) { if (key.indexOf(k + "-") === 0) { var v = tests[key].band; if (v != null && (b == null || v > b)) b = v; } }); return b; }
     var SK = [["reading", "Reading", "book", "#E3F0FF", "#1E8FE8"], ["listening", "Listening", "head", "#FFE0DB", "#E5443E"], ["writing", "Writing", "pencil", "#FFE6D6", "#F7620B"], ["speaking", "Speaking", "mic", "#FFF3CC", "#E59A00"]];
     var td = 0, tc = 0; SK.forEach(function (s) { td += dc(s[0]); tc += C2.count(s[0]); });
-    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + ic("file") + '</span><div><h2 class="lvname">' + T("practice") + '</h2><p class="lvdesc">' + T("practiceSub") + '</p></div></div><div class="lvrow"><span>' + td + " / " + tc + " " + (lang === "en" ? "tasks" : "заданий") + '</span></div><div class="bar"><i style="width:' + (tc ? Math.round(td / tc * 100) : 0) + '%"></i></div></div>';
+    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + ic("file") + '</span><div><h2 class="lvname">' + T("practice") + '</h2><p class="lvdesc">' + T("practiceSub") + '</p></div></div><div class="lvrow"><span>' + td + " / " + tc + " " + PRt("tasks") + '</span></div><div class="bar"><i style="width:' + (tc ? Math.round(td / tc * 100) : 0) + '%"></i></div></div>';
     var cards = SK.map(function (s, i) {
       var cnt = C2.count(s[0]), done = dc(s[0]), b = bb(s[0]);
       return '<a class="tk" href="test.html?skill=' + s[0] + '" style="animation-delay:' + (i * 0.07).toFixed(2) + 's"><span class="tkico" style="background:' + s[3] + ";color:" + s[4] + '">' + ic(s[2]) + '</span>' +
         '<div class="tktx"><b>' + s[1] + '</b><div class="tkbar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
-        '<small>' + done + " " + (lang === "en" ? "of" : "из") + " " + cnt + (b != null ? " · ★ " + b.toFixed(1) : "") + " · " + (p ? cnt + " " + (lang === "en" ? "tasks" : "заданий") : C2.freeLimit(s[0]) + " " + (lang === "en" ? "free" : "бесплатно")) + '</small></div><span class="tkgo">' + ic("chev") + "</span></a>";
+        '<small>' + done + " " + PRt("of") + " " + cnt + (b != null ? " · ★ " + b.toFixed(1) : "") + " · " + (p ? cnt + " " + PRt("tasks") : C2.freeLimit(s[0]) + " " + PRt("free")) + '</small></div><span class="tkgo">' + ic("chev") + "</span></a>";
     }).join("");
     var ANS = (window.LEXY_ANSWERS && (LEXY_ANSWERS[lang] || LEXY_ANSWERS.ru)) || [];
-    var ansBlock = '<div class="tkans"><h2>' + ic("search") + (lang === "en" ? "Answer search" : "Поиск ответов") + '</h2><p>' + (lang === "en" ? "Didn't understand a topic? Search among 500+ answers." : "Не понял тему? Найди ответ среди 500+ ответов.") + '</p>' +
-      '<label class="tkq">' + ic("search") + '<input id="ansq" placeholder="' + (lang === "en" ? "e.g. Present Perfect, affect / effect…" : "Например: Present Perfect, affect / effect…") + '"></label>' +
+    var ansBlock = '<div class="tkans"><h2>' + ic("search") + PRt("ansTitle") + '</h2><p>' + PRt("ansSub") + '</p>' +
+      '<label class="tkq">' + ic("search") + '<input id="ansq" placeholder="' + PRt("ansPh") + '"></label>' +
       '<div id="anslist" style="margin-top:12px"></div></div>';
     $("#s-practice").innerHTML = hero + cards + ansBlock;
     var ansq = $("#ansq"), anslist = $("#anslist");
     function renderAns() {
       var q = (ansq.value || "").trim().toLowerCase();
-      if (!q) { anslist.innerHTML = '<p class="s" style="color:var(--soft);padding:6px 2px">' + (lang === "en" ? "Start typing to search…" : "Начни печатать, чтобы искать…") + "</p>"; return; }
+      if (!q) { anslist.innerHTML = '<p class="s" style="color:var(--soft);padding:6px 2px">' + PRt("ansStart") + "</p>"; return; }
       var res = ANS.filter(function (x) { return (x.q + " " + x.a + " " + x.tag).toLowerCase().indexOf(q) > -1; }).slice(0, 30);
-      anslist.innerHTML = res.length ? res.map(function (x, i) { return '<div class="tkres" style="animation-delay:' + (Math.min(i, 12) * 0.03).toFixed(2) + 's"><b>' + esc(x.q) + "</b><p>" + esc(x.a) + "</p><small>" + esc(x.tag) + "</small></div>"; }).join("") : '<p class="s" style="color:var(--soft);padding:6px 2px">' + (lang === "en" ? "Nothing found" : "Ничего не нашлось") + "</p>";
+      anslist.innerHTML = res.length ? res.map(function (x, i) { return '<div class="tkres" style="animation-delay:' + (Math.min(i, 12) * 0.03).toFixed(2) + 's"><b>' + esc(x.q) + "</b><p>" + esc(x.a) + "</p><small>" + esc(x.tag) + "</small></div>"; }).join("") : '<p class="s" style="color:var(--soft);padding:6px 2px">' + PRt("ansNone") + "</p>";
     }
     ansq.addEventListener("input", renderAns);
     renderAns();
@@ -604,7 +612,7 @@
       return;
     }
     var c = course(), n = Lexy.streakN(), m = Lexy.mins();
-    var DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+    var DN = WDS[lang()] || WDS.ru;
     var dots = Lexy.weekDots(), weekOn = dots.filter(function (d) { return d.on; }).length;
     var ORD = ["A1", "A2", "B1", "B2", "C1"], idx = Math.max(0, ORD.indexOf(c.level));
     var total = C.totalDays(c.level), done = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) done++;

@@ -178,6 +178,31 @@ var MOD = {
 };
 function M() { return MOD[U.lang] || MOD.ru; }
 
+/* ---------- прочие подписи (RU/EN/KZ/UZ) ---------- */
+var CO = {
+  ru: { androidT: "Lexy скоро на Android", androidS: "Приложение появится в Google Play", tgT: "Наш Telegram-канал", tgS: "Лайфхаки и разборы ошибок", close: "Закрыть",
+    premTitle: "Доступно в Premium", premVocab: "Словарь с карточками и наборами слов", premAi: "Lexy AI — разговоры с ИИ", premGames: "Игры для тренировки под давлением", thisFeature: "Эта функция", premOpens: "открывается в Premium.", getPrem: "Получить Premium", later: "Позже",
+    gateAiT: "Lexy AI — премиум-функция", gateAiP: "Практикуй живую речь с ИИ-собеседником. Оформи премиум, чтобы открыть безлимитные разговоры.", gateGamesT: "Игры — премиум-функция", gateGamesP: "Играй в Shadow Speak и Connector Rush и тренируй английский под давлением. Оформи премиум, чтобы открыть игры.", getPremFull: "Получить премиум",
+    chooserT: "Выбери свой путь", chooserBody: "Мы настроим кабинет под твои цели. Потом это можно изменить в личном кабинете.", profChosen: "Профиль выбран",
+    newsOn: "Рассылка включена", newsOff: "Рассылка выключена", demoOn: "Premium включён (демо)", demoOff: "Premium выключен", delFail: "Не получилось удалить аккаунт. Попробуй ещё раз.", delBtn: "Удалить" },
+  en: { androidT: "Lexy is coming to Android", androidS: "The app will appear on Google Play", tgT: "Our Telegram channel", tgS: "Tips and error breakdowns", close: "Close",
+    premTitle: "Available in Premium", premVocab: "Vocabulary with flashcards and word decks", premAi: "Lexy AI — conversations with AI", premGames: "Games to train under pressure", thisFeature: "This feature", premOpens: "unlocks in Premium.", getPrem: "Get Premium", later: "Later",
+    gateAiT: "Lexy AI — a premium feature", gateAiP: "Practise live speech with an AI partner. Get premium to unlock unlimited conversations.", gateGamesT: "Games — a premium feature", gateGamesP: "Play Shadow Speak and Connector Rush and train English under pressure. Get premium to unlock games.", getPremFull: "Get premium",
+    chooserT: "Choose your path", chooserBody: "We'll set up your account around your goals. You can change this later in your profile.", profChosen: "Path selected",
+    newsOn: "Newsletter on", newsOff: "Newsletter off", demoOn: "Premium enabled (demo)", demoOff: "Premium disabled", delFail: "Couldn't delete the account. Try again.", delBtn: "Delete" },
+  kz: { androidT: "Lexy жақында Android-та", androidS: "Қолданба Google Play-де шығады", tgT: "Біздің Telegram-канал", tgS: "Лайфхактар мен қате талдау", close: "Жабу",
+    premTitle: "Premium-да қолжетімді", premVocab: "Карточкалар мен сөз жинақтары бар сөздік", premAi: "Lexy AI — ИИ-мен сөйлесу", premGames: "Қысым астында жаттығуға арналған ойындар", thisFeature: "Бұл функция", premOpens: "Premium-да ашылады.", getPrem: "Premium алу", later: "Кейінірек",
+    gateAiT: "Lexy AI — премиум-функция", gateAiP: "ИИ-әңгімелесушімен тірі сөйлеуді жаттық. Шексіз сөйлесу үшін премиум ал.", gateGamesT: "Ойындар — премиум-функция", gateGamesP: "Shadow Speak және Connector Rush ойнап, қысым астында ағылшынды жаттық. Ойындар үшін премиум ал.", getPremFull: "Премиум алу",
+    chooserT: "Өз жолыңды таңда", chooserBody: "Кабинетті мақсатыңа қарай баптаймыз. Кейін жеке кабинетте өзгертуге болады.", profChosen: "Профиль таңдалды",
+    newsOn: "Хабарлама қосылды", newsOff: "Хабарлама өшірілді", demoOn: "Premium қосылды (демо)", demoOff: "Premium өшірілді", delFail: "Аккаунт жойылмады. Қайталап көр.", delBtn: "Жою" },
+  uz: { androidT: "Lexy tez orada Android'da", androidS: "Ilova Google Play'da paydo bo'ladi", tgT: "Bizning Telegram kanal", tgS: "Maslahatlar va xato tahlili", close: "Yopish",
+    premTitle: "Premium'da mavjud", premVocab: "Kartochkalar va so'z to'plamlari bilan lug'at", premAi: "Lexy AI — AI bilan suhbat", premGames: "Bosim ostida mashq uchun o'yinlar", thisFeature: "Bu funksiya", premOpens: "Premium'da ochiladi.", getPrem: "Premium olish", later: "Keyinroq",
+    gateAiT: "Lexy AI — premium funksiya", gateAiP: "AI suhbatdosh bilan jonli nutqni mashq qiling. Cheksiz suhbat uchun premium oling.", gateGamesT: "O'yinlar — premium funksiya", gateGamesP: "Shadow Speak va Connector Rush o'ynab, bosim ostida ingliz tilini mashq qiling. O'yinlar uchun premium oling.", getPremFull: "Premium olish",
+    chooserT: "Yo'lingizni tanlang", chooserBody: "Kabinetni maqsadlaringizga moslaymiz. Keyin profilda o'zgartirish mumkin.", profChosen: "Profil tanlandi",
+    newsOn: "Xabarnoma yoqildi", newsOff: "Xabarnoma o'chirildi", demoOn: "Premium yoqildi (demo)", demoOff: "Premium o'chirildi", delFail: "Akkaunt o'chirilmadi. Qayta urinib ko'ring.", delBtn: "O'chirish" }
+};
+function C() { return CO[U.lang] || CO.ru; }
+
 /* ---------- модалка / тост ---------- */
 function modal(o) {
   var m = $("#mv");
@@ -191,20 +216,25 @@ function closeM() { $("#mv").classList.remove("on"); MOK = null; MLOCK = false; 
 var TT;
 function toast(t) { var e = $("#toast"); e.textContent = t; e.classList.add("on"); clearTimeout(TT); TT = setTimeout(function () { e.classList.remove("on"); }, 2600); }
 function upsell(f) {
-  var T = { vocab: "Словарь с карточками и наборами слов", ai: "Lexy AI — разговоры с ИИ", games: "Игры для тренировки под давлением" };
-  modal({ title: "Доступно в Premium", body: "<p>" + (T[f] || "Эта функция") + " открывается в Premium.</p>", ok: "Получить Premium", cancel: "Позже", onOk: function () { location.href = CFG.pricing; return false; } });
+  var co = C();
+  var T = { vocab: co.premVocab, ai: co.premAi, games: co.premGames };
+  modal({ title: co.premTitle, body: "<p>" + (T[f] || co.thisFeature) + " " + co.premOpens + "</p>", ok: co.getPrem, cancel: co.later, onOk: function () { location.href = CFG.pricing; return false; } });
 }
 
 /* ---------- замки Premium ---------- */
-var LOCKS = {
-  ai: { ic: "mic", t: "Lexy AI — премиум-функция", p: "Практикуй живую речь с ИИ-собеседником. Оформи премиум, чтобы открыть безлимитные разговоры.", c: "v" },
-  games: { ic: "game", t: "Игры — премиум-функция", p: "Играй в Shadow Speak и Connector Rush и тренируй английский под давлением. Оформи премиум, чтобы открыть игры.", c: "" }
-};
+function LOCKS() {
+  var co = C();
+  return {
+    ai: { ic: "mic", t: co.gateAiT, p: co.gateAiP, c: "v" },
+    games: { ic: "game", t: co.gateGamesT, p: co.gateGamesP, c: "" }
+  };
+}
 function gates() {
+  var LK = LOCKS(), co = C();
   $$("[data-gate]").forEach(function (e) {
-    var k = LOCKS[e.dataset.gate];
+    var k = LK[e.dataset.gate];
     e.hidden = U.premium;
-    e.innerHTML = U.premium ? "" : '<div class="lks"><div class="lki ' + k.c + '">' + ic(k.ic) + "</div><h2>" + k.t + "</h2><p>" + k.p + '</p><a class="btn ' + (k.c ? "v" : "p") + '" href="' + CFG.pricing + '">' + ic("spark") + " Получить премиум</a></div>";
+    e.innerHTML = U.premium ? "" : '<div class="lks"><div class="lki ' + k.c + '">' + ic(k.ic) + "</div><h2>" + k.t + "</h2><p>" + k.p + '</p><a class="btn ' + (k.c ? "v" : "p") + '" href="' + CFG.pricing + '">' + ic("spark") + " " + co.getPremFull + "</a></div>";
   });
   $$("[data-pro]").forEach(function (e) { e.hidden = !U.premium; });
 }
@@ -216,8 +246,9 @@ function side() {
     h += '<a class="nv' + (CUR === n[0] ? " on" : "") + '" data-go="' + n[0] + '" href="#' + n[0] + '">' + ic(n[1]) + l[n[0]] + (n[2] && !U.premium ? ic("lock", "lk") : "") + "</a>";
   });
   h += '</nav><div class="bot">';
-  if (!U.dismiss.android) h += '<div class="pr red"><button class="x" data-act="dismiss" data-k="android" aria-label="Закрыть">×</button><b>Lexy скоро на Android</b><small>Приложение появится в Google Play</small></div>';
-  if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="Закрыть">×</button><span class="pi">' + ic("send") + "</span><div><b>Наш Telegram-канал</b><small>Лайфхаки и разборы ошибок</small></div></a>";
+  var co = C();
+  if (!U.dismiss.android) h += '<div class="pr red"><button class="x" data-act="dismiss" data-k="android" aria-label="' + co.close + '">×</button><b>' + co.androidT + "</b><small>" + co.androidS + "</small></div>";
+  if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
   h += U.premium ? '<div class="prem" style="background:var(--ok)">' + ic("check") + " " + P().premiumActive + "</div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + l.prem + "</a>";
   $("#side").innerHTML = h + "</div>";
@@ -239,16 +270,17 @@ function show(id) {
 
 /* ---------- выбор профиля ---------- */
 function chooser(lock) {
+  var co = C(), t = P();
   modal({
-    title: "Выбери свой путь", lock: lock !== false, foot: false,
-    body: "<p>Мы настроим кабинет под твои цели. Потом это можно изменить в личном кабинете.</p>" +
-      '<div class="paths"><button data-act="pick" data-p="english"><span class="em">🗣</span><div><b>Разговорный английский</b><small>Уроки-разговоры с Lexy, слова и фразы, без экзаменов</small></div></button>' +
-      '<button data-act="pick" data-p="ielts"><span class="em">🎯</span><div><b>Подготовка к IELTS</b><small>Пробные экзамены, баллы, Lexy AI и план до экзамена</small></div></button></div>'
+    title: co.chooserT, lock: lock !== false, foot: false,
+    body: "<p>" + co.chooserBody + "</p>" +
+      '<div class="paths"><button data-act="pick" data-p="english"><span class="em">🗣</span><div><b>' + t.pathEn + "</b><small>" + t.pathEnSub + "</small></div></button>" +
+      '<button data-act="pick" data-p="ielts"><span class="em">🎯</span><div><b>' + t.pathIe + "</b><small>" + t.pathIeSub + "</small></div></button></div>"
   });
 }
 function switchPath(p) {
   save({ path: p });
-  if (p === PROF) { closeM(); show(CUR); toast("Профиль выбран"); }
+  if (p === PROF) { closeM(); show(CUR); toast(C().profChosen); }
   else location.href = CFG.pages[p];
 }
 
@@ -429,14 +461,14 @@ A.name = function () {
   modal({ title: m.nameQ, body: '<label>' + m.nameLbl + '</label><input type="text" id="nm" maxlength="40" value="' + esc(U.name) + '">', ok: m.save, cancel: m.cancel, init: function () { setTimeout(function () { $("#nm").focus(); }, 50); },
     onOk: function () { save({ name: $("#nm").value.trim() }); renderProfile(); toast(m.nameSaved); } });
 };
-A.news = function (el) { save({ news: el.checked }); toast(el.checked ? "Рассылка включена" : "Рассылка выключена"); };
+A.news = function (el) { save({ news: el.checked }); toast(el.checked ? C().newsOn : C().newsOff); };
 A.lang = function (el) { save({ lang: el.dataset.l }); gates(); show(CUR); };
 A.sub = function () { $("#xp-sub").hidden = !$("#xp-sub").hidden; };
 A.guar = function () { $("#xp-guar").hidden = !$("#xp-guar").hidden; };
 A.demoPro = function () {
   if (!CFG.demo) return;
   save({ premium: !U.premium }); gates(); show(CUR);
-  toast(U.premium ? "Premium включён (демо)" : "Premium выключен");
+  toast(U.premium ? C().demoOn : C().demoOff);
 };
 A.logout = function () {
   try {
@@ -463,8 +495,8 @@ A.del = function () {
         localStorage.removeItem("user_email");
         location.href = CFG.home;
       }).catch(function () {
-        if (btn) { btn.disabled = false; btn.textContent = "Удалить"; }
-        toast("Не получилось удалить аккаунт. Попробуй ещё раз.");
+        if (btn) { btn.disabled = false; btn.textContent = C().delBtn; }
+        toast(C().delFail);
       });
       return false;
     } });
