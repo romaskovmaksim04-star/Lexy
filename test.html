@@ -145,7 +145,6 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   <div class="bar">
     <a class="logo" href="dashboard.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
     <div class="sp"></div>
-    <span class="who" id="who"></span>
     <a class="back" href="dashboard-english.html#practice" onclick="__lexyBack(event)"><span class="arr">←</span> Назад</a>
   </div>
   <div class="tabs" id="tabs"></div>
@@ -163,8 +162,6 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   if(!user){ location.replace('login.html'); return; }
 
   var app = document.getElementById('app');
-  var who = document.getElementById('who');
-  who.textContent = user.name || user.email;
   window.__lexyBack = function(e){ if(e) e.preventDefault(); if(history.length > 1) history.back(); else location.href = 'dashboard-english.html#practice'; };
 
   var C = window.LexyContent;
