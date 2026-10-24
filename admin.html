@@ -72,6 +72,8 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
 .quick{display:flex;gap:6px;flex-wrap:wrap}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);vertical-align:middle}
 .dot.off{background:var(--soft)}
+.cpy{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--soft);font-size:12px;vertical-align:middle;cursor:pointer}
+.cpy:hover{border-color:var(--fire);color:var(--fire)}
 @media(max-width:720px){
   .stat{grid-template-columns:1fr 1fr;gap:8px}
   .grid2{grid-template-columns:1fr}
@@ -101,7 +103,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   var app = document.getElementById('app');
   var who = document.getElementById('who');
   var tabsEl = document.getElementById('tabs');
-  var USERS = [], AUX = {}, STATS = {}, TAB = 'users', AUD = 'all', FILTER = 'all';
+  var USERS = [], AUX = {}, STATS = {}, TAB = 'users', AUD = 'all', FILTER = 'all', SORT = 'new';
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function client(){ return LexyAuth.client(); }
@@ -150,22 +152,28 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
     app.innerHTML =
       '<h1>Пользователи</h1><p class="sub">Тарифы, доступ и база. Изменения применяются сразу.</p>'+
       statCards()+
-      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…" style="flex:1;min-width:170px"><div class="seg" id="filt"><button data-f="all" class="on">Все</button><button data-f="premium">Premium</button><button data-f="free">Бесплатные</button></div><button class="btn ghost" id="csv">CSV</button><button class="btn ghost" id="reload">Обновить</button></div></div>'+
+      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…" style="flex:1;min-width:170px"><div class="seg" id="filt"><button data-f="all" class="on">Все</button><button data-f="premium">Premium</button><button data-f="free">Бесплатные</button></div><div class="seg" id="sort"><button data-s="new" class="on">Новые</button><button data-s="prem">Premium</button><button data-s="az">A–Z</button></div><button class="btn ghost" id="csv">CSV</button><button class="btn ghost" id="reload">Обновить</button></div></div>'+
       '<div class="block" style="padding:0"><div class="tablewrap"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th class="hide">Осталось</th><th>Действия</th></tr></thead><tbody id="tb"></tbody></table></div></div>';
     document.getElementById('reload').addEventListener('click', loadAll);
     document.getElementById('csv').addEventListener('click', exportCsv);
     document.getElementById('q').addEventListener('input', drawRows);
     document.getElementById('filt').addEventListener('click', function(e){ var b=e.target.closest('[data-f]'); if(!b) return; FILTER=b.dataset.f; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); drawRows(); });
+    document.getElementById('sort').addEventListener('click', function(e){ var b=e.target.closest('[data-s]'); if(!b) return; SORT=b.dataset.s; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); drawRows(); });
     drawRows();
   }
 
   function filtered(){
     var q=(document.getElementById('q')?document.getElementById('q').value:'').trim().toLowerCase();
-    return USERS.filter(function(u){
+    var list=USERS.filter(function(u){
       if(FILTER==='premium' && u.plan==='free') return false;
       if(FILTER==='free' && u.plan!=='free') return false;
       return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q)>-1;
     });
+    list=list.slice();
+    if(SORT==='prem') list.sort(function(a,b){ return (b.plan!=='free')-(a.plan!=='free') || (new Date(b.created_at)-new Date(a.created_at)); });
+    else if(SORT==='az') list.sort(function(a,b){ return String(a.email).localeCompare(String(b.email)); });
+    else list.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+    return list;
   }
   function drawRows(){
     var tb=document.getElementById('tb'); if(!tb) return;
@@ -175,14 +183,17 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
       var dl=daysLeft(u.plan_expires_at), dlt=dl!=null?(dl+' дн'):'—';
       var news=AUX[String(u.email||'').toLowerCase()];
       return '<tr data-id="'+esc(u.id)+'">'+
-        '<td><span class="em">'+esc(u.email)+'</span> <span class="dot'+(news===false?' off':'')+'" title="рассылка"></span><br><small style="color:var(--soft)">'+esc(u.path||'путь не выбран')+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>'+
+        '<td><span class="em">'+esc(u.email)+'</span> <button class="cpy" data-copy="'+esc(u.email)+'" title="Скопировать">⧉</button> <span class="dot'+(news===false?' off':'')+'" title="рассылка"></span><br><small style="color:var(--soft)">'+esc(u.path||'путь не выбран')+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>'+
         '<td class="hide">'+esc(u.name||'—')+'</td>'+
         '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+'</select></td>'+
         '<td class="hide">'+esc(dlt)+'</td>'+
-        '<td><div class="quick"><button class="btn mini ghost" data-grant="30">+30д</button><button class="btn mini ghost" data-grant="90">+90д</button><button class="btn mini ghost" data-grant="365">+365д</button><button class="btn mini ghost" data-revoke>Отозвать</button><button class="btn mini" data-save>Сохранить</button></div></td></tr>';
+        '<td><div class="quick"><button class="btn mini ghost" data-grant="30">+30д</button><button class="btn mini ghost" data-grant="90">+90д</button><button class="btn mini ghost" data-grant="365">+365д</button><button class="btn mini ghost" data-revoke>Отозвать</button><button class="btn mini" data-save>Сохранить</button><button class="btn mini" data-del style="background:#E5443E;box-shadow:none">Удалить</button></div></td></tr>';
     }).join('');
     tb.querySelectorAll('tr').forEach(function(tr){
       var id=tr.getAttribute('data-id');
+      var em=(tr.querySelector('.em')||{}).textContent||'';
+      var cp=tr.querySelector('[data-copy]'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(cp.dataset.copy);}catch(e){} cp.textContent='✓'; setTimeout(function(){cp.textContent='⧉';},900); });
+      var de=tr.querySelector('[data-del]'); if(de) de.addEventListener('click',function(){ if(!confirm('Удалить аккаунт '+em+'? Это необратимо.')) return; de.disabled=true; client().rpc('lexy_admin_delete_user',{p_user_id:id}).then(function(res){ if(res.error){ alert('Ошибка: '+res.error.message); de.disabled=false; return; } loadAll(); }).catch(function(){ de.disabled=false; alert('Не получилось'); }); });
       function set(plan,days,btn){ if(btn){btn.disabled=true;} client().rpc('lexy_admin_set_plan',{p_user_id:id,p_plan:plan,p_days:days}).then(function(res){ if(res.error){alert('Ошибка: '+res.error.message); if(btn)btn.disabled=false; return;} var u=res.data&&res.data[0]?res.data[0]:res.data; var idx=USERS.findIndex(function(x){return x.id===id;}); if(idx>-1&&u){USERS[idx].plan=u.plan;USERS[idx].plan_expires_at=u.plan_expires_at;} loadAll(); }).catch(function(){ if(btn)btn.disabled=false; alert('Не получилось'); }); }
       tr.querySelectorAll('[data-grant]').forEach(function(b){ b.addEventListener('click',function(){ set('pro',parseInt(b.dataset.grant,10),b); }); });
       var rv=tr.querySelector('[data-revoke]'); if(rv) rv.addEventListener('click',function(){ set('free',30,rv); });
