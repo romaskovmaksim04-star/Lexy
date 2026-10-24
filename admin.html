@@ -9,46 +9,83 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--fire:#FF5A1F;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--ok:#12A15C;--display:"Unbounded",system-ui,sans-serif;--body:"Onest",system-ui,sans-serif}
+:root{--fire:#FF5A1F;--fire2:#FF9A0A;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--ok:#12A15C;--bad:#E5443E;--vio:#7A40FF;--display:"Unbounded",system-ui,sans-serif;--body:"Onest",system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font:400 15px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
-.top{position:sticky;top:0;z-index:5;background:rgba(247,245,252,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:12px;height:60px;padding:0 18px}
-.logo{display:flex;align-items:center;gap:8px;font:800 20px var(--display);letter-spacing:-.03em}
+.top{position:sticky;top:0;z-index:6;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .bar{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:10px;height:58px;padding:0 16px}
+.logo{display:flex;align-items:center;gap:8px;font:800 19px var(--display);letter-spacing:-.03em}
 .logo i{width:22px;height:26px;display:block;background:linear-gradient(135deg,#FF4E1A,#FF9A0A);border-radius:6px 6px 50% 50%}
-.who{margin-left:auto;font-size:13px;color:var(--soft)}
-main{max-width:1080px;margin:0 auto;padding:26px 18px 70px}
-h1{font:800 clamp(22px,4vw,30px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:6px}
-.sub{color:var(--soft);font-size:14px;margin-bottom:20px}
-.block{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.who{margin-left:auto;font-size:12.5px;color:var(--soft);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{max-width:1060px;margin:0 auto;display:flex;gap:8px;padding:10px 16px 12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:12px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--soft);transition:.15s}
+.tab:hover{border-color:var(--fire);color:var(--fire)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+main{max-width:1060px;margin:0 auto;padding:8px 16px 80px}
+h1{font:800 clamp(21px,4vw,28px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:4px}
+.sub{color:var(--soft);font-size:13.5px;margin-bottom:18px}
+.block{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
 .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-input.q{flex:1;min-width:200px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;outline:none;font:500 14px var(--body)}
-input.q:focus{border-color:var(--fire)}
+input.q,textarea.q,select.q{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;outline:none;font:500 14px var(--body);background:#fff}
+input.q:focus,textarea.q:focus,select.q:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.1)}
+textarea.q{min-height:140px;resize:vertical;font:400 14.5px/1.6 var(--body)}
+label.lbl{display:block;font:700 12px var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--soft);margin:0 0 6px 2px}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-th{color:var(--soft);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+th{color:var(--soft);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
 td .em{font-weight:700}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body);background:#fff}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:11px;background:var(--fire);color:#fff;font:700 13px var(--body)}
-.btn:hover{filter:brightness(1.05)}
-.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:12px;background:linear-gradient(135deg,var(--fire),var(--fire2));color:#fff;font:700 13.5px var(--body);box-shadow:0 12px 24px -14px rgba(255,90,31,.9);transition:.15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.55;transform:none;cursor:default}
 .pill{display:inline-block;padding:3px 9px;border-radius:999px;font:700 11px var(--display);letter-spacing:.03em}
 .pill.free{background:#EEF0F5;color:#6B6585}
 .pill.pro{background:#FFF0E8;color:#FF5A1F}
-.pill.pro_plus{background:#EFE7FF;color:#6D5BFF}
 .center{text-align:center;padding:50px 20px;color:var(--soft)}
 .loading{color:var(--soft);padding:30px;text-align:center}
-.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat .s{background:var(--mist);border-radius:14px;padding:14px}
-.stat b{font:800 22px var(--display);display:block}
-.stat small{color:var(--soft)}
-@media(max-width:640px){table .hide{display:none}.stat{grid-template-columns:1fr 1fr 1fr}}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat .s{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;position:relative;overflow:hidden}
+.stat .s::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--ac,var(--fire))}
+.stat b{font:800 22px var(--display);display:block;color:var(--ac,var(--fire))}
+.stat small{color:var(--soft);font-size:12px}
+.nlist{display:flex;flex-direction:column;gap:10px}
+.nitem{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;animation:fadeUp .35s both}
+.nitem .tx{flex:1;min-width:0}
+.nitem .tx p{font-weight:600;line-height:1.5;word-break:break-word}
+.nitem .tx small{color:var(--soft);font-size:11.5px}
+.nitem .del{flex:none;width:34px;height:34px;border-radius:10px;background:#FFF2F1;color:var(--bad);display:grid;place-items:center;border:1.5px solid #F3C6C2}
+.nitem .del:hover{background:#FFE4E1}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{padding:10px 14px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font:700 13px var(--body);color:var(--soft)}
+.seg button.on{background:var(--fire);border-color:var(--fire);color:#fff}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.okmsg{color:var(--ok);font-weight:700}
+.errmsg{color:var(--bad);font-weight:700}
+@media(max-width:640px){
+  .top .bar{height:54px}
+  .who{display:none}
+  .stat{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .stat b{font-size:18px}
+  h1{font-size:21px}
+  .block{padding:15px}
+  table .hide{display:none}
+}
 </style>
 </head>
 <body>
-<header class="top"><div class="bar"><span class="logo"><i></i>Lexy Admin</span><span class="who" id="who"></span><a class="btn ghost" id="back" href="main.html">← На сайт</a></div></header>
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="dashboard.html"><i></i>Lexy Admin</a>
+    <span class="who" id="who"></span>
+    <a class="btn ghost" id="back" href="main.html">← На сайт</a>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
 <main id="app"><div class="loading">Загрузка…</div></main>
 
 <script src="lexy-config.js?v=7"></script>
@@ -58,77 +95,141 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   var ADMIN = "romaskovmaksim04@gmail.com";
   var app = document.getElementById('app');
   var who = document.getElementById('who');
+  var tabsEl = document.getElementById('tabs');
+  var USERS = [], TAB = 'users', AUD = 'all';
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-  function planPill(p){ return '<span class="pill '+esc(p)+'">'+esc(p)+'</span>'; }
+  function pill(p){ return '<span class="pill '+(p==='free'?'free':'pro')+'">'+(p==='free'?'Free':'Premium')+'</span>'; }
+  function client(){ return LexyAuth.client(); }
+
+  function drawTabs(){
+    var T=[['users','Пользователи','👥'],['broadcast','Рассылка','✉️'],['notif','Уведомления','🔔']];
+    tabsEl.innerHTML = T.map(function(t){ return '<button class="tab'+(TAB===t[0]?' on':'')+'" data-tab="'+t[0]+'">'+t[2]+' '+t[1]+'</button>'; }).join('');
+  }
+  tabsEl.addEventListener('click', function(e){ var b=e.target.closest('[data-tab]'); if(!b) return; TAB=b.dataset.tab; drawTabs(); draw(); });
 
   function gate(){
-    if(!window.LexyAuth){ app.innerHTML = '<div class="center">Не удалось загрузить авторизацию. Обнови страницу.</div>'; return; }
+    if(!window.LexyAuth){ app.innerHTML='<div class="center">Не удалось загрузить авторизацию. Обнови страницу.</div>'; return; }
     LexyAuth.ready.then(function(){
-      var u = LexyAuth.user();
-      who.textContent = u ? u.email : '';
-      if(!u){ app.innerHTML = '<div class="center"><h1>Нужен вход</h1><p class="sub">Войди под аккаунтом администратора.</p><a class="btn" href="login.html">Войти</a></div>'; return; }
-      if((u.email||'').toLowerCase() !== ADMIN){
-        app.innerHTML = '<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для '+esc(ADMIN)+'.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>';
-        return;
-      }
-      load();
+      var u=LexyAuth.user(); who.textContent = u?u.email:'';
+      if(!u){ app.innerHTML='<div class="center"><h1>Нужен вход</h1><p class="sub">Войди под аккаунтом администратора.</p><a class="btn" href="login.html">Войти</a></div>'; return; }
+      if((u.email||'').toLowerCase()!==ADMIN){ app.innerHTML='<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для '+esc(ADMIN)+'.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>'; return; }
+      drawTabs(); loadUsers();
     });
   }
 
-  var USERS = [];
-  function load(){
-    app.innerHTML = '<div class="loading">Загружаю пользователей…</div>';
-    LexyAuth.client().rpc('lexy_admin_users').then(function(res){
-      if(res.error){ app.innerHTML = '<div class="center">Ошибка: '+esc(res.error.message)+'</div>'; return; }
-      USERS = res.data || [];
-      render();
-    }).catch(function(){ app.innerHTML = '<div class="center">Не удалось получить данные.</div>'; });
+  function loadUsers(){
+    app.innerHTML='<div class="loading">Загружаю пользователей…</div>';
+    client().rpc('lexy_admin_users').then(function(res){
+      if(res.error){ app.innerHTML='<div class="center">Ошибка: '+esc(res.error.message)+'</div>'; return; }
+      USERS=res.data||[]; draw();
+    }).catch(function(){ app.innerHTML='<div class="center">Не удалось получить данные.</div>'; });
   }
 
-  function render(){
-    var total = USERS.length;
-    var paid = USERS.filter(function(u){ return u.plan !== 'free'; }).length;
+  function draw(){ if(TAB==='users') drawUsers(); else if(TAB==='broadcast') drawBroadcast(); else drawNotif(); }
+
+  function stats(){
+    var total=USERS.length, paid=USERS.filter(function(u){return u.plan!=='free';}).length;
+    return '<div class="stat"><div class="s" style="--ac:#7A40FF"><b>'+total+'</b><small>всего аккаунтов</small></div>'+
+      '<div class="s" style="--ac:#FF5A1F"><b>'+paid+'</b><small>с Premium</small></div>'+
+      '<div class="s" style="--ac:#12A15C"><b>'+(total-paid)+'</b><small>бесплатных</small></div></div>';
+  }
+
+  function drawUsers(){
     app.innerHTML =
-      '<h1>Пользователи</h1><p class="sub">Переключай тарифы и следи за базой. Изменения применяются сразу.</p>' +
-      '<div class="stat" style="margin-bottom:16px"><div class="s"><b>'+total+'</b><small>всего аккаунтов</small></div><div class="s"><b style="color:var(--fire)">'+paid+'</b><small>с Premium</small></div><div class="s"><b>'+(total-paid)+'</b><small>бесплатных</small></div></div>' +
-      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…"><button class="btn ghost" id="reload">Обновить</button></div></div>' +
-      '<div class="block" style="padding:0;overflow:auto"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th>До</th><th>Срок</th></tr></thead><tbody id="tb"></tbody></table></div>';
-    document.getElementById('reload').addEventListener('click', load);
+      '<h1>Пользователи</h1><p class="sub">Переключай тарифы и следи за базой — изменения применяются сразу.</p>'+
+      stats()+
+      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…" style="flex:1;min-width:180px"><button class="btn ghost" id="reload">Обновить</button></div></div>'+
+      '<div class="block" style="padding:0"><div class="tablewrap"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th class="hide">До</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>';
+    document.getElementById('reload').addEventListener('click', loadUsers);
     document.getElementById('q').addEventListener('input', drawRows);
     drawRows();
   }
 
   function drawRows(){
-    var q = (document.getElementById('q').value||'').trim().toLowerCase();
-    var tb = document.getElementById('tb');
-    var list = USERS.filter(function(u){ return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q) > -1; });
-    if(!list.length){ tb.innerHTML = '<tr><td colspan="5" class="center">Ничего не найдено</td></tr>'; return; }
-    tb.innerHTML = list.map(function(u){
-      var until = u.plan_expires_at ? new Date(u.plan_expires_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      return '<tr data-id="'+esc(u.id)+'">' +
-        '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc((u.path||'путь не выбран'))+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>' +
-        '<td class="hide">'+esc(u.name||'—')+'</td>' +
-        '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){ return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>'; }).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:58px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>' +
-        '<td>'+esc(until)+'</td>' +
+    var q=(document.getElementById('q').value||'').trim().toLowerCase();
+    var tb=document.getElementById('tb');
+    var list=USERS.filter(function(u){ return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q)>-1; });
+    if(!list.length){ tb.innerHTML='<tr><td colspan="5" class="center">Ничего не найдено</td></tr>'; return; }
+    tb.innerHTML=list.map(function(u){
+      var until=u.plan_expires_at?new Date(u.plan_expires_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}):'—';
+      return '<tr data-id="'+esc(u.id)+'">'+
+        '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc(u.path||'путь не выбран')+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>'+
+        '<td class="hide">'+esc(u.name||'—')+'</td>'+
+        '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:56px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>'+
+        '<td class="hide">'+esc(until)+'</td>'+
         '<td><button class="btn" data-save>Сохранить</button></td></tr>';
     }).join('');
     tb.querySelectorAll('[data-save]').forEach(function(b){
-      b.addEventListener('click', function(){
-        var tr = b.closest('tr'); var id = tr.getAttribute('data-id');
-        var plan = tr.querySelector('[data-plan]').value;
-        var days = parseInt((tr.querySelector('[data-days]') || {}).value, 10) || 30;
-        b.disabled = true; b.textContent = '…';
-        LexyAuth.client().rpc('lexy_admin_set_plan', { p_user_id: id, p_plan: plan, p_days: days }).then(function(res){
-          b.disabled = false; b.textContent = 'Сохранить';
+      b.addEventListener('click',function(){
+        var tr=b.closest('tr'), id=tr.getAttribute('data-id');
+        var plan=tr.querySelector('[data-plan]').value;
+        var days=parseInt((tr.querySelector('[data-days]')||{}).value,10)||30;
+        b.disabled=true; b.textContent='…';
+        client().rpc('lexy_admin_set_plan',{p_user_id:id,p_plan:plan,p_days:days}).then(function(res){
+          b.disabled=false; b.textContent='Сохранить';
           if(res.error){ alert('Ошибка: '+res.error.message); return; }
-          var u = res.data && res.data[0] ? res.data[0] : res.data;
-          var idx = USERS.findIndex(function(x){ return x.id === id; });
-          if(idx > -1 && u){ USERS[idx].plan = u.plan; USERS[idx].plan_expires_at = u.plan_expires_at; }
-          render(); drawRows();
-        }).catch(function(){ b.disabled = false; b.textContent = 'Сохранить'; alert('Не получилось сохранить'); });
+          var u=res.data&&res.data[0]?res.data[0]:res.data;
+          var idx=USERS.findIndex(function(x){return x.id===id;});
+          if(idx>-1&&u){ USERS[idx].plan=u.plan; USERS[idx].plan_expires_at=u.plan_expires_at; }
+          drawUsers();
+        }).catch(function(){ b.disabled=false; b.textContent='Сохранить'; alert('Не получилось сохранить'); });
       });
     });
+  }
+
+  function drawBroadcast(){
+    app.innerHTML =
+      '<h1>Рассылка</h1><p class="sub">Напиши сообщение и выбери, кому отправить. Тем, кто выключил рассылку в профиле, письмо не уйдёт.</p>'+
+      '<div class="block"><label class="lbl">Кому отправить</label>'+
+        '<div class="seg" id="aud"><button data-a="all" class="on">Всем</button><button data-a="premium">С Premium</button><button data-a="free">Без Premium</button></div></div>'+
+      '<div class="block"><label class="lbl">Тема письма</label><input class="q" id="subj" placeholder="Например: Новые слова в словаре Lexy 🎉">'+
+        '<div style="height:14px"></div><label class="lbl">Сообщение</label><textarea class="q" id="msg" placeholder="Текст письма…"></textarea>'+
+        '<div class="row" style="margin-top:14px"><button class="btn" id="send">Отправить</button><span id="bres"></span></div></div>';
+    document.getElementById('aud').addEventListener('click',function(e){
+      var b=e.target.closest('[data-a]'); if(!b) return; AUD=b.dataset.a;
+      document.querySelectorAll('#aud button').forEach(function(x){ x.classList.toggle('on',x===b); });
+    });
+    document.getElementById('send').addEventListener('click',function(){
+      var subj=(document.getElementById('subj').value||'').trim();
+      var msg=(document.getElementById('msg').value||'').trim();
+      var out=document.getElementById('bres');
+      if(!subj||!msg){ out.className='errmsg'; out.textContent='Заполни тему и сообщение.'; return; }
+      var b=this; b.disabled=true; out.className=''; out.textContent='Отправляем…';
+      client().functions.invoke('admin-broadcast',{body:{audience:AUD,subject:subj,body:msg}}).then(function(res){
+        b.disabled=false;
+        var d=res.data;
+        if(res.error||!d||d.error){ out.className='errmsg'; out.textContent='Ошибка: '+((res.error&&res.error.message)||(d&&d.error)||'не удалось'); return; }
+        out.className='okmsg'; out.textContent='Отправлено: '+d.sent+' из '+d.total+(d.failed?(' (ошибок: '+d.failed+')'):'')+' 🎉';
+      }).catch(function(){ b.disabled=false; out.className='errmsg'; out.textContent='Не удалось отправить.'; });
+    });
+  }
+
+  function drawNotif(){
+    app.innerHTML =
+      '<h1>Уведомления</h1><p class="sub">Показываются в кабинете слева (максимум 2 — самые новые).</p>'+
+      '<div class="block"><label class="lbl">Новое уведомление</label><div class="row"><input class="q" id="nt" placeholder="Текст уведомления…" style="flex:1;min-width:200px"><button class="btn" id="nadd">Добавить</button></div><div id="nres" style="margin-top:8px"></div></div>'+
+      '<div id="nlist" class="nlist"><div class="loading">Загружаю…</div></div>';
+    document.getElementById('nadd').addEventListener('click',function(){
+      var t=(document.getElementById('nt').value||'').trim(); if(!t) return;
+      var b=this; b.disabled=true;
+      client().rpc('lexy_admin_add_notification',{p_text:t}).then(function(res){
+        b.disabled=false; if(res.error){ document.getElementById('nres').className='errmsg'; document.getElementById('nres').textContent=res.error.message; return; }
+        document.getElementById('nt').value=''; loadNotif();
+      }).catch(function(){ b.disabled=false; });
+    });
+    loadNotif();
+  }
+  function loadNotif(){
+    var el=document.getElementById('nlist'); if(!el) return;
+    client().rpc('lexy_admin_notifications').then(function(res){
+      var rows=(res&&res.data)||[];
+      if(!rows.length){ el.innerHTML='<div class="center" style="padding:24px">Пока нет уведомлений</div>'; return; }
+      el.innerHTML=rows.map(function(n){ return '<div class="nitem"><div class="tx"><p>'+esc(n.text)+'</p><small>'+new Date(n.created_at).toLocaleString('ru-RU')+'</small></div><button class="del" data-id="'+n.id+'">✕</button></div>'; }).join('');
+      el.querySelectorAll('.del').forEach(function(b){ b.addEventListener('click',function(){
+        client().rpc('lexy_admin_delete_notification',{p_id:Number(b.dataset.id)}).then(function(){ loadNotif(); });
+      }); });
+    }).catch(function(){ el.innerHTML='<div class="center">Ошибка</div>'; });
   }
 
   gate();

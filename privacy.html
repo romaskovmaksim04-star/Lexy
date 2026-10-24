@@ -182,6 +182,6 @@ document.querySelectorAll('.lang-item').forEach(function(b){ b.addEventListener(
 document.addEventListener('click',function(){ langWrap.classList.remove('open'); });
 (function(){ var s; try{ s=localStorage.getItem('lang'); }catch(e){} if(!s){ var n=(navigator.language||'ru').slice(0,2).toLowerCase(); s=TRANSLATIONS[n]?n:'ru'; } if(!TRANSLATIONS[s]) s='ru'; setLang(s); })();
 </script>
-<script src="lexy-authnav.js?v=2"></script>
+<script src="lexy-authnav.js?v=3"></script>
 </body>
 </html>

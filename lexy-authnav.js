@@ -20,10 +20,10 @@
     function run() {
       var d = w.document;
       d.querySelectorAll("a.logo").forEach(function (a) { a.setAttribute("href", dest); });
-      d.querySelectorAll(".menu-btn").forEach(function (a) {
+      d.querySelectorAll(".menu-btn, a.back").forEach(function (a) {
         a.setAttribute("href", dest);
         var s = a.querySelector("span");
-        if (s) s.textContent = back;
+        if (s) s.textContent = back; else a.textContent = "← " + back;
       });
       d.querySelectorAll('a[href="reg.html"]').forEach(function (a) { a.style.display = "none"; });
       d.querySelectorAll('a[href="login.html"]').forEach(function (a) {

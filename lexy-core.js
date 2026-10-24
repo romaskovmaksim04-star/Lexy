@@ -16,12 +16,13 @@ var CFG = Object.assign({
   requireAuth: true,       // true = без сессии отправлять на login.html
   login: "login.html", pricing: "pricing.html", home: "main.html",
   privacy: "privacy.html", terms: "terms.html", test: "test.html",
-  support: "lexisupportapp@gmail.com", tg: "https://t.me/",
+  support: "lexisupportapp@gmail.com", tg: "https://t.me/LexiEnglishWorld",
   pages: { english: "dashboard-english.html", ielts: "dashboard-ielts.html" }
 }, w.LEXY_CONFIG || {});
 
 var KEY = "lexy_db_v1", SES = "lexy_session";
 var U = null, PROF = null, CUR = null, MOK = null, MLOCK = false, REDIR = false, GATED = false;
+var NOTIF = [];
 var H = {}, A = {};
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -212,6 +213,8 @@ var CO = {
     newsOn: "Xabarnoma yoqildi", newsOff: "Xabarnoma o'chirildi", demoOn: "Premium yoqildi (demo)", demoOff: "Premium o'chirildi", delFail: "Akkaunt o'chirilmadi. Qayta urinib ko'ring.", delBtn: "O'chirish" }
 };
 function C() { return CO[U.lang] || CO.ru; }
+var RENEW = { ru: "Продлить тариф", en: "Extend plan", kz: "Тарифті ұзарту", uz: "Tarifni uzaytirish" };
+function renewT() { return RENEW[U.lang] || RENEW.ru; }
 
 /* ---------- модалка / тост ---------- */
 function modal(o) {
@@ -249,6 +252,16 @@ function gates() {
   $$("[data-pro]").forEach(function (e) { e.hidden = !U.premium; });
 }
 
+/* ---------- уведомления из админки ---------- */
+function loadNotifs() {
+  if (!w.LexyAuth || !w.LexyAuth.client) return;
+  try {
+    w.LexyAuth.client().rpc("lexy_notifications").then(function (res) {
+      if (res && !res.error && res.data) { NOTIF = res.data; side(); }
+    }).catch(function () {});
+  } catch (e) {}
+}
+
 /* ---------- сайдбар ---------- */
 function side() {
   var l = L(), h = '<a class="brand" href="dashboard.html">' + fl(31) + "Lexy</a><nav>";
@@ -257,7 +270,9 @@ function side() {
   });
   h += '</nav><div class="bot">';
   var co = C();
-  if (!U.dismiss.android) h += '<div class="pr red"><button class="x" data-act="dismiss" data-k="android" aria-label="' + co.close + '">×</button><b>' + co.androidT + "</b><small>" + co.androidS + "</small></div>";
+  NOTIF.slice(0, 2).forEach(function (n) {
+    h += '<div class="pr red"><span class="pi">' + ic("star") + '</span><div><b>' + esc(n.text) + "</b></div></div>";
+  });
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
   h += U.premium ? '<div class="prem" style="background:var(--ok)">' + ic("check") + " " + P().premiumActive + "</div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + l.prem + "</a>";
@@ -335,6 +350,9 @@ function pfCss() {
 .pflang button{padding:9px 14px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font:700 13px var(--display);color:var(--soft);cursor:pointer;transition:.15s}
 .pflang button:hover{border-color:var(--fire);color:var(--fire)}
 .pflang button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pfsel{display:none;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);font:700 13px var(--display);background:#fff;color:var(--ink);max-width:150px}
+.pfok{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#12A15C,#1FBF7A);color:#fff;box-shadow:0 8px 16px -8px rgba(18,161,92,.9)}
+@media(max-width:560px){.pflang{display:none}.pfsel{display:inline-block}}
 .pfpaths{display:grid;gap:10px;padding:16px 18px}
 @media(min-width:620px){.pfpaths{grid-template-columns:1fr 1fr}}
 .pfp{display:flex;align-items:center;gap:13px;padding:15px;border-radius:17px;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:.16s;text-align:left;width:100%}
@@ -396,15 +414,15 @@ function renderProfile() {
     "</div>";
 
   var setg = sec("globe", t.settings) + '<div class="pfcard">' +
-    rowA("globe", t.language, "", '<div class="pflang">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + "</div>") +
+    rowA("globe", t.language, "", '<div class="pflang">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + '</div><select class="pfsel" id="pfLangSel">' + [["en", "English"], ["ru", "Русский"], ["kz", "Қазақша"], ["uz", "Oʻzbekcha"]].map(function (x) { return '<option value="' + x[0] + '"' + (U.lang === x[0] ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select>") +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
       '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
     "</div></div></div>";
 
   var subs = sec("crown", t.subscription) + '<div class="pfcard">' +
-    '<div class="pfrow tap" data-act="sub" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("crown") + '</span><div class="tx"><b>' + plans + "</b><small>" + (U.premium ? t.active : t.noSub) + '</small></div><span class="nt">' + (U.premium ? "✓" : "⌄") + "</span></div>" +
-    '<div class="pfxp" id="xp-sub" hidden>' + t.premDesc + '<br><a class="btn p sm" href="' + CFG.pricing + '" style="margin-top:10px">' + t.choosePlan + "</a>" + (CFG.demo ? '<button class="btn g sm" data-act="demoPro" style="margin-left:8px">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div>" +
+    '<div class="pfrow tap" data-act="sub" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("crown") + '</span><div class="tx"><b>' + plans + "</b><small>" + (U.premium ? t.active : t.noSub) + '</small></div>' + (U.premium ? '<span class="pfok">' + ic("check") + "</span>" : '<span class="nt">⌄</span>') + "</div>" +
+    '<div class="pfxp" id="xp-sub" hidden>' + t.premDesc + '<br><a class="btn p sm" href="' + CFG.pricing + '" style="margin-top:10px">' + (U.premium ? renewT() : t.choosePlan) + "</a>" + (CFG.demo ? '<button class="btn g sm" data-act="demoPro" style="margin-left:8px">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div>" +
     "</div>";
 
   var guar = sec("shield", t.guarantee) + '<div class="pfcard">' +
@@ -572,6 +590,7 @@ function init(p, o) {
     if (a && A[a.dataset.act]) A[a.dataset.act](a, e);
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !MLOCK) closeM(); });
+  document.addEventListener("change", function (e) { if (e.target && e.target.id === "pfLangSel") A.lang({ dataset: { l: e.target.value } }); });
   w.addEventListener("hashchange", function () { show((location.hash || "").slice(1)); });
   w.addEventListener("storage", function (e) {   // профиль сменили в другой вкладке/файле
     if (e.key !== KEY) return;
@@ -580,6 +599,7 @@ function init(p, o) {
     if (n.path && n.path !== PROF) location.replace(CFG.pages[n.path]);
   });
   gates();
+  loadNotifs();
   CUR = (location.hash || "").slice(1) || NAV[p][0][0];
   show(CUR);
   if (!U.path) chooser();
