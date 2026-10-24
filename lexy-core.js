@@ -211,7 +211,7 @@ function gates() {
 
 /* ---------- сайдбар ---------- */
 function side() {
-  var l = L(), h = '<a class="brand" href="' + CFG.home + '">' + fl(31) + "Lexy</a><nav>";
+  var l = L(), h = '<a class="brand" href="dashboard.html">' + fl(31) + "Lexy</a><nav>";
   NAV[PROF].forEach(function (n) {
     h += '<a class="nv' + (CUR === n[0] ? " on" : "") + '" data-go="' + n[0] + '" href="#' + n[0] + '">' + ic(n[1]) + l[n[0]] + (n[2] && !U.premium ? ic("lock", "lk") : "") + "</a>";
   });
@@ -419,7 +419,7 @@ function init(p, o) {
   if (!U) load();
   PROF = p; H = (o && o.render) || {}; GATED = !!(o && o.vocabGated);
   document.body.insertAdjacentHTML("afterbegin", sprite() +
-    '<div class="veil" data-act="burger"></div><div class="mbar"><button class="bb" data-act="burger" aria-label="Меню">' + ic("menu") + '</button><a class="brand" href="' + CFG.home + '">' + fl(28) + 'Lexy</a></div><aside class="side" id="side"></aside>' +
+    '<div class="veil" data-act="burger"></div><div class="mbar"><button class="bb" data-act="burger" aria-label="Меню">' + ic("menu") + '</button><a class="brand" href="dashboard.html">' + fl(28) + 'Lexy</a></div><aside class="side" id="side"></aside>' +
     '<div class="mv" id="mv"></div><div class="toast" id="toast"></div><a class="fab" href="mailto:' + CFG.support + '" aria-label="Поддержка">' + fl(26) + "</a>");
   document.addEventListener("click", function (e) {
     if (e.target.id === "mv" && !MLOCK) { closeM(); return; }
