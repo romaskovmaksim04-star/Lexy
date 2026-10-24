@@ -52,7 +52,7 @@
 
   function render(el) {
     if (!el) return;
-    if (!w.Lexy.user.premium) { el.innerHTML = '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexy AI — Premium</h2><p class="s">Разговорная практика с вопросами, образцами и разбором — на тарифах Pro и Pro+.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>'; return; }
+    if (!w.Lexy.user.premium) { el.innerHTML = '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexy AI — Premium</h2><p class="s">Разговорная практика с вопросами, образцами и разбором — на тарифе Premium.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>'; return; }
     if (!cur) pick();
     var sampleWords = cur.sample.split(/\s+/).length;
     el.innerHTML = '<h1 class="t">Lexy AI</h1><p class="s">Практика Speaking: ответь на вопрос, затем сверься с образцом и разбором</p>' +

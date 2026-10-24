@@ -109,7 +109,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
       return '<tr data-id="'+esc(u.id)+'">' +
         '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc((u.path||'путь не выбран'))+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>' +
         '<td class="hide">'+esc(u.name||'—')+'</td>' +
-        '<td><select data-plan>'+['free','pro','pro_plus'].map(function(p){ return '<option value="'+p+'"'+(u.plan===p?' selected':'')+'>'+p+'</option>'; }).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:58px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>' +
+        '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){ return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>'; }).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:58px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>' +
         '<td>'+esc(until)+'</td>' +
         '<td><button class="btn" data-save>Сохранить</button></td></tr>';
     }).join('');

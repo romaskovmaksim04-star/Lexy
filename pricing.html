@@ -78,7 +78,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 
 /* Тарифы */
 .plans{display:grid;gap:18px;grid-template-columns:1fr;margin-bottom:30px}
-@media(min-width:820px){.plans{grid-template-columns:repeat(3,1fr);align-items:stretch}}
+@media(min-width:820px){.plans{grid-template-columns:repeat(2,1fr);align-items:stretch;max-width:760px;margin-left:auto;margin-right:auto}}
 .plan{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:24px;padding:26px 22px;display:flex;flex-direction:column;gap:14px;transition:transform .25s,border-color .25s,box-shadow .25s}
 .plan:hover{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(27,20,51,.5)}
 .plan.featured{border-color:var(--fire);box-shadow:0 20px 40px -26px rgba(255,90,31,.7)}
@@ -167,7 +167,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 
 <main>
   <h1 data-i18n="plans.title">Выбери свой план</h1>
-  <p class="sub" data-i18n="plans.sub">Начни бесплатно и переходи на Pro, когда захочешь больше. Отмена в любой момент.</p>
+  <p class="sub" data-i18n="plans.sub">Начни бесплатно и переходи на Premium, когда захочешь больше. Отмена в любой момент.</p>
 
   <div class="discount-badge" id="discountBadge">
     <svg><use href="#ic-gift"/></svg>
@@ -193,40 +193,22 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
     </article>
 
     <article class="plan featured" data-badge="Популярный">
-      <div class="name" data-i18n="plan.pro.name">Pro</div>
-      <div class="descr" data-i18n="plan.pro.descr">Идеально, если готовишься к IELTS в ближайшие 3 месяца.</div>
+      <div class="name" data-i18n="plan.pro.name">Premium</div>
+      <div class="descr" data-i18n="plan.pro.descr">Всё платное в Lexy: курс, задания, словарь и Lexy AI.</div>
       <div class="price">
-        <span class="was" id="wasPro">980</span>
-        <span id="pricePro">490</span>
+        <span class="was" id="wasPro">3180</span>
+        <span id="pricePro">1590</span>
         <small id="curPro">₽/мес</small>
       </div>
       <div class="per" data-i18n="plan.pro.per">Оплата ежемесячно · отмена в любой момент</div>
       <ul>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f1">40+ заданий: чтение, аудио, письмо, говорение</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f2">ИИ-экзаменатор Writing и Speaking</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f3">Все мини-игры без лимита</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f4">Детальная статистика по навыкам</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f1">Все уроки курса A1–C1 и тесты</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f2">Все задания: чтение, аудио, письмо, говорение</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f3">Lexy AI: чат и проверка письма</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f4">Словарь с повторением и игры</span></li>
+        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f5">Детальная статистика и прогресс</span></li>
       </ul>
-      <button class="cta" data-plan="pro" data-i18n="plan.pro.cta">Перейти на Pro</button>
-    </article>
-
-    <article class="plan">
-      <div class="name" data-i18n="plan.plus.name">Pro+</div>
-      <div class="descr" data-i18n="plan.plus.descr">Максимум, если цель — 7.5+ и нужен интенсив.</div>
-      <div class="price">
-        <span class="was" id="wasPlus">3180</span>
-        <span id="pricePlus">1590</span>
-        <small id="curPlus">₽/мес</small>
-      </div>
-      <div class="per" data-i18n="plan.plus.per">Оплата ежемесячно · отмена в любой момент</div>
-      <ul>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f1">Всё, что в Pro</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f2">Персональный куратор раз в неделю</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f3">Проверка Writing человеком-экспертом</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f4">Ускоренный план под дату экзамена</span></li>
-        <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f5">Гарантия результата — вернём деньги</span></li>
-      </ul>
-      <button class="cta" data-plan="pro_plus" data-i18n="plan.plus.cta">Перейти на Pro+</button>
+      <button class="cta" data-plan="pro" data-i18n="plan.pro.cta">Перейти на Premium</button>
     </article>
   </div>
 
@@ -254,15 +236,12 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 <script src="lexy-pay.js?v=7"></script>
 <script>
 (function(){
-  /* ===== БАЗОВЫЕ ЦЕНЫ (без скидки) по языкам =====
-     Pro   базовая = 980 ₽  → со скидкой 50% = 490 ₽
-     Pro+  базовая = 3180 ₽ → со скидкой 50% = 1590 ₽
-  */
+  /* ===== БАЗОВАЯ ЦЕНА Premium (без скидки). Со скидкой 50% = 1590 ₽ ===== */
   var PRICES = {
-    ru: { pro: 980,    plus: 3180,    cur: '₽/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
-    en: { pro: 10,     plus: 32,      cur: '$/mo',     fmt: function(n){ return '$' + n; } },
-    kz: { pro: 5800,   plus: 19000,   cur: '₸/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
-    uz: { pro: 130000, plus: 420000,  cur: 'soʻm/мес', fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } }
+    ru: { premium: 3180,   cur: '₽/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
+    en: { premium: 32,     cur: '$/mo',     fmt: function(n){ return '$' + n; } },
+    kz: { premium: 19000,  cur: '₸/мес',    fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } },
+    uz: { premium: 420000, cur: 'soʻm/мес', fmt: function(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); } }
   };
 
   var TRANSLATIONS = {
@@ -270,7 +249,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "meta.title":"Тарифы — Lexy",
       "btn.menu":"Главное меню",
       "plans.title":"Выбери свой план",
-      "plans.sub":"Начни бесплатно и переходи на Pro, когда захочешь больше. Отмена в любой момент.",
+      "plans.sub":"Начни бесплатно и переходи на Premium, когда захочешь больше. Отмена в любой момент.",
       "discount.text":"Тебе повезло — скидка",
       "discount.applied":"уже применена",
       "plan.free.name":"Free",
@@ -283,23 +262,15 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "plan.free.f3":"Личный словарь до 50 слов",
       "plan.free.f4":"Гайды и разборы ошибок",
       "plan.free.cta":"Остаться на Free",
-      "plan.pro.name":"Pro",
-      "plan.pro.descr":"Идеально, если готовишься к IELTS в ближайшие 3 месяца.",
+      "plan.pro.name":"Premium",
+      "plan.pro.descr":"Всё платное в Lexy: курс, задания, словарь и Lexy AI.",
       "plan.pro.per":"Оплата ежемесячно · отмена в любой момент",
-      "plan.pro.f1":"40+ заданий: чтение, аудио, письмо, говорение",
-      "plan.pro.f2":"ИИ-экзаменатор Writing и Speaking",
-      "plan.pro.f3":"Все мини-игры без лимита",
-      "plan.pro.f4":"Детальная статистика по навыкам",
-      "plan.pro.cta":"Перейти на Pro",
-      "plan.plus.name":"Pro+",
-      "plan.plus.descr":"Максимум, если цель — 7.5+ и нужен интенсив.",
-      "plan.plus.per":"Оплата ежемесячно · отмена в любой момент",
-      "plan.plus.f1":"Всё, что в Pro",
-      "plan.plus.f2":"Персональный куратор раз в неделю",
-      "plan.plus.f3":"Проверка Writing человеком-экспертом",
-      "plan.plus.f4":"Ускоренный план под дату экзамена",
-      "plan.plus.f5":"Гарантия результата — вернём деньги",
-      "plan.plus.cta":"Перейти на Pro+",
+      "plan.pro.f1":"Все уроки курса A1–C1 и тесты",
+      "plan.pro.f2":"Все задания: чтение, аудио, письмо, говорение",
+      "plan.pro.f3":"Lexy AI: чат и проверка письма",
+      "plan.pro.f4":"Словарь с повторением и игры",
+      "plan.pro.f5":"Детальная статистика и прогресс",
+      "plan.pro.cta":"Перейти на Premium",
       "guarantee.text":"Если не получишь прогресс за 30 дней занятий — вернём деньги и оплатим пересдачу.",
       "freebar.title":"Не готов платить сейчас?",
       "freebar.sub":"Оставайся на бесплатной версии — весь прогресс и настройки сохранятся.",
@@ -309,7 +280,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "meta.title":"Pricing — Lexy",
       "btn.menu":"Main menu",
       "plans.title":"Choose your plan",
-      "plans.sub":"Start free and move up to Pro when you want more. Cancel anytime.",
+      "plans.sub":"Start free and move up to Premium when you want more. Cancel anytime.",
       "discount.text":"Lucky you — discount",
       "discount.applied":"already applied",
       "plan.free.name":"Free",
@@ -322,23 +293,15 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "plan.free.f3":"Personal dictionary up to 50 words",
       "plan.free.f4":"Guides and error reviews",
       "plan.free.cta":"Stay on Free",
-      "plan.pro.name":"Pro",
-      "plan.pro.descr":"Perfect if you're prepping for IELTS in the next 3 months.",
+      "plan.pro.name":"Premium",
+      "plan.pro.descr":"Everything paid in Lexy: course, tasks, vocabulary and Lexy AI.",
       "plan.pro.per":"Billed monthly · cancel anytime",
-      "plan.pro.f1":"40+ tasks: reading, listening, writing, speaking",
-      "plan.pro.f2":"AI examiner for Writing and Speaking",
-      "plan.pro.f3":"All mini-games unlimited",
-      "plan.pro.f4":"Detailed stats by skill",
-      "plan.pro.cta":"Switch to Pro",
-      "plan.plus.name":"Pro+",
-      "plan.plus.descr":"Maximum, if your goal is 7.5+ and you want intensity.",
-      "plan.plus.per":"Billed monthly · cancel anytime",
-      "plan.plus.f1":"Everything in Pro",
-      "plan.plus.f2":"Personal tutor once a week",
-      "plan.plus.f3":"Writing reviewed by a human expert",
-      "plan.plus.f4":"Accelerated plan for your exam date",
-      "plan.plus.f5":"Result guarantee — money back",
-      "plan.plus.cta":"Switch to Pro+",
+      "plan.pro.f1":"All course lessons A1–C1 and tests",
+      "plan.pro.f2":"All tasks: reading, listening, writing, speaking",
+      "plan.pro.f3":"Lexy AI: chat and essay checking",
+      "plan.pro.f4":"Vocabulary with review and games",
+      "plan.pro.f5":"Detailed stats and progress",
+      "plan.pro.cta":"Switch to Premium",
       "guarantee.text":"If you don't make progress in 30 days of study — we refund and pay for your retake.",
       "freebar.title":"Not ready to pay now?",
       "freebar.sub":"Stay on the free version — all your progress and settings are saved.",
@@ -348,7 +311,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "meta.title":"Тарифтер — Lexy",
       "btn.menu":"Басты мәзір",
       "plans.title":"Жоспарыңды таңда",
-      "plans.sub":"Тегін бастап, көбірек қалағанда Pro-ға өт. Кез келген уақытта тоқтатуға болады.",
+      "plans.sub":"Тегін бастап, көбірек қалағанда Premium-ға өт. Кез келген уақытта тоқтатуға болады.",
       "discount.text":"Сәті түсті — жеңілдік",
       "discount.applied":"қолданылды",
       "plan.free.name":"Free",
@@ -361,23 +324,15 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "plan.free.f3":"50 сөзге дейінгі жеке сөздік",
       "plan.free.f4":"Гайдтар мен қателерді талдау",
       "plan.free.cta":"Free-де қалу",
-      "plan.pro.name":"Pro",
-      "plan.pro.descr":"Келесі 3 айда IELTS тапсыратын болсаң — дәл өзіңе.",
+      "plan.pro.name":"Premium",
+      "plan.pro.descr":"Lexy-дегі барлық ақылы нәрсе: курс, тапсырмалар, сөздік және Lexy AI.",
       "plan.pro.per":"Ай сайын төлем · кез келген уақытта тоқтату",
-      "plan.pro.f1":"40+ тапсырма: оқу, тыңдау, жазу, сөйлеу",
-      "plan.pro.f2":"Writing және Speaking үшін AI-емтихан алушы",
-      "plan.pro.f3":"Барлық мини-ойындар шексіз",
-      "plan.pro.f4":"Дағдылар бойынша толық статистика",
-      "plan.pro.cta":"Pro-ға өту",
-      "plan.plus.name":"Pro+",
-      "plan.plus.descr":"Мақсат 7.5+ және интенсив керек болса — максимум.",
-      "plan.plus.per":"Ай сайын төлем · кез келген уақытта тоқтату",
-      "plan.plus.f1":"Pro-дағы барлығы",
-      "plan.plus.f2":"Аптасына бір рет жеке куратор",
-      "plan.plus.f3":"Writing-ті адам-сарапшы тексереді",
-      "plan.plus.f4":"Емтихан күніне қарай жылдамдатылған жоспар",
-      "plan.plus.f5":"Нәтиже кепілдігі — ақшаңды қайтарамыз",
-      "plan.plus.cta":"Pro+-ға өту",
+      "plan.pro.f1":"A1–C1 курсының барлық сабағы мен тесттер",
+      "plan.pro.f2":"Барлық тапсырма: оқу, тыңдау, жазу, сөйлеу",
+      "plan.pro.f3":"Lexy AI: чат және эссе тексеру",
+      "plan.pro.f4":"Қайталаумен сөздік және ойындар",
+      "plan.pro.f5":"Толық статистика мен прогресс",
+      "plan.pro.cta":"Premium-ға өту",
       "guarantee.text":"30 күн жаттыққан соң прогресс болмаса — ақшаңды қайтарып, қайта тапсыруды төлейміз.",
       "freebar.title":"Қазір төлеуге дайын емессің бе?",
       "freebar.sub":"Тегін нұсқада қал — барлық прогресс пен параметрлер сақталады.",
@@ -387,7 +342,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "meta.title":"Narxlar — Lexy",
       "btn.menu":"Asosiy menyu",
       "plans.title":"Rejangizni tanlang",
-      "plans.sub":"Bepul boshlang va ko'proq xohlaganingizda Pro'ga o'ting. Istalgan vaqtda bekor qiling.",
+      "plans.sub":"Bepul boshlang va ko'proq xohlaganingizda Premium'ga o'ting. Istalgan vaqtda bekor qiling.",
       "discount.text":"Omadingiz keldi — chegirma",
       "discount.applied":"allaqachon qo'llandi",
       "plan.free.name":"Free",
@@ -400,23 +355,15 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       "plan.free.f3":"50 so'zgacha shaxsiy lug'at",
       "plan.free.f4":"Qo'llanma va xatolar tahlili",
       "plan.free.cta":"Free'da qolish",
-      "plan.pro.name":"Pro",
-      "plan.pro.descr":"Keyingi 3 oyda IELTSga tayyorlanayotgan bo'lsangiz — aynan sizga.",
+      "plan.pro.name":"Premium",
+      "plan.pro.descr":"Lexydagi barcha pullik narsa: kurs, topshiriqlar, lug'at va Lexy AI.",
       "plan.pro.per":"Har oy to'lov · istalgan vaqtda bekor qilish",
-      "plan.pro.f1":"40+ topshiriq: o'qish, tinglash, yozish, gapirish",
-      "plan.pro.f2":"Writing va Speaking uchun AI-ekspert",
-      "plan.pro.f3":"Barcha mini-o'yinlar cheksiz",
-      "plan.pro.f4":"Ko'nikmalar bo'yicha batafsil statistika",
-      "plan.pro.cta":"Pro'ga o'tish",
-      "plan.plus.name":"Pro+",
-      "plan.plus.descr":"Maqsad 7.5+ va intensiv kerak bo'lsa — maksimum.",
-      "plan.plus.per":"Har oy to'lov · istalgan vaqtda bekor qilish",
-      "plan.plus.f1":"Pro'dagi hamma narsa",
-      "plan.plus.f2":"Haftada bir marta shaxsiy kurator",
-      "plan.plus.f3":"Writing inson-ekspert tomonidan tekshiriladi",
-      "plan.plus.f4":"Imtihon sanasiga mos tezlashtirilgan reja",
-      "plan.plus.f5":"Natija kafolati — pulingizni qaytaramiz",
-      "plan.plus.cta":"Pro+'ga o'tish",
+      "plan.pro.f1":"A1–C1 kursining barcha darslari va testlar",
+      "plan.pro.f2":"Barcha topshiriq: o'qish, tinglash, yozish, gapirish",
+      "plan.pro.f3":"Lexy AI: chat va insho tekshiruvi",
+      "plan.pro.f4":"Takrorlashli lug'at va o'yinlar",
+      "plan.pro.f5":"Batafsil statistika va taraqqiyot",
+      "plan.pro.cta":"Premium'ga o'tish",
       "guarantee.text":"30 kun mashq qilib progress bo'lmasa — pulni qaytarib, qayta topshirishni to'laymiz.",
       "freebar.title":"Hozir to'lashga tayyor emasmisiz?",
       "freebar.sub":"Bepul versiyada qoling — barcha progress va sozlamalar saqlanadi.",
@@ -468,7 +415,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
   if(isNaN(discount) || discount < 5 || discount > 90){
     try{ discount = parseFloat(localStorage.getItem('discount') || '0'); }catch(e){ discount = 0; }
   }
-  /* Базовая скидка 50% уже включена в стоимость Pro/Pro+, показываем её по умолчанию */
+  /* Базовая скидка 50% уже включена в стоимость Premium, показываем её по умолчанию */
   if(isNaN(discount) || discount < 5 || discount > 90){ discount = 50; }
   if(discount > 0){
     document.getElementById('discountBadge').classList.add('on');
@@ -478,24 +425,17 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
   /* ===== Цены ===== */
   function updatePrices(){
     var p = PRICES[currentLang];
-    var basePro = p.pro;
-    var basePlus = p.plus;
+    var base = p.premium;
 
     if(discount > 0){
-      var proSale = Math.round(basePro * (1 - discount/100) / 5) * 5;
-      var plusSale = Math.round(basePlus * (1 - discount/100) / 5) * 5;
-      document.getElementById('pricePro').textContent = p.fmt(proSale);
-      document.getElementById('pricePlus').textContent = p.fmt(plusSale);
-      document.getElementById('wasPro').textContent = p.fmt(basePro);
-      document.getElementById('wasPlus').textContent = p.fmt(basePlus);
+      var sale = Math.round(base * (1 - discount/100) / 5) * 5;
+      document.getElementById('pricePro').textContent = p.fmt(sale);
+      document.getElementById('wasPro').textContent = p.fmt(base);
     } else {
-      document.getElementById('pricePro').textContent = p.fmt(basePro);
-      document.getElementById('pricePlus').textContent = p.fmt(basePlus);
+      document.getElementById('pricePro').textContent = p.fmt(base);
       document.getElementById('wasPro').textContent = '';
-      document.getElementById('wasPlus').textContent = '';
     }
     document.getElementById('curPro').textContent = p.cur;
-    document.getElementById('curPlus').textContent = p.cur;
 
     var badgeMap = {ru:'Популярный', en:'Popular', kz:'Танымал', uz:'Mashhur'};
     var featured = document.querySelector('.plan.featured');

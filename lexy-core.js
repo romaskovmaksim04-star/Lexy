@@ -69,6 +69,16 @@ function load() {
     if (au.lang) U.lang = au.lang;
     if (au.survey) U.survey = au.survey;
   }
+  /* язык: общий для всего сайта (localStorage 'lang' ↔ профиль) */
+  try {
+    var gl = w.localStorage.getItem("lang");
+    if (gl && ["en", "ru", "kz", "uz"].indexOf(gl) > -1) {
+      U.lang = gl;
+      if (au && au.lang !== gl) { try { w.LexyAuth.update({ lang: gl }); } catch (e) {} }
+    } else {
+      w.localStorage.setItem("lang", U.lang);
+    }
+  } catch (e) {}
   var t = iso();
   if (U.streak.indexOf(t) < 0) { U.streak.push(t); U.streak = U.streak.slice(-400); }
   DB.save(U);
@@ -464,7 +474,7 @@ A.name = function () {
     onOk: function () { save({ name: $("#nm").value.trim() }); renderProfile(); toast(m.nameSaved); } });
 };
 A.news = function (el) { save({ news: el.checked }); toast(el.checked ? C().newsOn : C().newsOff); };
-A.lang = function (el) { save({ lang: el.dataset.l }); gates(); show(CUR); };
+A.lang = function (el) { save({ lang: el.dataset.l }); try { w.localStorage.setItem("lang", el.dataset.l); } catch (e) {} gates(); show(CUR); };
 A.sub = function () { $("#xp-sub").hidden = !$("#xp-sub").hidden; };
 A.guar = function () { $("#xp-guar").hidden = !$("#xp-guar").hidden; };
 A.demoPro = function () {
