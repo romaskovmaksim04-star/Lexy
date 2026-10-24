@@ -128,6 +128,7 @@
   }
 
   function mapAuthError(error) {
+    if (error && error.status === 422) return { code: "nouser" };
     var message = String(error && (error.message || error.error_description || error) || "").toLowerCase();
     if (message.indexOf("invalid login") > -1 || message.indexOf("invalid credentials") > -1) return { code: "pass" };
     if (message.indexOf("user not found") > -1 || message.indexOf("no user") > -1) return { code: "nouser" };
@@ -272,6 +273,21 @@
     return rec;
   }
 
+  function accountExists(email) {
+    email = norm(email);
+    if (!validEmail(email)) return Promise.reject({ code: "email" });
+    if (!client) return Promise.reject({ code: "generic" });
+    return client.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false } }).then(function (res) {
+      if (!res.error) return true;
+      if (res.error.status === 422) return false;
+      throw mapAuthError(res.error);
+    }).catch(function (err) {
+      if (err && (err.status === 422 || err.code === 422)) return false;
+      if (err && err.code) throw err;
+      throw { code: "generic" };
+    });
+  }
+
   function sendCode(email, options) {
     options = options || {};
     email = norm(email);
@@ -303,6 +319,7 @@
       authUser = res.data.user;
       return loadProfile(res.data.user);
     }).then(function (profile) {
+      if (profile && profile.path && !options.force) return profile;
       var name = String(options.name || "").trim();
       if (!name && options.path) {
         var path = options.path === "english" ? "english" : "ielts";
@@ -405,6 +422,7 @@
     logged: logged,
     sendCode: sendCode,
     verifyCode: verifyCode,
+    accountExists: accountExists,
     sendMagicLink: sendMagicLink,
     signInWithGoogle: signInWithGoogle,
     logout: logout,

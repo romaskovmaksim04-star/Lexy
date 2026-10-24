@@ -195,7 +195,7 @@ body{padding-bottom:70px}
 </div>
 
 <script src="lexy-config.js?v=7"></script>
-<script src="lexy-auth.js?v=8"></script>
+<script src="lexy-auth.js?v=9"></script>
 <script>
 var TRANSLATIONS = {
   ru: {
@@ -451,7 +451,7 @@ function doSend(){
   loginMsg.classList.remove('ok'); loginMsg.textContent = '';
   btnSend.disabled = true;
   var label = btnSend.textContent; btnSend.textContent = '…';
-  LexyAuth.sendCode(email, { create: true }).then(function(){
+  LexyAuth.sendCode(email, { create: false }).then(function(){
     btnSend.disabled = false; btnSend.textContent = label;
     stepEmail.hidden = true; stepCode.hidden = false;
     codeSent.textContent = (TRANSLATIONS[currentLang].login.code_sent || 'Код отправлен на email') + ': ' + email + '. ' + 'Нажми ссылку в письме или введи код ниже.';
@@ -488,7 +488,7 @@ btnResend.addEventListener('click', function(){
   var email = emailInput.value.trim();
   if(!window.LexyAuth) return;
   btnResend.disabled = true;
-  LexyAuth.sendCode(email, { create: true }).then(function(){ startResend(); }).catch(function(err){
+  LexyAuth.sendCode(email, { create: false }).then(function(){ startResend(); }).catch(function(err){
     btnResend.disabled = false;
     fail(err && err.code ? err.code : 'generic', codeMsg);
   });
