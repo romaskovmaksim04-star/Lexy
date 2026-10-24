@@ -61,6 +61,15 @@
   };
 
   var LEVEL_TITLE = { A1: "Начальный", A2: "Элементарный", B1: "Средний", B2: "Выше среднего", C1: "Продвинутый" };
+  var LEVEL_DESC = {
+    A1: "С нуля: алфавит и звуки, простые фразы, базовая грамматика (to be, Present/Past Simple), первые слова.",
+    A2: "Элементарный: повседневные темы, прошедшее и будущее время, разговорные фразы для быта и поездок.",
+    B1: "Средний: говоришь свободнее, сложные времена, рассуждения, работа и учёба.",
+    B2: "Выше среднего: беглость и точность, формальные тексты, аргументация, IELTS 6–7.",
+    C1: "Продвинутый: нюансы, стиль, академическая речь, IELTS 7+."
+  };
+  function levelDesc(level) { return LEVEL_DESC[level] || ""; }
+  function lessonTitle(level, day) { var ls = lessons(level); if (ls) { var L = ls[(day - 1) % ls.length]; return L.t; } var g = GRAMMAR[level] || GRAMMAR.A1; return g[(day - 1) % g.length].t; }
   var GOALS = [
     { id: "study", t: "Учёба" },
     { id: "travel", t: "Путешествия" },
@@ -344,13 +353,13 @@
     totalDays: totalDays,
     moduleTest: moduleTest,
     lessonCount: lessonCount,
+    levelDesc: levelDesc,
+    lessonTitle: lessonTitle,
     freeDays: freeDays,
     blockLabel: blockLabel,
-    isFree: function (level, day, premium, startLevel) {
-      if (premium) return true;
-      // бесплатны только первые FREE_DAYS дней вводного уровня
-      var first = startLevel || "A1";
-      return level === first && day <= FREE_DAYS;
+    isFree: function (level, day, premium) {
+      // бесплатны первые FREE_DAYS уроков любого уровня
+      return !!premium || day <= FREE_DAYS;
     }
   };
 })(window);

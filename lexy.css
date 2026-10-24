@@ -330,3 +330,40 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .seg{display:flex;gap:6px;background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:5px;margin:16px 0}
 .seg button{flex:1;padding:10px;border-radius:10px;font:700 13px var(--body);color:var(--soft);transition:.15s}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 8px 18px -14px rgba(27,20,51,.7)}
+
+/* ---- Путь: hero, список уроков, тест ---- */
+.hx{background:linear-gradient(135deg,#FFF3EB,#F0E9FF);border:1.5px solid var(--line);border-radius:24px;padding:22px;margin-bottom:16px}
+.lvbox{display:flex;align-items:center;gap:14px}
+.lvchip{width:54px;height:54px;flex:none;border-radius:18px;display:grid;place-items:center;font:800 20px var(--display);color:#fff;background:linear-gradient(135deg,#FF5A1F,#FF9A0A);box-shadow:0 14px 26px -14px rgba(255,90,31,.9)}
+.lvname{font:800 22px var(--display);letter-spacing:-.02em}
+.lvdesc{color:var(--soft);font-size:13.5px;line-height:1.5;margin-top:3px;max-width:62ch}
+.lvrow{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin:16px 0 8px;font-size:13px;color:var(--soft)}
+.lvrow b{color:var(--ink)}
+.hx .bar{height:8px;border-radius:999px;background:rgba(27,20,51,.08);overflow:hidden}
+.hx .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,#FF5A1F);transition:width .3s}
+.dlist{display:flex;flex-direction:column;gap:10px}
+.drow{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;transition:.15s}
+.drow:hover{border-color:#FFC2A1;transform:translateX(2px)}
+.drow .dn{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;font:800 16px var(--display);background:var(--mist);color:var(--soft)}
+.drow .dtx{flex:1;min-width:0}
+.drow .dtx b{display:block;font:700 15px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .dtx small{color:var(--soft);font-size:12px}
+.drow .dbadge{font:800 14px var(--display);color:var(--soft)}
+.drow.cur{border-color:var(--fire);background:#FFF8F3;box-shadow:0 14px 30px -22px rgba(255,90,31,.9)}
+.drow.cur .dn{background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff}
+.drow.cur .dbadge{color:var(--fire)}
+.drow.done{border-color:#C8EAD7;background:#F1FBF6}
+.drow.done .dn{background:#DDF6EC;color:var(--ok)}
+.drow.done .dbadge{color:var(--ok)}
+.drow.lock{opacity:.6}
+.testcard{margin-top:16px}
+.tcent{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.tcent .bic{width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#EFE7FF,#E3D6FF);color:#6D5BFF}
+.tcent b{display:block;font:800 17px var(--display)}
+.tcent small{color:var(--soft);font-size:12.5px;line-height:1.4;display:block;margin-top:2px}
+.btn.big{width:100%;padding:16px;font-size:15px;border-radius:15px}
+.tcard{display:flex;gap:14px;margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.tnum{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font:800 14px var(--display);background:var(--mist);color:var(--soft)}
+.tcard p{font-size:14px;line-height:1.6;margin:6px 0 0;color:var(--soft)}
+.lockcard{opacity:.65}
+.scorebig{font:800 56px/1 var(--display);letter-spacing:-.05em;color:var(--fire);margin:8px 0}

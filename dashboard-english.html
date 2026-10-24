@@ -48,143 +48,139 @@
   var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl, C = window.LexyCourse;
   var paid = function () { return !!(Lexy.user && Lexy.user.premium); };
 
-  var GOALS = C.GOALS;
-  var LEVELS = [
-    ["A1", "Начинающий", "Знаю отдельные слова"],
-    ["A2", "Элементарный", "Строю простые фразы"],
-    ["B1", "Средний", "Объясняюсь, но с трудом"],
-    ["B2", "Выше среднего", "Говорю с ошибками, но свободно"],
-    ["C1", "Продвинутый", "Хочу отшлифовать речь"]
-  ];
+  /* ---------- ЛОКАЛИЗАЦИЯ КУРСА (4 языка) ---------- */
+  var CU = {
+    ru: { course: "Курс", theory: "Теория", history: "История", change: "Сменить уровень", level: "Уровень", doneOf: "пройдено", of: "из", lessons: "уроков", cont: "Продолжить", lockT: "Закрыто", doneT: "Пройден", nowT: "Сейчас", testTitle: "Тестирование по модулю", testBtn: "Пройти тестирование", testHint: "Доступно в любой момент. Рекомендуем после всех уроков.", testAll: "Все уроки пройдены — проверь себя! Сдашь хорошо — откроем следующий уровень.", free: "Бесплатно: первые 3 урока любого уровня. Полный курс и тесты — в <a href='pricing.html' style='color:var(--fire);font-weight:700'>тарифах</a>.", grammar: "Грамматика", words: "Слова", audio: "Аудирование", practice: "Повторение", theoryT: "Теория", wordsQ: "Как переводится «{w}»?", next: "Дальше", finish: "Готово", question: "Вопрос", result: "Результат", time: "Время", levelUp: "Отличный результат — открыт уровень", stay: "К списку уроков", goNext: "Начать уровень", histTitle: "Последние прохождения", histEmpty: "Пока пусто. Пройди первый урок — история появится здесь.", histLock: "История прохождений доступна в Premium.", lessonsDone: "Пройдено уроков", minutes: "мин", sec: "сек", dayTitle: "Урок", clear: "Сбросить прогресс", sureClear: "Сбросить прогресс этого уровня?" },
+    en: { course: "Course", theory: "Theory", history: "History", change: "Change level", level: "Level", doneOf: "completed", of: "of", lessons: "lessons", cont: "Continue", lockT: "Locked", doneT: "Completed", nowT: "Now", testTitle: "Module test", testBtn: "Take the test", testHint: "Available anytime. Recommended after all lessons.", testAll: "All lessons done — test yourself! Score high to unlock the next level.", free: "Free: first 3 lessons of any level. Full course and tests — see <a href='pricing.html' style='color:var(--fire);font-weight:700'>pricing</a>.", grammar: "Grammar", words: "Words", audio: "Listening", practice: "Review", theoryT: "Theory", wordsQ: "What does «{w}» mean?", next: "Next", finish: "Done", question: "Question", result: "Result", time: "Time", levelUp: "Great result — unlocked level", stay: "Back to lessons", goNext: "Start level", histTitle: "Recent sessions", histEmpty: "Empty for now. Finish the first lesson and history will appear here.", histLock: "Session history is available in Premium.", lessonsDone: "Lessons completed", minutes: "min", sec: "s", dayTitle: "Lesson", clear: "Reset progress", sureClear: "Reset progress for this level?" },
+    kz: { course: "Курс", theory: "Теория", history: "Тарих", change: "Деңгейді ауыстыру", level: "Деңгей", doneOf: "өтілді", of: "/", lessons: "сабақ", cont: "Жалғастыру", lockT: "Жабық", doneT: "Өтілген", nowT: "Қазір", testTitle: "Модуль тесті", testBtn: "Тестті тапсыру", testHint: "Кез келген уақытта қолжетімді. Барлық сабақтан кейін ұсынылады.", testAll: "Барлық сабақ өтілді — өзіңді тексер! Жоғары балл — келесі деңгей ашылады.", free: "Тегін: кез келген деңгейдің алғашқы 3 сабағы. Толық курс — <a href='pricing.html' style='color:var(--fire);font-weight:700'>тарифтерде</a>.", grammar: "Грамматика", words: "Сөздер", audio: "Тыңдау", practice: "Қайталау", theoryT: "Теория", wordsQ: "«{w}» қалай аударылады?", next: "Келесі", finish: "Дайын", question: "Сұрақ", result: "Нәтиже", time: "Уақыт", levelUp: "Керемет нәтиже — ашылды деңгей", stay: "Сабақтар тізіміне", goNext: "Деңгейді бастау", histTitle: "Соңғы өтулер", histEmpty: "Әзірге бос. Бірінші сабақты өт — тарих осында шығады.", histLock: "Өту тарихы Premium-да қолжетімді.", lessonsDone: "Өтілген сабақтар", minutes: "мин", sec: "сек", dayTitle: "Сабақ", clear: "Прогресті тазалау", sureClear: "Осы деңгейдің прогресін тазалау керек пе?" },
+    uz: { course: "Kurs", theory: "Nazariya", history: "Tarix", change: "Darajani o'zgartirish", level: "Daraja", doneOf: "bajarildi", of: "/", lessons: "dars", cont: "Davom etish", lockT: "Yopiq", doneT: "Bajarildi", nowT: "Hozir", testTitle: "Modul testi", testBtn: "Testni topshirish", testHint: "Istalgan vaqtda mavjud. Barcha darslardan keyin tavsiya etiladi.", testAll: "Barcha darslar tugadi — o'zingizni sinang! Yuqori ball — keyingi daraja ochiladi.", free: "Bepul: istalgan darajaning ilk 3 darsi. To'liq kurs — <a href='pricing.html' style='color:var(--fire);font-weight:700'>tariflarda</a>.", grammar: "Grammatika", words: "So'zlar", audio: "Tinglash", practice: "Takrorlash", theoryT: "Nazariya", wordsQ: "«{w}» qanday tarjima qilinadi?", next: "Keyingi", finish: "Tayyor", question: "Savol", result: "Natija", time: "Vaqt", levelUp: "Zo'r natija — ochildi daraja", stay: "Darslar ro'yxatiga", goNext: "Darajani boshlash", histTitle: "So'nggi urinishlar", histEmpty: "Hozircha bo'sh. Birinchi darsni tugatsangiz, tarix shu yerda chiqadi.", histLock: "O'tish tarixi Premium'da mavjud.", lessonsDone: "Bajarilgan darslar", minutes: "daq", sec: "son", dayTitle: "Dars", clear: "Taraqqiyotni tozalash", sureClear: "Bu daraja taraqqiyoti tozalansinmi?" }
+  };
+  function L() { return CU[(Lexy.user && Lexy.user.lang) || "ru"] || CU.ru; }
+  function T(k) { var l = L(); return l[k] != null ? l[k] : (CU.ru[k] != null ? CU.ru[k] : k); }
+
+  var GOALS = [["study", "🎓"], ["travel", "✈️"], ["work", "💼"], ["move", "🏠"]];
+  var GOAL_T = { ru: { study: "Учёба", travel: "Путешествия", work: "Работа", move: "Переезд" }, en: { study: "Study", travel: "Travel", work: "Work", move: "Moving abroad" }, kz: { study: "Оқу", travel: "Саяхат", work: "Жұмыс", move: "Көшу" }, uz: { study: "O'qish", travel: "Sayohat", work: "Ish", move: "Ko'chish" } };
+  function goalName(id) { var l = (Lexy.user && Lexy.user.lang) || "ru"; return (GOAL_T[l] || GOAL_T.ru)[id] || id; }
+  var LEVELS = [["A1", 1], ["A2", 2], ["B1", 3], ["B2", 4], ["C1", 5]];
+  var LEVEL_T = { ru: { A1: ["Начинающий", "Знаю отдельные слова"], A2: ["Элементарный", "Строю простые фразы"], B1: ["Средний", "Объясняюсь, но с трудом"], B2: ["Выше среднего", "Говорю с ошибками, но свободно"], C1: ["Продвинутый", "Хочу отшлифовать речь"] }, en: { A1: ["Beginner", "I know some words"], A2: ["Elementary", "I can build simple sentences"], B1: ["Intermediate", "I can communicate with effort"], B2: ["Upper-Intermediate", "I speak with mistakes but freely"], C1: ["Advanced", "I want to sound natural"] }, kz: { A1: ["Бастауыш", "Жекелеген сөздерді білемін"], A2: ["Элементарлық", "Қарапайым сөйлемдер"], B1: ["Орташа", "Қиналып болса да сөйлесем"], B2: ["Орташадан жоғары", "Қатемен, бірақ еркін"], C1: ["Жетік", "Тілімді шыңдағым келеді"] }, uz: { A1: ["Boshlang'ich", "Ayrim so'zlarni bilaman"], A2: ["Elementar", "Oddiy gaplar tuzaman"], B1: ["O'rta", "Qiyinchilik bilan gaplashaman"], B2: ["O'rtadan yuqori", "Xato bilan, lekin erkin"], C1: ["Ilg'or", "Tilimni sayqallashni xohlayman"] } };
+  function lvName(lv, i) { var l = (Lexy.user && Lexy.user.lang) || "ru"; return (LEVEL_T[l] || LEVEL_T.ru)[lv][i]; }
   var sel = { goal: null, level: null };
 
-  function dayWord(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "день" : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? "дня" : "дней"; }
-  function levelTitle(l) { return C.LEVEL_TITLE[l] || l; }
+  function dayWord(n) { var l = (Lexy.user && Lexy.user.lang) || "ru"; return n === 1 ? "1" : String(n); }
+  function lang() { return (Lexy.user && Lexy.user.lang) || "ru"; }
 
   /* ---------- КУРС: состояние ---------- */
   function course() {
     var u = Lexy.user;
-    if (!u.course) u.course = { level: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", day: 1, startLevel: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", done: {}, passes: {} };
+    if (!u.course) u.course = { level: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", startLevel: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", day: 1, done: {}, passes: {}, prog: {} };
     if (!u.course.done) u.course.done = {};
     if (!u.course.passes) u.course.passes = {};
+    if (!u.course.prog) u.course.prog = {};
     return u.course;
   }
   function isDone(level, day) { return !!course().done[level + "-" + day]; }
-  function currentDay() {
-    var c = course(), d = 1;
-    while (d <= C.totalDays && isDone(c.level, d)) d++;
-    return d > C.totalDays ? C.totalDays : d;
-  }
-  function canAccess(level, day) { return C.isFree(level, day, paid(), course().startLevel); }
+  function currentDayFor(level) { var d = 1, tot = C.totalDays(level); while (d <= tot && isDone(level, d)) d++; return d > tot ? tot : d; }
+  function canAccess(level, day) { if (!(paid() || day <= C.freeDays())) return false; return day <= currentDayFor(level); }
 
-  /* ---------- ОНБОРДИНГ (цель + уровень) ---------- */
+  /* ---------- ОНБОРДИНГ ---------- */
+  var ONB = { ru: { hi: "Привет", head: "Соберём твой курс за 2 шага", sub: "Только цель и уровень. Дальше Lexy составит курс с теорией и заданиями.", goal: "Зачем тебе английский?", level: "Какой у тебя уровень сейчас?", go: "Собрать курс" }, en: { hi: "Hi", head: "Set up your course in 2 steps", sub: "Just your goal and level. Then Lexy builds a course with theory and tasks.", goal: "Why do you need English?", level: "What's your current level?", go: "Build my course" }, kz: { hi: "Сәлем", head: "Курсыңды 2 қадамда құрайық", sub: "Тек мақсат пен деңгей. Сосын Lexy теория мен тапсырмалардан курс жасайды.", goal: "Ағылшын тілі саған не үшін керек?", level: "Қазір қандай деңгейдесің?", go: "Курсты құру" }, uz: { hi: "Salom", head: "Kursingizni 2 qadamda tuzamiz", sub: "Faqat maqsad va daraja. Keyin Lexy nazariya va topshiriqlardan kurs tuzadi.", goal: "Ingliz tili sizga nima uchun kerak?", level: "Hozir qanday darajadasiz?", go: "Kursni tuzish" } };
+  function O(k) { var l = ONB[lang()] || ONB.ru; return l[k] || ONB.ru[k]; }
+
   function renderOnboard() {
     var el = $("#s-path");
-    var head = '<div class="top"><h1 class="t">Привет' + (Lexy.user.name ? ", " + esc(Lexy.user.name) : "") + '!</h1></div>';
-    el.innerHTML = head + '<div class="card ob"><h3>Соберём твой курс за 2 шага</h3><p class="sb">Никаких тем — только цель и уровень. Дальше Lexy сам составит 90 дней по 5 блоков в день.</p>' +
-      "<h4>Зачем тебе английский?</h4><div class=\"og\">" + GOALS.map(function (g) { return '<button class="op' + (sel.goal === g.id ? " on" : "") + '" data-goal="' + g.id + '"><span class="em">' + ({ study: "🎓", travel: "✈️", work: "💼", move: "🏠" }[g.id] || "•") + "</span>" + g.t + "</button>"; }).join("") + "</div>" +
-      "<h4>Какой у тебя уровень английского сейчас?</h4><div class=\"ol\">" + LEVELS.map(function (l) { return '<button class="op' + (sel.level === l[0] ? " on" : "") + '" data-level="' + l[0] + '"><span class="lb2">' + l[0] + "</span><div>" + l[1] + "<small>" + l[2] + "</small></div></button>"; }).join("") + "</div>" +
-      '<button class="btn p" id="obgo"' + (sel.goal && sel.level ? "" : " disabled") + ">Собрать курс</button></div>";
+    el.innerHTML = '<div class="top"><h1 class="t">' + O("hi") + (Lexy.user.name ? ", " + esc(Lexy.user.name) : "") + "!</h1></div>" +
+      '<div class="card ob"><h3>' + O("head") + "</h3><p class=\"sb\">" + O("sub") + "</p>" +
+      "<h4>" + O("goal") + "</h4><div class=\"og\">" + GOALS.map(function (g) { return '<button class="op' + (sel.goal === g[0] ? " on" : "") + '" data-goal="' + g[0] + '"><span class="em">' + g[1] + "</span>" + goalName(g[0]) + "</button>"; }).join("") + "</div>" +
+      "<h4>" + O("level") + "</h4><div class=\"ol\">" + LEVELS.map(function (l) { return '<button class="op' + (sel.level === l[0] ? " on" : "") + '" data-level="' + l[0] + '"><span class="lb2">' + l[0] + "</span><div>" + lvName(l[0], 0) + "<small>" + lvName(l[0], 1) + "</small></div></button>"; }).join("") + "</div>" +
+      '<button class="btn p" id="obgo"' + (sel.goal && sel.level ? "" : " disabled") + ">" + O("go") + "</button></div>";
   }
   $("#s-path").addEventListener("click", function (e) {
-    var g = e.target.closest("[data-goal]"), l = e.target.closest("[data-level]");
-    if (g) { sel.goal = g.dataset.goal; document.querySelectorAll("[data-goal]").forEach(function (x) { x.classList.toggle("on", x === g); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
-    if (l) { sel.level = l.dataset.level; document.querySelectorAll("[data-level]").forEach(function (x) { x.classList.toggle("on", x === l); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
-    if (e.target.closest("#obgo")) {
-      var u = Lexy.user;
-      Lexy.save({ onboard: { goal: sel.goal, level: sel.level }, course: { level: sel.level, startLevel: sel.level, day: 1, done: {}, passes: {} } });
-      Lexy.toast("Курс собран! День 1 ждёт тебя.");
-      openDay(1);
-    }
+    var g = e.target.closest("[data-goal]"); if (g && g.dataset.goal !== "change") { sel.goal = g.dataset.goal; document.querySelectorAll("[data-goal]").forEach(function (x) { x.classList.toggle("on", x === g); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
+    var l = e.target.closest("[data-level]"); if (l && !l.dataset.pick) { sel.level = l.dataset.level; document.querySelectorAll("[data-level]").forEach(function (x) { x.classList.toggle("on", x === l); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
+    if (e.target.closest("#obgo")) { Lexy.save({ onboard: { goal: sel.goal, level: sel.level }, course: { level: sel.level, startLevel: sel.level, done: {}, passes: {}, prog: {} } }); Lexy.toast("OK"); renderCourse(); return; }
   });
 
   /* ---------- КАРТА КУРСА ---------- */
   var mapView = "course";
   function renderCourse() {
-    var el = $("#s-path"), c = course(), cur = currentDay();
-    var total = C.totalDays(c.level);
-    var doneCount = Object.keys(c.done).length;
-    var levelDays = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) levelDays++;
-    var pct = Math.round(levelDays / total * 100);
-    var goal = (Lexy.user.onboard && Lexy.user.onboard.goal) || (Lexy.user.onboard && Lexy.user.onboard.g) || "study";
-    var goalName = (GOALS.filter(function (g) { return g.id === goal; })[0] || {}).t || "Учёба";
-
-    var head = '<div class="top"><h1 class="t">Курс английского</h1></div>';
-    var hero = '<div class="pth"><div class="hero"><h2>' + c.level + " · " + levelTitle(c.level) + "</h2><p>Цель: " + esc(goalName) + " · пройдено уроков: " + doneCount + " из " + total + '</p><div class="bar"><i style="width:' + pct + '%"></i></div>' +
-      (cur > total ? "<b>Курс уровня пройден 🎉</b>" : '<button class="btn" id="cont">' + ic("play") + " Продолжить: урок " + cur + '</button>') +
-      '<a class="lnk" href="#profile" data-goal="change">Сменить цель/уровень</a></div></div>';
-    var seg = '<div class="seg"><button class="' + (mapView === "course" ? "on" : "") + '" data-view="course">Курс</button><button class="' + (mapView === "theory" ? "on" : "") + '" data-view="theory">Теория</button><button class="' + (mapView === "history" ? "on" : "") + '" data-view="history">История</button></div>';
+    var el = $("#s-path"), c = course(), cur = currentDayFor(c.level), total = C.totalDays(c.level);
+    var levelDone = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) levelDone++;
+    var pct = Math.round(levelDone / total * 100);
+    var seg = '<div class="seg"><button class="' + (mapView === "course" ? "on" : "") + '" data-view="course">' + T("course") + '</button><button class="' + (mapView === "theory" ? "on" : "") + '" data-view="theory">' + T("theory") + '</button><button class="' + (mapView === "history" ? "on" : "") + '" data-view="history">' + T("history") + "</button></div>";
+    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + c.level + '</span><div><h2 class="lvname">' + lvName(c.level, 0) + '</h2><p class="lvdesc">' + esc(C.levelDesc(c.level)) + '</p></div></div>' +
+      '<div class="lvrow"><span>' + T("lessonsDone") + ": <b>" + levelDone + " / " + total + '</b></span><button class="btn ghost sm" data-change>' + ic("swap") + " " + T("change") + '</button></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
     var content;
     if (mapView === "theory") content = theoryBlock(c.level);
     else if (mapView === "history") content = histBlock();
-    else content = '<div class="days">' + grid(cur, total) + "</div>" + moduleTestBtn(levelDays, total) +
-      (!paid() ? '<div class="card" style="margin-top:16px"><b>Бесплатно:</b> первые ' + C.FREE_DAYS + " урока вводного уровня. Полный курс (все уроки и тесты) — в <a href=\"pricing.html\" style=\"color:var(--fire);font-weight:700\">тарифах</a>.</div>" : "");
-    el.innerHTML = head + hero + seg + content;
-    var cont = $("#cont"); if (cont) cont.addEventListener("click", function () { openDay(cur); });
+    else content = daysList(cur) + testCard(levelDone, total) + (!paid() ? '<div class="card free">' + T("free") + "</div>" : "");
+    el.innerHTML = hero + seg + content;
   }
 
-  function grid(cur, total) {
-    var c = course(), h = "";
+  function daysList(cur) {
+    var c = course(), total = C.totalDays(c.level), h = "";
     for (var d = 1; d <= total; d++) {
-      var done = isDone(c.level, d), locked = !canAccess(c.level, d);
-      var cls = "dcard" + (done ? " done" : "") + (locked ? " lock" : "") + (d === cur ? " cur" : "");
-      h += '<button class="' + cls + '" data-day="' + d + '"><b>' + d + "</b><small>" + (locked ? "🔒" : done ? "✓" : "5") + "</small></button>";
+      var done = isDone(c.level, d), acc = canAccess(c.level, d), current = d === cur;
+      var st = done ? "done" : current ? "cur" : acc ? "" : "lock";
+      var badge = done ? "✓" : current ? T("nowT") : acc ? "" : "🔒";
+      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d)) + '</b><small>' + (done ? T("doneT") : current ? T("nowT") : T("lockT")) + '</small></span><span class="dbadge">' + badge + "</span></button>";
     }
-    return h;
+    return '<div class="dlist">' + h + "</div>";
   }
 
-  function moduleTestBtn(done, total) {
+  function testCard(done, total) {
     var all = done >= total;
-    return '<div class="card" style="margin-top:16px"><div class="rw"><div><b>' + ic("file") + " Тестирование по модулю " + course().level + '</b><small>' + (all ? "Все уроки пройдены — проверь себя! Сдашь хорошо — откроем следующий уровень." : "Доступно в любой момент. Рекомендуем после " + total + " уроков.") + '</small></div></div>' +
-      '<button class="btn p" id="mtest" style="width:100%;margin-top:10px">' + ic("play") + " Пройти тестирование</button></div>";
+    return '<div class="card testcard"><div class="tcent"><span class="bic">' + ic("file") + '</span><div><b>' + T("testTitle") + " " + course().level + "</b><small>" + (all ? T("testAll") : T("testHint")) + "</small></div></div>" +
+      '<button class="btn p big" id="mtest">' + ic("play") + " " + T("testBtn") + "</button></div>";
   }
 
   function theoryBlock(level) {
-    var L = (window.LEXY_LESSONS && LEXY_LESSONS[level]) || [];
-    if (!L.length) return '<div class="card"><b>Теория</b><p class="s">Для этого уровня теория появится позже.</p></div>';
-    return L.map(function (l, i) {
-      return '<div class="card" style="margin-top:12px"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle" style="font-size:17px">Урок ' + (i + 1) + " · " + esc(l.t) + "</div><div class=bsub>Теория и правило</div></div></div>" +
-        '<p style="font-size:14.5px;line-height:1.6;color:var(--ink)">' + esc(l.th.e) + "</p>" +
-        '<div class="exlist">' + l.th.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div></div>";
+    var LS = (window.LEXY_LESSONS && LEXY_LESSONS[level]) || [];
+    if (!LS.length) return '<div class="card"><b>' + T("theoryT") + '</b><p class="s">—</p></div>';
+    return LS.map(function (l, i) {
+      var acc = canAccess(level, i + 1);
+      return '<div class="card tcard' + (acc ? "" : " lockcard") + '"><span class="tnum">' + (i + 1) + '</span><div class="tbody"><div class="btitle" style="font-size:17px">' + esc(l.t) + '</div><p>' + esc(l.th.e) + '</p><div class="exlist">' + l.th.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div></div></div>";
     }).join("");
+  }
+
+  function histBlock() {
+    if (!paid()) return '<div class="card lockcard"><b>' + T("histTitle") + '</b><p class="s">' + T("histLock") + '</p><a class="btn p sm" href="pricing.html" style="margin-top:10px">Premium</a></div>';
+    var c = course();
+    var keys = Object.keys(c.done).sort(function (a, b) { return (c.done[b].date || 0) - (c.done[a].date || 0); });
+    if (!keys.length) return '<div class="card"><b>' + T("histTitle") + '</b><p class="s" style="margin-top:6px">' + T("histEmpty") + "</p></div>";
+    return '<div class="card"><div style="font:800 18px var(--display);margin-bottom:8px">' + T("histTitle") + "</div>" +
+      keys.slice(0, 40).map(function (k) { var d = c.done[k], p = k.split("-"); return '<div class="rw"><div><b>' + p[0] + " · " + T("dayTitle") + " " + p[1] + '</b><small>' + new Date(d.date).toLocaleDateString(lang() === "en" ? "en-GB" : "ru-RU", { day: "numeric", month: "long" }) + '</small></div><span class="nt" style="color:var(--ok);font-weight:700">' + (d.score != null ? d.score + "%" : "✓") + "</span></div>"; }).join("") + "</div>";
+  }
+
+  function changeLevelModal() {
+    var c = course();
+    Lexy.modal({ title: T("change"), body: '<div class="ol">' + LEVELS.map(function (l) { return '<button class="op' + (c.level === l[0] ? " on" : "") + '" data-pick="' + l[0] + '"><span class="lb2">' + l[0] + '</span><div>' + lvName(l[0], 0) + "<small>" + lvName(l[0], 1) + "</small></div></button>"; }).join("") + "</div>", foot: false });
+    document.querySelectorAll("#mv [data-pick]").forEach(function (b) { b.addEventListener("click", function () { var cc = course(); cc.level = b.dataset.pick; Lexy.save({ course: cc }); Lexy.close(); renderCourse(); }); });
   }
 
   function runModuleTest() {
     var c = course(), t = C.moduleTest(c.level);
-    RUN = { plan: { level: c.level, day: "test", isTest: true, title: "Тестирование · " + c.level, blocks: [{ type: "test", data: t }] }, i: 0, results: [] };
+    RUN = { plan: { level: c.level, day: "test", isTest: true, title: T("testTitle") + " · " + c.level, blocks: [{ type: "test", data: t }] }, i: 0, results: [], t0: Date.now() };
     drawBlock();
   }
 
   $("#s-path").addEventListener("click", function (e) {
-    var v = e.target.closest("[data-view]");
-    if (v) { mapView = v.dataset.view; renderCourse(); return; }
+    var v = e.target.closest("[data-view]"); if (v) { mapView = v.dataset.view; renderCourse(); return; }
     if (e.target.closest("#mtest")) { runModuleTest(); return; }
-    var d = e.target.closest("[data-day]");
-    if (d) { var day = +d.dataset.day; if (!canAccess(course().level, day)) { upsellDay(); return; } openDay(day); return; }
-    var g = e.target.closest("[data-goal='change']");
-    if (g) { Lexy.save({ onboard: null, course: null }); sel = { goal: null, level: null }; renderOnboard(); }
+    if (e.target.closest("[data-change]")) { changeLevelModal(); return; }
+    var d = e.target.closest("[data-day]"); if (d) { var day = +d.dataset.day; if (!canAccess(course().level, day)) { upsellDay(); return; } openDay(day); }
   });
 
-  function histBlock() {
-    var c = course();
-    var keys = Object.keys(c.done).sort(function (a, b) { return (c.done[b].date || 0) - (c.done[a].date || 0); });
-    if (!keys.length) return '<div class="card" style="margin-top:16px"><b>История прохождения</b><p class="s" style="margin-top:6px">Пока пусто. Пройди первый день — здесь появится история с результатами (доступна бесплатно).</p></div>';
-    return '<div class="card" style="margin-top:16px"><div style="font:800 18px var(--display);margin-bottom:8px">История прохождения</div>' +
-      keys.slice(0, 30).map(function (k) {
-        var d = c.done[k], p = k.split("-");
-        return '<div class="rw"><div><b>' + p[0] + " · день " + p[1] + '</b><small>' + new Date(d.date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) + '</small></div><span class="nt" style="color:var(--ok);font-weight:700">' + (d.score != null ? d.score + "%" : "✓") + "</span></div>";
-      }).join("") + "</div>";
-  }
-
   function upsellDay() {
-    Lexy.modal({ title: "Доступно в Premium", body: "<p>Бесплатно открыто только первые " + C.FREE_DAYS + " дня вводного уровня. Чтобы открыть весь курс (90 дней, тесты, уровни A1–C1) — оформи Premium.</p>", ok: "Получить Premium", cancel: "Позже", onOk: function () { location.href = "pricing.html"; return false; } });
+    Lexy.modal({ title: "Premium", body: "<p>" + T("free") + "</p>", ok: "Premium", cancel: T("stay"), onOk: function () { location.href = "pricing.html"; return false; } });
   }
 
-  /* ---------- ПРОХОЖДЕНИЕ ДНЯ ---------- */
+  /* ---------- ПРОХОЖДЕНИЕ УРОКА ---------- */
   var RUN = null;
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function blockLabel(B) { return B.type === "theory" ? T("theoryT") : B.type === "listening" ? T("audio") : B.type === "test" ? T("testTitle") : (B.data && B.data.kind === "words") ? T("words") : (B.data && B.data.kind === "grammar") ? T("grammar") : T("practice"); }
+
   function openDay(day) {
-    var c = course(), plan = C.plan(c.level, day);
-    var key = c.level + "-" + day;
+    var c = course(), plan = C.plan(c.level, day), key = c.level + "-" + day;
     var start = (c.prog && c.prog[key] && c.prog[key].i) || 0;
     if (start >= plan.blocks.length) start = 0;
     RUN = { plan: plan, i: start, results: [] };
@@ -193,194 +189,130 @@
   function drawBlock() {
     var el = $("#s-path");
     if (RUN.i >= RUN.plan.blocks.length) { finishDay(); return; }
-    // сохраняем место, где остановились — при возврате продолжим отсюда
-    var cc = course(); if (!cc.prog) cc.prog = {};
-    cc.prog[RUN.plan.level + "-" + RUN.plan.day] = { i: RUN.i, ts: Date.now() };
-    Lexy.save({ course: cc });
+    var cc = course(); cc.prog[RUN.plan.level + "-" + RUN.plan.day] = { i: RUN.i, ts: Date.now() }; Lexy.save({ course: cc });
     var B = RUN.plan.blocks[RUN.i];
     var dots = RUN.plan.blocks.map(function (x, idx) { return '<i class="' + (idx < RUN.i ? "done" : idx === RUN.i ? "on" : "") + '"></i>'; }).join("");
-    var title = '<div class="crun-top"><button class="lnk" id="back">← К карте</button><span class="lk">' + esc(RUN.plan.title) + " · " + C.blockLabel(B.type) + "</span></div>";
-    var stepbar = '<div class="dots">' + dots + "</div>";
-    var body = "";
-    if (B.type === "theory") body = drawTheory(B.data);
-    else if (B.type === "vocab") body = drawVocab(B.data);
-    else if (B.type === "listening") body = drawQuiz(B.data, "listening");
-    else if (B.type === "reading") body = drawReading(B.data);
-    else if (B.type === "speaking") body = drawSpeaking(B.data);
-    else if (B.type === "quiz") body = drawQuiz(B.data, "quiz");
-    else if (B.type === "test") body = drawTest(B.data);
-    el.innerHTML = title + stepbar + body;
-
+    var title = '<div class="crun-top"><button class="lnk" id="back">← ' + T("stay") + '</button><span class="lk">' + esc(RUN.plan.title || "") + '</span></div>';
+    var body = B.type === "theory" ? drawTheory(B.data) : B.type === "listening" ? drawListening(B.data) : B.type === "test" ? drawTest(B.data) : B.type === "quiz" ? drawQuiz(B.data) : drawTheory(B.data);
+    el.innerHTML = title + '<div class="dots">' + dots + "</div>" + body;
     $("#back").addEventListener("click", renderCourse);
-    if (B.type === "theory") wireTheory(el);
-    else if (B.type === "vocab") wireVocab(el);
-    else if (B.type === "reading" || B.type === "listening" || B.type === "quiz") wireQuiz(el, B.data, B.type);
-    else if (B.type === "speaking") wireSpeaking(el);
-    else if (B.type === "test") wireTest(el);
+    if (B.type === "theory") $("#bnext").addEventListener("click", function () { nextBlock(1); });
+    else if (B.type === "listening") wireQuiz(el, B.data, true);
+    else if (B.type === "test") wireTest(el, B.data);
+    else if (B.type === "quiz") wireQuiz(el, B.data, false);
   }
-
-  function drawTheory(d) {
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">Практика с объяснением · разбор правила</div></div></div>' +
-      '<div class="lesson"><p>' + esc(d.e) + "</p></div>" +
-      '<div class="exlist">' + (d.ex || []).map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
-      '<div class="tip">💡 Прочитай примеры вслух — так правило запоминается быстрее.</div>' +
-      '<button class="btn p" id="bnext" style="margin-top:16px;width:100%">Понятно, к заданиям →</button></div>';
-  }
-  function wireTheory(el) { var b = $("#bnext", el); b && b.addEventListener("click", function () { nextBlock(1); }); }
   function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
 
-  function drawVocab(d) {
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic("vocab") + '</span><div><div class="btitle">Слова · ' + esc(d.t) + '</div><div class="bsub">Отметь ✓ слова, которые уже знаешь</div></div></div>' +
-      '<div class="wcards">' + d.w.map(function (x) { return '<div class="wcard"><div><div class="wbig">' + esc(x[0]) + '</div><div class="wt">' + esc(x[1]) + '</div></div><button class="kbtn" data-know aria-label="знаю">' + ic("check") + "</button></div>"; }).join("") + "</div>" +
-      '<button class="btn p" id="bnext" style="margin-top:16px;width:100%">Дальше →</button></div>';
+  function drawTheory(d) {
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">' + T("theoryT") + '</div></div></div>' +
+      '<div class="lesson"><p>' + esc(d.e) + "</p></div>" +
+      '<div class="exlist">' + (d.ex || []).map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
+      '<button class="btn p big" id="bnext" style="margin-top:18px">' + T("next") + " →</button></div>";
   }
-  function wireVocab(el) {
-    el.querySelectorAll("[data-know]").forEach(function (b) { b.addEventListener("click", function () { b.classList.toggle("on"); }); });
-    $("#bnext").addEventListener("click", function () { nextBlock(1); });
+  function drawListening(d) {
+    var url = C.audioFor(d.script);
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("head") + '</span><div><div class="btitle">' + T("audio") + '</div><div class="bsub">' + T("audio") + '</div></div></div>' +
+      '<div class="player"><button class="pbtn" id="play">' + ic("play") + '</button><div class="ptx"><b>' + T("audio") + '</b><small>' + T("audio") + "</small></div></div>" + (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") +
+      '<button class="btn ghost sm trbtn" id="showtr">' + T("theoryT") + "</button>" + '<div id="tr" hidden class="readpg" style="margin-top:10px">' + esc(d.script) + "</div>" +
+      '<div id="qarea" style="margin-top:16px"></div></div>';
   }
+  function drawQuiz(d) {
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic(d.kind === "words" ? "vocab" : d.kind === "grammar" ? "book" : "spark") + '</span><div><div class="btitle">' + T(d.kind === "words" ? "words" : d.kind === "grammar" ? "grammar" : "practice") + '</div><div class="bsub">' + (d.t ? esc(d.t) : "") + '</div></div></div><div id="qarea"></div></div>';
+  }
+  function drawTest(d) { return '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + esc(d.title) + '</div><div class="bsub" id="tmr"></div></div></div><div id="qarea"></div></div>'; }
 
-  function drawReading(d) {
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">Чтение и грамматика · прочитай и ответь</div></div></div>' +
-      '<div class="readpg">' + esc(d.p) + '</div><div id="qarea" style="margin-top:18px"></div></div>';
-  }
-  function drawQuiz(d, type) {
-    var url = type === "listening" && C.audioFor ? C.audioFor(d.script) : null;
-    var head = '<div class="bhead"><span class="bic">' + ic(type === "listening" ? "head" : "spark") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">' + (type === "listening" ? "Аудирование · послушай и ответь" : "Практика · выбери верный ответ") + "</div></div></div>";
-    var player = "";
-    if (type === "listening") {
-      player = '<div class="player"><button class="pbtn" id="play">' + ic("play") + '</button><div class="ptx"><b>Прослушай запись</b><small>Нажми на кнопку, чтобы включить</small></div></div>' +
-        (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") +
-        '<button class="btn ghost sm trbtn" id="showtr">Показать текст</button><div id="tr" hidden class="readpg" style="margin-top:10px">' + esc(d.script) + "</div>";
-    }
-    return '<div class="block">' + head + player + '<div id="qarea" style="margin-top:16px"></div></div>';
-  }
-  function wireQuiz(el, d, type) {
-    if (type === "listening") {
-      var pb = $("#play"), au = $("#au");
+  function wireQuiz(el, d, isListen) {
+    if (isListen) {
+      var pb = $("#play", el), au = $("#au", el);
       if (au) au.addEventListener("error", function () { au.dataset.fail = "1"; });
-      if (pb) pb.addEventListener("click", function () {
-        if (au && !au.dataset.fail) {
-          try { var pr = au.play(); if (pr && pr.catch) pr.catch(function () { speak(d.script, pb); }); }
-          catch (e) { speak(d.script, pb); }
-        } else { speak(d.script, pb); }
-      });
+      if (pb) pb.addEventListener("click", function () { if (au && !au.dataset.fail) { try { var pr = au.play(); if (pr && pr.catch) pr.catch(function () { speak(d.script, pb); }); } catch (e) { speak(d.script, pb); } } else speak(d.script, pb); });
       var trb = $("#showtr", el), tr = $("#tr", el);
-      if (trb && tr) trb.addEventListener("click", function () { tr.hidden = !tr.hidden; trb.textContent = tr.hidden ? "Показать текст" : "Скрыть текст"; });
+      if (trb && tr) trb.addEventListener("click", function () { tr.hidden = !tr.hidden; trb.textContent = tr.hidden ? T("theoryT") : T("stay"); });
     }
-    var list = d.q || d.questions, i = 0, score = 0, answered = false, picked = null;
+    var list = d.q || d.questions, i = 0, score = 0, answered = false, picked = null, opts = null, correct = 0;
     function draw() {
       var q = list[i];
-      $("#qarea").innerHTML = '<div class="qmeta"><span>Вопрос ' + (i + 1) + " из " + list.length + '</span></div><div class="qtext">' + esc(q.q) + '</div><div class="opts">' +
-        q.o.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(o) + "</button>"; }).join("") + "</div>" +
-        '<button class="btn" id="nq" disabled style="margin-top:14px">Далее →</button>';
+      var mapped = (q.o || []).map(function (o, x) { return { o: o, c: x === q.a }; });
+      mapped = shuffle(mapped.slice());
+      correct = mapped.findIndex(function (x) { return x.c; });
+      opts = mapped;
+      $("#qarea", el).innerHTML = '<div class="qmeta"><span>' + T("question") + " " + (i + 1) + " / " + list.length + '</span></div><div class="qtext">' + esc(q.q) + '</div><div class="opts">' +
+        mapped.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(o.o) + "</button>"; }).join("") + "</div>" +
+        '<button class="btn p big" id="nq" disabled style="margin-top:16px">' + T("next") + " →</button>";
       picked = null; answered = false;
-      $("#qarea").querySelectorAll(".opt").forEach(function (b) {
-        b.addEventListener("click", function () {
-          if (answered) return;
-          $("#qarea").querySelectorAll(".opt").forEach(function (x) { x.classList.remove("on"); });
-          b.classList.add("on"); picked = +b.dataset.x; $("#nq").disabled = false;
-        });
-      });
+      $("#qarea", el).querySelectorAll(".opt").forEach(function (b) { b.addEventListener("click", function () { if (answered) return; $("#qarea", el).querySelectorAll(".opt").forEach(function (x) { x.classList.remove("on"); }); b.classList.add("on"); picked = +b.dataset.x; $("#nq").disabled = false; }); });
       $("#nq").addEventListener("click", function () {
         if (picked == null) return;
-        if (!answered) {
-          answered = true;
-          var opts = $("#qarea").querySelectorAll(".opt");
-          opts[q.a].classList.add("right");
-          if (picked !== q.a) opts[picked].classList.add("wrong"); else score++;
-          $("#nq").textContent = i === list.length - 1 ? "Готово →" : "Следующий →";
-        } else { i++; if (i < list.length) draw(); else nextBlock(Math.round(score / list.length * 100)); }
+        if (!answered) { answered = true; var all = $("#qarea", el).querySelectorAll(".opt"); all[correct].classList.add("right"); if (picked !== correct) all[picked].classList.add("wrong"); else score++; $("#nq").textContent = i === list.length - 1 ? T("finish") + " →" : T("next") + " →"; }
+        else { i++; if (i < list.length) draw(); else nextBlock(Math.round(score / list.length * 100)); }
       });
     }
     draw();
   }
-  function drawSpeaking(d) {
-    return '<h1 class="t" style="font-size:24px">Говорение · ' + esc(d.t) + '</h1><div class="card" style="margin-top:14px"><div class="qtext" style="font-size:20px">' + esc(d.prompt) + '</div><p class="s" style="margin:6px 0 10px">You should say:</p>' +
-      d.points.map(function (p, i) { return '<label class="check"><input type="checkbox" data-p="' + i + '"><span>' + esc(p) + "</span></label>"; }).join("") +
-      '<button class="btn ghost sm" id="sample" style="margin-top:8px">🔊 Прослушать тему</button>' +
-      '<div class="note">Совет: отвечай вслух 1–2 минуты, затронув все пункты. Записывать не нужно.</div>' +
-      '<button class="btn p" id="bnext" style="margin-top:14px" disabled>Завершить блок</button></div>';
+  var TMR = null;
+  function wireTest(el, d) {
+    if (TMR) clearInterval(TMR);
+    var t0 = RUN.t0 || Date.now(), tmr = $("#tmr", el);
+    TMR = setInterval(function () { var s = Math.floor((Date.now() - t0) / 1000); if (tmr && tmr.isConnected) tmr.textContent = T("time") + ": " + Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }, 500);
+    wireQuiz(el, { q: d.questions }, false);
   }
-  function wireSpeaking(el) {
-    var checks = el.querySelectorAll(".check input"), done = $("#bnext");
-    checks.forEach(function (c) { c.addEventListener("change", function () { done.disabled = false; }); });
-    $("#sample").addEventListener("click", function () { speak(RUN.plan.blocks[RUN.i].data.prompt + ". " + RUN.plan.blocks[RUN.i].data.points.join(". "), null); });
-    done.addEventListener("click", function () { nextBlock(1); });
-  }
-  function drawTest(d) { return '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + esc(d.title) + '</div><div class="bsub">Проверка уровня · ответь на вопросы</div></div></div><div id="qarea"></div></div>'; }
-  function wireTest(el) { wireQuiz(el, { q: RUN.plan.blocks[RUN.i].data.questions }, "test"); }
 
   function finishDay() {
-    var c = course();
-    var day = RUN.plan.day;
+    var c = course(), day = RUN.plan.day;
     var avg = RUN.results.length ? RUN.results.reduce(function (a, b) { return a + b; }, 0) / RUN.results.length : 100;
     var key = c.level + "-" + day;
-    c.done[key] = { date: Date.now(), score: Math.round(avg) };
+    var prev = c.done[key];
+    c.done[key] = { date: Date.now(), score: prev && prev.score != null ? Math.max(prev.score, Math.round(avg)) : Math.round(avg) };
     if (c.prog) delete c.prog[key];
-    var levelUp = false;
+    var levelUp = false, passed = false;
+    var elapsed = RUN.plan.isTest && RUN.t0 ? Math.round((Date.now() - RUN.t0) / 1000) : 0;
     if (RUN.plan.isTest) {
-      c.passes[key] = Math.round(avg);
-      if (avg >= 85) {
-        var idx = C.LEVELS.indexOf(c.level);
-        if (idx > -1 && idx < C.LEVELS.length - 1) { c.level = C.LEVELS[idx + 1]; c.day = 1; levelUp = true; }
-      }
+      c.passes[key] = Math.round(avg); passed = avg >= 60;
+      if (avg >= 85) { var idx = C.LEVELS.indexOf(c.level); if (idx > -1 && idx < C.LEVELS.length - 1) { c.level = C.LEVELS[idx + 1]; levelUp = true; } }
     }
-    Lexy.save({ course: c });
-    Lexy.addMin(15);
+    Lexy.save({ course: c }); Lexy.addMin(15);
+    if (TMR) { clearInterval(TMR); TMR = null; }
     var el = $("#s-path");
-    el.innerHTML = '<div class="card" style="text-align:center;margin-top:40px"><div style="font-size:44px">🎉</div><h2 style="font:800 22px var(--display);margin:8px 0">' + (RUN.plan.isTest ? "Тест пройден!" : "День " + day + " пройден!") + '</h2><p class="s">' + (levelUp ? "Отличный результат — ты перешёл на уровень " + c.level + "!" : RUN.plan.isTest ? "Результат: " + Math.round(avg) + "%. Следуй дальше по курсу." : "Результат: " + Math.round(avg) + "%. Хорошая работа!") + '</p><button class="btn p" id="tocourse" style="margin-top:14px">К карте курса</button></div>';
+    var timeTxt = elapsed ? (T("time") + ": " + Math.floor(elapsed / 60) + " " + T("minutes") + " " + (elapsed % 60) + " " + T("sec")) : "";
+    var sum = '<div class="card" style="text-align:center;margin-top:30px"><div style="font-size:44px">' + (RUN.plan.isTest ? "🏁" : "🎉") + '</div><h2 style="font:800 22px var(--display);margin:8px 0">' + (RUN.plan.isTest ? T("testTitle") : T("dayTitle") + " " + day) + '</h2>' +
+      '<div class="scorebig">' + Math.round(avg) + "%</div><p class=\"s\">" + T("result") + ": " + Math.round(avg) + "%" + (timeTxt ? " · " + timeTxt : "") + "</p>" +
+      (levelUp ? '<div class="card" style="background:#F1FBF6;border-color:#C8EAD7;margin-top:12px"><b>' + T("levelUp") + " " + c.level + "!</b></div>" : "") +
+      '<button class="btn p big" id="tocourse" style="margin-top:14px">' + T("stay") + '</button>' +
+      (levelUp ? '<button class="btn big" id="gonext" style="margin-top:10px;background:#12A15C;color:#fff">' + T("goNext") + " " + c.level + " →</button>" : "") + "</div>";
+    el.innerHTML = sum;
     $("#tocourse").addEventListener("click", renderCourse);
+    var gn = $("#gonext"); if (gn) gn.addEventListener("click", function () { renderCourse(); openDay(1); });
   }
 
-  /* ---------- ОЗВУЧКА (браузерная, бесплатно; polza.ai — далее) ---------- */
+  /* ---------- ОЗВУЧКА ---------- */
   var VOICE = null;
   function pickVoice() { if (!("speechSynthesis" in window)) return; var v = speechSynthesis.getVoices() || []; VOICE = v.filter(function (x) { return /en[-_](GB|US|AU)/i.test(x.lang); })[0] || v.filter(function (x) { return /^en/i.test(x.lang); })[0] || null; }
   if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-  function speak(text, btn) {
-    if (!("speechSynthesis" in window)) { Lexy.toast("Озвучка не поддерживается"); return; }
-    speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(text); u.lang = (VOICE && VOICE.lang) || "en-GB"; if (VOICE) u.voice = VOICE; u.rate = 0.95;
-    if (btn) { btn.dataset.playing = "1"; var t = btn.textContent; btn.textContent = "⏸ Стоп"; u.onend = u.onerror = function () { btn.dataset.playing = ""; btn.textContent = t; }; }
-    speechSynthesis.speak(u);
-  }
+  function speak(text, btn) { if (!("speechSynthesis" in window)) { Lexy.toast("—"); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = (VOICE && VOICE.lang) || "en-GB"; if (VOICE) u.voice = VOICE; u.rate = 0.95; if (btn) { var t = btn.textContent; u.onend = u.onerror = function () { btn.textContent = t; }; } speechSynthesis.speak(u); }
 
-  /* ---------- ПРАКТИКА (ссылки на test.html) ---------- */
+  /* ---------- ПРАКТИКА ---------- */
   function renderPractice() {
     var C2 = window.LexyContent, p = paid();
     if (!C2) { $("#s-practice").innerHTML = ""; return; }
     function ico(i, bg, c) { return '<span style="width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
-    var SK = [["reading", "Чтение", "book", "#E3F0FF", "#1E8FE8", "Тексты и вопросы"], ["listening", "Аудирование", "head", "#FFE0DB", "#E5443E", "Аудио с озвучкой"], ["writing", "Письмо", "pencil", "#FFE6D6", "#F7620B", "Эссе и структура"], ["speaking", "Говорение", "mic", "#FFF3CC", "#E59A00", "Монолог по карточке"]];
-    var cards = SK.map(function (s) {
-      var cnt = C2.count(s[0]), flc = C2.freeLimit(s[0]);
-      return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) + '<div style="flex:1"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b><small style="color:var(--soft)">' + s[5] + '</small><br><small style="color:var(--fire);font-weight:700">' + (p ? cnt + " заданий" : flc + " бесплатно из " + cnt) + "</small></div>" + ic("chev") + "</a>";
-    }).join("");
-    $("#s-practice").innerHTML = '<h1 class="t">Практика</h1><p class="s" style="margin-bottom:16px">Дополнительные задания по навыкам</p>' + cards;
+    var SK = [["reading", "Reading", "book", "#E3F0FF", "#1E8FE8"], ["listening", "Listening", "head", "#FFE0DB", "#E5443E"], ["writing", "Writing", "pencil", "#FFE6D6", "#F7620B"], ["speaking", "Speaking", "mic", "#FFF3CC", "#E59A00"]];
+    var cards = SK.map(function (s) { var cnt = C2.count(s[0]), flc = C2.freeLimit(s[0]); return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) + '<div style="flex:1"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b><small style="color:var(--fire);font-weight:700">' + (p ? cnt : flc + "/" + cnt) + "</small></div>" + ic("chev") + "</a>"; }).join("");
+    $("#s-practice").innerHTML = '<h1 class="t">Practice</h1><p class="s" style="margin-bottom:16px">Extra tasks by skill</p>' + cards;
   }
 
-  /* ---------- ПРОГРЕСС (статистика — только платным) ---------- */
+  /* ---------- ПРОГРЕСС ---------- */
   function renderProgress() {
     var u = Lexy.user, n = Lexy.streakN(), m = Lexy.mins(), c = course();
     var DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
     var dots = Lexy.weekDots().map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + '"><i>' + (d.on ? ic("fire") : "") + "</i>" + DN[i] + "</div>"; }).join("");
     var doneCount = Object.keys(c.done).length;
-    var head = '<h1 class="t" style="margin-bottom:20px">Прогресс</h1>' +
-      '<div class="stk"><div class="fc">' + fl(46) + "</div><small>Серия</small><h2>" + ic("fire") + " " + n + " " + dayWord(n) + ' подряд</h2><div class="wd">' + dots + "</div></div>";
-    if (!paid()) {
-      $("#s-progress").innerHTML = head + '<div class="card emp"><div class="eb">' + fl(30) + '</div><h3 style="text-align:center">Статистика в Premium</h3><p>Подробная статистика по уровням, блокам и баллам доступна на тарифах Pro и Pro+. Твой прогресс сохраняется — открой его вместе с Premium.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>';
-      return;
-    }
-    $("#s-progress").innerHTML = head +
-      '<div class="card ls"><div class="r"><b>Уровень курса</b><span class="n">' + c.level + "</span></div><div class=\"r\"><b>Пройдено уроков</b><span class=\"n\">" + doneCount + " из " + C.totalDays(c.level) + '</span></div><div class="r"><b>Время с Lexy</b><span class="n">' + m.day + " мин сегодня · " + m.all + " всего</span></div></div>";
+    var head = '<h1 class="t" style="margin-bottom:20px">Progress</h1><div class="stk"><div class="fc">' + fl(46) + "</div><small>Streak</small><h2>" + ic("fire") + " " + n + '</h2><div class="wd">' + dots + "</div></div>";
+    if (!paid()) { $("#s-progress").innerHTML = head + '<div class="card emp"><div class="eb">' + fl(30) + '</div><h3 style="text-align:center">Statistics — Premium</h3><p>Detailed statistics are available on Pro and Pro+.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Premium</a></div>'; return; }
+    $("#s-progress").innerHTML = head + '<div class="card ls"><div class="r"><b>Level</b><span class="n">' + c.level + '</span></div><div class="r"><b>' + T("lessonsDone") + '</b><span class="n">' + doneCount + " / " + C.totalDays(c.level) + '</span></div><div class="r"><b>Time</b><span class="n">' + m.day + " / " + m.all + " min</span></div></div>";
   }
 
   /* ---------- ЗАПУСК ---------- */
-  Lexy.init("english", {
-    render: {
-      path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); },
-      practice: renderPractice,
-      progress: renderProgress
-    }
-  });
+  Lexy.init("english", { render: { path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); }, practice: renderPractice, progress: renderProgress } });
 })();
 </script>
 </body>
