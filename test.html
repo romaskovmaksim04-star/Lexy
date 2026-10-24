@@ -165,13 +165,69 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   window.__lexyBack = function(e){ if(e) e.preventDefault(); if(history.length > 1) history.back(); else location.href = 'dashboard-english.html#practice'; };
 
   var C = window.LexyContent;
+  var TX = {
+    ru: { back:'Назад', hubTasks:'Задания', hubFull:'Полный экзамен', hubBaseline:'Замер уровня',
+      subTasks:'Тренируй навыки по реальным заданиям IELTS. Результат сохраняется в кабинете.', subFull:'Пройди все четыре секции подряд — в конце Lexy соберёт общий результат.', subBaseline:'Пройди по одному заданию каждого навыка, чтобы открыть стартовый балл.',
+      done:'пройдено', allTasks:'всего заданий', progress:'прогресс', tasksPremium:'заданий · Premium', freeOf:'бесплатно из', min:'мин', best:'лучший',
+      premActive:'Premium активен — открыты все задания, игры и Lexy AI.', freeNoteA:'Бесплатно доступна часть заданий: ', reading:'чтение', listening:'аудирование', writing:'письмо', speaking:'говорение', freeNoteB:'. Полный доступ — в ', pricing:'тарифах', freeNoteC:'.',
+      howT:'Как это работает', how1:'Выбери навык → откроется список заданий по номерам.', how2:'Каждое задание: текст/аудио/эссе/монолог и вопросы.', how3:'Результат сохраняется, учитывается лучший балл.', how4:'Бесплатно — первые задания, остальное на Premium.', historyLink:'История заданий',
+      desc_reading:'текст · вопросы на понимание', desc_listening:'аудио с озвучкой · ловушки и детали', desc_writing:'эссе Task 2 · 250+ слов', desc_speaking:'карточка Part 2 · монолог',
+      of:'из', passed:'пройдено', available:'доступно', cont:'Продолжить', taskWord:'задание', premTitle:'Доступно в Premium',
+      lockBodyA:'Бесплатно открыто ', lockBodyB:' задания «', lockBodyC:'». Чтобы пройти все ', lockBodyD:' — оформи Premium.', getPrem:'Получить Premium', backTasks:'Вернуться к заданиям',
+      noTts:'Озвучка не поддерживается в этом браузере', play:'▶ Прослушать', stop:'⏸ Стоп', histT:'История тестов', histSub:'Все пройденные секции и результаты.', histEmpty:'Пока пусто. Пройди первый тест — результат появится здесь.', words:'слов', toTests:'К тестам', toCab:'В кабинет',
+      qOfA:'Вопрос ', qOfB:' из ', qOfC:' · выбери один вариант', audioNote:'🎧 Аудио · нажми «Прослушать» и ответь на вопрос.', next:'Далее →', showRes:'Показать результат →', nextQ:'Следующий вопрос →', correctA:'Правильных ответов: ', correctB:' из ', correctC:'.',
+      essayHintA:'Эссе · ориентир ', essayHintB:'+ слов', writePh:'Начни писать здесь…', wcL:'Слов:', minL:'Минимум:', finishW:'Завершить Writing', wVolA:'Объём: ', wVolB:' слов. ', wGood:'Отличный объём для Task 2.', wMoreA:'Попробуй раскрыть тему подробнее — желательно ', wMoreB:'+ слов.',
+      spNote:'Совет: отвечай вслух 1,5–2 минуты, затронув все пункты. Записывать не нужно — просто отметь, что раскрыл.', spPrac:'Практика Speaking · монолог', spRead:'🔊 Послушать тему', finishS:'Завершить Speaking', spDoneA:'Раскрыто пунктов: ', spDoneB:' из ', spDoneC:'. ', spGood:'Хорошая структура ответа.', spMore:'Постарайся затронуть все пункты карточки.',
+      resTitle:'Секция пройдена!', scoreL:'Оценка', nextSecA:'Следующая секция: ', again:'Пройти ещё раз' },
+    en: { back:'Back', hubTasks:'Tasks', hubFull:'Full exam', hubBaseline:'Level check',
+      subTasks:'Practise skills with real IELTS tasks. Results are saved to your account.', subFull:'Go through all four sections in a row — Lexy will combine the result at the end.', subBaseline:'Do one task per skill to unlock your starting score.',
+      done:'completed', allTasks:'total tasks', progress:'progress', tasksPremium:'tasks · Premium', freeOf:'free of', min:'min', best:'best',
+      premActive:'Premium is active — all tasks, games and Lexy AI are unlocked.', freeNoteA:'Some tasks are free: ', reading:'reading', listening:'listening', writing:'writing', speaking:'speaking', freeNoteB:'. Full access — see ', pricing:'pricing', freeNoteC:'.',
+      howT:'How it works', how1:'Pick a skill → a numbered list of tasks opens.', how2:'Each task: text/audio/essay/monologue and questions.', how3:'Your result is saved; the best band counts.', how4:'Free — the first tasks, the rest on Premium.', historyLink:'Task history',
+      desc_reading:'text · comprehension questions', desc_listening:'audio · traps and details', desc_writing:'Task 2 essay · 250+ words', desc_speaking:'Part 2 card · monologue',
+      of:'of', passed:'completed', available:'available', cont:'Continue', taskWord:'task', premTitle:'Available in Premium',
+      lockBodyA:'', lockBodyB:' tasks in “', lockBodyC:'” are free. To complete all ', lockBodyD:' — get Premium.', getPrem:'Get Premium', backTasks:'Back to tasks',
+      noTts:'Audio is not supported in this browser', play:'▶ Listen', stop:'⏸ Stop', histT:'Test history', histSub:'All completed sections and results.', histEmpty:'Empty for now. Do your first test and the result will appear here.', words:'words', toTests:'To tests', toCab:'To dashboard',
+      qOfA:'Question ', qOfB:' of ', qOfC:' · choose one option', audioNote:'🎧 Audio · press “Listen” and answer the question.', next:'Next →', showRes:'Show result →', nextQ:'Next question →', correctA:'Correct answers: ', correctB:' of ', correctC:'.',
+      essayHintA:'Essay · target ', essayHintB:'+ words', writePh:'Start writing here…', wcL:'Words:', minL:'Minimum:', finishW:'Finish Writing', wVolA:'Length: ', wVolB:' words. ', wGood:'Great length for Task 2.', wMoreA:'Try to develop the topic more — aim for ', wMoreB:'+ words.',
+      spNote:'Tip: answer aloud for 1.5–2 minutes, covering all points. No recording needed — just tick what you covered.', spPrac:'Speaking practice · monologue', spRead:'🔊 Listen to the topic', finishS:'Finish Speaking', spDoneA:'Points covered: ', spDoneB:' of ', spDoneC:'. ', spGood:'Good answer structure.', spMore:'Try to cover every point on the card.',
+      resTitle:'Section complete!', scoreL:'Score', nextSecA:'Next section: ', again:'Try again' },
+    kz: { back:'Артқа', hubTasks:'Тапсырмалар', hubFull:'Толық емтихан', hubBaseline:'Деңгейді өлшеу',
+      subTasks:'IELTS-тің нақты тапсырмаларымен дағдыларды жаттық. Нәтиже кабинетте сақталады.', subFull:'Төрт секцияны қатарынан өт — соңында Lexy жалпы нәтижені жинақтайды.', subBaseline:'Бастапқы баллды ашу үшін әр дағдыдан бір тапсырма орында.',
+      done:'өтілді', allTasks:'барлық тапсырма', progress:'прогресс', tasksPremium:'тапсырма · Premium', freeOf:'тегін /', min:'мин', best:'үздік',
+      premActive:'Premium белсенді — барлық тапсырма, ойын және Lexy AI ашық.', freeNoteA:'Тапсырманың бір бөлігі тегін: ', reading:'оқу', listening:'тыңдау', writing:'жазу', speaking:'сөйлеу', freeNoteB:'. Толық қатынау — ', pricing:'тарифтерде', freeNoteC:'.',
+      howT:'Бұл қалай жұмыс істейді', how1:'Дағдыны таңда → тапсырмалар тізімі ашылады.', how2:'Әр тапсырма: мәтін/аудио/эссе/монолог және сұрақтар.', how3:'Нәтиже сақталады, ең жақсы балл есептеледі.', how4:'Тегін — алғашқы тапсырмалар, қалғаны Premium-да.', historyLink:'Тапсырма тарихы',
+      desc_reading:'мәтін · түсіну сұрақтары', desc_listening:'аудио · тұзақтар мен детальдар', desc_writing:'Task 2 эссесі · 250+ сөз', desc_speaking:'Part 2 картасы · монолог',
+      of:'/', passed:'өтілді', available:'қолжетімді', cont:'Жалғастыру', taskWord:'тапсырма', premTitle:'Premium-да қолжетімді',
+      lockBodyA:'', lockBodyB:' тапсырма «', lockBodyC:'» тегін. Барлық ', lockBodyD:'-ны өту үшін Premium ал.', getPrem:'Premium алу', backTasks:'Тапсырмаларға оралу',
+      noTts:'Бұл браузерде дыбыстау қолданылмайды', play:'▶ Тыңдау', stop:'⏸ Тоқтау', histT:'Тест тарихы', histSub:'Барлық өтілген секциялар мен нәтижелер.', histEmpty:'Әзірге бос. Бірінші тестті өт — нәтиже осында шығады.', words:'сөз', toTests:'Тесттерге', toCab:'Кабинетке',
+      qOfA:'Сұрақ ', qOfB:' / ', qOfC:' · бір нұсқаны таңда', audioNote:'🎧 Аудио · «Тыңдау» басып, сұраққа жауап бер.', next:'Келесі →', showRes:'Нәтижені көрсету →', nextQ:'Келесі сұрақ →', correctA:'Дұрыс жауап: ', correctB:' / ', correctC:'.',
+      essayHintA:'Эссе · бағдар ', essayHintB:'+ сөз', writePh:'Осында жаза баста…', wcL:'Сөз:', minL:'Минимум:', finishW:'Writing-ті аяқтау', wVolA:'Көлемі: ', wVolB:' сөз. ', wGood:'Task 2 үшін тамаша көлем.', wMoreA:'Тақырыпты толығырақ аш — кемінде ', wMoreB:'+ сөз.',
+      spNote:'Кеңес: 1,5–2 минут дауыстап жауап бер, барлық пунктті қамты. Жазу қажет емес — ашқаныңды белгіле.', spPrac:'Speaking практикасы · монолог', spRead:'🔊 Тақырыпты тыңдау', finishS:'Speaking-ті аяқтау', spDoneA:'Ашылған пункт: ', spDoneB:' / ', spDoneC:'. ', spGood:'Жауап құрылымы жақсы.', spMore:'Картадағы барлық пунктті қамтуға тырыс.',
+      resTitle:'Секция өтілді!', scoreL:'Баға', nextSecA:'Келесі секция: ', again:'Қайта тапсыру' },
+    uz: { back:'Orqaga', hubTasks:'Topshiriqlar', hubFull:"To'liq imtihon", hubBaseline:"Daraja o'lchash",
+      subTasks:"IELTSning haqiqiy topshiriqlari bilan ko'nikmalarni mashq qiling. Natija profilingizda saqlanadi.", subFull:"To'rt bo'limni ketma-ket o'ting — oxirida Lexy umumiy natijani jamlaydi.", subBaseline:"Boshlang'ich ballni ochish uchun har bir ko'nikmadan bitta topshiriq bajaring.",
+      done:'bajarildi', allTasks:'jami topshiriq', progress:'taraqqiyot', tasksPremium:'topshiriq · Premium', freeOf:'bepul /', min:'daq', best:'eng yaxshi',
+      premActive:"Premium faol — barcha topshiriq, o'yin va Lexy AI ochiq.", freeNoteA:"Topshiriqlarning bir qismi bepul: ", reading:"o'qish", listening:'tinglash', writing:'yozish', speaking:"so'zlash", freeNoteB:". To'liq kirish — ", pricing:'tariflarda', freeNoteC:'.',
+      howT:'Bu qanday ishlaydi', how1:'Ko‘nikmani tanlang → topshiriqlar ro‘yxati ochiladi.', how2:'Har bir topshiriq: matn/audio/insho/monolog va savollar.', how3:'Natija saqlanadi, eng yaxshi ball hisoblanadi.', how4:'Bepul — ilk topshiriqlar, qolgani Premiumda.', historyLink:'Topshiriq tarixi',
+      desc_reading:"matn · tushunish savollari", desc_listening:'audio · tuzoqlar va detallar', desc_writing:'Task 2 insho · 250+ so‘z', desc_speaking:'Part 2 karta · monolog',
+      of:'/', passed:'bajarildi', available:'mavjud', cont:'Davom etish', taskWord:'topshiriq', premTitle:"Premium'da mavjud",
+      lockBodyA:'', lockBodyB:' topshiriq «', lockBodyC:'» bepul. Barcha ', lockBodyD:' ni o‘tish uchun Premium oling.', getPrem:'Premium olish', backTasks:'Topshiriqlarga qaytish',
+      noTts:"Bu brauzerda ovoz qo'llab-quvvatlanmaydi", play:'▶ Tinglash', stop:"⏸ To'xtatish", histT:'Test tarixi', histSub:"Barcha o'tilgan bo'limlar va natijalar.", histEmpty:"Hozircha bo'sh. Birinchi testni o'ting — natija shu yerda chiqadi.", words:"so'z", toTests:'Testlarga', toCab:'Kabinetga',
+      qOfA:'Savol ', qOfB:' / ', qOfC:' · bitta variantni tanlang', audioNote:'🎧 Audio · «Tinglash»ni bosib, savolga javob bering.', next:'Keyingi →', showRes:"Natijani ko'rsatish →", nextQ:'Keyingi savol →', correctA:"To'g'ri javoblar: ", correctB:' / ', correctC:'.',
+      essayHintA:'Insho · mo‘ljal ', essayHintB:'+ so‘z', writePh:'Shu yerga yozishni boshlang…', wcL:"So'z:", minL:'Minimum:', finishW:'Writingni tugatish', wVolA:'Hajmi: ', wVolB:" so'z. ", wGood:'Task 2 uchun ajoyib hajm.', wMoreA:"Mavzuni batafsilroq yoritib bering — kamida ", wMoreB:"+ so'z.",
+      spNote:"Maslahat: 1,5–2 daqiqa ovoz chiqarib javob bering, barcha punktlarni qamrab oling. Yozish shart emas — qamraganingizni belgilang.", spPrac:'Speaking amaliyoti · monolog', spRead:'🔊 Mavzuni tinglash', finishS:'Speakingni tugatish', spDoneA:'Qamralgan punktlar: ', spDoneB:' / ', spDoneC:'. ', spGood:'Javob tuzilishi yaxshi.', spMore:'Kartadagi barcha punktlarni qamrab olishga harakat qiling.',
+      resTitle:"Bo'lim yakunlandi!", scoreL:'Baho', nextSecA:'Keyingi bo‘lim: ', again:'Yana urinib ko‘rish' }
+  };
+  function T(k){ var l = ((window.LexyAuth && LexyAuth.user()) || {}).lang || 'ru'; var d = TX[l] || TX.ru; return d[k] != null ? d[k] : (TX.ru[k] != null ? TX.ru[k] : k); }
   var SKILLS = {
-    reading:   { name:'Reading',   em:'📖', mins:10, desc:'текст · вопросы на понимание' },
-    listening: { name:'Listening', em:'🎧', mins:8,  desc:'аудио с озвучкой · ловушки и детали' },
-    writing:   { name:'Writing',   em:'✍️', mins:20, desc:'эссе Task 2 · 250+ слов' },
-    speaking:  { name:'Speaking',  em:'🗣', mins:10, desc:'карточка Part 2 · монолог' }
+    reading:   { name:'Reading',   em:'📖', mins:10, desc:T('desc_reading') },
+    listening: { name:'Listening', em:'🎧', mins:8,  desc:T('desc_listening') },
+    writing:   { name:'Writing',   em:'✍️', mins:20, desc:T('desc_writing') },
+    speaking:  { name:'Speaking',  em:'🗣', mins:10, desc:T('desc_speaking') }
   };
   var ORDER = ['reading','listening','writing','speaking'];
+  (function(){ var b=document.querySelector('.back'); if(b) b.innerHTML='<span class="arr">←</span> '+T('back'); })();
   function setTabs(active){
     var tb = document.getElementById('tabs');
     if(!tb) return;
@@ -227,33 +283,29 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   }
 
   function renderHub(kind){
-    var title = kind === 'full' ? 'Полный экзамен' : kind === 'baseline' ? 'Замер уровня' : 'Задания';
-    var sub = kind === 'full'
-      ? 'Пройди все четыре секции подряд — в конце Lexy соберёт общий результат.'
-      : kind === 'baseline'
-        ? 'Пройди по одному заданию каждого навыка, чтобы открыть стартовый балл.'
-        : 'Тренируй навыки по реальным заданиям IELTS. Результат сохраняется в кабинете.';
+    var title = kind === 'full' ? T('hubFull') : kind === 'baseline' ? T('hubBaseline') : T('hubTasks');
+    var sub = kind === 'full' ? T('subFull') : kind === 'baseline' ? T('subBaseline') : T('subTasks');
     var paid = premium(), td = totalDone(), tc = totalCount(), pct = tc ? Math.round(td / tc * 100) : 0;
     var hero = '<div class="hero2"><h2>' + title + '</h2><p class="s">' + sub + '</p>' +
-      '<div class="row2"><div><b>' + td + '</b><small>пройдено</small></div><div><b>' + tc + '</b><small>всего заданий</small></div><div><b>' + pct + '%</b><small>прогресс</small></div></div>' +
+      '<div class="row2"><div><b>' + td + '</b><small>' + T('done') + '</small></div><div><b>' + tc + '</b><small>' + T('allTasks') + '</small></div><div><b>' + pct + '%</b><small>' + T('progress') + '</small></div></div>' +
       '<div class="bar"><i style="width:' + pct + '%"></i></div></div>';
     var cards = ORDER.map(function(k){
       var s = SKILLS[k], cnt = C.count(k), done = doneCount(k), bb = bestBand(k);
-      var tag = paid ? (cnt + ' заданий · Premium') : (C.freeLimit(k) + ' бесплатно из ' + cnt);
+      var tag = paid ? (cnt + ' ' + T('tasksPremium')) : (C.freeLimit(k) + ' ' + T('freeOf') + ' ' + cnt);
       return '<a class="skill" href="test.html?skill=' + k + '">' +
         '<span class="em">' + s.em + '</span>' +
-        '<span class="tx"><b>' + s.name + '</b><small>' + s.desc + ' · ~' + s.mins + ' мин</small>' +
+        '<span class="tx"><b>' + s.name + '</b><small>' + s.desc + ' · ~' + s.mins + ' ' + T('min') + '</small>' +
         '<div class="bar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
-        '<small class="mut">' + done + ' из ' + cnt + (bb != null ? ' · лучший ' + bb.toFixed(1) : '') + ' · <span style="color:var(--fire)">' + tag + '</span></small></span>' +
+        '<small class="mut">' + done + ' ' + T('of') + ' ' + cnt + (bb != null ? ' · ' + T('best') + ' ' + bb.toFixed(1) : '') + ' · <span style="color:var(--fire)">' + tag + '</span></small></span>' +
         '<span class="arrow">›</span></a>';
     }).join('');
     var freeNote = paid
-      ? '<div class="note" style="background:#F1FBF6;border-color:#C8EAD7">Premium активен — открыты все задания, игры и Lexy AI.</div>'
-      : '<div class="note">Бесплатно доступна часть заданий: ' + C.freeLimit('reading') + ' чтение, ' + C.freeLimit('listening') + ' аудирование, ' + C.freeLimit('writing') + ' письмо, ' + C.freeLimit('speaking') + ' говорение. Полный доступ — в <a href="pricing.html" style="color:var(--fire);font-weight:700">тарифах</a>.</div>';
+      ? '<div class="note" style="background:#F1FBF6;border-color:#C8EAD7">' + T('premActive') + '</div>'
+      : '<div class="note">' + T('freeNoteA') + C.freeLimit('reading') + ' ' + T('reading') + ', ' + C.freeLimit('listening') + ' ' + T('listening') + ', ' + C.freeLimit('writing') + ' ' + T('writing') + ', ' + C.freeLimit('speaking') + ' ' + T('speaking') + T('freeNoteB') + '<a href="pricing.html" style="color:var(--fire);font-weight:700">' + T('pricing') + '</a>' + T('freeNoteC') + '</div>';
     app.innerHTML = hero + '<div class="hub">' + cards + '</div>' + freeNote +
-      '<div class="card" style="margin-top:16px"><b>Как это работает</b><ul style="margin:10px 0 0 18px;color:var(--soft);font-size:13.5px;line-height:1.7"><li>Выбери навык → откроется список заданий по номерам.</li><li>Каждое задание: текст/аудио/эссе/монолог и вопросы.</li><li>Результат сохраняется, учитывается лучший балл.</li><li>Бесплатно — первые задания, остальное на Premium.</li></ul></div>' +
-      '<div class="row"><a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a>' +
-      '<a class="btn ghost sm" href="test.html?history=1">История заданий</a></div>';
+      '<div class="card" style="margin-top:16px"><b>' + T('howT') + '</b><ul style="margin:10px 0 0 18px;color:var(--soft);font-size:13.5px;line-height:1.7"><li>' + T('how1') + '</li><li>' + T('how2') + '</li><li>' + T('how3') + '</li><li>' + T('how4') + '</li></ul></div>' +
+      '<div class="row"><a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← ' + T('back') + '</a>' +
+      '<a class="btn ghost sm" href="test.html?history=1">' + T('historyLink') + '</a></div>';
   }
 
   function renderSkillList(k){
@@ -263,25 +315,25 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       var key = k + '-' + n, t = tests()[key], locked = C.isLocked(k, n, paid);
       var cls = t ? ' done' : locked ? ' lock' : '';
       var badge = t ? (t.band != null ? t.band.toFixed(1) : (t.score != null ? t.score + '/' + t.total : '✓')) : (locked ? '🔒' : '');
-      var sub2 = t ? 'пройдено' : locked ? 'Premium' : 'доступно';
+      var sub2 = t ? T('passed') : locked ? 'Premium' : T('available');
       rows += '<a class="taskrow' + cls + '" href="' + (locked ? 'pricing.html' : 'test.html?skill=' + k + '&n=' + n) + '"><span class="tn">' + n + '</span><span class="ttx"><b>' + s.name + ' · ' + n + '</b><small>' + sub2 + '</small></span><span class="tb">' + badge + '</span></a>';
     }
-    app.innerHTML = '<h1>' + s.name + '</h1><p class="s">' + done + ' из ' + cnt + ' пройдено · ' + s.desc + '</p>' +
+    app.innerHTML = '<h1>' + s.name + '</h1><p class="s">' + done + ' ' + T('of') + ' ' + cnt + ' ' + T('passed') + ' · ' + s.desc + '</p>' +
       '<div class="bar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
       '<div class="tasks">' + rows + '</div>' +
-      '<div class="row"><a class="btn sm" href="test.html?skill=' + k + '&n=' + nextNum(k) + '">Продолжить</a>' +
-      '<a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a></div>';
+      '<div class="row"><a class="btn sm" href="test.html?skill=' + k + '&n=' + nextNum(k) + '">' + T('cont') + '</a>' +
+      '<a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← ' + T('back') + '</a></div>';
   }
 
   function renderLock(k, n){
     var s = SKILLS[k];
-    app.innerHTML = '<h1>' + s.name + ' · задание ' + n + '</h1>' +
+    app.innerHTML = '<h1>' + s.name + ' · ' + T('taskWord') + ' ' + n + '</h1>' +
       '<div class="card" style="margin-top:16px;text-align:center">' +
       '<div style="font-size:44px">🔒</div>' +
-      '<h2 style="font-family:var(--display);margin:10px 0">Доступно в Premium</h2>' +
-      '<p class="s">Бесплатно открыто ' + C.freeLimit(k) + ' задания «' + s.name + '». Чтобы пройти все ' + C.count(k) + ' — оформи Premium.</p>' +
-      '<div class="row" style="justify-content:center"><a class="btn" href="pricing.html">Получить Premium</a>' +
-      '<a class="btn ghost" href="test.html">Вернуться к заданиям</a></div></div>';
+      '<h2 style="font-family:var(--display);margin:10px 0">' + T('premTitle') + '</h2>' +
+      '<p class="s">' + T('lockBodyA') + C.freeLimit(k) + T('lockBodyB') + s.name + T('lockBodyC') + C.count(k) + T('lockBodyD') + '</p>' +
+      '<div class="row" style="justify-content:center"><a class="btn" href="pricing.html">' + T('getPrem') + '</a>' +
+      '<a class="btn ghost" href="test.html">' + T('backTasks') + '</a></div></div>';
   }
 
   var VOICE = null;
@@ -292,35 +344,36 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   }
   if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
   function speak(text, btn){
-    if(!('speechSynthesis' in window)){ toast('Озвучка не поддерживается в этом браузере'); return; }
+    if(!('speechSynthesis' in window)){ toast(T('noTts')); return; }
     speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(text);
     u.lang = (VOICE && VOICE.lang) || 'en-GB';
     if(VOICE) u.voice = VOICE;
     u.rate = 0.95;
     if(btn){
-      btn.dataset.playing = '1'; btn.textContent = '⏸ Стоп';
-      u.onend = u.onerror = function(){ btn.dataset.playing = ''; btn.textContent = '▶ Прослушать'; };
+      btn.dataset.playing = '1'; btn.textContent = T('stop');
+      u.onend = u.onerror = function(){ btn.dataset.playing = ''; btn.textContent = T('play'); };
     }
     speechSynthesis.speak(u);
   }
 
   function renderHistory(){
     var t = tests(), keys = Object.keys(t).sort(function(a,b){ return (t[b].date||0) - (t[a].date||0); });
-    var html = '<h1>История тестов</h1><p class="s">Все пройденные секции и результаты.</p>';
+    var html = '<h1>' + T('histT') + '</h1><p class="s">' + T('histSub') + '</p>';
     if(!keys.length){
-      html += '<div class="card" style="margin-top:22px"><div class="empty">Пока пусто. Пройди первый тест — результат появится здесь.</div></div>';
+      html += '<div class="card" style="margin-top:22px"><div class="empty">' + T('histEmpty') + '</div></div>';
     } else {
+      var loc = { ru:'ru-RU', en:'en-GB', kz:'kk-KZ', uz:'uz-UZ' }[((LexyAuth.user()||{}).lang)||'ru'] || 'ru-RU';
       html += '<div class="hist">' + keys.map(function(k){
         var x = t[k], s = SKILLS[x.skill || k.split('-')[0]] || SKILLS.reading;
-        var date = x.date ? new Date(x.date).toLocaleDateString('ru-RU', {day:'numeric', month:'long'}) : '—';
+        var date = x.date ? new Date(x.date).toLocaleDateString(loc, {day:'numeric', month:'long'}) : '—';
         var val = x.band != null ? x.band.toFixed(1) : (x.score != null ? x.score + '/' + x.total : '—');
         return '<div class="hrow"><span class="em">' + s.em + '</span>' +
-          '<div class="tx"><b>' + s.name + '</b><small>' + date + (x.words ? ' · ' + x.words + ' слов' : '') + '</small></div>' +
+          '<div class="tx"><b>' + s.name + '</b><small>' + date + (x.words ? ' · ' + x.words + ' ' + T('words') : '') + '</small></div>' +
           '<div class="b">' + val + '</div></div>';
       }).join('') + '</div>';
     }
-    html += '<div class="row"><a class="btn sm" href="test.html">К тестам</a><a class="btn ghost sm" href="dashboard.html">В кабинет</a></div>';
+    html += '<div class="row"><a class="btn sm" href="test.html">' + T('toTests') + '</a><a class="btn ghost sm" href="dashboard.html">' + T('toCab') + '</a></div>';
     app.innerHTML = html;
   }
 
@@ -331,14 +384,14 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     function draw(){
       var q = list[i];
       var html = '<h1>' + SKILLS[k].name + ' · ' + item.t + '</h1>' +
-        '<p class="s">Вопрос ' + (i+1) + ' из ' + list.length + ' · выбери один вариант</p>' +
+        '<p class="s">' + T('qOfA') + (i+1) + T('qOfB') + list.length + T('qOfC') + '</p>' +
         '<div class="progress"><i style="width:' + Math.round(i/list.length*100) + '%"></i></div>' +
         '<div class="card" style="margin-top:16px">';
       if(k === 'reading'){
         html += '<div class="transcript" style="background:#fff;border-style:solid"><b>' + esc(item.t) + '</b><br>' + esc(item.p) + '</div>';
       } else{
-        html += '<div class="transcript">🎧 Аудио · нажми «Прослушать» и ответь на вопрос.</div>' +
-          '<div class="row" style="margin-top:0"><button class="btn" id="play">▶ Прослушать</button></div>' +
+        html += '<div class="transcript">' + T('audioNote') + '</div>' +
+          '<div class="row" style="margin-top:0"><button class="btn" id="play">' + T('play') + '</button></div>' +
           '<audio id="au" preload="none" src="' + C.audioFor(item.script) + '"></audio>';
       }
       var mapped = shuffle(q.o.map(function(o, x){ return { o: o, c: x === q.a }; }));
@@ -347,16 +400,16 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
         '<div class="opts">' + mapped.map(function(o, x){
           return '<button class="opt" data-x="' + x + '"><span class="key">' + 'ABCD'[x] + '</span>' + esc(o.o) + '</button>';
         }).join('') + '</div>' +
-        '<div class="row"><button class="btn" id="next" disabled>Далее →</button></div></div>';
+        '<div class="row"><button class="btn" id="next" disabled>' + T('next') + '</button></div></div>';
       app.innerHTML = html;
       picked = null; answered = false;
       if(k === 'listening'){
         var pb = document.getElementById('play'), au = document.getElementById('au');
         if(au) au.addEventListener('error', function(){ au.dataset.fail = '1'; });
         pb.addEventListener('click', function(){
-          if(pb.dataset.playing){ try{ speechSynthesis.cancel(); }catch(e){} try{ au.pause(); }catch(e){} pb.dataset.playing=''; pb.textContent='▶ Прослушать'; return; }
+          if(pb.dataset.playing){ try{ speechSynthesis.cancel(); }catch(e){} try{ au.pause(); }catch(e){} pb.dataset.playing=''; pb.textContent=T('play'); return; }
           if(au && !au.dataset.fail){
-            try{ var pr = au.play(); if(pr && pr.catch) pr.catch(function(){ speak(item.script, pb); }); else { pb.dataset.playing='1'; pb.textContent='⏸ Стоп'; au.onended=function(){ pb.dataset.playing=''; pb.textContent='▶ Прослушать'; }; } }
+            try{ var pr = au.play(); if(pr && pr.catch) pr.catch(function(){ speak(item.script, pb); }); else { pb.dataset.playing='1'; pb.textContent=T('stop'); au.onended=function(){ pb.dataset.playing=''; pb.textContent=T('play'); }; } }
             catch(e){ speak(item.script, pb); }
           } else speak(item.script, pb);
         });
@@ -381,7 +434,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
             els[picked].classList.add('wrong');
           } else score++;
           var btn = document.getElementById('next');
-          btn.textContent = i === list.length - 1 ? 'Показать результат →' : 'Следующий вопрос →';
+          btn.textContent = i === list.length - 1 ? T('showRes') : T('nextQ');
           btn.disabled = false;
         } else {
           i++;
@@ -395,7 +448,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       var band = roundBand(5 + (score/total) * 3.5);
       var key = k + '-' + (typeof n === 'number' ? n : nextNum(k));
       saveResult(k, key, { skill:k, score:score, total:total, band:band, full:isFull });
-      renderResult(k, band, 'Правильных ответов: ' + score + ' из ' + total + '.', isFull);
+      renderResult(k, band, T('correctA') + score + T('correctB') + total + T('correctC'), isFull);
     }
     draw();
   }
@@ -403,11 +456,11 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   function renderWriting(k, n, isFull){
     var item = C.item(k, n);
     app.innerHTML = '<div class="card" style="margin-top:4px">' +
-        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">✍️</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Writing · Task 2</div><div class="s" style="margin:0">Эссе · ориентир ' + item.min + '+ слов</div></div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">✍️</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Writing · Task 2</div><div class="s" style="margin:0">' + T('essayHintA') + item.min + T('essayHintB') + '</div></div></div>' +
         '<div class="qtext">' + esc(item.prompt) + '</div>' +
-        '<textarea id="essay" placeholder="Начни писать здесь…"></textarea>' +
-        '<div class="meta"><span>Слов: <b id="wc">0</b></span><span>Минимум: <b>' + item.min + '</b></span></div>' +
-        '<div class="row"><button class="btn" id="done" disabled>Завершить Writing</button></div>' +
+        '<textarea id="essay" placeholder="' + T('writePh') + '"></textarea>' +
+        '<div class="meta"><span>' + T('wcL') + ' <b id="wc">0</b></span><span>' + T('minL') + ' <b>' + item.min + '</b></span></div>' +
+        '<div class="row"><button class="btn" id="done" disabled>' + T('finishW') + '</button></div>' +
       '</div>';
     var ta = document.getElementById('essay'), wc = document.getElementById('wc'), done = document.getElementById('done');
     ta.addEventListener('input', function(){
@@ -420,23 +473,23 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       var band = words >= item.min ? 6.5 : words >= 150 ? 6.0 : 5.0;
       var key = k + '-' + (typeof n === 'number' ? n : nextNum(k));
       saveResult(k, key, { skill:k, words:words, band:band, full:isFull });
-      renderResult(k, band, 'Объём: ' + words + ' слов. ' + (words >= item.min ? 'Отличный объём для Task 2.' : 'Попробуй раскрыть тему подробнее — желательно ' + item.min + '+ слов.'), isFull);
+      renderResult(k, band, T('wVolA') + words + T('wVolB') + (words >= item.min ? T('wGood') : T('wMoreA') + item.min + T('wMoreB')), isFull);
     });
   }
 
   function renderSpeaking(k, n, isFull){
     var item = C.item(k, n);
-    var note = 'Совет: отвечай вслух 1,5–2 минуты, затронув все пункты. Записывать не нужно — просто отметь, что раскрыл.';
+    var note = T('spNote');
     app.innerHTML = '<div class="card" style="margin-top:4px">' +
-        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">🗣</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Speaking · ' + item.part + '</div><div class="s" style="margin:0">Практика Speaking · монолог</div></div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">🗣</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Speaking · ' + item.part + '</div><div class="s" style="margin:0">' + T('spPrac') + '</div></div></div>' +
         '<div class="qtext">' + esc(item.prompt) + '</div>' +
         '<p class="s" style="margin-bottom:14px">You should say:</p>' +
         item.points.map(function(p, i){
           return '<label class="check"><input type="checkbox" data-p="' + i + '"><span>' + esc(p) + '</span></label>';
         }).join('') +
-        '<div class="row" style="margin-top:4px"><button class="btn ghost sm" id="read">🔊 Послушать тему</button></div>' +
+        '<div class="row" style="margin-top:4px"><button class="btn ghost sm" id="read">' + T('spRead') + '</button></div>' +
         '<div class="note">' + note + '</div>' +
-        '<div class="row"><button class="btn" id="done" disabled>Завершить Speaking</button></div>' +
+        '<div class="row"><button class="btn" id="done" disabled>' + T('finishS') + '</button></div>' +
       '</div>';
     var checks = app.querySelectorAll('.check input');
     var done = document.getElementById('done');
@@ -448,7 +501,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       var band = nDone >= 4 ? 7.0 : nDone >= 3 ? 6.5 : 6.0;
       var key = k + '-' + (typeof n === 'number' ? n : nextNum(k));
       saveResult(k, key, { skill:k, points:nDone, band:band, full:isFull });
-      renderResult(k, band, 'Раскрыто пунктов: ' + nDone + ' из ' + item.points.length + '. ' + (nDone >= item.points.length ? 'Хорошая структура ответа.' : 'Постарайся затронуть все пункты карточки.'), isFull);
+      renderResult(k, band, T('spDoneA') + nDone + T('spDoneB') + item.points.length + T('spDoneC') + (nDone >= item.points.length ? T('spGood') : T('spMore')), isFull);
     });
   }
 
@@ -457,15 +510,15 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     var next = isFull && idx < ORDER.length - 1 ? ORDER[idx+1] : null;
     app.innerHTML = '<div class="card result">' +
       '<div style="font-size:38px">🎉</div>' +
-      '<h1 style="margin-top:8px">Секция пройдена!</h1>' +
-      '<div class="lbl">Оценка</div>' +
+      '<h1 style="margin-top:8px">' + T('resTitle') + '</h1>' +
+      '<div class="lbl">' + T('scoreL') + '</div>' +
       '<div class="band">' + band.toFixed(1) + '</div>' +
       '<p>' + esc(note) + '</p>' +
       '<div class="row" style="justify-content:center">' +
         (next
-          ? '<a class="btn" href="test.html?skill=' + next + '&n=full&full=1">Следующая секция: ' + SKILLS[next].name + ' →</a>'
-          : '<a class="btn" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a>') +
-        '<a class="btn ghost" href="test.html?skill=' + k + (isFull ? '&full=1&n=full' : '&n=' + nextNum(k)) + '">Пройти ещё раз</a>' +
+          ? '<a class="btn" href="test.html?skill=' + next + '&n=full&full=1">' + T('nextSecA') + SKILLS[next].name + ' →</a>'
+          : '<a class="btn" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← ' + T('back') + '</a>') +
+        '<a class="btn ghost" href="test.html?skill=' + k + (isFull ? '&full=1&n=full' : '&n=' + nextNum(k)) + '">' + T('again') + '</a>' +
       '</div></div>';
   }
 
