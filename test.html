@@ -80,6 +80,27 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
 .empty{text-align:center;color:var(--soft);padding:40px 10px;font-size:14px}
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+.hero2{background:linear-gradient(135deg,#FFF3EB,#F0E9FF);border:1.5px solid var(--line);border-radius:24px;padding:22px;margin-bottom:16px}
+.hero2 h2{font:800 24px var(--display);letter-spacing:-.02em;margin-bottom:6px}
+.hero2 .row2{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 10px}
+.hero2 .row2 div b{font:800 22px var(--display);display:block}
+.hero2 .row2 div small{color:var(--soft);font-size:12px}
+.bar{height:8px;border-radius:999px;background:rgba(27,20,51,.08);overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--fire2),var(--fire));transition:width .3s}
+.mut{color:var(--soft);font-size:12px;font-weight:600}
+.tasks{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.taskrow{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;transition:.15s}
+.taskrow:hover{border-color:#FFC2A1;transform:translateX(2px)}
+.taskrow .tn{width:36px;height:36px;flex:none;border-radius:12px;display:grid;place-items:center;font:800 15px var(--display);background:var(--mist);color:var(--soft)}
+.taskrow .ttx{flex:1;min-width:0}
+.taskrow .ttx b{display:block;font:700 15px var(--body)}
+.taskrow .ttx small{color:var(--soft);font-size:12px}
+.taskrow .tb{font:800 14px var(--display);color:var(--soft)}
+.taskrow.done{border-color:#C8EAD7;background:#F1FBF6}
+.taskrow.done .tn{background:#DDF6EC;color:var(--ok)}
+.taskrow.done .tb{color:var(--ok)}
+.taskrow.lock{opacity:.6}
+.skill .bar{margin:8px 0 6px}
 @media(max-width:640px){
   .hub{grid-template-columns:1fr}
   .top .who{display:none}
@@ -161,6 +182,10 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     while(t[s + '-' + n]) n++;
     return n;
   }
+  function doneCount(s){ var t = tests(), n = 0; Object.keys(t).forEach(function(k){ if(k.indexOf(s + '-') === 0) n++; }); return n; }
+  function bestBand(s){ var t = tests(), b = null; Object.keys(t).forEach(function(k){ if(k.indexOf(s + '-') === 0){ var v = t[k].band; if(v != null && (b == null || v > b)) b = v; } }); return b; }
+  function totalDone(){ var n = 0; ORDER.forEach(function(k){ n += doneCount(k); }); return n; }
+  function totalCount(){ var n = 0; ORDER.forEach(function(k){ n += C.count(k); }); return n; }
   function saveResult(s, key, data){
     var u = LexyAuth.user();
     var t = Object.assign({}, u.tests || {});
@@ -171,30 +196,50 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   }
 
   function renderHub(kind){
-    var title = kind === 'full' ? 'Полный экзамен' : kind === 'baseline' ? 'Замер уровня' : 'Пробные тесты';
+    var title = kind === 'full' ? 'Полный экзамен' : kind === 'baseline' ? 'Замер уровня' : 'Задания';
     var sub = kind === 'full'
       ? 'Пройди все четыре секции подряд — в конце Lexy соберёт общий результат.'
       : kind === 'baseline'
-        ? 'Пройди по одному тесту каждого навыка, чтобы открыть стартовый балл и инсайты.'
-        : 'Выбери навык и потренируйся в формате IELTS. Результат сохранится в кабинете.';
-    var paid = premium();
+        ? 'Пройди по одному заданию каждого навыка, чтобы открыть стартовый балл.'
+        : 'Тренируй навыки по реальным заданиям IELTS. Результат сохраняется в кабинете.';
+    var paid = premium(), td = totalDone(), tc = totalCount(), pct = tc ? Math.round(td / tc * 100) : 0;
+    var hero = '<div class="hero2"><h2>' + title + '</h2><p class="s">' + sub + '</p>' +
+      '<div class="row2"><div><b>' + td + '</b><small>пройдено</small></div><div><b>' + tc + '</b><small>всего заданий</small></div><div><b>' + pct + '%</b><small>прогресс</small></div></div>' +
+      '<div class="bar"><i style="width:' + pct + '%"></i></div></div>';
     var cards = ORDER.map(function(k){
-      var s = SKILLS[k];
-      var n = kind === 'baseline' ? 'baseline' : kind === 'full' ? 'full' : nextNum(k);
-      var link = 'test.html?skill=' + k + '&n=' + n + (kind === 'full' ? '&full=1' : '');
-      var tag = paid ? (C.count(k) + ' заданий · Premium') : (C.freeLimit(k) + ' бесплатно из ' + C.count(k));
-      return '<a class="skill" href="' + link + '">' +
+      var s = SKILLS[k], cnt = C.count(k), done = doneCount(k), bb = bestBand(k);
+      var tag = paid ? (cnt + ' заданий · Premium') : (C.freeLimit(k) + ' бесплатно из ' + cnt);
+      return '<a class="skill" href="test.html?skill=' + k + '">' +
         '<span class="em">' + s.em + '</span>' +
-        '<span class="tx"><b>' + s.name + '</b><small>' + s.desc + ' · ~' + s.mins + ' мин</small><small style="color:var(--fire);font-weight:700">' + tag + '</small></span>' +
+        '<span class="tx"><b>' + s.name + '</b><small>' + s.desc + ' · ~' + s.mins + ' мин</small>' +
+        '<div class="bar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
+        '<small class="mut">' + done + ' из ' + cnt + (bb != null ? ' · лучший ' + bb.toFixed(1) : '') + ' · <span style="color:var(--fire)">' + tag + '</span></small></span>' +
         '<span class="arrow">›</span></a>';
     }).join('');
     var freeNote = paid
       ? '<div class="note" style="background:#F1FBF6;border-color:#C8EAD7">Premium активен — открыты все задания, игры и Lexy AI.</div>'
       : '<div class="note">Бесплатно доступна часть заданий: ' + C.freeLimit('reading') + ' чтение, ' + C.freeLimit('listening') + ' аудирование, ' + C.freeLimit('writing') + ' письмо, ' + C.freeLimit('speaking') + ' говорение. Полный доступ — в <a href="pricing.html" style="color:var(--fire);font-weight:700">тарифах</a>.</div>';
-    app.innerHTML = '<h1>' + title + '</h1><p class="s">' + sub + '</p>' +
-      '<div class="hub">' + cards + '</div>' + freeNote +
+    app.innerHTML = hero + '<div class="hub">' + cards + '</div>' + freeNote +
       '<div class="row"><a class="btn ghost sm" href="dashboard.html">← В кабинет</a>' +
-      '<a class="btn ghost sm" href="test.html?history=1">История тестов</a></div>';
+      '<a class="btn ghost sm" href="test.html?history=1">История заданий</a></div>';
+  }
+
+  function renderSkillList(k){
+    var s = SKILLS[k], cnt = C.count(k), done = doneCount(k), paid = premium();
+    var rows = '';
+    for(var n = 1; n <= cnt; n++){
+      var key = k + '-' + n, t = tests()[key], locked = C.isLocked(k, n, paid);
+      var cls = t ? ' done' : locked ? ' lock' : '';
+      var badge = t ? (t.band != null ? t.band.toFixed(1) : (t.score != null ? t.score + '/' + t.total : '✓')) : (locked ? '🔒' : '');
+      var sub2 = t ? 'пройдено' : locked ? 'Premium' : 'доступно';
+      rows += '<a class="taskrow' + cls + '" href="' + (locked ? 'pricing.html' : 'test.html?skill=' + k + '&n=' + n) + '"><span class="tn">' + n + '</span><span class="ttx"><b>' + s.name + ' · ' + n + '</b><small>' + sub2 + '</small></span><span class="tb">' + badge + '</span></a>';
+    }
+    app.innerHTML = '<h1>' + s.name + '</h1><p class="s">' + done + ' из ' + cnt + ' пройдено · ' + s.desc + '</p>' +
+      '<div class="bar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
+      '<div class="tasks">' + rows + '</div>' +
+      '<div class="row"><a class="btn sm" href="test.html?skill=' + k + '&n=' + nextNum(k) + '">Продолжить</a>' +
+      '<a class="btn ghost sm" href="test.html">Все навыки</a>' +
+      '<a class="btn ghost sm" href="dashboard.html">В кабинет</a></div>';
   }
 
   function renderLock(k, n){
@@ -395,8 +440,8 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
 
   if(qs.get('history')) renderHistory();
   else if(skill && SKILLS[skill]){
-    var n = /^\d+$/.test(num || '') ? parseInt(num, 10) : nextNum(skill);
-    startSkill(skill, n, full);
+    if(/^\d+$/.test(num || '')) startSkill(skill, parseInt(num, 10), full);
+    else renderSkillList(skill);
   } else renderHub(mode);
 })();
 </script>

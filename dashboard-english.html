@@ -392,10 +392,21 @@
   function renderPractice() {
     var C2 = window.LexyContent, p = paid();
     if (!C2) { $("#s-practice").innerHTML = ""; return; }
-    function ico(i, bg, c) { return '<span style="width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
+    var tests = (Lexy.user.tests) || {};
+    function dc(k) { var n = 0; Object.keys(tests).forEach(function (key) { if (key.indexOf(k + "-") === 0) n++; }); return n; }
+    function bb(k) { var b = null; Object.keys(tests).forEach(function (key) { if (key.indexOf(k + "-") === 0) { var v = tests[key].band; if (v != null && (b == null || v > b)) b = v; } }); return b; }
+    function ico(i, bg, c) { return '<span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
     var SK = [["reading", "Reading", "book", "#E3F0FF", "#1E8FE8"], ["listening", "Listening", "head", "#FFE0DB", "#E5443E"], ["writing", "Writing", "pencil", "#FFE6D6", "#F7620B"], ["speaking", "Speaking", "mic", "#FFF3CC", "#E59A00"]];
-    var cards = SK.map(function (s) { var cnt = C2.count(s[0]), flc = C2.freeLimit(s[0]); return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) + '<div style="flex:1"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b><small style="color:var(--fire);font-weight:700">' + (p ? cnt : flc + "/" + cnt) + "</small></div>" + ic("chev") + "</a>"; }).join("");
-    $("#s-practice").innerHTML = '<h1 class="t">' + T("practice") + '</h1><p class="s" style="margin-bottom:16px">' + T("practiceSub") + "</p>" + cards;
+    var td = 0, tc = 0; SK.forEach(function (s) { td += dc(s[0]); tc += C2.count(s[0]); });
+    var hero = '<div class="hx" style="margin-bottom:16px"><div class="lvbox"><span class="lvchip">' + ic("file") + '</span><div><h2 class="lvname">' + T("practice") + '</h2><p class="lvdesc">' + T("practiceSub") + '</p></div></div><div class="lvrow"><span>' + td + " / " + tc + '</span></div><div class="bar"><i style="width:' + (tc ? Math.round(td / tc * 100) : 0) + '%"></i></div></div>';
+    var cards = SK.map(function (s) {
+      var cnt = C2.count(s[0]), done = dc(s[0]), b = bb(s[0]);
+      return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) +
+        '<div style="flex:1;min-width:0"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b>' +
+        '<div class="bar" style="margin:8px 0 6px"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
+        '<small style="color:var(--soft);font-weight:600">' + done + " из " + cnt + (b != null ? " · лучший " + b.toFixed(1) : "") + " · " + (p ? cnt + " заданий" : C2.freeLimit(s[0]) + " бесплатно") + '</small></div>' + ic("chev") + "</a>";
+    }).join("");
+    $("#s-practice").innerHTML = hero + cards;
   }
 
   /* ---------- ПРОГРЕСС ---------- */
