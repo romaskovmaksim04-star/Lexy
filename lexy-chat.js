@@ -126,6 +126,10 @@
 @keyframes lxa-pop2{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 .lxa-empty{text-align:center;padding:26px 10px;color:#F4F1FF}
 .lxa-empty .lxa-mascot{margin:0 auto 12px;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.lxa-chathead{display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#F4F1FF;font:700 14px var(--body)}
+.lxa-chathead small{color:rgba(244,241,255,.6);font-weight:500}
+.lxa-dot{width:9px;height:9px;border-radius:50%;background:#39D98A;animation:lxa-live 1.8s infinite}
+@keyframes lxa-live{0%{box-shadow:0 0 0 0 rgba(57,217,138,.55)}70%{box-shadow:0 0 0 9px rgba(57,217,138,0)}100%{box-shadow:0 0 0 0 rgba(57,217,138,0)}}
 `;
     document.head.appendChild(s);
   }
@@ -180,7 +184,7 @@
     var info = '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки — просто перефразирует правильно.</li><li>Каждый ответ заканчивается вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>';
     var chips = ["Hi! Let's chat", "Tell me about yourself", "Let's talk about food", "Ask me about my job", "I want to practise grammar", "Give me a topic to discuss"];
     var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
-    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
+    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexy</b><small id="lxaStatus">онлайн</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
       '<div class="lxa-chips" id="lxaChips">' + chips.map(function (c) { return '<button class="lxa-chip" data-say="' + esc(c) + '">' + esc(c) + "</button>"; }).join("") + "</div>" +
       '<div class="lxa-input"><textarea id="lxaIn" placeholder="Напиши по-английски…" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="Отправить">' + ic("send") + "</button></div>" +
       '<div class="lxa-tools"><span class="lxa-hint">Enter — отправить · Shift+Enter — новая строка</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " Сбросить чат</button></div></div>";
@@ -215,15 +219,17 @@
     function go() {
       var text = (inp.value || "").trim(); if (!text || ui.busy) return;
       ui.busy = true; inp.value = ""; autoGrow();
-      st.msgs.push({ role: "user", content: text }); persist(st);
+      var um = { role: "user", content: text };
+      st.msgs.push(um); persist(st);
+      appendMsg(um);
       showTyping();
       call({ mode: "chat", level: level, messages: st.msgs }).then(function (d) {
         ui.busy = false; hideTyping();
-        if (d && d.grammar) st.msgs.push({ role: "check", correct: d.grammar.correct, explanation: d.grammar.explanation, corrected: d.grammar.corrected });
-        if (d && d.reply) st.msgs.push({ role: "assistant", content: d.reply });
-        persist(st); reStream(st);
+        if (d && d.grammar) { var c = { role: "check", correct: d.grammar.correct, explanation: d.grammar.explanation, corrected: d.grammar.corrected }; st.msgs.push(c); appendMsg(c); }
+        if (d && d.reply) { var a = { role: "assistant", content: d.reply }; st.msgs.push(a); appendMsg(a); }
+        persist(st);
       }).catch(function (err) {
-        ui.busy = false; hideTyping(); reStream(st);
+        ui.busy = false; hideTyping();
         if (err && err.code === "premium_required") toast("Нужен Premium");
         else if (err && err.code === "limit") toast("Дневной лимит чата исчерпан");
         else toast("Не удалось ответить, попробуй ещё");
@@ -234,13 +240,25 @@
     });
   }
 
+  function nodeFor(m) { var t = document.createElement("div"); t.innerHTML = msgHtml(m, 0); return t.firstChild; }
+  function appendMsg(m) {
+    var box = $("#lxaStream"); if (!box) return;
+    var e = $(".lxa-empty", box); if (e) e.remove();
+    var n = nodeFor(m);
+    if (n) { n.style.animationDelay = "0s"; box.appendChild(n); box.scrollTop = box.scrollHeight; }
+  }
+  function setStatus(t) { var s = document.getElementById("lxaStatus"); if (s) s.textContent = t; }
   function showTyping() {
     var box = $("#lxaStream");
     if (!box) return;
-    box.innerHTML += '<div class="lxa-msg" id="lxaTyping"><span class="av">' + flame(22) + '</span><div class="bub" style="padding:0"><span class="lxa-typing"><i></i><i></i><i></i></span></div></div>';
+    var e = $(".lxa-empty", box); if (e) e.remove();
+    var t = document.createElement("div");
+    t.innerHTML = '<div class="lxa-msg" id="lxaTyping"><span class="av">' + flame(22) + '</span><div class="bub" style="padding:0"><span class="lxa-typing"><i></i><i></i><i></i></span></div></div>';
+    box.appendChild(t.firstChild);
     box.scrollTop = box.scrollHeight;
+    setStatus("печатает…");
   }
-  function hideTyping() { var t = document.getElementById("lxaTyping"); if (t) t.remove(); }
+  function hideTyping() { var t = document.getElementById("lxaTyping"); if (t) t.remove(); setStatus("онлайн"); }
   function reStream(st) { var box = $("#lxaStream"); if (!box) return; box.innerHTML = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat(); box.scrollTop = box.scrollHeight; }
 
   function drawWriting(body, st, level, exam) {
