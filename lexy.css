@@ -372,3 +372,8 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .tcard .btitle{font:800 17px var(--display);letter-spacing:-.02em}
 .tsug{margin-top:10px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--soft)}
 .trow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+.tcard.blurred .tbody{filter:blur(4px);pointer-events:none;user-select:none}
+.tcard.blurred{cursor:pointer}
+.drow.blurrow .dtx{filter:blur(3px)}
+.drow.blurrow{cursor:pointer}

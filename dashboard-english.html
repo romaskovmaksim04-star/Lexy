@@ -14,8 +14,9 @@
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-a1.js?v=1"></script>
+<script src="lexy-a1-i18n.js?v=1"></script>
 <script src="lexy-course-extra.js?v=1"></script>
-<script src="lexy-course.js?v=3"></script>
+<script src="lexy-course.js?v=4"></script>
 <script src="lexy-vocab.js?v=1"></script>
 </head>
 <body>
@@ -141,8 +142,10 @@
     for (var d = 1; d <= total; d++) {
       var done = isDone(c.level, d), acc = canAccess(c.level, d), current = d === cur;
       var st = done ? "done" : current ? "cur" : acc ? "" : "lock";
-      var badge = done ? "✓" : current ? T("nowT") : acc ? "" : "🔒";
-      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d)) + '</b><small>' + (done ? T("doneT") : current ? T("nowT") : T("lockT")) + '</small></span><span class="dbadge">' + badge + "</span></button>";
+      if (!acc && !done) st += " blurrow";
+      var badge = done ? "✓" : current ? T("nowT") : "";
+      var sub = done ? T("doneT") : current ? T("nowT") : acc ? "" : T("lockT");
+      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d)) + '</b><small>' + sub + '</small></span><span class="dbadge">' + badge + "</span></button>";
     }
     return '<div class="dlist">' + h + "</div>";
   }
@@ -157,12 +160,12 @@
     var LS = (window.LEXY_LESSONS && LEXY_LESSONS[level]) || [];
     if (!LS.length) return '<div class="card"><b>' + T("theoryT") + '</b><p class="s">—</p></div>';
     return LS.map(function (l, i) {
-      var day = i + 1, info = accessInfo(level, day);
-      return '<div class="card tcard' + (info ? " lockcard" : "") + '" data-tday="' + day + '"><span class="tnum">' + day + (info ? " 🔒" : "") + '</span><div class="tbody">' +
-        '<div class="btitle" style="font-size:17px">' + esc(l.t) + '</div><p>' + esc(l.th.e) + '</p>' +
-        '<div class="exlist" data-ex hidden>' + l.th.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
+      var day = i + 1, info = accessInfo(level, day), tt = C.theory(level, day, lang());
+      return '<div class="card tcard' + (info ? " blurred" : "") + '" data-tday="' + day + '"><span class="tnum">' + day + '</span><div class="tbody">' +
+        '<div class="btitle" style="font-size:17px">' + esc(tt.t) + '</div><p>' + esc(tt.e) + '</p>' +
+        '<div class="exlist" data-ex hidden>' + tt.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
         '<div class="tsug">' + T("theoryTip") + '</div>' +
-        '<div class="trow"><button class="btn ghost sm" data-tex>' + T("readMore") + '</button><button class="btn p sm" data-tlesson>' + T("openLesson") + '</button></div></div></div>';
+        (info ? "" : '<div class="trow"><button class="btn ghost sm" data-tex>' + T("readMore") + '</button><button class="btn p sm" data-tlesson>' + T("openLesson") + '</button></div>') + "</div></div>";
     }).join("");
   }
 
@@ -192,6 +195,8 @@
     if (e.target.closest("#mtest")) { runModuleTest(); return; }
     if (e.target.closest("[data-change]")) { changeLevelModal(); return; }
     var lv = course().level;
+    var tc = e.target.closest(".tcard");
+    if (tc) { var dd = +tc.dataset.tday, ii = accessInfo(lv, dd); if (ii) { lockModal(lv, dd, ii); return; } }
     var tex = e.target.closest("[data-tex]");
     if (tex) { var card = tex.closest(".tcard"), ex = card.querySelector("[data-ex]"); ex.hidden = !ex.hidden; tex.textContent = ex.hidden ? T("readMore") : T("hideExamples"); return; }
     var tl = e.target.closest("[data-tlesson]");
@@ -233,9 +238,11 @@
   function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
 
   function drawTheory(d) {
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">' + T("theoryT") + '</div></div></div>' +
-      '<div class="lesson"><p>' + esc(d.e) + "</p></div>" +
-      '<div class="exlist">' + (d.ex || []).map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
+    var tt = (C.theory && (d.level || RUN.plan.level)) ? C.theory(d.level || RUN.plan.level, d.day || RUN.plan.day, lang()) : d;
+    tt = tt || d;
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(tt.t) + '</div><div class="bsub">' + T("theoryT") + '</div></div></div>' +
+      '<div class="lesson"><p>' + esc(tt.e) + "</p></div>" +
+      '<div class="exlist">' + (tt.ex || []).map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
       '<button class="btn p big" id="bnext" style="margin-top:18px">' + T("next") + " →</button></div>";
   }
   function drawListening(d) {

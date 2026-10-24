@@ -69,6 +69,15 @@
     C1: "Продвинутый: нюансы, стиль, академическая речь, IELTS 7+."
   };
   function levelDesc(level) { return LEVEL_DESC[level] || ""; }
+  function theory(level, day, lang) {
+    var ls = lessons(level);
+    if (!ls) return null;
+    var idx = (day - 1) % ls.length, L = ls[idx];
+    var e = L.th.e, ex = L.th.ex;
+    var map = w.LEXY_A1_I18N;
+    if (map && map[lang] && map[lang][idx]) e = map[lang][idx];
+    return { t: L.t, e: e, ex: ex };
+  }
   function lessonTitle(level, day) { var ls = lessons(level); if (ls) { var L = ls[(day - 1) % ls.length]; return L.t; } var g = GRAMMAR[level] || GRAMMAR.A1; return g[(day - 1) % g.length].t; }
   var GOALS = [
     { id: "study", t: "Учёба" },
@@ -288,7 +297,7 @@
       var wq = wordQ(L.ws);
       var mixed = L.gr.slice(0, 2).concat(wq.slice(0, 2));
       var blocks = [
-        { type: "theory", data: { t: L.t, e: L.th.e, ex: L.th.ex } },
+        { type: "theory", data: { t: L.t, e: L.th.e, ex: L.th.ex, level: level, day: day } },
         { type: "quiz", data: { t: "Грамматика · " + L.t, q: L.gr, kind: "grammar" } },
         { type: "quiz", data: { t: "Слова", q: wq, kind: "words" } },
         { type: "listening", data: { t: "Аудирование", script: L.li.script, q: L.li.q } },
@@ -354,6 +363,7 @@
     moduleTest: moduleTest,
     lessonCount: lessonCount,
     levelDesc: levelDesc,
+    theory: theory,
     lessonTitle: lessonTitle,
     freeDays: freeDays,
     blockLabel: blockLabel,
