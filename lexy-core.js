@@ -317,7 +317,7 @@ A.logout = function () {
   localStorage.removeItem(SES);
   localStorage.removeItem("user_logged_in");
   localStorage.removeItem("user_email");
-  location.href = CFG.login;
+  location.href = CFG.home;
 };
 A.del = function () {
   modal({ title: "Удалить аккаунт?", body: "<p>Аккаунт и подписка удалятся сразу. Это действие нельзя отменить.</p>", ok: "Удалить", cancel: "Отмена",
@@ -329,7 +329,7 @@ A.del = function () {
         localStorage.removeItem(SES);
         localStorage.removeItem("user_logged_in");
         localStorage.removeItem("user_email");
-        location.href = CFG.login;
+        location.href = CFG.home;
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = "Удалить"; }
         toast("Не получилось удалить аккаунт. Попробуй ещё раз.");

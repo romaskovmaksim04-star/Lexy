@@ -376,8 +376,8 @@ btnLogin.addEventListener('click', function(){
 });
 
 document.getElementById('signedLogout').addEventListener('click', function(){
-  if(window.LexyAuth) LexyAuth.logout();
-  showLoginForm();
+  var done = window.LexyAuth ? LexyAuth.logout() : Promise.resolve();
+  Promise.resolve(done).then(function(){ window.location.href = 'main.html'; });
 });
 document.getElementById('signedSwitch').addEventListener('click', function(){
   if(window.LexyAuth) LexyAuth.logout();
