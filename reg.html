@@ -1220,6 +1220,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       lang: currentLang
     };
     LexyAuth.verifyCode(email.value.trim(), code, opts).then(function(){
+      if(existingAccount){ window.location.replace('dashboard.html'); return; }
       showStep('done');
     }).catch(function(err){
       finVerify.disabled = false; finVerify.textContent = label;
