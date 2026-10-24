@@ -181,8 +181,8 @@ body{padding-bottom:70px}
   <span data-i18n="footer.legal">Независимая платформа — не аффилирована с IELTS и не одобрена им. IELTS® — зарегистрированный товарный знак правообладателей.</span>
 </div>
 
-<script src="lexy-config.js"></script>
-<script src="lexy-auth.js"></script>
+<script src="lexy-config.js?v=7"></script>
+<script src="lexy-auth.js?v=7"></script>
 <script>
 var TRANSLATIONS = {
   ru: {
@@ -362,7 +362,7 @@ btnLogin.addEventListener('click', function(){
 
   if(!window.LexyAuth){ btnLogin.disabled = false; btnLogin.textContent = label; fail('generic'); return; }
   LexyAuth.login(email, pass).then(function(){
-    window.location.href = 'dashboard.html';
+    window.location.replace('dashboard.html');
   }).catch(function(err){
     btnLogin.disabled = false;
     btnLogin.textContent = label;
@@ -444,12 +444,12 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
   if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){
     LexyAuth.ready.then(function(){
       var cu = LexyAuth.user();
-      if(cu && hadAuthHash){ window.location.href = 'dashboard.html'; return; }
-      handleUser(cu);
+      if(cu){ window.location.replace('dashboard.html'); return; }
+      handleUser(null);
     });
   }
   window.addEventListener('lexy:auth', function(e){
-    if(e.detail && e.detail.email && hadAuthHash){ window.location.href = 'dashboard.html'; }
+    if(e.detail && e.detail.email){ window.location.replace('dashboard.html'); }
   });
 })();
 </script>
