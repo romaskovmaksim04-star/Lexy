@@ -424,8 +424,33 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
   if(!TRANSLATIONS[saved]) saved = 'ru';
   setLang(saved);
 
+  var hadAuthHash = /access_token=|error_description=/.test(location.hash || '');
+
+  function handleUser(u){
+    if(u){ showSigned(u); } else { showLoginForm(); }
+  }
+
   var u = window.LexyAuth ? LexyAuth.user() : null;
-  if(u) showSigned(u); else showLoginForm();
+  handleUser(u);
+
+  if(hadAuthHash && !u){
+    try{
+      var hp = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+      var ed = hp.get('error_description') || hp.get('error');
+      if(ed){ loginMsg.classList.remove('ok'); loginMsg.textContent = decodeURIComponent(ed).replace(/\+/g, ' '); }
+    }catch(e){}
+  }
+
+  if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){
+    LexyAuth.ready.then(function(){
+      var cu = LexyAuth.user();
+      if(cu && hadAuthHash){ window.location.href = 'dashboard.html'; return; }
+      handleUser(cu);
+    });
+  }
+  window.addEventListener('lexy:auth', function(e){
+    if(e.detail && e.detail.email && hadAuthHash){ window.location.href = 'dashboard.html'; }
+  });
 })();
 </script>
 </body>

@@ -1192,12 +1192,13 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   /* Возврат после регистрации через Google: досохраняем ответы опроса в профиль */
   (function(){
     if(!window.LexyAuth || !LexyAuth.ready || !LexyAuth.ready.then) return;
+    var hadAuthHash = /access_token=|error_description=/.test(location.hash || '');
     LexyAuth.ready.then(function(){
       var flag = null;
       try{ flag = localStorage.getItem('lexy_reg_oauth'); }catch(e){}
-      if(!flag) return;
-      try{ localStorage.removeItem('lexy_reg_oauth'); }catch(e){}
       var u = LexyAuth.user();
+      if(!flag && !(u && hadAuthHash)) return;
+      try{ localStorage.removeItem('lexy_reg_oauth'); }catch(e){}
       if(!u) return;
       var a = {};
       try{ a = JSON.parse(localStorage.getItem('lexy_reg_answers') || '{}'); }catch(e){}
