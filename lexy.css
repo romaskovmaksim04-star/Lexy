@@ -367,3 +367,8 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .tcard p{font-size:14px;line-height:1.6;margin:6px 0 0;color:var(--soft)}
 .lockcard{opacity:.65}
 .scorebig{font:800 56px/1 var(--display);letter-spacing:-.05em;color:var(--fire);margin:8px 0}
+
+.tbody{flex:1;min-width:0}
+.tcard .btitle{font:800 17px var(--display);letter-spacing:-.02em}
+.tsug{margin-top:10px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--soft)}
+.trow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
