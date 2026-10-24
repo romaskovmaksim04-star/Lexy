@@ -341,12 +341,10 @@
     ls.forEach(function (L) { L.gr.forEach(function (x) { pool.push(x); }); L.ws.forEach(function (x) { pool.push({ q: "Как переводится «" + x.w + "»?", o: x.o, a: x.a }); }); });
     var out = [], n = 12;
     for (var i = 0; i < n; i++) out.push(pool[Math.floor(i * pool.length / n)]);
-    // 2 задания на аудирование
-    var li = [];
-    ls.forEach(function (L) { if (L.li && L.li.q) L.li.q.forEach(function (qq) { li.push({ q: qq.q, o: qq.o, a: qq.a, listen: L.li.script }); }); });
-    if (li.length) {
-      out.push(li[Math.floor(li.length * 0.2) % li.length]);
-      out.push(li[Math.floor(li.length * 0.75) % li.length]);
+    // Listening: одно аудио — и 2 вопроса по нему
+    var pickL = ls[Math.floor(ls.length * 0.5) % ls.length];
+    if (pickL && pickL.li && pickL.li.q) {
+      pickL.li.q.forEach(function (qq) { out.push({ q: qq.q, o: qq.o, a: qq.a, listen: pickL.li.script }); });
     }
     return { title: "Тест уровня " + level, questions: out };
   }
