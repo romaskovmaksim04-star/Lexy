@@ -158,8 +158,8 @@ var LAB = {
 };
 /* [id раздела, иконка, ключ замка]. Замок показывается, пока нет Premium */
 var NAV = {
-  english: [["path", "map"], ["practice", "file"], ["talk", "talk", "ai"], ["vocab", "vocab"], ["progress", "home"]],
-  ielts: [["home", "home"], ["tests", "file"], ["stats", "trend"], ["vocab", "vocab", "soft"], ["ai", "spark", "ai"], ["games", "game", "games"]]
+  english: [["path", "map"], ["practice", "file"], ["talk", "talk", "ai"], ["vocab", "vocab", "ai"], ["progress", "home"]],
+  ielts: [["home", "home"], ["tests", "file"], ["stats", "trend"], ["vocab", "vocab", "ai"], ["ai", "spark", "ai"], ["games", "game", "games"]]
 };
 function L() { return LAB[U.lang] || LAB.ru; }
 var PL = {
