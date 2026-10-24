@@ -101,6 +101,31 @@
 .lxa-check{align-self:flex-start;max-width:88%;margin-left:44px;background:#F1FBF6;border:1px solid #C8EAD7;border-radius:14px;padding:10px 14px;font-size:13.5px;animation:lxa-in .35s both}
 .lxa-check.bad{background:#FFF6F5;border-color:#F3C6C2}
 .lxa-fix{margin-top:7px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;color:var(--ink);line-height:1.5}
+/* ---- dark chat theme + more animations ---- */
+.lxa-chat{position:relative;overflow:hidden;background:linear-gradient(160deg,#1C1236,#2C1342 55%,#3A1428);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:16px;box-shadow:0 30px 60px -44px rgba(27,18,51,.95)}
+.lxa-chat::before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 12% 8%,rgba(255,154,10,.18),transparent 45%),radial-gradient(circle at 86% 92%,rgba(122,64,255,.2),transparent 45%);animation:lxa-drift 16s ease-in-out infinite alternate;pointer-events:none;z-index:0}
+.lxa-chat>*{position:relative;z-index:1}
+.lxa-msg .bub{background:rgba(255,255,255,.09);color:#F4F1FF;border:1px solid rgba(255,255,255,.12)}
+.lxa-msg.me .bub{background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff;border-color:transparent;box-shadow:0 12px 26px -16px rgba(255,90,31,.9)}
+.lxa-msg .av{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.lxa-typing i{background:#FF9A0A}
+.lxa-check{background:rgba(18,161,92,.14);border-color:rgba(31,194,139,.35);color:#EAFBF3}
+.lxa-check.bad{background:rgba(255,90,60,.13);border-color:rgba(255,120,90,.4);color:#FFF1ED}
+.lxa-fix{background:rgba(255,255,255,.96);color:#1B1433;border-color:transparent}
+.lxa-input textarea{background:rgba(255,255,255,.08);color:#F4F1FF;border:1px solid rgba(255,255,255,.15)}
+.lxa-input textarea:focus{border-color:#FF9A0A;box-shadow:0 0 0 4px rgba(255,154,10,.18)}
+.lxa-input textarea::placeholder{color:rgba(244,241,255,.5)}
+.lxa-hint{color:rgba(244,241,255,.62)}
+.lxa-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#F4F1FF}
+.lxa-chip:hover{border-color:#FF9A0A;color:#FF9A0A}
+.lxa-reset{background:rgba(255,90,60,.16);color:#FFB199;border:1px solid rgba(255,120,90,.4)}
+.lxa-reset:hover{background:rgba(255,90,60,.26)}
+.lxa-send{animation:lxa-pulse 2.6s ease-in-out infinite}
+@keyframes lxa-pulse{0%,100%{box-shadow:0 14px 26px -14px rgba(255,90,31,.9),0 0 0 0 rgba(255,90,31,.45)}50%{box-shadow:0 14px 26px -14px rgba(255,90,31,.9),0 0 0 10px rgba(255,90,31,0)}}
+.lxa-msg.me{animation:lxa-pop2 .4s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes lxa-pop2{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.lxa-empty{text-align:center;padding:26px 10px;color:#F4F1FF}
+.lxa-empty .lxa-mascot{margin:0 auto 12px;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 `;
     document.head.appendChild(s);
   }
@@ -154,7 +179,7 @@
   function drawChat(body, st, level) {
     var info = '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки — просто перефразирует правильно.</li><li>Каждый ответ заканчивается вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>';
     var chips = ["Hi! Let's chat", "Tell me about yourself", "Let's talk about food", "Ask me about my job", "I want to practise grammar", "Give me a topic to discuss"];
-    var stream = st.msgs.length ? st.msgs.map(msgHtml).join("") : emptyChat();
+    var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
     body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
       '<div class="lxa-chips" id="lxaChips">' + chips.map(function (c) { return '<button class="lxa-chip" data-say="' + esc(c) + '">' + esc(c) + "</button>"; }).join("") + "</div>" +
       '<div class="lxa-input"><textarea id="lxaIn" placeholder="Напиши по-английски…" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="Отправить">' + ic("send") + "</button></div>" +
@@ -164,18 +189,19 @@
   }
 
   function emptyChat() {
-    return '<div style="text-align:center;padding:24px 10px"><div class="lxa-mascot" style="margin:0 auto 12px;background:var(--mist);box-shadow:inset 0 0 0 1px var(--line)">' + flame(34) + '</div><b style="font:800 16px var(--display)">Привет! Я Lexy 👋</b><p class="s" style="margin-top:6px">Напиши что-нибудь по-английски или выбери пример ниже.</p></div>';
+    return '<div class="lxa-empty"><div class="lxa-mascot">' + flame(34) + '</div><b style="font:800 16px var(--display)">Привет! Я Lexy 👋</b><p style="margin-top:6px;color:rgba(244,241,255,.65)">Напиши что-нибудь по-английски или выбери пример ниже.</p></div>';
   }
-  function msgHtml(m) {
+  function msgHtml(m, idx) {
+    var d = ' style="animation-delay:' + (Math.min(idx || 0, 12) * 0.04).toFixed(2) + 's"';
     if (m.role === "check") {
       var ok = m.correct;
       var inner = ok
-        ? '<span style="color:#12A15C;font-weight:700">✓ Написано верно</span>'
-        : '<span style="color:#E5443E;font-weight:700">⚠ Есть, что поправить</span>' + (m.explanation ? '<div style="color:var(--soft);font-size:13px;margin-top:4px">' + esc(m.explanation) + "</div>" : "") + (m.corrected ? '<div class="lxa-fix"><b style="color:var(--fire)">Исправлено:</b> ' + esc(m.corrected) + "</div>" : "");
-      return '<div class="lxa-check' + (ok ? "" : " bad") + '">' + inner + "</div>";
+        ? '<span style="color:#39D98A;font-weight:700">✓ Написано верно</span>'
+        : '<span style="color:#FF8A6A;font-weight:700">⚠ Есть, что поправить</span>' + (m.explanation ? '<div style="color:rgba(244,241,255,.75);font-size:13px;margin-top:4px">' + esc(m.explanation) + "</div>" : "") + (m.corrected ? '<div class="lxa-fix"><b style="color:#FF5A1F">Исправлено:</b> ' + esc(m.corrected) + "</div>" : "");
+      return '<div class="lxa-check' + (ok ? "" : " bad") + '"' + d + ">" + inner + "</div>";
     }
     var me = m.role === "user";
-    return '<div class="lxa-msg' + (me ? " me" : "") + '"><span class="av">' + (me ? ic("user") : flame(22)) + '</span><div class="bub">' + esc(m.content) + "</div></div>";
+    return '<div class="lxa-msg' + (me ? " me" : "") + '"' + d + '><span class="av">' + (me ? ic("user") : flame(22)) + '</span><div class="bub">' + esc(m.content) + "</div></div>";
   }
   function sc(stream) { var box = $("#lxaStream"); if (box) box.scrollTop = box.scrollHeight; }
 
@@ -215,7 +241,7 @@
     box.scrollTop = box.scrollHeight;
   }
   function hideTyping() { var t = document.getElementById("lxaTyping"); if (t) t.remove(); }
-  function reStream(st) { var box = $("#lxaStream"); if (!box) return; box.innerHTML = st.msgs.length ? st.msgs.map(msgHtml).join("") : emptyChat(); box.scrollTop = box.scrollHeight; }
+  function reStream(st) { var box = $("#lxaStream"); if (!box) return; box.innerHTML = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat(); box.scrollTop = box.scrollHeight; }
 
   function drawWriting(body, st, level, exam) {
     var title = exam ? "IELTS Writing · Task 2" : "Практика письма";
