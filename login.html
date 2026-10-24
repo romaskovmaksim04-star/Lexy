@@ -424,7 +424,7 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
   if(!TRANSLATIONS[saved]) saved = 'ru';
   setLang(saved);
 
-  var hadAuthHash = /access_token=|error_description=/.test(location.hash || '');
+  var hadAuthHash = /access_token=|error_description=/.test(location.hash || '') || /[?&]code=/.test(location.search || '');
 
   function handleUser(u){
     if(u){ showSigned(u); } else { showLoginForm(); }

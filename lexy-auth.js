@@ -155,8 +155,11 @@
 
   function settleRedirect() {
     var hash = String(w.location.hash || "");
-    if (hash.indexOf("access_token=") < 0 && hash.indexOf("error_description=") < 0) return Promise.resolve();
-    return new Promise(function (resolve) { setTimeout(resolve, 400); });
+    var search = String(w.location.search || "");
+    if (hash.indexOf("access_token=") < 0 && hash.indexOf("error_description=") < 0 && search.indexOf("code=") < 0) {
+      return Promise.resolve();
+    }
+    return new Promise(function (resolve) { setTimeout(resolve, 500); });
   }
 
   function boot() {
@@ -167,7 +170,7 @@
           persistSession: true,
           autoRefreshToken: true,
           detectSessionInUrl: true,
-          flowType: "implicit"
+          flowType: "pkce"
         }
       });
       client.auth.onAuthStateChange(function (event, authSession) {

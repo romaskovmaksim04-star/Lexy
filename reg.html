@@ -1192,7 +1192,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   /* Возврат после регистрации через Google: досохраняем ответы опроса в профиль */
   (function(){
     if(!window.LexyAuth || !LexyAuth.ready || !LexyAuth.ready.then) return;
-    var hadAuthHash = /access_token=|error_description=/.test(location.hash || '');
+    var hadAuthHash = /access_token=|error_description=/.test(location.hash || '') || /[?&]code=/.test(location.search || '');
     LexyAuth.ready.then(function(){
       var flag = null;
       try{ flag = localStorage.getItem('lexy_reg_oauth'); }catch(e){}
