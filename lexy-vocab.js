@@ -74,9 +74,10 @@
   function isKnown(x) { return statusOf(x) === 2; }
 
   function byLevel(lv) {
-    var base = (WORDS[lv] || []).map(function (o) { return { w: o[0], d: o, lv: lv }; });
-    var cust = (state().custom[lv] || []).map(function (o) { return { w: o.w, d: [o.w, o.t, o.t, o.t, o.t], lv: lv, custom: true }; });
-    return cust.concat(base);
+    var seen = {}, out = [];
+    (state().custom[lv] || []).forEach(function (o) { var k = String(o.w).toLowerCase(); if (seen[k]) return; seen[k] = 1; out.push({ w: o.w, d: [o.w, o.t, o.t, o.t, o.t], lv: lv, custom: true }); });
+    (WORDS[lv] || []).forEach(function (o) { var k = String(o[0]).toLowerCase(); if (seen[k]) return; seen[k] = 1; out.push({ w: o[0], d: o, lv: lv }); });
+    return out;
   }
   function allEntries() { var out = []; LEVELS.forEach(function (l) { out = out.concat(byLevel(l)); }); return out; }
   function totalAll() { var n = 0; LEVELS.forEach(function (l) { n += byLevel(l).length; }); return n; }
