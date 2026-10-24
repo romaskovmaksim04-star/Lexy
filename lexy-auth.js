@@ -134,7 +134,8 @@
     if (message.indexOf("already registered") > -1 || message.indexOf("already exists") > -1) return { code: "exists" };
     if (message.indexOf("password") > -1) return { code: "pass" };
     if (message.indexOf("email") > -1 && message.indexOf("valid") > -1) return { code: "email" };
-    if (message.indexOf("rate limit") > -1) return { code: "rate" };
+    if (message.indexOf("rate limit") > -1 || message.indexOf("too many") > -1) return { code: "rate" };
+    if (message.indexOf("token") > -1 || message.indexOf("otp") > -1 || message.indexOf("expired") > -1 || message.indexOf("invalid") > -1) return { code: "code" };
     if (message.indexOf("provider is not enabled") > -1) return { code: "google" };
     return { code: "generic" };
   }
@@ -270,59 +271,63 @@
     return rec;
   }
 
-  function register(options) {
+  function sendCode(email, options) {
     options = options || {};
-    var email = norm(options.email);
-    var name = String(options.name || "").trim();
-    var password = String(options.password || "");
-    if (!name) return Promise.reject({ code: "name" });
+    email = norm(email);
     if (!validEmail(email)) return Promise.reject({ code: "email" });
-    if (password.length < 6) return Promise.reject({ code: "pass" });
     if (!client) return Promise.reject({ code: "generic" });
-
-    return client.auth.signUp({
+    var target = options.redirect || (w.location.pathname.indexOf("reg.html") > -1 ? "reg.html" : "login.html");
+    return client.auth.signInWithOtp({
       email: email,
-      password: password,
-      options: { data: { name: name } }
+      options: {
+        shouldCreateUser: options.create !== false,
+        emailRedirectTo: (cfg.siteUrl || w.location.origin + "/") + target
+      }
     }).then(function (res) {
       if (res.error) throw res.error;
-      if (res.data && res.data.user && Array.isArray(res.data.user.identities) && res.data.user.identities.length === 0) {
-        throw { code: "exists" };
-      }
-      if (res.data && res.data.session) return res.data.session;
-      return client.auth.signInWithPassword({ email: email, password: password }).then(function (login) {
-        if (login.error) throw login.error;
-        return login.data.session;
-      });
-    }).then(function (authSession) {
-      if (!authSession || !authSession.user) throw { code: "generic" };
-      authUser = authSession.user;
-      var path = options.path === "english" ? "english" : "ielts";
-      var target = typeof options.target === "number" && isFinite(options.target) ? options.target : 7.5;
-      return client.rpc("lexy_update_profile", {
-        p_name: name,
-        p_path: path,
-        p_target: target,
-        p_exam_date: options.examDate || null,
-        p_lang: options.lang || "ru",
-        p_survey: options.survey || null
-      }).then(function (res) {
-        if (res.error) throw res.error;
-        return cacheProfile(res.data);
-      });
+      return true;
     }).catch(rejectAuth);
   }
 
-  function login(email, password) {
+  function verifyCode(email, token, options) {
+    options = options || {};
     email = norm(email);
-    password = String(password || "");
+    token = String(token || "").replace(/\s+/g, "");
     if (!validEmail(email)) return Promise.reject({ code: "email" });
-    if (!password) return Promise.reject({ code: "pass" });
+    if (!/^\d{6,8}$/.test(token)) return Promise.reject({ code: "code" });
     if (!client) return Promise.reject({ code: "generic" });
-    return client.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
+    return client.auth.verifyOtp({ email: email, token: token, type: "email" }).then(function (res) {
       if (res.error) throw res.error;
-      if (!res.data || !res.data.user) throw { code: "generic" };
+      if (!res.data || !res.data.user) throw { code: "code" };
+      authUser = res.data.user;
       return loadProfile(res.data.user);
+    }).then(function (profile) {
+      var name = String(options.name || "").trim();
+      if (!name && options.path) {
+        var path = options.path === "english" ? "english" : "ielts";
+        var targetVal = typeof options.target === "number" && isFinite(options.target) ? options.target : 7.5;
+        return client.rpc("lexy_update_profile", {
+          p_name: name,
+          p_path: path,
+          p_target: targetVal,
+          p_exam_date: options.examDate || null,
+          p_lang: options.lang || "ru",
+          p_survey: options.survey || null
+        }).then(function (r) { return r.error ? profile : cacheProfile(r.data); });
+      }
+      if (name || options.path) {
+        var p2 = options.path === "english" ? "english" : "ielts";
+        var t2 = typeof options.target === "number" && isFinite(options.target) ? options.target : 7.5;
+        return client.rpc("lexy_update_profile", {
+          p_name: name,
+          p_path: p2,
+          p_target: t2,
+          p_exam_date: options.examDate || null,
+          p_lang: options.lang || "ru",
+          p_survey: options.survey || null
+        }).then(function (r) { return r.error ? profile : cacheProfile(r.data); });
+      }
+      return profile;
     }).catch(rejectAuth);
   }
 
@@ -394,8 +399,8 @@
     user: user,
     profile: function () { return current; },
     logged: logged,
-    register: register,
-    login: login,
+    sendCode: sendCode,
+    verifyCode: verifyCode,
     sendMagicLink: sendMagicLink,
     signInWithGoogle: signInWithGoogle,
     logout: logout,

@@ -71,11 +71,16 @@
   /* ---------- ГЛАВНАЯ ---------- */
   function home() {
     var u = Lexy.user, d = daysTo(u.examDate), done = Object.keys(u.tests).length;
+    var bands = Object.keys(u.tests).map(function (k) { return u.tests[k] && u.tests[k].band; }).filter(function (b) { return typeof b === "number" && isFinite(b); });
+    var cur = bands.length ? (bands.reduce(function (a, b) { return a + b; }, 0) / bands.length) : null;
     var rows = [["mic", "#FFF0C8", "#E59A00", "Спикинг", "Части 1, 2 и 3", "~25 мин", "speaking"], ["head", "#FFD9D2", "#E5443E", "Аудирование", "4 аудио, 40 вопросов", "~37 мин", "listening"],
       ["book", "#D8EBFF", "#1E8FE8", "Чтение", "3 отрывка, 40 вопросов", "~53 мин", "reading"], ["pencil", "#FFE0CF", "#F7620B", "Письмо", "Задание 1 + Задание 2", "~60 мин", "writing"]];
     $("#s-home").innerHTML =
       '<div class="hx"><div class="mp">' + fl(52) + "</div><div><h2>" + (d <= 0 ? "Экзамен сегодня" : "До экзамена " + d + " " + dword(d)) + ' <span style="font:500 14px var(--body);opacity:.85">' + fmt(u.examDate) + '</span><button data-act="exam" aria-label="Изменить дату">' + ic("pencil") + "</button></h2>" +
-      '<div class="trk"><i style="width:50%"></i><b style="left:50%"></b><em style="left:50%">?</em></div><div class="tl"><span>СЕГОДНЯ</span><span>' + fmt(u.examDate).toUpperCase() + "</span></div><p>Пройди первый замер уровня, и здесь появится прогноз к экзамену.</p></div>" +
+      '<div class="trk"><i style="width:' + (cur != null ? Math.round(cur / 9 * 100) : 50) + '%"></i><b style="left:' + (cur != null ? Math.round(cur / 9 * 100) : 50) + '%"></b><em style="left:' + (cur != null ? Math.round(cur / 9 * 100) : 50) + '%">' + (cur != null ? cur.toFixed(1) : "?") + '</em></div><div class="tl"><span>СЕГОДНЯ</span><span>' + fmt(u.examDate).toUpperCase() + "</span></div>" +
+      (cur != null
+        ? "<p>Текущий уровень: <b style=\"color:var(--fire)\">" + cur.toFixed(1) + "</b> · пройдено секций: " + done + " из 4.</p>"
+        : "<p>Пройди первый замер уровня, и здесь появится прогноз к экзамену.</p>") + "</div>" +
       '<div class="tg-box"><div class="st">' + ic("star") + "</div><strong>" + u.target.toFixed(1) + "</strong><small>ЦЕЛЬ</small></div></div>" +
       '<div class="card" style="padding:0"><div class="hg"><div class="lt"><div class="tile"><i></i><i></i><i></i><i></i><div class="fc"><div>' + fl(34) + "</div></div></div><h3>Замер уровня</h3><p><b>" + done + "/4 выполнено · ~175 мин</b><br>4 полных теста: каждый открывает твой балл и инсайты</p>" +
       '<a class="btn p sm" href="' + T + '?mode=baseline">' + ic("play") + " Начать</a></div><div>" +

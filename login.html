@@ -140,29 +140,32 @@ body{padding-bottom:70px}
       <div class="auth-header">
         <p data-i18n="welcome">Рады видеть вас снова — с возвращением к подготовке.</p>
         <h1 data-i18n="login.title">Войти в аккаунт</h1>
-        <p class="desc" data-i18n="login.desc">Введите email и пароль</p>
+        <p class="desc" data-i18n="login.desc">Введи email — пришлём код для входа</p>
       </div>
 
-      <div class="field">
-        <input type="email" id="emailInput" placeholder="email@example.com" autocomplete="email" inputmode="email" data-i18n-ph="login.email_ph">
+      <div id="stepEmail">
+        <div class="field">
+          <input type="email" id="emailInput" placeholder="email@example.com" autocomplete="email" inputmode="email" data-i18n-ph="login.email_ph">
+        </div>
+        <p class="form-msg" id="loginMsg" role="alert"></p>
+        <button class="btn btn-fire" id="btnSend" data-i18n="login.send">Получить код</button>
+        <div class="divider" data-i18n="login.or">или</div>
+        <button class="btn btn-ghost" id="btnGoogle">
+          <svg style="width:20px;height:20px;"><use href="#ic-google"/></svg>
+          <span data-i18n="login.google">Войти через Google</span>
+        </button>
       </div>
-      <div class="field">
-        <input type="password" id="passInput" placeholder="Пароль" autocomplete="current-password" data-i18n-ph="login.pass_ph">
+
+      <div id="stepCode" hidden>
+        <p class="desc" id="codeSent" style="margin-bottom:12px" data-i18n="login.code_sent">Код отправлен на email</p>
+        <div class="field">
+          <input type="text" id="codeInput" placeholder="Код из письма" inputmode="numeric" autocomplete="one-time-code" maxlength="8" data-i18n-ph="login.code_ph">
+        </div>
+        <p class="form-msg" id="codeMsg" role="alert"></p>
+        <button class="btn btn-fire" id="btnVerify" data-i18n="login.verify">Войти</button>
+        <button class="btn btn-ghost" id="btnResend" data-i18n="login.resend">Отправить код ещё раз</button>
+        <p class="auth-switch"><a href="#" id="btnChange" data-i18n="login.change">← Изменить email</a></p>
       </div>
-
-      <p class="form-msg" id="loginMsg" role="alert"></p>
-      <button class="btn btn-fire" id="btnLogin" data-i18n="login.btn">Войти</button>
-
-      <div class="divider" data-i18n="login.or">или</div>
-
-      <button class="btn btn-ghost" id="btnMagic">
-        <svg style="width:20px;height:20px;"><use href="#ic-mail"/></svg>
-        <span data-i18n="login.magic">Прислать ссылку для входа</span>
-      </button>
-      <button class="btn btn-ghost" id="btnGoogle">
-        <svg style="width:20px;height:20px;"><use href="#ic-google"/></svg>
-        <span data-i18n="login.google">Войти через Google</span>
-      </button>
 
       <p class="auth-switch">
         <span data-i18n="login.no_account">Нет аккаунта?</span>
@@ -190,7 +193,16 @@ var TRANSLATIONS = {
     "meta.title":"Вход — Lexy",
     "welcome":"Рады видеть вас снова — с возвращением к подготовке.",
     "login.title":"Войти в аккаунт",
-    "login.desc":"Введи email и пароль — или попроси ссылку для входа.",
+    "login.desc":"Введи email — пришлём код для входа.",
+    "login.send":"Получить код",
+    "login.code_ph":"Код из письма",
+    "login.verify":"Войти",
+    "login.resend":"Отправить код ещё раз",
+    "login.resend_wait":"Отправить ещё раз",
+    "login.change":"← Изменить email",
+    "login.code_sent":"Код отправлен на email",
+    "login.err_code":"Неверный или просроченный код. Попробуй ещё раз.",
+    "login.err_rate":"Слишком часто. Подожди минуту и попробуй снова.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Пароль",
     "login.btn":"Войти",
@@ -216,7 +228,16 @@ var TRANSLATIONS = {
     "meta.title":"Log in — Lexy",
     "welcome":"Glad to see you again — welcome back to your prep.",
     "login.title":"Log in to your account",
-    "login.desc":"Enter your email and password — or request a sign-in link.",
+    "login.desc":"Enter your email — we'll send you a sign-in code.",
+    "login.send":"Get a code",
+    "login.code_ph":"Code from the email",
+    "login.verify":"Log in",
+    "login.resend":"Send the code again",
+    "login.resend_wait":"Resend in",
+    "login.change":"← Change email",
+    "login.code_sent":"Code sent to",
+    "login.err_code":"Wrong or expired code. Please try again.",
+    "login.err_rate":"Too many attempts. Wait a minute and try again.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Password",
     "login.btn":"Log in",
@@ -242,7 +263,16 @@ var TRANSLATIONS = {
     "meta.title":"Кіру — Lexy",
     "welcome":"Қайта көргенімізге қуаныштымыз — дайындыққа оралуыңызбен.",
     "login.title":"Аккаунтқа кіру",
-    "login.desc":"Email мен құпиясөзді енгіз — немесе кіру сілтемесін сұра.",
+    "login.desc":"Email енгіз — кіру кодын жібереміз.",
+    "login.send":"Код алу",
+    "login.code_ph":"Хаттан келген код",
+    "login.verify":"Кіру",
+    "login.resend":"Кодты қайта жіберу",
+    "login.resend_wait":"Қайта жіберу",
+    "login.change":"← Emailді өзгерту",
+    "login.code_sent":"Код мына emailге жіберілді",
+    "login.err_code":"Код қате немесе мерзімі бітті. Қайта көр.",
+    "login.err_rate":"Тым жиі. Бір минут күтіп, қайта көр.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Құпиясөз",
     "login.btn":"Кіру",
@@ -268,7 +298,16 @@ var TRANSLATIONS = {
     "meta.title":"Kirish — Lexy",
     "welcome":"Sizni yana ko‘rganimizdan xursandmiz — tayyorgarlikka qaytdingiz.",
     "login.title":"Hisobga kirish",
-    "login.desc":"Email va parolni kiriting — yoki kirish havolasini so‘rang.",
+    "login.desc":"Email kiriting — kirish kodini yuboramiz.",
+    "login.send":"Kod olish",
+    "login.code_ph":"Xatdan olingan kod",
+    "login.verify":"Kirish",
+    "login.resend":"Kodni qayta yuborish",
+    "login.resend_wait":"Qayta yuborish",
+    "login.change":"← Emailni o'zgartirish",
+    "login.code_sent":"Kod yuborildi",
+    "login.err_code":"Kod noto'g'ri yoki muddati o'tgan. Qayta urinib ko'ring.",
+    "login.err_rate":"Juda ko'p. Bir daqiqa kutib qayta urinib ko'ring.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Parol",
     "login.btn":"Kirish",
@@ -327,54 +366,108 @@ var signedScreen = document.getElementById('signedScreen');
 var emailInput = document.getElementById('emailInput');
 var passInput = document.getElementById('passInput');
 var loginMsg = document.getElementById('loginMsg');
-var btnLogin = document.getElementById('btnLogin');
+var btnSend = document.getElementById('btnSend');
+var btnVerify = document.getElementById('btnVerify');
+var btnResend = document.getElementById('btnResend');
+var codeInput = document.getElementById('codeInput');
+var codeMsg = document.getElementById('codeMsg');
+var codeSent = document.getElementById('codeSent');
+var stepEmail = document.getElementById('stepEmail');
+var stepCode = document.getElementById('stepCode');
 var signedName = document.getElementById('signedName');
 var signedEmail = document.getElementById('signedEmail');
+var resendTimer = null;
+var EMAIL_RE = /^\S+@\S+\.\S+$/;
 
+function showEmailStep(){
+  stepEmail.hidden = false;
+  stepCode.hidden = true;
+  loginMsg.textContent = ''; codeMsg.textContent = '';
+  loginMsg.classList.remove('ok');
+  setTimeout(function(){ emailInput.focus(); }, 50);
+}
 function showLoginForm(){
   signedScreen.hidden = true;
   loginScreen.hidden = false;
-  loginMsg.textContent = '';
-  setTimeout(function(){ emailInput.focus(); }, 50);
+  showEmailStep();
 }
-
 function showSigned(u){
   loginScreen.hidden = true;
   signedScreen.hidden = false;
   signedName.textContent = u.name || u.email;
   signedEmail.textContent = u.email;
 }
-
-function fail(code){
+function fail(code, el){
   var t = TRANSLATIONS[currentLang];
-  loginMsg.textContent = t['login.err_' + code] || t.login.err_generic;
-  passInput.focus();
+  (el || loginMsg).textContent = t['login.err_' + code] || t.login.err_generic;
+  (el ? codeInput : emailInput).focus();
+}
+function startResend(){
+  var t = TRANSLATIONS[currentLang];
+  var left = 30;
+  btnResend.disabled = true;
+  btnResend.textContent = (t.login.resend_wait || 'Отправить ещё раз') + ' (' + left + ')';
+  clearInterval(resendTimer);
+  resendTimer = setInterval(function(){
+    left--;
+    if(left <= 0){ clearInterval(resendTimer); btnResend.disabled = false; btnResend.textContent = t.login.resend; return; }
+    btnResend.textContent = (t.login.resend_wait || 'Отправить ещё раз') + ' (' + left + ')';
+  }, 1000);
 }
 
-btnLogin.addEventListener('click', function(){
+function doSend(){
   var email = emailInput.value.trim();
-  var pass = passInput.value;
-  if(!/^\S+@\S+\.\S+$/.test(email)){ fail('email'); return; }
-  if(!pass){ fail('pass'); return; }
-  loginMsg.textContent = '';
-  btnLogin.disabled = true;
-  var label = btnLogin.textContent;
-  btnLogin.textContent = '…';
+  if(!EMAIL_RE.test(email)){ fail('email'); return; }
+  if(!window.LexyAuth){ fail('generic'); return; }
+  loginMsg.classList.remove('ok'); loginMsg.textContent = '';
+  btnSend.disabled = true;
+  var label = btnSend.textContent; btnSend.textContent = '…';
+  LexyAuth.sendCode(email, { create: true }).then(function(){
+    btnSend.disabled = false; btnSend.textContent = label;
+    stepEmail.hidden = true; stepCode.hidden = false;
+    codeSent.textContent = (TRANSLATIONS[currentLang].login.code_sent || 'Код отправлен на email') + ': ' + email + '. ' + 'Нажми ссылку в письме или введи код ниже.';
+    setTimeout(function(){ codeInput.focus(); }, 50);
+    startResend();
+  }).catch(function(err){
+    btnSend.disabled = false; btnSend.textContent = label;
+    loginMsg.classList.remove('ok');
+    fail(err && err.code ? err.code : 'generic');
+  });
+}
+btnSend.addEventListener('click', doSend);
+emailInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') doSend(); });
+emailInput.addEventListener('input', function(){ loginMsg.textContent = ''; });
 
-  if(!window.LexyAuth){ btnLogin.disabled = false; btnLogin.textContent = label; fail('generic'); return; }
-  LexyAuth.login(email, pass).then(function(){
+function doVerify(){
+  var email = emailInput.value.trim();
+  var code = codeInput.value.trim();
+  if(!code){ fail('code', codeMsg); return; }
+  codeMsg.textContent = '';
+  btnVerify.disabled = true;
+  var label = btnVerify.textContent; btnVerify.textContent = '…';
+  if(!window.LexyAuth){ btnVerify.disabled = false; btnVerify.textContent = label; fail('generic', codeMsg); return; }
+  LexyAuth.verifyCode(email, code).then(function(){
     window.location.replace('dashboard.html');
   }).catch(function(err){
-    btnLogin.disabled = false;
-    btnLogin.textContent = label;
-    fail(err && err.code ? err.code : 'generic');
+    btnVerify.disabled = false; btnVerify.textContent = label;
+    fail(err && err.code ? err.code : 'code', codeMsg);
+  });
+}
+btnVerify.addEventListener('click', doVerify);
+codeInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') doVerify(); });
+codeInput.addEventListener('input', function(){ codeMsg.textContent = ''; });
+
+btnResend.addEventListener('click', function(){
+  var email = emailInput.value.trim();
+  if(!window.LexyAuth) return;
+  btnResend.disabled = true;
+  LexyAuth.sendCode(email, { create: true }).then(function(){ startResend(); }).catch(function(err){
+    btnResend.disabled = false;
+    fail(err && err.code ? err.code : 'generic', codeMsg);
   });
 });
 
-[emailInput, passInput].forEach(function(el){
-  el.addEventListener('keydown', function(e){ if(e.key === 'Enter') btnLogin.click(); });
-  el.addEventListener('input', function(){ loginMsg.textContent = ''; });
-});
+document.getElementById('btnChange').addEventListener('click', function(e){ e.preventDefault(); showEmailStep(); });
 
 document.getElementById('signedLogout').addEventListener('click', function(){
   var done = window.LexyAuth ? LexyAuth.logout() : Promise.resolve();
@@ -382,27 +475,8 @@ document.getElementById('signedLogout').addEventListener('click', function(){
 });
 document.getElementById('signedSwitch').addEventListener('click', function(){
   if(window.LexyAuth) LexyAuth.logout();
-  emailInput.value = '';
-  passInput.value = '';
+  emailInput.value = ''; codeInput.value = '';
   showLoginForm();
-});
-var btnMagic = document.getElementById('btnMagic');
-btnMagic.addEventListener('click', function(){
-  var email = emailInput.value.trim();
-  if(!/^\S+@\S+\.\S+$/.test(email)){ fail('email'); return; }
-  if(!window.LexyAuth){ fail('generic'); return; }
-  loginMsg.classList.add('ok');
-  loginMsg.textContent = 'Отправляем ссылку…';
-  btnMagic.disabled = true;
-  LexyAuth.sendMagicLink(email).then(function(){
-    loginMsg.classList.add('ok');
-    loginMsg.textContent = 'Ссылка для входа отправлена на ' + email + '. Проверь почту.';
-    btnMagic.disabled = false;
-  }).catch(function(err){
-    btnMagic.disabled = false;
-    loginMsg.classList.remove('ok');
-    fail(err && err.code ? err.code : 'generic');
-  });
 });
 
 document.getElementById('btnGoogle').addEventListener('click', function(){
