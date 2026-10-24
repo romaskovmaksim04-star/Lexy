@@ -189,7 +189,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f3">Личный словарь до 50 слов</span></li>
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.free.f4">3 мини-игры</span></li>
       </ul>
-      <button class="cta" id="stayFreeBtn" data-i18n="plan.free.cta">Остаться на Free</button>
+      <button class="cta" id="stayFreeBtn" data-plan="free" data-i18n="plan.free.cta">Остаться на Free</button>
     </article>
 
     <article class="plan featured" data-badge="Популярный">
@@ -207,7 +207,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f3">Все мини-игры без лимита</span></li>
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.pro.f4">Детальная статистика по навыкам</span></li>
       </ul>
-      <button class="cta" data-i18n="plan.pro.cta">Перейти на Pro</button>
+      <button class="cta" data-plan="pro" data-i18n="plan.pro.cta">Перейти на Pro</button>
     </article>
 
     <article class="plan">
@@ -226,7 +226,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f4">Ускоренный план под дату экзамена</span></li>
         <li><svg><use href="#ic-check"/></svg><span data-i18n="plan.plus.f5">Гарантия результата — вернём деньги</span></li>
       </ul>
-      <button class="cta" data-i18n="plan.plus.cta">Перейти на Pro+</button>
+      <button class="cta" data-plan="pro_plus" data-i18n="plan.plus.cta">Перейти на Pro+</button>
     </article>
   </div>
 
@@ -247,6 +247,9 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
   </button>
 </div>
 
+<script src="lexy-config.js"></script>
+<script src="lexy-auth.js"></script>
+<script src="lexy-pay.js"></script>
 <script>
 (function(){
   /* ===== БАЗОВЫЕ ЦЕНЫ (без скидки) по языкам =====
@@ -463,6 +466,8 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
   if(isNaN(discount) || discount < 5 || discount > 90){
     try{ discount = parseFloat(localStorage.getItem('discount') || '0'); }catch(e){ discount = 0; }
   }
+  /* Базовая скидка 50% уже включена в стоимость Pro/Pro+, показываем её по умолчанию */
+  if(isNaN(discount) || discount < 5 || discount > 90){ discount = 50; }
   if(discount > 0){
     document.getElementById('discountBadge').classList.add('on');
     document.getElementById('discountVal').textContent = Math.round(discount) + '%';
@@ -505,10 +510,47 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
   document.getElementById('stayFreeBar').addEventListener('click', hideBar);
   document.getElementById('stayFreeBtn').addEventListener('click', hideBar);
 
-  /* ===== Заглушка для оплаты ===== */
-  document.querySelectorAll('.plan:not(.free) .cta').forEach(function(btn){
+  /* ===== Возврат после отмены оплаты → в кабинет ===== */
+  var qp = new URLSearchParams(location.search);
+  if(qp.get('payment') === 'failed'){
+    window.location.replace('dashboard.html?payment=failed');
+    return;
+  }
+
+  /* ===== Оплата через Platega ===== */
+  function setBusy(btn, busy){
+    if(!btn) return;
+    if(busy){
+      if(!btn.dataset.label) btn.dataset.label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Переходим к оплате…';
+    } else {
+      btn.disabled = false;
+      if(btn.dataset.label) btn.textContent = btn.dataset.label;
+    }
+  }
+  function goRegister(plan){
+    try{ localStorage.setItem('lexy_pending_plan', plan); }catch(e){}
+    window.location.href = 'reg.html?plan=' + encodeURIComponent(plan);
+  }
+  function startPayment(plan, btn){
+    if(!window.LexyAuth || !window.LexyPay){ goRegister(plan); return; }
+    if(!LexyAuth.logged()){ goRegister(plan); return; }
+    setBusy(btn, true);
+    LexyPay.create(plan).then(function(res){
+      if(res && res.redirect){ window.location.href = res.redirect; return; }
+      throw { code: 'provider' };
+    }).catch(function(err){
+      setBusy(btn, false);
+      if(err && err.code === 'auth'){ goRegister(plan); return; }
+      alert('Не удалось создать платёж. Проверь соединение и попробуй ещё раз.');
+    });
+  }
+  document.querySelectorAll('.plan .cta[data-plan]').forEach(function(btn){
     btn.addEventListener('click', function(){
-      alert('Здесь будет оплата');
+      var plan = btn.dataset.plan;
+      if(plan === 'free'){ window.location.href = 'dashboard.html'; return; }
+      startPayment(plan, btn);
     });
   });
 

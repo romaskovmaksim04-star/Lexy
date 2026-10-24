@@ -154,6 +154,10 @@ body{padding-bottom:70px}
 
       <div class="divider" data-i18n="login.or">или</div>
 
+      <button class="btn btn-ghost" id="btnMagic">
+        <svg style="width:20px;height:20px;"><use href="#ic-mail"/></svg>
+        <span data-i18n="login.magic">Прислать ссылку для входа</span>
+      </button>
       <button class="btn btn-ghost" id="btnGoogle">
         <svg style="width:20px;height:20px;"><use href="#ic-google"/></svg>
         <span data-i18n="login.google">Войти через Google</span>
@@ -177,6 +181,7 @@ body{padding-bottom:70px}
   <span data-i18n="footer.legal">Независимая платформа — не аффилирована с IELTS и не одобрена им. IELTS® — зарегистрированный товарный знак правообладателей.</span>
 </div>
 
+<script src="lexy-config.js"></script>
 <script src="lexy-auth.js"></script>
 <script>
 var TRANSLATIONS = {
@@ -184,11 +189,12 @@ var TRANSLATIONS = {
     "meta.title":"Вход — Lexy",
     "welcome":"Рады видеть вас снова — с возвращением к подготовке.",
     "login.title":"Войти в аккаунт",
-    "login.desc":"Введите email и пароль",
+    "login.desc":"Введи email и пароль — или попроси ссылку для входа.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Пароль",
     "login.btn":"Войти",
     "login.or":"или",
+    "login.magic":"Прислать ссылку для входа",
     "login.google":"Войти через Google",
     "login.help":"Проблемы со входом? Напишите нам",
     "login.no_account":"Нет аккаунта?",
@@ -209,11 +215,12 @@ var TRANSLATIONS = {
     "meta.title":"Log in — Lexy",
     "welcome":"Glad to see you again — welcome back to your prep.",
     "login.title":"Log in to your account",
-    "login.desc":"Enter your email and password",
+    "login.desc":"Enter your email and password — or request a sign-in link.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Password",
     "login.btn":"Log in",
     "login.or":"or",
+    "login.magic":"Send me a sign-in link",
     "login.google":"Log in with Google",
     "login.help":"Trouble logging in? Contact us",
     "login.no_account":"No account yet?",
@@ -234,11 +241,12 @@ var TRANSLATIONS = {
     "meta.title":"Кіру — Lexy",
     "welcome":"Қайта көргенімізге қуаныштымыз — дайындыққа оралуыңызбен.",
     "login.title":"Аккаунтқа кіру",
-    "login.desc":"Email және құпиясөзді енгізіңіз",
+    "login.desc":"Email мен құпиясөзді енгіз — немесе кіру сілтемесін сұра.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Құпиясөз",
     "login.btn":"Кіру",
     "login.or":"немесе",
+    "login.magic":"Кіру сілтемесін жіберу",
     "login.google":"Google арқылы кіру",
     "login.help":"Кіруге қатысты мәселелер? Бізге жазыңыз",
     "login.no_account":"Аккаунтың жоқ па?",
@@ -259,11 +267,12 @@ var TRANSLATIONS = {
     "meta.title":"Kirish — Lexy",
     "welcome":"Sizni yana ko‘rganimizdan xursandmiz — tayyorgarlikka qaytdingiz.",
     "login.title":"Hisobga kirish",
-    "login.desc":"Email va parolni kiriting",
+    "login.desc":"Email va parolni kiriting — yoki kirish havolasini so‘rang.",
     "login.email_ph":"email@example.com",
     "login.pass_ph":"Parol",
     "login.btn":"Kirish",
     "login.or":"yoki",
+    "login.magic":"Kirish havolasini yuborish",
     "login.google":"Google orqali kirish",
     "login.help":"Kirishda muammo bormi? Bizga yozing",
     "login.no_account":"Akkauntingiz yo‘qmi?",
@@ -376,8 +385,32 @@ document.getElementById('signedSwitch').addEventListener('click', function(){
   passInput.value = '';
   showLoginForm();
 });
+var btnMagic = document.getElementById('btnMagic');
+btnMagic.addEventListener('click', function(){
+  var email = emailInput.value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(email)){ fail('email'); return; }
+  if(!window.LexyAuth){ fail('generic'); return; }
+  loginMsg.classList.add('ok');
+  loginMsg.textContent = 'Отправляем ссылку…';
+  btnMagic.disabled = true;
+  LexyAuth.sendMagicLink(email).then(function(){
+    loginMsg.classList.add('ok');
+    loginMsg.textContent = 'Ссылка для входа отправлена на ' + email + '. Проверь почту.';
+    btnMagic.disabled = false;
+  }).catch(function(err){
+    btnMagic.disabled = false;
+    loginMsg.classList.remove('ok');
+    fail(err && err.code ? err.code : 'generic');
+  });
+});
+
 document.getElementById('btnGoogle').addEventListener('click', function(){
-  alert('Google OAuth появится позже. Пока используй email и пароль.');
+  if(!window.LexyAuth){ fail('generic'); return; }
+  loginMsg.classList.remove('ok');
+  loginMsg.textContent = '';
+  LexyAuth.signInWithGoogle().catch(function(err){
+    fail(err && err.code ? err.code : 'generic');
+  });
 });
 
 /* INIT */

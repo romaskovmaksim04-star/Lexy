@@ -191,6 +191,9 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
 .bonus{display:flex;align-items:center;gap:12px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:14px;padding:14px 16px;font-size:13.5px;color:var(--ink);margin-bottom:16px}
 .bonus span:first-child{font-size:20px}
 .form-msg{min-height:18px;font-size:13px;font-weight:600;line-height:1.4;color:#E5443E;margin:0 0 10px}
+.or-sep{display:flex;align-items:center;text-align:center;color:var(--soft);font-size:13px;margin:16px 0}
+.or-sep::before,.or-sep::after{content:"";flex:1;border-bottom:1px solid var(--line)}
+.or-sep span{padding:0 12px}
 .auth-alt{font-size:13px;color:var(--soft);text-align:center;margin-top:14px}
 .auth-alt a{color:var(--fire);font-weight:700;text-decoration:underline;text-underline-offset:2px}
 
@@ -468,6 +471,11 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     <div class="bonus"><span>🎁</span><span data-i18n="fin_bonus">Убедись, что email верный — не упусти свой бонус</span></div>
     <p class="form-msg" id="finMsg" role="alert"></p>
     <button class="btn" id="finish" disabled data-i18n="fin_btn">Получить бонусный набор</button>
+    <div class="or-sep"><span>или</span></div>
+    <button class="btn" id="googleBtn" style="background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;display:flex;align-items:center;justify-content:center;gap:10px">
+      <svg style="width:20px;height:20px" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      <span data-i18n="fin_google">Продолжить с Google</span>
+    </button>
     <p class="legal" data-i18n-html="fin_legal">Нажимая кнопку, ты соглашаешься с <a href="terms.html">условиями</a>, <a href="privacy.html">политикой конфиденциальности</a> и <a href="terms.html">политикой возврата</a>.</p>
     <p class="auth-alt"><span data-i18n="fin_have">Уже есть аккаунт?</span> <a href="login.html" data-i18n="fin_login">Войти</a></p>
   </section>
@@ -476,12 +484,14 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     <div class="won">
       <div class="done-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
       <h3 data-i18n="done_h">Аккаунт создан!</h3>
-      <div class="note" style="margin-bottom:0" data-i18n="done_n">Твой план сохранён в личном кабинете. Войти можно в любой момент по email и паролю.</div>
-      <a class="btn" href="dashboard.html" style="margin-top:18px" data-i18n="done_btn">Перейти в кабинет →</a>
+      <div class="note" data-i18n="done_n">Твой план сохранён в личном кабинете. Войти можно в любой момент по email и паролю.</div>
+      <a class="btn" id="donePlan" href="pricing.html" style="margin-top:4px" data-i18n="done_plan">Выбрать план и получить Premium →</a>
+      <a class="btn" id="doneFree" href="dashboard.html" style="margin-top:10px;background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none" data-i18n="done_free">Продолжить бесплатно</a>
     </div>
   </section>
 </main>
 
+<script src="lexy-config.js"></script>
 <script src="lexy-auth.js"></script>
 <script>
 (function(){
@@ -532,7 +542,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       fin_name_ph:"Как тебя зовут", fin_email_ph:"email@example.com", fin_pass_ph:"Пароль (минимум 6 символов)",
       fin_bonus:"Убедись, что email верный — не упусти свой бонус",
       fin_btn:"Создать аккаунт и сохранить план", fin_creating:"Создаём аккаунт…",
-      fin_have:"Уже есть аккаунт?", fin_login:"Войти",
+      fin_have:"Уже есть аккаунт?", fin_login:"Войти", fin_google:"Продолжить с Google",
       fin_legal:'Нажимая кнопку, ты соглашаешься с <a href="terms.html">условиями</a>, <a href="privacy.html">политикой конфиденциальности</a> и <a href="terms.html">политикой возврата</a>.',
       err_name:"Напиши своё имя.", err_email:"Проверь email — кажется, в нём ошибка.",
       err_pass:"Пароль должен быть не короче 6 символов.",
@@ -540,6 +550,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       err_generic:"Не получилось создать аккаунт. Попробуй ещё раз.",
       done_h:"Аккаунт создан!", done_n:"Твой план сохранён в личном кабинете. Войти можно в любой момент по email и паролю.",
       done_btn:"Перейти в кабинет →",
+      done_plan:"Выбрать план и получить Premium →", done_free:"Продолжить бесплатно",
       btn_continue:"Продолжить",
       b_ai:"Лучший ИИ для анализа", b_free:"Бесплатный старт",
       b_analysis:"ИИ-анализ ошибок", b_personal:"Персонально под тебя",
@@ -602,7 +613,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       fin_name_ph:"Your name", fin_email_ph:"email@example.com", fin_pass_ph:"Password (min. 6 characters)",
       fin_bonus:"Make sure the email is correct — don't miss your bonus",
       fin_btn:"Create account and save my plan", fin_creating:"Creating account…",
-      fin_have:"Already have an account?", fin_login:"Log in",
+      fin_have:"Already have an account?", fin_login:"Log in", fin_google:"Continue with Google",
       fin_legal:'By clicking, you agree to the <a href="terms.html">terms</a>, <a href="privacy.html">privacy policy</a> and <a href="terms.html">refund policy</a>.',
       err_name:"Please enter your name.", err_email:"Check your email — it looks invalid.",
       err_pass:"Password must be at least 6 characters.",
@@ -610,6 +621,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       err_generic:"Could not create the account. Please try again.",
       done_h:"Account created!", done_n:"Your plan is saved in your dashboard. Log in anytime with your email and password.",
       done_btn:"Go to dashboard →",
+      done_plan:"Choose a plan and get Premium →", done_free:"Continue for free",
       btn_continue:"Continue",
       b_ai:"Best AI for analysis", b_free:"Free start",
       b_analysis:"AI error analysis", b_personal:"Personalized for you",
@@ -672,7 +684,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       fin_name_ph:"Атың", fin_email_ph:"email@example.com", fin_pass_ph:"Құпиясөз (кемінде 6 таңба)",
       fin_bonus:"Email дұрыс екеніне көз жеткіз — бонусты жіберіп алма",
       fin_btn:"Аккаунт жасап, жоспарды сақтау", fin_creating:"Аккаунт жасалып жатыр…",
-      fin_have:"Аккаунтың бар ма?", fin_login:"Кіру",
+      fin_have:"Аккаунтың бар ма?", fin_login:"Кіру", fin_google:"Google арқылы жалғастыру",
       fin_legal:'Батырманы басу арқылы сен <a href="terms.html">шарттармен</a>, <a href="privacy.html">құпиялылық саясатымен</a> және <a href="terms.html">қайтару саясатымен</a> келісесің.',
       err_name:"Атыңды жаз.", err_email:"Emailді тексер — қате болуы мүмкін.",
       err_pass:"Құпиясөз кемінде 6 таңбадан тұруы керек.",
@@ -680,6 +692,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       err_generic:"Аккаунт жасалмады. Қайта көріп көр.",
       done_h:"Аккаунт жасалды!", done_n:"Жоспарың жеке кабинетте сақталды. Email және құпиясөзбен кез келген уақытта кіре аласың.",
       done_btn:"Кабинетке өту →",
+      done_plan:"Жоспарды таңдап, Premium алу →", done_free:"Тегін жалғастыру",
       btn_continue:"Жалғастыру",
       b_ai:"Талдауға арналған үздік AI", b_free:"Тегін бастау",
       b_analysis:"AI қате талдауы", b_personal:"Саған жеке",
@@ -742,7 +755,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       fin_name_ph:"Ismingiz", fin_email_ph:"email@example.com", fin_pass_ph:"Parol (kamida 6 ta belgi)",
       fin_bonus:"Email to'g'riligiga ishonch hosil qil — bonusingni boy berma",
       fin_btn:"Akkaunt yaratib, rejani saqlash", fin_creating:"Akkaunt yaratilmoqda…",
-      fin_have:"Akkauntingiz bormi?", fin_login:"Kirish",
+      fin_have:"Akkauntingiz bormi?", fin_login:"Kirish", fin_google:"Google bilan davom etish",
       fin_legal:'Tugmani bosish orqali sen <a href="terms.html">shartlar</a>, <a href="privacy.html">maxfiylik siyosati</a> va <a href="terms.html">qaytarish siyosati</a>ga rozilik bildirasan.',
       err_name:"Ismingizni kiriting.", err_email:"Emailni tekshiring — xato bo'lishi mumkin.",
       err_pass:"Parol kamida 6 ta belgidan iborat bo'lishi kerak.",
@@ -750,6 +763,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       err_generic:"Akkaunt yaratilmadi. Qayta urinib ko'ring.",
       done_h:"Akkaunt yaratildi!", done_n:"Rejangiz shaxsiy kabinetda saqlandi. Email va parol bilan istalgan vaqtda kirishingiz mumkin.",
       done_btn:"Kabinetga o‘tish →",
+      done_plan:"Rejani tanlab, Premium olish →", done_free:"Bepul davom etish",
       btn_continue:"Davom etish",
       b_ai:"Tahlil uchun eng yaxshi AI", b_free:"Bepul start",
       b_analysis:"AI xatolar tahlili", b_personal:"Senga moslashtirilgan",
@@ -1134,6 +1148,25 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     });
   });
 
+  var googleBtn = document.getElementById('googleBtn');
+  if(googleBtn){
+    googleBtn.addEventListener('click', function(){
+      var t = TRANSLATIONS[currentLang];
+      if(!window.LexyAuth){ finMsg.textContent = t.err_generic; return; }
+      try{
+        localStorage.setItem('lexy_reg_oauth','1');
+        localStorage.setItem('lexy_reg_answers', JSON.stringify(answers));
+      }catch(e){}
+      finMsg.textContent = '';
+      googleBtn.disabled = true;
+      LexyAuth.signInWithGoogle('reg.html').catch(function(err){
+        googleBtn.disabled = false;
+        try{ localStorage.removeItem('lexy_reg_oauth'); }catch(e){}
+        finMsg.textContent = t['err_' + (err && err.code ? err.code : 'generic')] || t.err_generic;
+      });
+    });
+  }
+
   (function(){
     var saved;
     try{ saved = localStorage.getItem('lang'); }catch(e){}
@@ -1154,6 +1187,30 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
         refreshFinish();
       }
     }
+  })();
+
+  /* Возврат после регистрации через Google: досохраняем ответы опроса в профиль */
+  (function(){
+    if(!window.LexyAuth || !LexyAuth.ready || !LexyAuth.ready.then) return;
+    LexyAuth.ready.then(function(){
+      var flag = null;
+      try{ flag = localStorage.getItem('lexy_reg_oauth'); }catch(e){}
+      if(!flag) return;
+      try{ localStorage.removeItem('lexy_reg_oauth'); }catch(e){}
+      var u = LexyAuth.user();
+      if(!u) return;
+      var a = {};
+      try{ a = JSON.parse(localStorage.getItem('lexy_reg_answers') || '{}'); }catch(e){}
+      LexyAuth.update({
+        name: (a.name || u.name || ''),
+        path: a.goal === 'english' ? 'english' : 'ielts',
+        target: a.target ? parseFloat(a.target) : 7.5,
+        examDate: examDateFrom(a.when),
+        survey: a,
+        lang: currentLang
+      });
+      showStep('done');
+    });
   })();
 
   (function(){

@@ -8,11 +8,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lexy.css">
+<script src="lexy-config.js"></script>
+<script src="lexy-auth.js"></script>
 <script src="lexy-core.js"></script>
+<script src="lexy-pay.js"></script>
 </head>
 <body>
 <!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
 <script>Lexy.guard("ielts");</script>
+<!-- подтверждение возврата с оплаты Platega -->
+<script>if(window.LexyPay) LexyPay.handleReturn();</script>
 
 <main class="main">
   <section class="sec" id="s-home"></section>

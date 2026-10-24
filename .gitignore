@@ -57,3 +57,5 @@ prisma/*.db-journal
 
 # server deploy scripts (hosts, ports, server paths): kept local only
 /deploy/
+# supabase cache
+supabase/.temp/

@@ -12,7 +12,7 @@
 
 /* ---------- настройки ---------- */
 var CFG = Object.assign({
-  demo: true,              // показывать кнопку «включить Premium (демо)» в профиле
+  demo: false,             // показывать кнопку «включить Premium (демо)» в профиле
   requireAuth: true,       // true = без сессии отправлять на login.html
   login: "login.html", pricing: "pricing.html", home: "main.html",
   privacy: "privacy.html", terms: "terms.html", test: "test.html",
@@ -42,35 +42,43 @@ function fresh(email) {
     lang: "ru", news: true, created: Date.now(), streak: [], mins: {}, lessons: {}, phrases: 0,
     words: [], decks: [], tests: {}, dismiss: {}, vsort: false };
 }
+function authUser() {
+  try { return w.LexyAuth ? w.LexyAuth.user() : null; } catch (e) { return null; }
+}
 function session() {
-  var m = null;
-  try {
-    m = localStorage.getItem(SES);
-    if (!m && localStorage.getItem("user_logged_in") === "true") m = localStorage.getItem("user_email") || "";
-    var rec = m ? DB.load(m) : null;
-    if (m && (!rec || !rec.passHash || !rec.salt)) {
-      localStorage.removeItem(SES);
-      localStorage.removeItem("user_logged_in");
-      localStorage.removeItem("user_email");
-      m = null;
-    }
-  } catch (e) { m = null; }
-  if (!m) {
-    if (CFG.requireAuth) { REDIR = true; location.replace(CFG.login); return null; }
-    m = "demo@lexy.app";
+  var au = authUser();
+  if (au && au.email) {
+    try { localStorage.setItem(SES, au.email); } catch (e) {}
+    return au.email;
   }
-  localStorage.setItem(SES, m);
-  return m;
+  if (CFG.requireAuth) { REDIR = true; location.replace(CFG.login); return null; }
+  return "demo@lexy.app";
 }
 function load() {
   var m = session(); if (!m) return null;
+  var au = authUser();
   U = Object.assign(fresh(m), DB.load(m) || {});
+  if (au) {
+    if (au.name) U.name = au.name;
+    if (au.path) U.path = au.path;
+    U.plan = au.plan || "free";
+    U.planExpires = au.planExpires || null;
+    U.premium = !!au.premium;
+    if (au.target != null) U.target = Number(au.target);
+    if (au.examDate) U.examDate = au.examDate;
+    if (au.lang) U.lang = au.lang;
+    if (au.survey) U.survey = au.survey;
+  }
   var t = iso();
   if (U.streak.indexOf(t) < 0) { U.streak.push(t); U.streak = U.streak.slice(-400); }
   DB.save(U);
   return U;
 }
-function save(p) { Object.assign(U, p || {}); DB.save(U); }
+function save(p) {
+  if (p) Object.assign(U, p);
+  DB.save(U);
+  if (p && w.LexyAuth) { try { w.LexyAuth.update(p); } catch (e) {} }
+}
 
 /* статистика */
 function streakN() { var n = 0, d = new Date(); while (U.streak.indexOf(iso(d)) > -1) { n++; d.setDate(d.getDate() - 1); } return n; }
@@ -299,21 +307,34 @@ A.news = function (el) { save({ news: el.checked }); toast(el.checked ? "Рас�
 A.lang = function (el) { save({ lang: el.dataset.l }); side(); renderProfile(); };
 A.sub = function () { $("#xp-sub").hidden = !$("#xp-sub").hidden; };
 A.guar = function () { $("#xp-guar").hidden = !$("#xp-guar").hidden; };
-A.demoPro = function () { save({ premium: !U.premium }); gates(); show(CUR); toast(U.premium ? "Premium включён (демо)" : "Premium выключен"); };
+A.demoPro = function () {
+  if (!CFG.demo) return;
+  save({ premium: !U.premium }); gates(); show(CUR);
+  toast(U.premium ? "Premium включён (демо)" : "Premium выключен");
+};
 A.logout = function () {
+  if (w.LexyAuth) w.LexyAuth.logout();
   localStorage.removeItem(SES);
   localStorage.removeItem("user_logged_in");
   localStorage.removeItem("user_email");
   location.href = CFG.login;
 };
 A.del = function () {
-  modal({ title: "Удалить аккаунт?", body: "<p>Доступ закроется сразу, данные удалим через 30 дней.</p>", ok: "Удалить", cancel: "Отмена",
+  modal({ title: "Удалить аккаунт?", body: "<p>Аккаунт и подписка удалятся сразу. Это действие нельзя отменить.</p>", ok: "Удалить", cancel: "Отмена",
     onOk: function () {
-      DB.remove(U.email);
-      localStorage.removeItem(SES);
-      localStorage.removeItem("user_logged_in");
-      localStorage.removeItem("user_email");
-      location.href = CFG.login;
+      if (!w.LexyAuth) return;
+      var btn = $("#mv .btn.p"); if (btn) { btn.disabled = true; btn.textContent = "Удаляем…"; }
+      w.LexyAuth.deleteAccount().then(function () {
+        DB.remove(U.email);
+        localStorage.removeItem(SES);
+        localStorage.removeItem("user_logged_in");
+        localStorage.removeItem("user_email");
+        location.href = CFG.login;
+      }).catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = "Удалить"; }
+        toast("Не получилось удалить аккаунт. Попробуй ещё раз.");
+      });
+      return false;
     } });
 };
 A.upsell = function (el) { upsell(el.dataset.f); };
@@ -346,11 +367,21 @@ A.rknow = function () { var x = U.words[RV.q[RV.i]]; x.k++; save(); rvNext(); };
 A.ragain = function () { rvNext(); };
 
 /* ---------- запуск ---------- */
+function whenAuth(fn) {
+  if (w.LexyAuth && w.LexyAuth.ready && w.LexyAuth.ready.then) {
+    w.LexyAuth.ready.then(function () { if (!REDIR) fn(); }, function () { if (!REDIR) fn(); });
+    return;
+  }
+  fn();
+}
 function guard(p) {
-  if (!load()) return;
-  if (U.path && U.path !== p) { REDIR = true; location.replace(CFG.pages[U.path]); }
+  whenAuth(function () {
+    if (!load()) return;
+    if (U.path && U.path !== p) { REDIR = true; location.replace(CFG.pages[U.path]); }
+  });
 }
 function init(p, o) {
+  whenAuth(function () {
   if (REDIR) return;
   if (!U) load();
   PROF = p; H = (o && o.render) || {}; GATED = !!(o && o.vocabGated);
@@ -376,14 +407,17 @@ function init(p, o) {
   CUR = (location.hash || "").slice(1) || NAV[p][0][0];
   show(CUR);
   if (!U.path) chooser();
+  });
 }
 /* страница-маршрутизатор dashboard.html */
 function standalone() {
+  whenAuth(function () {
   if (!load()) return;
-  if (U.path) { location.replace(CFG.pages[U.path]); return; }
+  if (U.path) { location.replace(CFG.pages[U.path] + (location.search || "")); return; }
   document.body.insertAdjacentHTML("afterbegin", sprite() + '<div class="mv" id="mv"></div><div class="toast" id="toast"></div>');
   document.addEventListener("click", function (e) { var a = e.target.closest("[data-act]"); if (a && A[a.dataset.act]) A[a.dataset.act](a, e); });
   PROF = "none"; chooser();
+  });
 }
 
 w.Lexy = {
