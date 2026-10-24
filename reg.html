@@ -57,6 +57,7 @@ a{color:inherit;text-decoration:none}
 /* MAIN */
 main{flex:1;display:flex;align-items:center;justify-content:center;padding:36px 20px 80px}
 .screen{width:100%;max-width:560px;display:none;animation:fadeUp .5s both}
+html.await .screen{visibility:hidden}
 .screen.on{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin-bottom:8px}
@@ -469,7 +470,6 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   <section class="screen" data-step="final">
     <h1 data-i18n="fin_h">Твой план готов!</h1>
     <p class="sub" data-i18n="fin_s">Создай аккаунт, чтобы сохранить план и вернуться к нему с любого устройства.</p>
-    <div class="field"><input type="text" id="name" maxlength="40" placeholder="Как тебя зовут" autocomplete="name" data-i18n-ph="fin_name_ph"></div>
     <div id="finStepEmail">
       <div class="field"><input type="email" id="email" placeholder="email@example.com" autocomplete="email" inputmode="email" data-i18n-ph="fin_email_ph"></div>
       <div class="bonus"><span>🎁</span><span data-i18n="fin_bonus">Убедись, что email верный — не упусти свой бонус</span></div>
@@ -1117,7 +1117,6 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     showStep('final');
   });
 
-  var nameEl = document.getElementById('name');
   var email = document.getElementById('email');
   var finish = document.getElementById('finish');
   var finMsg = document.getElementById('finMsg');
@@ -1151,10 +1150,10 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   var resendTimer = null;
   var EMAIL_RE = /^\S+@\S+\.\S+$/;
 
-  function authValid(){ return !!nameEl.value.trim() && EMAIL_RE.test(email.value.trim()); }
+  function authValid(){ return EMAIL_RE.test(email.value.trim()); }
   function refreshFinish(){ finish.disabled = !authValid(); }
 
-  [nameEl, email].forEach(function(el){
+  [email].forEach(function(el){
     el.addEventListener('input', function(){ finMsg.textContent = ''; refreshFinish(); });
   });
 
@@ -1195,6 +1194,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
       finish.disabled = false; finish.textContent = label;
       finStepEmail.hidden = true; finStepCode.hidden = false;
       finCodeSent.textContent = (existingAccount ? (t.acc_exists || 'Аккаунт уже существует — введи код для входа') : (t.code_sent || 'Код отправлен на email')) + ': ' + email.value.trim();
+      finVerify.textContent = existingAccount ? (t.fin_login || 'Войти') : (t.fin_verify || 'Создать аккаунт');
       setTimeout(function(){ finOtpFocus(0); }, 50);
       startResend();
     }).catch(function(err){
@@ -1209,11 +1209,10 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     if(code.length < 4){ finCodeMsg.textContent = (t.err_code || 'Неверный код.'); return; }
     finCodeMsg.textContent = '';
     finVerify.disabled = true;
-    var label = t.fin_verify || 'Создать аккаунт';
+    var label = existingAccount ? (t.fin_login || 'Войти') : (t.fin_verify || 'Создать аккаунт');
     finVerify.textContent = '…';
     if(!window.LexyAuth){ finVerify.disabled = false; finVerify.textContent = label; return; }
     var opts = existingAccount ? {} : {
-      name: nameEl.value.trim(),
       path: answers.goal === 'english' ? 'english' : 'ielts',
       target: answers.target ? parseFloat(answers.target) : 7.5,
       examDate: examDateFrom(answers.when),
@@ -1278,7 +1277,6 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
     if(window.LexyAuth){
       var cu = LexyAuth.user();
       if(cu){
-        if(!nameEl.value) nameEl.value = cu.name || '';
         if(!email.value) email.value = cu.email || '';
         refreshFinish();
       }
@@ -1289,18 +1287,19 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
   (function(){
     if(!window.LexyAuth || !LexyAuth.ready || !LexyAuth.ready.then) return;
     var hadAuthHash = /access_token=|error_description=/.test(location.hash || '') || /[?&]code=/.test(location.search || '');
+    if(hadAuthHash) document.documentElement.classList.add('await');
+    setTimeout(function(){ document.documentElement.classList.remove('await'); }, 5000);
     LexyAuth.ready.then(function(){
       var flag = null;
       try{ flag = localStorage.getItem('lexy_reg_oauth'); }catch(e){}
       var u = LexyAuth.user();
-      if(!flag && !(u && hadAuthHash)) return;
+      if(!flag && !(u && hadAuthHash)){ document.documentElement.classList.remove('await'); return; }
       try{ localStorage.removeItem('lexy_reg_oauth'); }catch(e){}
-      if(!u) return;
+      if(!u){ document.documentElement.classList.remove('await'); return; }
       if(u.path){ window.location.replace('dashboard.html'); return; }
       var a = {};
       try{ a = JSON.parse(localStorage.getItem('lexy_reg_answers') || '{}'); }catch(e){}
       LexyAuth.update({
-        name: (a.name || u.name || ''),
         path: a.goal === 'english' ? 'english' : 'ielts',
         target: a.target ? parseFloat(a.target) : 7.5,
         examDate: examDateFrom(a.when),
@@ -1308,6 +1307,7 @@ h1{font:700 clamp(22px,5vw,30px)/1.2 var(--display);letter-spacing:-.02em;margin
         lang: currentLang
       });
       showStep('done');
+      document.documentElement.classList.remove('await');
     });
   })();
 
