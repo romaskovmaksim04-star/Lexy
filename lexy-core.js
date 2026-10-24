@@ -151,15 +151,15 @@ function fl(h) { return '<svg class="f" viewBox="0 0 100 120" style="width:' + M
 
 /* ---------- подписи меню (RU / EN / UZ) ---------- */
 var LAB = {
-  ru: { path: "Путь", practice: "Задания", talk: "Разговор", vocab: "Словарь", progress: "Прогресс", home: "Главная", tests: "Тесты", stats: "Статистика", ai: "Lexy AI", games: "Игры", profile: "Личный кабинет", prem: "Получить Premium" },
-  en: { path: "Path", practice: "Practice", talk: "Talk", vocab: "Vocabulary", progress: "Progress", home: "Home", tests: "Tests", stats: "Statistics", ai: "Lexy AI", games: "Games", profile: "My account", prem: "Get Premium" },
-  kz: { path: "Жол", practice: "Тапсырмалар", talk: "Сөйлесу", vocab: "Сөздік", progress: "Прогресс", home: "Басты бет", tests: "Тесттер", stats: "Статистика", ai: "Lexy AI", games: "Ойындар", profile: "Жеке кабинет", prem: "Premium алу" },
-  uz: { path: "Yo‘l", practice: "Topshiriqlar", talk: "Suhbat", vocab: "Lug‘at", progress: "Taraqqiyot", home: "Bosh sahifa", tests: "Testlar", stats: "Statistika", ai: "Lexy AI", games: "O‘yinlar", profile: "Kabinet", prem: "Premium olish" }
+  ru: { path: "Путь", practice: "Задания", faq: "Вопросы", talk: "Разговор", vocab: "Словарь", progress: "Прогресс", home: "Главная", tests: "Тесты", stats: "Статистика", ai: "Lexy AI", games: "Игры", profile: "Личный кабинет", prem: "Получить Premium" },
+  en: { path: "Path", practice: "Practice", faq: "FAQ", talk: "Talk", vocab: "Vocabulary", progress: "Progress", home: "Home", tests: "Tests", stats: "Statistics", ai: "Lexy AI", games: "Games", profile: "My account", prem: "Get Premium" },
+  kz: { path: "Жол", practice: "Тапсырмалар", faq: "Сұрақтар", talk: "Сөйлесу", vocab: "Сөздік", progress: "Прогресс", home: "Басты бет", tests: "Тесттер", stats: "Статистика", ai: "Lexy AI", games: "Ойындар", profile: "Жеке кабинет", prem: "Premium алу" },
+  uz: { path: "Yo‘l", practice: "Topshiriqlar", faq: "Savollar", talk: "Suhbat", vocab: "Lug‘at", progress: "Taraqqiyot", home: "Bosh sahifa", tests: "Testlar", stats: "Statistika", ai: "Lexy AI", games: "O‘yinlar", profile: "Kabinet", prem: "Premium olish" }
 };
 /* [id раздела, иконка, ключ замка]. Замок показывается, пока нет Premium */
 var NAV = {
-  english: [["path", "map"], ["practice", "file"], ["talk", "talk", "ai"], ["vocab", "vocab"], ["progress", "home"]],
-  ielts: [["home", "home"], ["tests", "file"], ["stats", "trend"], ["vocab", "vocab", "soft"], ["ai", "spark", "ai"], ["games", "game", "games"]]
+  english: [["path", "map"], ["practice", "file"], ["faq", "mail"], ["talk", "talk", "ai"], ["vocab", "vocab"], ["progress", "home"]],
+  ielts: [["home", "home"], ["tests", "file"], ["stats", "trend"], ["vocab", "vocab", "soft"], ["ai", "spark", "ai"], ["games", "game", "games"], ["faq", "mail"]]
 };
 function L() { return LAB[U.lang] || LAB.ru; }
 var PL = {

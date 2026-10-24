@@ -126,6 +126,9 @@
 
   var FREE = { reading: 4, listening: 4, writing: 2, speaking: 2, vocab: 2 };
 
+  function hash(s) { var h = 5381; s = String(s); for (var i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; } return h.toString(16); }
+  function audioFor(text) { return "audio/" + hash(text) + ".wav"; }
+
   var BANK = { reading: READING, listening: LISTENING, writing: WRITING, speaking: SPEAKING, vocab: VOCAB };
 
   w.LexyContent = {
@@ -134,6 +137,8 @@
     count: function (skill) { return (BANK[skill] || []).length; },
     item: function (skill, n) { var b = BANK[skill] || []; return b[(n - 1) % b.length]; },
     freeLimit: function (skill) { return FREE[skill] || 0; },
-    isLocked: function (skill, n, premium) { return !premium && n > (FREE[skill] || 0); }
+    isLocked: function (skill, n, premium) { return !premium && n > (FREE[skill] || 0); },
+    hash: hash,
+    audioFor: audioFor
   };
 })(window);

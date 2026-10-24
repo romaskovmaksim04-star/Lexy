@@ -121,7 +121,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
     <div class="sp"></div>
     <span class="who" id="who"></span>
-    <a class="back" href="dashboard.html">← В кабинет</a>
+    <a class="back" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a>
   </div>
 </header>
 
@@ -139,6 +139,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   var app = document.getElementById('app');
   var who = document.getElementById('who');
   who.textContent = user.name || user.email;
+  window.__lexyBack = function(e){ if(e) e.preventDefault(); if(history.length > 1) history.back(); else location.href = 'dashboard-english.html#practice'; };
 
   var C = window.LexyContent;
   var SKILLS = {
@@ -220,7 +221,8 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       ? '<div class="note" style="background:#F1FBF6;border-color:#C8EAD7">Premium активен — открыты все задания, игры и Lexy AI.</div>'
       : '<div class="note">Бесплатно доступна часть заданий: ' + C.freeLimit('reading') + ' чтение, ' + C.freeLimit('listening') + ' аудирование, ' + C.freeLimit('writing') + ' письмо, ' + C.freeLimit('speaking') + ' говорение. Полный доступ — в <a href="pricing.html" style="color:var(--fire);font-weight:700">тарифах</a>.</div>';
     app.innerHTML = hero + '<div class="hub">' + cards + '</div>' + freeNote +
-      '<div class="row"><a class="btn ghost sm" href="dashboard.html">← В кабинет</a>' +
+      '<div class="card" style="margin-top:16px"><b>Как это работает</b><ul style="margin:10px 0 0 18px;color:var(--soft);font-size:13.5px;line-height:1.7"><li>Выбери навык → откроется список заданий по номерам.</li><li>Каждое задание: текст/аудио/эссе/монолог и вопросы.</li><li>Результат сохраняется, учитывается лучший балл.</li><li>Бесплатно — первые задания, остальное на Premium.</li></ul></div>' +
+      '<div class="row"><a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a>' +
       '<a class="btn ghost sm" href="test.html?history=1">История заданий</a></div>';
   }
 
@@ -238,8 +240,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       '<div class="bar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
       '<div class="tasks">' + rows + '</div>' +
       '<div class="row"><a class="btn sm" href="test.html?skill=' + k + '&n=' + nextNum(k) + '">Продолжить</a>' +
-      '<a class="btn ghost sm" href="test.html">Все навыки</a>' +
-      '<a class="btn ghost sm" href="dashboard.html">В кабинет</a></div>';
+      '<a class="btn ghost sm" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a></div>';
   }
 
   function renderLock(k, n){
@@ -307,7 +308,8 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
         html += '<div class="transcript" style="background:#fff;border-style:solid"><b>' + esc(item.t) + '</b><br>' + esc(item.p) + '</div>';
       } else{
         html += '<div class="transcript">🎧 Аудио · нажми «Прослушать» и ответь на вопрос.</div>' +
-          '<div class="row" style="margin-top:0"><button class="btn" id="play">▶ Прослушать</button></div>';
+          '<div class="row" style="margin-top:0"><button class="btn" id="play">▶ Прослушать</button></div>' +
+          '<audio id="au" preload="none" src="' + C.audioFor(item.script) + '"></audio>';
       }
       html += '<div class="qtext">' + esc(q.q) + '</div>' +
         '<div class="opts">' + q.o.map(function(o, x){
@@ -317,10 +319,14 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       app.innerHTML = html;
       picked = null; answered = false;
       if(k === 'listening'){
-        var pb = document.getElementById('play');
+        var pb = document.getElementById('play'), au = document.getElementById('au');
+        if(au) au.addEventListener('error', function(){ au.dataset.fail = '1'; });
         pb.addEventListener('click', function(){
-          if(pb.dataset.playing){ try{ speechSynthesis.cancel(); }catch(e){} pb.dataset.playing=''; pb.textContent='▶ Прослушать'; return; }
-          speak(item.script, pb);
+          if(pb.dataset.playing){ try{ speechSynthesis.cancel(); }catch(e){} try{ au.pause(); }catch(e){} pb.dataset.playing=''; pb.textContent='▶ Прослушать'; return; }
+          if(au && !au.dataset.fail){
+            try{ var pr = au.play(); if(pr && pr.catch) pr.catch(function(){ speak(item.script, pb); }); else { pb.dataset.playing='1'; pb.textContent='⏸ Стоп'; au.onended=function(){ pb.dataset.playing=''; pb.textContent='▶ Прослушать'; }; } }
+            catch(e){ speak(item.script, pb); }
+          } else speak(item.script, pb);
         });
       }
       app.querySelectorAll('.opt').forEach(function(b){
@@ -426,7 +432,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
       '<div class="row" style="justify-content:center">' +
         (next
           ? '<a class="btn" href="test.html?skill=' + next + '&n=full&full=1">Следующая секция: ' + SKILLS[next].name + ' →</a>'
-          : '<a class="btn" href="dashboard.html">Вернуться в кабинет</a>') +
+          : '<a class="btn" href="dashboard-english.html#practice" onclick="__lexyBack(event)">← Назад</a>') +
         '<a class="btn ghost" href="test.html?skill=' + k + (isFull ? '&full=1&n=full' : '&n=' + nextNum(k)) + '">Пройти ещё раз</a>' +
       '</div></div>';
   }
