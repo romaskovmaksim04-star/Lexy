@@ -16,7 +16,7 @@ var CFG = Object.assign({
   requireAuth: true,       // true = без сессии отправлять на login.html
   login: "login.html", pricing: "pricing.html", home: "main.html",
   privacy: "privacy.html", terms: "terms.html", test: "test.html",
-  support: "support@lexy.app", tg: "https://t.me/",
+  support: "lexisupportapp@gmail.com", tg: "https://t.me/",
   pages: { english: "dashboard-english.html", ielts: "dashboard-ielts.html" }
 }, w.LEXY_CONFIG || {});
 
