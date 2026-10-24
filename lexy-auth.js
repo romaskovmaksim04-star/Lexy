@@ -78,7 +78,14 @@
     // синхронизация прогресса между устройствами
     if (profile.settings && profile.settings.app) {
       var app = profile.settings.app;
-      for (var ak in app) { if (Object.prototype.hasOwnProperty.call(app, ak)) rec[ak] = app[ak]; }
+      for (var ak in app) {
+        if (!Object.prototype.hasOwnProperty.call(app, ak)) continue;
+        if ((ak === "tests" || ak === "mins" || ak === "lessons" || ak === "dismiss") && app[ak] && typeof app[ak] === "object" && !Array.isArray(app[ak])) {
+          rec[ak] = Object.assign({}, app[ak], rec[ak] || {});
+        } else {
+          rec[ak] = app[ak];
+        }
+      }
     }
     db[email] = rec;
     write(db);
@@ -241,7 +248,7 @@
     }).catch(function () { return null; });
   }
 
-  function queueProfileSync(patch) {
+  function buildBody(patch) {
     var body = {};
     if (Object.prototype.hasOwnProperty.call(patch, "name")) body.p_name = String(patch.name || "");
     if (Object.prototype.hasOwnProperty.call(patch, "path")) body.p_path = patch.path === "english" ? "english" : patch.path === "ielts" ? "ielts" : null;
@@ -250,13 +257,27 @@
     if (Object.prototype.hasOwnProperty.call(patch, "lang")) body.p_lang = patch.lang || null;
     if (Object.prototype.hasOwnProperty.call(patch, "survey")) body.p_survey = patch.survey || null;
     if (Object.prototype.hasOwnProperty.call(patch, "settings")) body.p_settings = patch.settings || null;
+    return body;
+  }
+  var pendingBody = null;
+  function sendBody(body) {
+    if (!body || !Object.keys(body).length || !client) return Promise.resolve(null);
+    return client.rpc("lexy_update_profile", body).then(function (res) {
+      if (!res.error && res.data) cacheProfile(res.data);
+      return res.data;
+    }).catch(function () { return null; });
+  }
+  function queueProfileSync(patch) {
+    var body = buildBody(patch);
     if (!Object.keys(body).length || !client) return;
+    pendingBody = body;
     clearTimeout(syncTimer);
-    syncTimer = setTimeout(function () {
-      client.rpc("lexy_update_profile", body).then(function (res) {
-        if (!res.error && res.data) cacheProfile(res.data);
-      }).catch(function () {});
-    }, 350);
+    syncTimer = setTimeout(function () { var b = pendingBody; pendingBody = null; sendBody(b); }, 350);
+  }
+  function flushProfileSync() {
+    if (!pendingBody) return Promise.resolve(null);
+    var b = pendingBody; pendingBody = null; clearTimeout(syncTimer);
+    return sendBody(b);
   }
 
   function update(patch) {
@@ -434,6 +455,7 @@
     deleteAccount: deleteAccount,
     refresh: refresh,
     update: update,
+    flush: flushProfileSync,
     token: accessToken,
     client: function () { return client; }
   };

@@ -154,7 +154,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
 <div class="toast" id="toast"></div>
 
 <script src="lexy-config.js?v=7"></script>
-<script src="lexy-auth.js?v=10"></script>
+<script src="lexy-auth.js?v=11"></script>
 <script src="lexy-content.js?v=1"></script>
 <script>
 (function(){
@@ -280,6 +280,12 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     var mins = Object.assign({}, u.mins || {}), d = today();
     mins[d] = (mins[d] || 0) + (SKILLS[s].mins || 5);
     LexyAuth.update({ tests: t, mins: mins });
+    // синхронизируем прогресс в облако (settings.app), чтобы он не терялся
+    var rec = LexyAuth.user() || {};
+    var keys = ["onboard", "course", "vocab", "tests", "mins", "streak", "words", "decks", "lessons", "phrases", "dismiss", "vsort", "news"];
+    var app = {}; keys.forEach(function(k){ if (rec[k] !== undefined) app[k] = rec[k]; });
+    LexyAuth.update({ settings: { app: app } });
+    if (LexyAuth.flush) { try { LexyAuth.flush(); } catch (e) {} }
   }
 
   function renderHub(kind){

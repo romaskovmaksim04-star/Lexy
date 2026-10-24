@@ -279,9 +279,11 @@ function chooser(lock) {
   });
 }
 function switchPath(p) {
-  save({ path: p });
-  if (p === PROF) { closeM(); show(CUR); toast(C().profChosen); }
-  else location.href = CFG.pages[p];
+  save({ path: p, settings: { app: snapshot() } });
+  if (p === PROF) { closeM(); show(CUR); toast(C().profChosen); return; }
+  var go = function () { location.href = CFG.pages[p]; };
+  if (w.LexyAuth && w.LexyAuth.flush) { Promise.resolve(w.LexyAuth.flush()).then(go, go); }
+  else go();
 }
 
 /* ---------- профиль (Личный кабинет) ---------- */
