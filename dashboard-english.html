@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=10"></script>
-<script src="lexy-core.js?v=19"></script>
+<script src="lexy-core.js?v=20"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-a1.js?v=1"></script>
@@ -446,13 +446,14 @@
 @keyframes pg-drift{from{transform:translate3d(-6%,-4%,0) scale(1)}to{transform:translate3d(6%,4%,0) scale(1.14)}}
 .pgh>*{position:relative;z-index:1}
 .pghfl{width:86px;height:86px;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.1);border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);animation:pg-float 3.5s ease-in-out infinite}
+.pghbody{flex:1;min-width:0}
 @keyframes pg-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .pgh small{font:700 11px var(--display);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7)}
 .pgh h2{font:800 36px/1 var(--display);letter-spacing:-.03em;margin:6px 0 2px;display:flex;align-items:center;gap:8px}
 .pgh h2 svg{width:26px;height:26px}
 .pgh .pgdays{color:rgba(255,255,255,.82);font-size:13px}
-.pgdots{display:flex;gap:6px;margin-top:14px}
-.pgdots div{width:30px;height:36px;border-radius:10px;background:rgba(255,255,255,.13);display:grid;place-items:center;font:600 11px var(--body);opacity:0;transform:translateY(8px);animation:pg-pop .45s cubic-bezier(.2,.8,.3,1) forwards}
+.pgdots{display:flex;gap:6px;margin-top:14px;width:100%}
+.pgdots div{flex:1;min-width:0;height:36px;border-radius:10px;background:rgba(255,255,255,.13);display:grid;place-items:center;font:600 11px var(--body);opacity:0;transform:translateY(8px);animation:pg-pop .45s cubic-bezier(.2,.8,.3,1) forwards}
 .pgdots div.on{background:linear-gradient(180deg,#FF9A0A,#FF4E1A);color:#fff;box-shadow:0 10px 20px -10px rgba(255,78,26,.9)}
 .pgdots div.td{outline:2px solid rgba(255,255,255,.6);outline-offset:1px}
 @keyframes pg-pop{to{opacity:1;transform:none}}
@@ -475,8 +476,17 @@
 .pgc.pgtb{grid-column:1 / -1}
 .pgtm{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
 .pgtm div{flex:1;text-align:center;background:var(--mist);border-radius:14px;padding:12px 6px}
-.pgtm b{font:800 22px var(--display);display:block;color:var(--ink)}
+.pgtm b{font:800 22px var(--display);display:block;color:var(--ink);white-space:nowrap}
 .pgtm small{color:var(--soft);font-size:11.5px}
+@media(max-width:560px){
+  .pgh{flex-direction:column;align-items:flex-start;padding:20px}
+  .pghbody{width:100%}
+  .pghfl{width:64px;height:64px}
+  .pgh h2{font-size:30px}
+  .pgh h2 svg{width:22px;height:22px}
+  .pgtm b{font-size:16px}
+  .pgc{padding:16px}
+}
 `;
     document.head.appendChild(s);
   }
@@ -499,6 +509,10 @@
   }
   function renderProgress() {
     progressCss();
+    if (!paid()) {
+      $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">' + T("progress") + '</h1><div class="card emp"><div class="eb">' + fl(30) + '</div><h3 style="text-align:center">' + T("statPrem") + "</h3><p>" + T("statPremBody") + '</p><a class="btn p" href="pricing.html" style="margin-top:14px">' + ic("spark") + " Premium</a></div>";
+      return;
+    }
     var c = course(), n = Lexy.streakN(), m = Lexy.mins();
     var DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
     var dots = Lexy.weekDots(), weekOn = dots.filter(function (d) { return d.on; }).length;
@@ -507,7 +521,7 @@
     var known = knownCards(), cardsTotal = (window.LexyVocab && LexyVocab.total) ? LexyVocab.total() : (known || 1);
     var chatMin = Math.round((Lexy.user.chatSec || 0) / 60);
     var fmtT = function (n) { n = Number(n) || 0; var h = Math.floor(n / 60), mm = n % 60; return h ? h + " " + PGt("hr") + (mm ? " " + mm + " " + PGt("min") : "") : mm + " " + PGt("min"); };
-    var hero = '<div class="pgh"><div class="pghfl">' + fl(60) + '</div><div><small>' + T("streak") + '</small><h2>' + ic("fire") + '<b id="pgStreak">0</b></h2><span class="pgdays">' + PGt("days") + '</span><div class="pgdots">' +
+    var hero = '<div class="pgh"><div class="pghfl">' + fl(60) + '</div><div class="pghbody"><small>' + T("streak") + '</small><h2>' + ic("fire") + '<b id="pgStreak">0</b></h2><span class="pgdays">' + PGt("days") + '</span><div class="pgdots">' +
       dots.map(function (d, k) { return '<div class="' + (d.on ? "on" : "") + (d.today ? " td" : "") + '" style="animation-delay:' + (k * 0.06).toFixed(2) + 's">' + DN[k] + '</div>'; }).join("") +
       '</div><span class="pgwk">' + weekOn + " " + PGt("weekOf") + '</span></div></div>';
     var lvlCard = '<div class="pgc" style="--ac:#7A40FF"><div class="lb">' + PGt("level") + '</div><div class="v">' + c.level + ' <em>' + lvName(c.level, 0) + '</em></div><div class="pgscales">' +
