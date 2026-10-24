@@ -261,4 +261,35 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
  .main{margin-left:0;padding:80px 16px 100px}
  .two,.skg,.tgrid,.pth,.og,.pu{grid-template-columns:1fr}.ph{flex-direction:column;text-align:center}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}C:\Users\009\AppData\Local\Temp\opencode\appcss.js
+
+/* ---- course, quiz & vocab ---- */
+.progress{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin:14px 0 8px}
+.progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,var(--fire));transition:width .3s}
+.qmeta{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--soft);font-weight:600}
+.qtext{font:700 clamp(18px,3vw,23px)/1.35 var(--display);letter-spacing:-.02em;margin:16px 0 8px}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;background:#fff;border:1.5px solid var(--line);border-radius:16px;font-size:14.5px;transition:border-color .15s,background .15s;width:100%}
+.opt:hover{border-color:#C9BEE0}
+.opt .key{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--mist);font-weight:800;font-size:12.5px;color:var(--soft)}
+.opt.on{border-color:var(--fire);background:#FFF8F3}
+.opt.on .key{background:var(--fire);color:#fff}
+.opt.right{border-color:var(--ok);background:#F1FBF6}
+.opt.wrong{border-color:#E5443E;background:#FFF2F1}
+.check{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;background:#fff;border:1.5px solid var(--line);border-radius:16px;margin-bottom:10px;cursor:pointer;font-size:14px}
+.check input{margin-top:3px;accent-color:var(--fire);width:18px;height:18px;flex:none}
+.rd{background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.6;color:var(--ink);margin-bottom:14px}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:8px;margin-top:14px}
+.dcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 6px;border:1.5px solid var(--line);border-radius:14px;background:#fff;transition:border-color .2s,transform .15s}
+.dcard b{font:800 16px var(--display)}
+.dcard small{color:var(--soft);font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+.dcard:hover{border-color:var(--fire);transform:translateY(-2px)}
+.dcard.cur{border-color:var(--fire);background:#FFF8F3}
+.dcard.done{border-color:#C8EAD7;background:#F1FBF6}
+.dcard.done small{color:var(--ok)}
+.dcard.lock{opacity:.55;background:var(--mist)}
+.dcard.test{border-style:dashed}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:9px 13px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 12.5px var(--body);color:var(--soft);transition:.2s}
+.pill:hover{border-color:#FFC2A1;color:var(--fire)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill em{font-style:normal;opacity:.7;margin-left:4px}

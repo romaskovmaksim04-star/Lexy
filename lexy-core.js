@@ -285,6 +285,7 @@ function dsz(n) { var h = 7; for (var i = 0; i < n.length; i++) h = (h * 31 + n.
 function gate(f) { if (GATED && !U.premium) { upsell(f); return true; } return false; }
 function renderVocab() {
   var el = $("#s-vocab"); if (!el) return;
+  if (w.LexyVocab && w.LexyVocab.render) { w.LexyVocab.render(el); return; }
   var ws = U.words.map(function (x, i) { return { x: x, i: i }; });
   if (U.vsort) ws.sort(function (a, b) { return a.x.k - b.x.k; });
   var chip = function (n) { return U.decks.indexOf(n) < 0 ? '<button class="cp" data-act="vdeck" data-n="' + esc(n) + '">' + ic("plus") + esc(n) + "</button>" : ""; };
