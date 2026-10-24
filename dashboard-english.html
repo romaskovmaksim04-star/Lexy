@@ -367,7 +367,7 @@
       (levelUp ? '<button class="btn big" id="gonext" style="margin-top:10px;background:#12A15C;color:#fff">' + T("goNext") + " " + c.level + " →</button>" : "") + "</div>";
     el.innerHTML = sum;
     $("#tocourse").addEventListener("click", renderCourse);
-    var gn = $("#gonext"); if (gn) gn.addEventListener("click", function () { renderCourse(); openDay(1); });
+    var gn = $("#gonext"); if (gn) gn.addEventListener("click", function () { renderCourse(); });
   }
 
   /* ---------- ОЗВУЧКА ---------- */
