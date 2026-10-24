@@ -471,7 +471,6 @@ function renderProfile() {
     LANGS.map(function (x) { return '<button data-l="' + x[0] + '"' + (U.lang === x[0] ? ' class="on"' : "") + '><span class="flag">' + x[1] + '</span><span class="name">' + x[2] + '</span><span class="code">' + x[3] + "</span></button>"; }).join("") + "</div></div>";
   var setg = sec("globe", t.settings) + '<div class="pfcard pfvis">' +
     '<div class="pfrow pfrow-wrap" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("globe") + '</span><div class="tx"><b>' + t.language + "</b></div>" + langPick + "</div>" +
-    '<div class="pfrow" style="animation-delay:' + dl() + 's"><span class="ic">🌙</span><div class="tx"><b>' + THt() + '</b></div><button class="thbtn" data-theme-toggle aria-label="Тема"><span class="th-ic">🌙</span></button></div>' +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
       '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
