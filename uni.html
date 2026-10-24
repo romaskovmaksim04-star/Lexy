@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Требования вузов к IELTS — Lexy</title>
+<title data-i18n="meta.title">Требования вузов к IELTS — Lexy</title>
+<link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
@@ -26,7 +27,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .logo svg{width:26px;height:30px}
 .menu-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font:700 13px var(--body);transition:border-color .2s,color .2s,transform .15s}
 .menu-btn:hover{border-color:var(--fire);color:var(--fire);transform:translateY(-1px)}
-.menu-btn:last-child{margin-left:auto}
+.lang-wrap{position:relative;margin-left:auto}
+.lang-btn{display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--body);transition:border-color .2s,background .2s}
+.lang-btn:hover{border-color:var(--fire);background:#FFF8F3}
+.lang-btn svg{width:14px;height:14px;transition:transform .25s}
+.lang-wrap.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 40px -22px rgba(27,20,51,.5);padding:6px;min-width:150px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.lang-wrap.open .lang-menu{opacity:1;transform:none;pointer-events:auto}
+.lang-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left}
+.lang-item:hover{background:var(--peach)}
+.lang-item.on{color:var(--fire);background:#FFF3EC}
+.lang-item.on::after{content:"✓";margin-left:auto;font-weight:700}
 main{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:32px 20px 64px}
 .hero{position:relative;border-radius:28px;background:radial-gradient(120% 140% at 0% 0%,#FFF3EB 0%,transparent 55%),radial-gradient(120% 140% at 100% 100%,#F0E9FF 0%,transparent 55%),#fff;border:1.5px solid var(--line);padding:34px 30px 30px;margin-bottom:24px;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,154,10,.26),transparent 65%);pointer-events:none}
@@ -68,125 +79,217 @@ footer{border-top:1px solid var(--line);background:#fff;padding:24px 20px calc(2
 footer .bar{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;color:var(--soft);font-size:12.5px}
 footer a:hover{color:var(--fire)}
 footer .sp{margin-left:auto}
-@media(min-width:760px){.grid{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){
-  .top .bar{padding:0 14px;gap:6px}
-  .logo{font-size:18px}.logo svg{width:22px;height:26px}
-  .menu-btn{padding:8px 10px;font-size:11.5px}
-  .menu-btn:last-child{display:none}
-  main{padding:22px 16px 54px}
-  .hero{padding:26px 20px 24px;border-radius:22px}
-  .uni{padding:17px}
-}
+@media(max-width:520px){.top .bar{padding:0 14px;gap:8px}.logo{font-size:18px}.logo svg{width:22px;height:26px}main{padding:24px 16px 48px}.hero{padding:26px 20px}.menu-btn span.m{display:none}}
 </style>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs><linearGradient id="flameGrad" x1="0.2" y1="1" x2="0.8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>
-  <symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#flameGrad)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>
-  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-</svg>
-
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol></svg>
 <header class="top">
   <div class="bar">
-    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexy</a>
-    <a class="menu-btn" href="tools.html">← Все инструменты</a>
-    <a class="menu-btn" href="main.html">Главное меню</a>
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><path fill="#FF5A1F" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.5 78h13c-.5 6-4 10-6.5 10s-6-4-6.5-10z" fill="#151515"/></svg>Lexy</a>
+    <a class="menu-btn" href="tools.html" data-i18n="nav_tools">Инструменты</a>
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn"><span id="curFlag">🇷🇺</span><span id="curLang">RU</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="lang-menu" id="langMenu">
+        <button class="lang-item on" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-item" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-item" data-lang="kz"><span class="flag">🇰🇿</span> Қазақша</button>
+        <button class="lang-item" data-lang="uz"><span class="flag">🇺🇿</span> O‘zbekcha</button>
+      </div>
+    </div>
   </div>
 </header>
 
 <main>
   <section class="hero">
-    <span class="badge"><i></i>База вузов</span>
-    <h1>Требования вузов <em>к IELTS</em></h1>
-    <p class="sub">Ориентировочные минимумы для поступления и ссылки на официальные страницы. Требования зависят от программы, уровня и года приёма — всегда проверяй сайт вуза.</p>
+    <span class="badge"><i></i><span data-i18n="badge">База вузов</span></span>
+    <h1 data-i18n-html="h1">Требования вузов <em>к IELTS</em></h1>
+    <p class="sub" data-i18n="sub">Ориентировочные минимумы для поступления и ссылки на официальные страницы. Требования зависят от программы, уровня и года приёма — всегда проверяй сайт вуза.</p>
   </section>
 
   <div class="controls">
     <label class="search">
       <svg aria-hidden="true"><use href="#ic-search"/></svg>
-      <input id="q" type="search" placeholder="Найти университет или страну…" autocomplete="off">
+      <input id="q" type="search" data-i18n-ph="q_ph" placeholder="Найти университет или страну…" autocomplete="off">
     </label>
     <div class="pills" id="pills">
-      <button class="pill on" data-region="all">Все</button>
-      <button class="pill" data-region="США">США</button>
-      <button class="pill" data-region="Великобритания">Великобритания</button>
-      <button class="pill" data-region="Канада">Канада</button>
-      <button class="pill" data-region="Австралия">Австралия</button>
-      <button class="pill" data-region="Азия">Азия</button>
-      <button class="pill" data-region="Европа">Европа</button>
+      <button class="pill on" data-region="all" data-i18n="r_all">Все</button>
+      <button class="pill" data-region="США" data-i18n="r_us">США</button>
+      <button class="pill" data-region="Великобритания" data-i18n="r_uk">Великобритания</button>
+      <button class="pill" data-region="Канада" data-i18n="r_ca">Канада</button>
+      <button class="pill" data-region="Австралия" data-i18n="r_au">Австралия</button>
+      <button class="pill" data-region="Азия" data-i18n="r_as">Азия</button>
+      <button class="pill" data-region="Европа" data-i18n="r_eu">Европа</button>
     </div>
   </div>
 
-  <div class="meta"><span>Найдено: <b id="count">0</b></span><span>Проверено: октябрь 2026</span></div>
+  <div class="meta"><span><span data-i18n="found">Найдено:</span> <b id="count">0</b></span><span data-i18n="checked">Проверено: октябрь 2026</span></div>
   <div class="grid" id="grid"></div>
-  <div class="empty" id="empty">Ничего не нашлось. Попробуй другое название или страну.</div>
+  <div class="empty" id="empty" data-i18n="empty">Ничего не нашлось. Попробуй другое название или страну.</div>
 
-  <div class="note-box"><b>Как читать баллы.</b> Это типичный минимум для бакалавриата или магистратуры, а не гарантия зачисления. На конкурсные программы может требоваться выше, а на отдельные курсы — ниже. Для точного ответа открой официальную страницу вуза.</div>
+  <div class="note-box" data-i18n-html="note"> <b>Как читать баллы.</b> Это типичный минимум для бакалавриата или магистратуры, а не гарантия зачисления. На конкурсные программы может требоваться выше, а на отдельные курсы — ниже. Для точного ответа открой официальную страницу вуза.</div>
 </main>
 
 <footer>
   <div class="bar">
     <span>© 2026 Lexy</span>
-    <a href="main.html">Главная</a>
-    <a href="tools.html">Инструменты</a>
-    <a href="privacy.html">Конфиденциальность</a>
-    <a href="terms.html">Условия</a>
-    <span class="sp">IELTS® — товарный знак его владельцев.</span>
+    <a href="main.html" data-i18n="f_home">Главная</a>
+    <a href="tools.html" data-i18n="nav_tools">Инструменты</a>
+    <a href="privacy.html" data-i18n="f_privacy">Конфиденциальность</a>
+    <a href="terms.html" data-i18n="f_terms">Условия</a>
+    <span class="sp" data-i18n="f_legal">IELTS® — товарный знак его владельцев.</span>
   </div>
 </footer>
 
 <script>
+var TRANSLATIONS = {
+  ru: {
+    "meta.title":"Требования вузов к IELTS — Lexy","nav_tools":"Инструменты","badge":"База вузов",
+    "h1":"Требования вузов <em>к IELTS</em>",
+    "sub":"Ориентировочные минимумы для поступления и ссылки на официальные страницы. Требования зависят от программы, уровня и года приёма — всегда проверяй сайт вуза.",
+    "q_ph":"Найти университет или страну…","r_all":"Все","r_us":"США","r_uk":"Великобритания","r_ca":"Канада","r_au":"Австралия","r_as":"Азия","r_eu":"Европа",
+    "found":"Найдено:","checked":"Проверено: октябрь 2026","empty":"Ничего не нашлось. Попробуй другое название или страну.",
+    "note":"<b>Как читать баллы.</b> Это типичный минимум для бакалавриата или магистратуры, а не гарантия зачисления. На конкурсные программы может требоваться выше, а на отдельные курсы — ниже. Для точного ответа открой официальную страницу вуза.",
+    "go":"Официальная страница вуза ↗","f_home":"Главная","f_privacy":"Конфиденциальность","f_terms":"Условия","f_legal":"IELTS® — товарный знак его владельцев."
+  },
+  en: {
+    "meta.title":"University IELTS requirements — Lexy","nav_tools":"Tools","badge":"University database",
+    "h1":"University <em>IELTS requirements</em>",
+    "sub":"Approximate minimums for admission and links to official pages. Requirements depend on the program, level and intake year — always check the university's website.",
+    "q_ph":"Find a university or country…","r_all":"All","r_us":"USA","r_uk":"UK","r_ca":"Canada","r_au":"Australia","r_as":"Asia","r_eu":"Europe",
+    "found":"Found:","checked":"Checked: October 2026","empty":"Nothing found. Try another name or country.",
+    "note":"<b>How to read the scores.</b> These are typical minimums for a bachelor's or master's degree, not a guarantee of admission. Competitive programs may require more, and some courses less. Check the university's official page for an exact answer.",
+    "go":"University's official page ↗","f_home":"Home","f_privacy":"Privacy","f_terms":"Terms","f_legal":"IELTS® is a trademark of its owners."
+  },
+  kz: {
+    "meta.title":"Вуздардың IELTS талаптары — Lexy","nav_tools":"Құралдар","badge":"Вуздар базасы",
+    "h1":"Вуздардың <em>IELTS талаптары</em>",
+    "sub":"Оқуға түсу үшін шамамен алынған минимумдар және ресми беттерге сілтемелер. Талаптар бағдарламаға, деңгейге және қабылдау жылына байланысты — әрдайым вуздың сайтын тексер.",
+    "q_ph":"Университет немесе ел іздеу…","r_all":"Барлығы","r_us":"АҚШ","r_uk":"Ұлыбритания","r_ca":"Канада","r_au":"Австралия","r_as":"Азия","r_eu":"Еуропа",
+    "found":"Табылды:","checked":"Тексерілді: қазан 2026","empty":"Ештеңе табылмады. Басқа атауды немесе елді көр.",
+    "note":"<b>Балдарды қалай оқу керек.</b> Бұл бакалавриат немесе магистратура үшін әдеттегі минимум, қабылдау кепілдігі емес. Бәсекелес бағдарламаларда жоғары, кейбір курстарда төмен болуы мүмкін. Нақты жауап үшін вуздың ресми бетін аш.",
+    "go":"Вуздың ресми беті ↗","f_home":"Басты бет","f_privacy":"Құпиялылық","f_terms":"Шарттар","f_legal":"IELTS® — иелерінің сауда белгісі."
+  },
+  uz: {
+    "meta.title":"Universitetlarning IELTS talablari — Lexy","nav_tools":"Vositalar","badge":"Universitetlar bazasi",
+    "h1":"Universitetlarning <em>IELTS talablari</em>",
+    "sub":"Qabul uchun taxminiy minimumlar va rasmiy sahifalarga havolalar. Talablar dastur, daraja va qabul yiliga bog'liq — har doim universitet saytini tekshiring.",
+    "q_ph":"Universitet yoki davlatni qidirish…","r_all":"Hammasi","r_us":"AQSH","r_uk":"Buyuk Britaniya","r_ca":"Kanada","r_au":"Avstraliya","r_as":"Osiyo","r_eu":"Yevropa",
+    "found":"Topildi:","checked":"Tekshirildi: oktabr 2026","empty":"Hech narsa topilmadi. Boshqa nom yoki davlatni sinab ko'ring.",
+    "note":"<b>Ballarni qanday o'qish kerak.</b> Bu bakalavr yoki magistratura uchun odatiy minimum, qabul kafolati emas. Raqobatbardosh dasturlarda yuqoriroq talab qilinishi mumkin. Aniq javob uchun universitetning rasmiy sahifasini oching.",
+    "go":"Universitetning rasmiy sahifasi ↗","f_home":"Bosh sahifa","f_privacy":"Maxfiylik","f_terms":"Shartlar","f_legal":"IELTS® — egalarining savdo belgisi."
+  }
+};
+
 var DATA = [
-  { n:'Harvard University', c:'США', region:'США', f:'🇺🇸', b:'Нет минимума', label:'фиксированного порога нет', note:'Нужен сильный английский; IELTS принимается.', url:'https://college.harvard.edu/admissions/apply/international-applicants' },
-  { n:'Massachusetts Institute of Technology', c:'США', region:'США', f:'🇺🇸', b:'7.0', label:'рекомендуемый минимум', note:'MIT рекомендует IELTS 7.0; решение индивидуальное.', url:'https://mitadmissions.org/apply/' },
-  { n:'Stanford University', c:'США', region:'США', f:'🇺🇸', b:'Нет минимума', label:'фиксированного порога нет', note:'IELTS принимается, но официального минимума нет.', url:'https://admission.stanford.edu/' },
-  { n:'University of Oxford', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'7.0–7.5', label:'зависит от курса', note:'Стандартный уровень — 7.0, высокий — 7.5.', url:'https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/for-international-students/english-language-requirements' },
-  { n:'University of Cambridge', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'7.5', label:'обычно, не ниже 7.0 по частям', note:'Требования различаются по курсам.', url:'https://www.undergraduate.study.cam.ac.uk/international-students' },
-  { n:'Imperial College London', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5–7.0', label:'зависит от программы', note:'Проверь уровень для конкретного курса.', url:'https://www.imperial.ac.uk/study/apply/english-language/' },
-  { n:'University College London', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5–7.5', label:'по уровням программы', note:'UCL использует несколько уровней английского.', url:'https://www.ucl.ac.uk/prospective-students/undergraduate/how-apply/english-language-requirements' },
-  { n:'University of Edinburgh', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.5', label:'обычно, не ниже 5.5 по частям', note:'Для некоторых программ требования выше.', url:'https://www.ed.ac.uk/studying/international/english' },
-  { n:'University of Manchester', c:'Великобритания', region:'Великобритания', f:'🇬🇧', b:'6.0–7.0', label:'зависит от курса', note:'Смотри требования своего направления.', url:'https://www.manchester.ac.uk/study/international/english-education-system/' },
-  { n:'University of Toronto', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'обычно, не ниже 6.0 по частям', note:'Отдельные факультеты могут требовать выше.', url:'https://future.utoronto.ca/apply/english-language-requirements/' },
-  { n:'University of British Columbia', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'не ниже 6.0 по частям', note:'Требования зависят от программы.', url:'https://you.ubc.ca/applying-ubc/requirements/english-language-competency/' },
-  { n:'McGill University', c:'Канада', region:'Канада', f:'🇨🇦', b:'6.5', label:'обычно', note:'Проверь требования факультета.', url:'https://www.mcgill.ca/undergraduate-admissions/apply/english-proficiency' },
-  { n:'University of Melbourne', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Для конкурсных программ может быть выше.', url:'https://study.unimelb.edu.au/how-to-apply/english-language-requirements' },
-  { n:'University of Sydney', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Уточняй по своей программе.', url:'https://www.sydney.edu.au/study/how-to-apply/english-language-requirements.html' },
-  { n:'UNSW Sydney', c:'Австралия', region:'Австралия', f:'🇦🇺', b:'6.5', label:'не ниже 6.0 по частям', note:'Требования различаются по факультетам.', url:'https://www.unsw.edu.au/study/how-to-apply/english-language-requirements' },
-  { n:'National University of Singapore', c:'Сингапур', region:'Азия', f:'🇸🇬', b:'6.5', label:'обычно', note:'Проверь требования выбранной программы.', url:'https://nus.edu.sg/oam/apply-to-nus' },
-  { n:'ETH Zurich', c:'Швейцария', region:'Европа', f:'🇨🇭', b:'7.0', label:'обычно C1', note:'Требования зависят от уровня и языка программы.', url:'https://ethz.ch/en/studies/registration-application/master/application/language-requirements.html' }
+  { n:'Harvard University', region:'США', f:'🇺🇸', b:'—', url:'https://college.harvard.edu/admissions/apply/international-applicants',
+    label:{ru:'фиксированного порога нет',en:'no fixed minimum',kz:'нақты шек жоқ',uz:'aniq minimum yo\u2019q'},
+    note:{ru:'Нужен сильный английский; IELTS принимается.',en:'Strong English is required; IELTS is accepted.',kz:'Күшті ағылшын қажет; IELTS қабылданады.',uz:'Kuchli ingliz tili kerak; IELTS qabul qilinadi.'} },
+  { n:'Massachusetts Institute of Technology', region:'США', f:'🇺🇸', b:'7.0', url:'https://mitadmissions.org/apply/',
+    label:{ru:'рекомендуемый минимум',en:'recommended minimum',kz:'ұсынылатын минимум',uz:'tavsiya etilgan minimum'},
+    note:{ru:'MIT рекомендует IELTS 7.0; решение индивидуальное.',en:'MIT recommends IELTS 7.0; decisions are individual.',kz:'MIT IELTS 7.0 ұсынады; шешім жеке қабылданады.',uz:'MIT IELTS 7.0 ni tavsiya qiladi; qaror individual.'} },
+  { n:'Stanford University', region:'США', f:'🇺🇸', b:'—', url:'https://admission.stanford.edu/',
+    label:{ru:'фиксированного порога нет',en:'no fixed minimum',kz:'нақты шек жоқ',uz:'aniq minimum yo\u2019q'},
+    note:{ru:'IELTS принимается, но официального минимума нет.',en:'IELTS is accepted, but there is no official minimum.',kz:'IELTS қабылданады, бірақ ресми минимум жоқ.',uz:'IELTS qabul qilinadi, ammo rasmiy minimum yo\u2019q.'} },
+  { n:'University of Oxford', region:'Великобритания', f:'🇬🇧', b:'7.0–7.5', url:'https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/for-international-students/english-language-requirements',
+    label:{ru:'зависит от курса',en:'depends on the course',kz:'курсқа байланысты',uz:'kursga bog\u2019liq'},
+    note:{ru:'Стандартный уровень — 7.0, высокий — 7.5.',en:'Standard level is 7.0, higher level is 7.5.',kz:'Стандартты деңгей — 7.0, жоғары — 7.5.',uz:'Standart daraja — 7.0, yuqori — 7.5.'} },
+  { n:'University of Cambridge', region:'Великобритания', f:'🇬🇧', b:'7.5', url:'https://www.undergraduate.study.cam.ac.uk/international-students',
+    label:{ru:'обычно, не ниже 7.0 по частям',en:'usually, no less than 7.0 per part',kz:'әдетте, бөліктерде 7.0-ден кем емес',uz:'odatda, bo\u2019limlarda 7.0 dan kam emas'},
+    note:{ru:'Требования различаются по курсам.',en:'Requirements differ by course.',kz:'Талаптар курсқа қарай өзгереді.',uz:'Talablar kursga qarab farq qiladi.'} },
+  { n:'Imperial College London', region:'Великобритания', f:'🇬🇧', b:'6.5–7.0', url:'https://www.imperial.ac.uk/study/apply/english-language/',
+    label:{ru:'зависит от программы',en:'depends on the program',kz:'бағдарламаға байланысты',uz:'dasturga bog\u2019liq'},
+    note:{ru:'Проверь уровень для конкретного курса.',en:'Check the level for your specific course.',kz:'Нақты курс үшін деңгейді тексер.',uz:'Aniq kurs uchun darajani tekshiring.'} },
+  { n:'University College London', region:'Великобритания', f:'🇬🇧', b:'6.5–7.5', url:'https://www.ucl.ac.uk/prospective-students/undergraduate/how-apply/english-language-requirements',
+    label:{ru:'по уровням программы',en:'by program level',kz:'бағдарлама деңгейлері бойынша',uz:'dastur darajalari bo\u2019yicha'},
+    note:{ru:'UCL использует несколько уровней английского.',en:'UCL uses several English levels.',kz:'UCL бірнеше ағылшын деңгейін қолданады.',uz:'UCL bir nechta ingliz darajasidan foydalanadi.'} },
+  { n:'University of Edinburgh', region:'Великобритания', f:'🇬🇧', b:'6.5', url:'https://www.ed.ac.uk/studying/international/english',
+    label:{ru:'обычно, не ниже 5.5 по частям',en:'usually, no less than 5.5 per part',kz:'әдетте, бөліктерде 5.5-тен кем емес',uz:'odatda, bo\u2019limlarda 5.5 dan kam emas'},
+    note:{ru:'Для некоторых программ требования выше.',en:'Some programs require more.',kz:'Кейбір бағдарламаларда талап жоғары.',uz:'Ba\u2019zi dasturlarda talab yuqoriroq.'} },
+  { n:'University of Manchester', region:'Великобритания', f:'🇬🇧', b:'6.0–7.0', url:'https://www.manchester.ac.uk/study/international/english-education-system/',
+    label:{ru:'зависит от курса',en:'depends on the course',kz:'курсқа байланысты',uz:'kursga bog\u2019liq'},
+    note:{ru:'Смотри требования своего направления.',en:'Check the requirements of your field.',kz:'Өз бағытыңның талаптарын қара.',uz:'O\u2019z yo\u2019nalishingiz talablarini ko\u2019ring.'} },
+  { n:'University of Toronto', region:'Канада', f:'🇨🇦', b:'6.5', url:'https://future.utoronto.ca/apply/english-language-requirements/',
+    label:{ru:'обычно, не ниже 6.0 по частям',en:'usually, no less than 6.0 per part',kz:'әдетте, бөліктерде 6.0-нан кем емес',uz:'odatda, bo\u2019limlarda 6.0 dan kam emas'},
+    note:{ru:'Отдельные факультеты могут требовать выше.',en:'Some faculties may require more.',kz:'Кейбір факультеттер жоғары талап етуі мүмкін.',uz:'Ba\u2019zi fakultetlar yuqoriroq talab qilishi mumkin.'} },
+  { n:'University of British Columbia', region:'Канада', f:'🇨🇦', b:'6.5', url:'https://you.ubc.ca/applying-ubc/requirements/english-language-competency/',
+    label:{ru:'не ниже 6.0 по частям',en:'no less than 6.0 per part',kz:'бөліктерде 6.0-нан кем емес',uz:'bo\u2019limlarda 6.0 dan kam emas'},
+    note:{ru:'Требования зависят от программы.',en:'Requirements depend on the program.',kz:'Талаптар бағдарламаға байланысты.',uz:'Talablar dasturga bog\u2019liq.'} },
+  { n:'McGill University', region:'Канада', f:'🇨🇦', b:'6.5', url:'https://www.mcgill.ca/undergraduate-admissions/apply/english-proficiency',
+    label:{ru:'обычно',en:'usually',kz:'әдетте',uz:'odatda'},
+    note:{ru:'Проверь требования факультета.',en:'Check the faculty requirements.',kz:'Факультет талаптарын тексер.',uz:'Fakultet talablarini tekshiring.'} },
+  { n:'University of Melbourne', region:'Австралия', f:'🇦🇺', b:'6.5', url:'https://study.unimelb.edu.au/how-to-apply/english-language-requirements',
+    label:{ru:'не ниже 6.0 по частям',en:'no less than 6.0 per part',kz:'бөліктерде 6.0-нан кем емес',uz:'bo\u2019limlarda 6.0 dan kam emas'},
+    note:{ru:'Для конкурсных программ может быть выше.',en:'Competitive programs may require more.',kz:'Бәсекелес бағдарламаларда жоғары болуы мүмкін.',uz:'Raqobatbardosh dasturlarda yuqoriroq bo\u2019lishi mumkin.'} },
+  { n:'University of Sydney', region:'Австралия', f:'🇦🇺', b:'6.5', url:'https://www.sydney.edu.au/study/how-to-apply/english-language-requirements.html',
+    label:{ru:'не ниже 6.0 по частям',en:'no less than 6.0 per part',kz:'бөліктерде 6.0-нан кем емес',uz:'bo\u2019limlarda 6.0 dan kam emas'},
+    note:{ru:'Уточняй по своей программе.',en:'Check your specific program.',kz:'Өз бағдарламаң бойынша нақтыла.',uz:'O\u2019z dasturingiz bo\u2019yicha aniqlang.'} },
+  { n:'UNSW Sydney', region:'Австралия', f:'🇦🇺', b:'6.5', url:'https://www.unsw.edu.au/study/how-to-apply/english-language-requirements',
+    label:{ru:'не ниже 6.0 по частям',en:'no less than 6.0 per part',kz:'бөліктерде 6.0-нан кем емес',uz:'bo\u2019limlarda 6.0 dan kam emas'},
+    note:{ru:'Требования различаются по факультетам.',en:'Requirements differ by faculty.',kz:'Талаптар факультетке қарай өзгереді.',uz:'Talablar fakultetga qarab farq qiladi.'} },
+  { n:'National University of Singapore', region:'Азия', f:'🇸🇬', b:'6.5', url:'https://nus.edu.sg/oam/apply-to-nus',
+    label:{ru:'обычно',en:'usually',kz:'әдетте',uz:'odatda'},
+    note:{ru:'Проверь требования выбранной программы.',en:'Check the requirements of your chosen program.',kz:'Таңдаған бағдарламаңның талаптарын тексер.',uz:'Tanlagan dasturingiz talablarini tekshiring.'} },
+  { n:'ETH Zurich', region:'Европа', f:'🇨🇭', b:'7.0', url:'https://ethz.ch/en/studies/registration-application/master/application/language-requirements.html',
+    label:{ru:'обычно C1',en:'usually C1',kz:'әдетте C1',uz:'odatda C1'},
+    note:{ru:'Требования зависят от уровня и языка программы.',en:'Requirements depend on the level and language of the program.',kz:'Талаптар бағдарлама деңгейі мен тіліне байланысты.',uz:'Talablar dastur darajasi va tiliga bog\u2019liq.'} }
 ];
 
+var COUNTRY = {
+  'США':{ru:'США',en:'USA',kz:'АҚШ',uz:'AQSH'},
+  'Великобритания':{ru:'Великобритания',en:'United Kingdom',kz:'Ұлыбритания',uz:'Buyuk Britaniya'},
+  'Канада':{ru:'Канада',en:'Canada',kz:'Канада',uz:'Kanada'},
+  'Австралия':{ru:'Австралия',en:'Australia',kz:'Австралия',uz:'Avstraliya'},
+  'Азия':{ru:'Азия',en:'Asia',kz:'Азия',uz:'Osiyo'},
+  'Европа':{ru:'Европа',en:'Europe',kz:'Еуропа',uz:'Yevropa'}
+};
+
+var currentLang = 'ru';
 var grid = document.getElementById('grid');
 var count = document.getElementById('count');
 var empty = document.getElementById('empty');
 var q = document.getElementById('q');
 var region = 'all';
 
-function esc(s){
-  return String(s).replace(/[&<>"']/g, function(c){
-    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
-  });
-}
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
 
 function render(){
   var needle = q.value.trim().toLowerCase();
   var list = DATA.filter(function(d){
     var inRegion = region === 'all' || d.region === region;
-    var inSearch = !needle || (d.n + ' ' + d.c).toLowerCase().indexOf(needle) > -1;
+    var country = (COUNTRY[d.region] && COUNTRY[d.region][currentLang]) || d.region;
+    var inSearch = !needle || (d.n + ' ' + country).toLowerCase().indexOf(needle) > -1;
     return inRegion && inSearch;
   });
   count.textContent = list.length;
   empty.classList.toggle('on', list.length === 0);
+  var go = TRANSLATIONS[currentLang].go;
   grid.innerHTML = list.map(function(d){
+    var country = (COUNTRY[d.region] && COUNTRY[d.region][currentLang]) || d.region;
     return '<article class="uni">' +
-      '<div class="topline"><span class="flag" aria-hidden="true">' + d.f + '</span><div><h2>' + esc(d.n) + '</h2><span class="country">' + esc(d.c) + '</span></div></div>' +
-      '<div class="band"><b>' + esc(d.b) + '</b><span>' + esc(d.label) + '</span></div>' +
-      '<p>' + esc(d.note) + '</p>' +
-      '<a class="go" href="' + d.url + '" target="_blank" rel="noopener">Официальная страница вуза ↗</a>' +
+      '<div class="topline"><span class="flag" aria-hidden="true">' + d.f + '</span><div><h2>' + esc(d.n) + '</h2><span class="country">' + esc(country) + '</span></div></div>' +
+      '<div class="band"><b>' + esc(d.b) + '</b><span>' + esc(d.label[currentLang] || d.label.ru) + '</span></div>' +
+      '<p>' + esc(d.note[currentLang] || d.note.ru) + '</p>' +
+      '<a class="go" href="' + d.url + '" target="_blank" rel="noopener">' + esc(go) + '</a>' +
       '</article>';
   }).join('');
+}
+
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) lang='ru';
+  currentLang = lang;
+  var t = TRANSLATIONS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){ var k=el.getAttribute('data-i18n'); if(t[k]!=null) el.textContent=t[k]; });
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el){ var k=el.getAttribute('data-i18n-html'); if(t[k]!=null) el.innerHTML=t[k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ var k=el.getAttribute('data-i18n-ph'); if(t[k]!=null) el.setAttribute('placeholder',t[k]); });
+  if(t["meta.title"]) document.title=t["meta.title"];
+  document.querySelectorAll('.lang-item').forEach(function(b){ b.classList.toggle('on', b.dataset.lang===lang); });
+  var meta={ru:['🇷🇺','RU'],en:['🇬🇧','EN'],kz:['🇰🇿','KZ'],uz:['🇺🇿','UZ']};
+  document.getElementById('curFlag').textContent=meta[lang][0];
+  document.getElementById('curLang').textContent=meta[lang][1];
+  document.documentElement.lang=lang;
+  try{ localStorage.setItem('lang',lang); }catch(e){}
+  render();
 }
 
 document.querySelectorAll('.pill').forEach(function(btn){
@@ -198,7 +301,13 @@ document.querySelectorAll('.pill').forEach(function(btn){
   });
 });
 q.addEventListener('input', render);
-render();
+
+var langWrap=document.getElementById('langWrap');
+document.getElementById('langBtn').addEventListener('click',function(e){ e.stopPropagation(); langWrap.classList.toggle('open'); });
+document.querySelectorAll('.lang-item').forEach(function(b){ b.addEventListener('click',function(){ setLang(b.dataset.lang); langWrap.classList.remove('open'); }); });
+document.addEventListener('click',function(){ langWrap.classList.remove('open'); });
+
+(function(){ var s; try{ s=localStorage.getItem('lang'); }catch(e){} if(!s){ var n=(navigator.language||'ru').slice(0,2).toLowerCase(); s=TRANSLATIONS[n]?n:'ru'; } if(!TRANSLATIONS[s]) s='ru'; setLang(s); })();
 </script>
 </body>
 </html>
