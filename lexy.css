@@ -377,3 +377,20 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .tcard.blurred{cursor:pointer}
 .drow.blurrow .dtx{filter:blur(4px)}
 .drow.blurrow{cursor:pointer}
+
+/* ---- тест модуля ---- */
+.testbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tmrwrap{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font:700 14px var(--display);color:var(--ink)}
+.tmrwrap svg{width:15px;height:15px;color:var(--fire)}
+.qcnt{font:700 13px var(--body);color:var(--soft)}
+.tmeta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.tmeta>div{background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.tmeta b{display:block;font:800 20px var(--display);color:var(--ink)}
+.tmeta small{color:var(--soft);font-size:11.5px}
+.result2{position:relative;overflow:hidden}
+.ringwrap{position:relative;width:150px;height:150px;margin:6px auto 0}
+.ring2{width:150px;height:150px;transform:rotate(-90deg)}
+.ring2 .bgc{fill:none;stroke:var(--line);stroke-width:10}
+.ring2 .fgc{fill:none;stroke:var(--fire);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.3,.9,.3,1)}
+.ringval{position:absolute;inset:0;display:grid;place-items:center;font:800 34px var(--display);letter-spacing:-.04em;color:var(--ink)}
+.lvup{margin-top:12px;background:#F1FBF6;border:1px solid #C8EAD7;border-radius:14px;padding:12px 14px;font-weight:700;color:var(--ink)}
