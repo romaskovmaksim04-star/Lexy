@@ -109,7 +109,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
       return '<tr data-id="'+esc(u.id)+'">' +
         '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc((u.path||'путь не выбран'))+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>' +
         '<td class="hide">'+esc(u.name||'—')+'</td>' +
-        '<td><select data-plan>'+['free','pro','pro_plus'].map(function(p){ return '<option value="'+p+'"'+(u.plan===p?' selected':'')+'>'+p+'</option>'; }).join('')+'</select></td>' +
+        '<td><select data-plan>'+['free','pro','pro_plus'].map(function(p){ return '<option value="'+p+'"'+(u.plan===p?' selected':'')+'>'+p+'</option>'; }).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:58px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>' +
         '<td>'+esc(until)+'</td>' +
         '<td><button class="btn" data-save>Сохранить</button></td></tr>';
     }).join('');
@@ -117,8 +117,9 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
       b.addEventListener('click', function(){
         var tr = b.closest('tr'); var id = tr.getAttribute('data-id');
         var plan = tr.querySelector('[data-plan]').value;
+        var days = parseInt((tr.querySelector('[data-days]') || {}).value, 10) || 30;
         b.disabled = true; b.textContent = '…';
-        LexyAuth.client().rpc('lexy_admin_set_plan', { p_user_id: id, p_plan: plan, p_days: 30 }).then(function(res){
+        LexyAuth.client().rpc('lexy_admin_set_plan', { p_user_id: id, p_plan: plan, p_days: days }).then(function(res){
           b.disabled = false; b.textContent = 'Сохранить';
           if(res.error){ alert('Ошибка: '+res.error.message); return; }
           var u = res.data && res.data[0] ? res.data[0] : res.data;

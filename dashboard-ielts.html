@@ -14,6 +14,7 @@
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-vocab.js?v=1"></script>
+<script src="lexy-ai.js?v=1"></script>
 </head>
 <body>
 <!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
@@ -31,14 +32,7 @@
   <!-- LEXY AI: под замком -->
   <section class="sec" id="s-ai">
     <div data-gate="ai"></div>
-    <div data-pro="ai" hidden>
-      <h1 class="t">Lexy AI</h1>
-      <div class="card" style="margin-top:20px">
-        <h3 style="font:800 20px var(--display);letter-spacing:-.02em">Живой разговор с ИИ</h3>
-        <p class="s">Выбери характер собеседника и практикуй Speaking. Чат в разработке — а пока потренируйся в игре Shadow Speak.</p>
-        <a class="btn v" href="game-shadow.html">Открыть Shadow Speak</a>
-      </div>
-    </div>
+    <div data-pro="ai" hidden id="aiBox"></div>
   </section>
 
   <!-- ИГРЫ: под замком -->
@@ -153,7 +147,8 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
-  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats }, vocabGated: true });
+  function renderAi() { if (window.LexyAI) LexyAI.render($("#aiBox")); }
+  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats, ai: renderAi }, vocabGated: true });
 })();
 </script>
 </body>
