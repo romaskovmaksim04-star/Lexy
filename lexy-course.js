@@ -249,7 +249,7 @@
   }
 
   function hash(s) { var h = 5381; s = String(s); for (var i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; } return h.toString(16); }
-  function audioFor(text) { return "audio/" + hash(text) + ".mp3"; }
+  function audioFor(text) { return "audio/" + hash(text) + ".wav"; }
 
   function totalDays() { return DAYS; }
   function freeDays() { return FREE_DAYS; }
