@@ -1,17 +1,24 @@
 /* ==========================================================
    lexy-vocab.js — Словарь Lexy (Premium)
-   • Оформление в стиле «Разговора»
-   • Уровень = уровень из раздела «Путь» (курс)
-   • Поиск слов (выпадающий список) вместо длинного списка
-   • «знаю / не знаю» + повторение (SRS), свои слова, озвучка
+   Механика (по ТЗ):
+   • Учить слова → группы по 10 НОВЫХ слов текущего уровня
+   • «Знаю» → слово убирается навсегда
+   • «Не знаю» → слово в «коробку» (откладывается)
+   • Повторение → все слова из коробки: знаю → доставлено, не знаю → снова в коробку
+   • Процент копится; поиск ищет по ВСЕМ уровням
    • Перевод по языку профиля (RU / EN / KZ / UZ)
    ========================================================== */
 (function (w) {
   "use strict";
 
-  /* данные: [en, ru, kz, uz, gloss] */
   var WORDS = w.LEXY_VOCAB_DATA || {};
+  if (w.LEXY_VOCAB_EXTRA) {
+    Object.keys(w.LEXY_VOCAB_EXTRA).forEach(function (l) {
+      WORDS[l] = (WORDS[l] || []).concat(w.LEXY_VOCAB_EXTRA[l]);
+    });
+  }
   var LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  var GROUP = 10;
   var LV_ACCENT = { A1: "#12A15C", A2: "#1E8FE8", B1: "#F7620B", B2: "#C02FB0", C1: "#7A40FF", C2: "#E5443E" };
   var LV_NAME = {
     ru: { A1: "Начальный", A2: "Элементарный", B1: "Средний", B2: "Выше среднего", C1: "Продвинутый", C2: "В совершенстве" },
@@ -19,14 +26,12 @@
     kz: { A1: "Бастауыш", A2: "Элементарлық", B1: "Орташа", B2: "Орташадан жоғары", C1: "Жетік", C2: "Кемел" },
     uz: { A1: "Boshlang'ich", A2: "Elementar", B1: "O'rta", B2: "O'rtadan yuqori", C1: "Ilg'or", C2: "Mukammal" }
   };
-  var INTERVAL = [0, 1, 2, 4, 7, 15, 30];
-  var KNOWN_BOX = 5;
 
   var UI = {
-    ru: { title: "Словарь", sub: "Слова твоего уровня · «знаю / не знаю» → умное повторение", learn: "Учить слова", review: "Повторение", level: "Уровень", known: "Знаю", learning: "Учу", fresh: "Новые", words: "слов", search: "Начни вводить слово — покажу перевод…", addT: "Своё слово", wordPh: "слово", transPh: "перевод", add: "Добавить", know: "Знаю", dont: "Не знаю", show: "Показать перевод", finish: "Завершить", done: "Сессия завершена", back: "К словарю", toast1: "Введи слово", added: "Добавлено: ", locked: "Словарь доступен в Premium", lockBody: "Слова по уровням, «знаю / не знаю» и умное повторение — на тарифах Pro и Pro+.", getPrem: "Получить Premium", speak: "Прослушать", customLv: "Своё", revNone: "Сейчас нечего повторять — начни учить слова 🎉", notFound: "Ничего не найдено", lvWords: "слов на уровне", hint: "Введи слово, чтобы найти перевод. Или начни учить слова кнопкой выше.", knowLbl: "выучено", revLbl: "повторение", newLbl: "новое", of: "из", myWords: "Мои слова" },
-    en: { title: "Vocabulary", sub: "Words for your level · know / don't know → smart review", learn: "Study words", review: "Review", level: "Level", known: "Known", learning: "Learning", fresh: "New", words: "words", search: "Start typing a word — I'll show the translation…", addT: "Your own word", wordPh: "word", transPh: "translation", add: "Add", know: "I know", dont: "Don't know", show: "Show translation", finish: "Finish", done: "Session complete", back: "Back to vocabulary", toast1: "Enter a word", added: "Added: ", locked: "Vocabulary is available in Premium", lockBody: "Words by level, know / don't know and smart review — on Pro and Pro+.", getPrem: "Get Premium", speak: "Listen", customLv: "Custom", revNone: "Nothing to review yet — start studying words 🎉", notFound: "Nothing found", lvWords: "words at this level", hint: "Type a word to find its translation. Or start studying with the button above.", knowLbl: "learned", revLbl: "review", newLbl: "new", of: "of", myWords: "My words" },
-    kz: { title: "Сөздік", sub: "Деңгейіңнің сөздері · «білемін / білмеймін» → ақылды қайталау", learn: "Сөздерді оқу", review: "Қайталау", level: "Деңгей", known: "Білемін", learning: "Оқып жатырмын", fresh: "Жаңа", words: "сөз", search: "Сөз жаза баста — аудармасын көрсетемін…", addT: "Өз сөзің", wordPh: "сөз", transPh: "аударма", add: "Қосу", know: "Білемін", dont: "Білмеймін", show: "Аударманы көрсету", finish: "Аяқтау", done: "Сессия аяқталды", back: "Сөздікке", toast1: "Сөз енгіз", added: "Қосылды: ", locked: "Сөздік Premium-да қолжетімді", lockBody: "Деңгейлер бойынша сөздер, «білемін / білмеймін» және ақылды қайталау — Pro және Pro+.", getPrem: "Premium алу", speak: "Тыңдау", customLv: "Өзімнің", revNone: "Әзірге қайталайтын нәрсе жоқ — сөз оқуды баста 🎉", notFound: "Ештеңе табылмады", lvWords: "сөз осы деңгейде", hint: "Аударманы табу үшін сөз енгіз. Немесе жоғарыдағы түймемен оқуды баста.", knowLbl: "үйренілді", revLbl: "қайталау", newLbl: "жаңа", of: "/", myWords: "Менің сөздерім" },
-    uz: { title: "Lug'at", sub: "Darajangiz so'zlari · «bilaman / bilmayman» → aqlli takrorlash", learn: "So'zlarni o'rganish", review: "Takrorlash", level: "Daraja", known: "Bilaman", learning: "O'rganyapman", fresh: "Yangi", words: "so'z", search: "So'z yozishni boshlang — tarjimasini ko'rsataman…", addT: "O'z so'zingiz", wordPh: "so'z", transPh: "tarjima", add: "Qo'shish", know: "Bilaman", dont: "Bilmayman", show: "Tarjimani ko'rsatish", finish: "Tugatish", done: "Sessiya tugadi", back: "Lug'atga", toast1: "So'z kiriting", added: "Qo'shildi: ", locked: "Lug'at Premium'da mavjud", lockBody: "Darajalar bo'yicha so'zlar, «bilaman / bilmayman» va aqlli takrorlash — Pro va Pro+.", getPrem: "Premium olish", speak: "Tinglash", customLv: "O'zimniki", revNone: "Hozir takrorlanadigan narsa yo'q — so'z o'rganishni boshlang 🎉", notFound: "Hech narsa topilmadi", lvWords: "so'z bu darajada", hint: "Tarjimani topish uchun so'z kiriting. Yoki yuqoridagi tugma bilan o'rganishni boshlang.", knowLbl: "o'rganilgan", revLbl: "takrorlash", newLbl: "yangi", of: "/", myWords: "Mening so'zlarim" }
+    ru: { title: "Словарь", sub: "Слова твоего уровня · группы по 10 · «знаю / не знаю» → повторение", learn: "Учить слова", next: "Ещё 10 новых слов", review: "Повторение", level: "Уровень", known: "Знаю", learning: "В коробке", fresh: "Новые", words: "слов", search: "Начни вводить слово — покажу перевод…", addT: "Своё слово", wordPh: "слово", transPh: "перевод", add: "Добавить", know: "Знаю", dont: "Не знаю", show: "Показать перевод", exit: "Выйти", finish: "Завершить", done: "Группа пройдена!", doneRev: "Повторение завершено!", back: "К словарю", toast1: "Введи слово", added: "Добавлено: ", locked: "Словарь доступен в Premium", lockBody: "Слова по уровням, «знаю / не знаю» и повторение — на тарифах Pro и Pro+.", getPrem: "Получить Premium", speak: "Прослушать", revNone: "Коробка пуста — нечего повторять 🎉", newNone: "Новые слова уровня закончились — молодец! 🎉", notFound: "Ничего не найдено", lvWords: "слов на уровне", hint: "Введи слово, чтобы найти перевод на любом уровне. Или начни учить новые слова.", knowLbl: "выучено", boxLbl: "в коробке", newLbl: "новое", of: "из", newWord: "новое слово", revWord: "из коробки" },
+    en: { title: "Vocabulary", sub: "Words for your level · groups of 10 · know / don't know → review", learn: "Study words", next: "10 more new words", review: "Review", level: "Level", known: "Known", learning: "In the box", fresh: "New", words: "words", search: "Start typing a word — I'll show the translation…", addT: "Your own word", wordPh: "word", transPh: "translation", add: "Add", know: "I know", dont: "Don't know", show: "Show translation", exit: "Exit", finish: "Finish", done: "Group done!", doneRev: "Review complete!", back: "Back to vocabulary", toast1: "Enter a word", added: "Added: ", locked: "Vocabulary is available in Premium", lockBody: "Words by level, know / don't know and review — on Pro and Pro+.", getPrem: "Get Premium", speak: "Listen", revNone: "The box is empty — nothing to review 🎉", newNone: "No new words left at this level — well done! 🎉", notFound: "Nothing found", lvWords: "words at this level", hint: "Type a word to find its translation at any level. Or start learning new words.", knowLbl: "known", boxLbl: "in the box", newLbl: "new", of: "of", newWord: "new word", revWord: "from the box" },
+    kz: { title: "Сөздік", sub: "Деңгейіңнің сөздері · 10-нан топ · «білемін / білмеймін» → қайталау", learn: "Сөздерді оқу", next: "Тағы 10 жаңа сөз", review: "Қайталау", level: "Деңгей", known: "Білемін", learning: "Қорапта", fresh: "Жаңа", words: "сөз", search: "Сөз жаза баста — аудармасын көрсетемін…", addT: "Өз сөзің", wordPh: "сөз", transPh: "аударма", add: "Қосу", know: "Білемін", dont: "Білмеймін", show: "Аударманы көрсету", exit: "Шығу", finish: "Аяқтау", done: "Топ аяқталды!", doneRev: "Қайталау бітті!", back: "Сөздікке", toast1: "Сөз енгіз", added: "Қосылды: ", locked: "Сөздік Premium-да қолжетімді", lockBody: "Деңгейлер бойынша сөздер, «білемін / білмеймін» және қайталау — Pro және Pro+.", getPrem: "Premium алу", speak: "Тыңдау", revNone: "Қорап бос — қайталайтын нәрсе жоқ 🎉", newNone: "Жаңа сөздер бітті — жарайсың! 🎉", notFound: "Ештеңе табылмады", lvWords: "сөз осы деңгейде", hint: "Кез келген деңгейден аударма табу үшін сөз енгіз. Немесе жаңа сөз оқуды баста.", knowLbl: "үйренілді", boxLbl: "қорапта", newLbl: "жаңа", of: "/", newWord: "жаңа сөз", revWord: "қораптан" },
+    uz: { title: "Lug'at", sub: "Darajangiz so'zlari · 10 tadan guruh · «bilaman / bilmayman» → takrorlash", learn: "So'zlarni o'rganish", next: "Yana 10 yangi so'z", review: "Takrorlash", level: "Daraja", known: "Bilaman", learning: "Qutida", fresh: "Yangi", words: "so'z", search: "So'z yozishni boshlang — tarjimasini ko'rsataman…", addT: "O'z so'zingiz", wordPh: "so'z", transPh: "tarjima", add: "Qo'shish", know: "Bilaman", dont: "Bilmayman", show: "Tarjimani ko'rsatish", exit: "Chiqish", finish: "Tugatish", done: "Guruh tugadi!", doneRev: "Takrorlash tugadi!", back: "Lug'atga", toast1: "So'z kiriting", added: "Qo'shildi: ", locked: "Lug'at Premium'da mavjud", lockBody: "Darajalar bo'yicha so'zlar, «bilaman / bilmayman» va takrorlash — Pro va Pro+.", getPrem: "Premium olish", speak: "Tinglash", revNone: "Quti bo'sh — takrorlanadigan narsa yo'q 🎉", newNone: "Yangi so'zlar tugadi — barakalla! 🎉", notFound: "Hech narsa topilmadi", lvWords: "so'z bu darajada", hint: "Istalgan darajadan tarjima topish uchun so'z kiriting. Yoki yangi so'z o'rganishni boshlang.", knowLbl: "o'rganilgan", boxLbl: "qutida", newLbl: "yangi", of: "/", newWord: "yangi so'z", revWord: "qutidan" }
   };
 
   function lang() { return (w.Lexy.user && w.Lexy.user.lang) || "ru"; }
@@ -37,6 +42,7 @@
   function ic(n) { return w.Lexy.ic(n); }
   function flame(h) { try { return w.Lexy.fl(h); } catch (e) { return ""; } }
   function toast(t) { try { w.Lexy.toast(t); } catch (e) {} }
+  function rnd(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
   function tr(o) {
     var en = o[0], ru = o[1], kz = o[2], uz = o[3], gl = o[4], l = lang();
@@ -50,7 +56,7 @@
     return (u.course && u.course.level) || (u.onboard && (u.onboard.level || u.onboard.l)) || "A1";
   }
 
-  /* ---------- состояние SRS ---------- */
+  /* ---------- состояние: 0 = новое, 1 = в коробке, 2 = выучено ---------- */
   function state() {
     var u = w.Lexy.user;
     if (!u.vocab) u.vocab = {};
@@ -63,42 +69,35 @@
     return v;
   }
   function saveVocab() { w.Lexy.save({ vocab: state() }); }
-  function stOf(x) { var s = state().st, k = String(x).toLowerCase(); if (!s[k]) s[k] = { b: 0, due: 0 }; return s[k]; }
-  function isKnown(x) { return stOf(x).b >= KNOWN_BOX; }
+  function statusOf(x) { return state().st[String(x).toLowerCase()] | 0; }
+  function setStatus(x, s) { state().st[String(x).toLowerCase()] = s; }
+  function isKnown(x) { return statusOf(x) === 2; }
 
   function byLevel(lv) {
     var base = (WORDS[lv] || []).map(function (o) { return { w: o[0], d: o, lv: lv }; });
     var cust = (state().custom[lv] || []).map(function (o) { return { w: o.w, d: [o.w, o.t, o.t, o.t, o.t], lv: lv, custom: true }; });
     return cust.concat(base);
   }
+  function allEntries() { var out = []; LEVELS.forEach(function (l) { out = out.concat(byLevel(l)); }); return out; }
   function totalAll() { var n = 0; LEVELS.forEach(function (l) { n += byLevel(l).length; }); return n; }
+
   function progress(lv) {
     lv = lv || state().level;
-    var list = byLevel(lv), known = 0, learning = 0, fresh = 0;
-    list.forEach(function (o) { var b = stOf(o.w).b; if (b >= KNOWN_BOX) known++; else if (b > 0) learning++; else fresh++; });
-    return { total: list.length, known: known, learning: learning, fresh: fresh, pct: list.length ? Math.round(known / list.length * 100) : 0 };
+    var list = byLevel(lv), known = 0, box = 0, fresh = 0;
+    list.forEach(function (o) { var s = statusOf(o.w); if (s === 2) known++; else if (s === 1) box++; else fresh++; });
+    return { total: list.length, known: known, box: box, fresh: fresh, pct: list.length ? Math.round(known / list.length * 100) : 0 };
   }
-  function dueWords() {
-    var now = Date.now(), out = [];
-    byLevel(state().level).forEach(function (o) { var s = stOf(o.w); if (s.b > 0 && s.b < KNOWN_BOX && s.due <= now) out.push(o); });
-    return out;
-  }
-  function reviewCount() { return dueWords().length; }
+  function newWords(lv) { return byLevel(lv || state().level).filter(function (o) { return statusOf(o.w) === 0; }); }
+  function boxWords() { return byLevel(state().level).filter(function (o) { return statusOf(o.w) === 1; }); }
 
-  function answer(x, knew) {
-    var s = stOf(x);
-    s.b = knew ? Math.min(KNOWN_BOX, s.b + 1) : 0;
-    s.due = Date.now() + (INTERVAL[s.b] || 0) * 864e5;
-    saveVocab();
-    return s;
-  }
+  function answer(x, knew) { setStatus(x, knew ? 2 : 1); saveVocab(); }
   function addCustom(lv, word, trans) {
     var v = state();
     if (!v.custom[lv]) v.custom[lv] = [];
     var dup = v.custom[lv].some(function (o) { return o.w.toLowerCase() === word.toLowerCase(); }) || (WORDS[lv] || []).some(function (o) { return o[0].toLowerCase() === word.toLowerCase(); });
     if (dup) return false;
     v.custom[lv].push({ w: word, t: trans || "" });
-    v.st[word.toLowerCase()] = { b: 0, due: 0 };
+    v.st[word.toLowerCase()] = 0;
     saveVocab();
     return true;
   }
@@ -144,14 +143,13 @@
 .lxv-btn.p:hover{transform:translateY(-2px)}
 .lxv-btn.g{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22)}
 .lxv-btn.g:hover{background:rgba(255,255,255,.2)}
-.lxv-btn:disabled{opacity:.5;cursor:default;transform:none}
 .lxv-btn em{font:700 11px var(--display);font-style:normal;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 8px}
 .lxv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
 .lxv-stat{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:14px;text-align:center;position:relative;overflow:hidden}
 .lxv-stat::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--ac,#12A15C)}
 .lxv-stat b{display:block;font:800 24px var(--display);letter-spacing:-.03em;color:var(--ac,#12A15C)}
 .lxv-stat small{display:block;color:var(--soft);font:600 11.5px var(--body);margin-top:2px}
-.lxv-levels{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;margin-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.lxv-levels{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;margin-bottom:10px;scrollbar-width:none}
 .lxv-levels::-webkit-scrollbar{display:none}
 .lxv-lchip{flex:none;display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--soft);transition:.16s;cursor:pointer}
 .lxv-lchip em{font:700 11px var(--display);font-style:normal;color:var(--soft);background:var(--mist);border-radius:999px;padding:2px 7px}
@@ -176,9 +174,10 @@
 .lxv-row .tx{flex:1;min-width:0}
 .lxv-row .tx b{display:block;font:700 15.5px var(--body);color:var(--ink)}
 .lxv-row .tx small{display:block;color:var(--soft);font-size:13px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lxv-ltag{font:700 10px var(--display);letter-spacing:.04em;padding:3px 7px;border-radius:7px;background:var(--mist);color:var(--soft);flex:none}
 .lxv-row .st{font:700 10.5px var(--display);letter-spacing:.03em;padding:5px 9px;border-radius:999px;flex:none;white-space:nowrap}
 .lxv-row .st.k{background:#DDF6EC;color:#0E8548}
-.lxv-row .st.l{background:#FFF3E0;color:#C97A00}
+.lxv-row .st.b{background:#FFF3E0;color:#C97A00}
 .lxv-row .st.n{background:var(--mist);color:var(--soft)}
 .lxv-add{background:linear-gradient(135deg,#FFF8F3,#F3EEFF);border:1px dashed #FFC2A1;border-radius:20px;padding:18px;margin-top:16px}
 .lxv-add b{display:flex;align-items:center;gap:8px;font:800 16px var(--display);margin-bottom:10px}
@@ -186,10 +185,13 @@
 .lxv-add input{flex:1;min-width:130px;padding:12px 14px;border:1.5px solid var(--line);border-radius:13px;outline:none;font:500 14px var(--body);background:#fff}
 .lxv-add input:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
 .lxv-add button{padding:12px 18px;border-radius:13px;background:var(--fire);color:#fff;font:700 14px var(--body);display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer}
+/* сессия */
 .lxv-sess{max-width:560px;margin:0 auto}
-.lxv-sess .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lxv-sess .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .lxv-sess .top .lv{font:700 12px var(--display);letter-spacing:.04em;padding:6px 11px;border-radius:999px;background:var(--mist);color:var(--soft)}
 .lxv-sess .top .cnt{margin-left:auto;font:700 13px var(--body);color:var(--soft)}
+.lxv-exit{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:12px;background:#FFF2F1;color:#E5443E;border:1.5px solid #F3C6C2;font:700 13px var(--body);cursor:pointer;transition:.15s}
+.lxv-exit:hover{background:#FFE4E1;transform:translateY(-1px)}
 .lxv-sess .bar{height:8px;border-radius:999px;background:var(--mist);overflow:hidden;margin-bottom:20px}
 .lxv-sess .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#12A15C,#39D98A);transition:width .4s}
 .lxv-card .inner{position:relative;border-radius:26px;padding:36px 24px;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(160deg,#1C1236,#2C1342 55%,#16332C);color:#fff;box-shadow:0 34px 64px -44px rgba(27,18,51,.95);overflow:hidden;animation:lxv-in .4s both}
@@ -217,12 +219,13 @@
 .lxv-done .stats{display:flex;gap:18px;justify-content:center;margin:16px 0}
 .lxv-done .stats b{font:800 24px var(--display);display:block}
 .lxv-done .stats small{color:rgba(255,255,255,.6);font-size:12px}
-.lxv-cta{margin-top:18px;text-align:center}
+.lxv-done .row2{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.lxv-done .row2 .lxv-btn{background:#fff;color:#12261F}
+.lxv-done .row2 .lxv-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
 `;
     document.head.appendChild(s);
   }
 
-  /* ---------- рендер ---------- */
   function render(el) {
     if (!el) return;
     injectCss();
@@ -243,25 +246,29 @@
     return '<div class="lxv-ring"><svg viewBox="0 0 78 78"><circle class="bg" cx="39" cy="39" r="' + r + '"/><circle class="fg" cx="39" cy="39" r="' + r + '" style="stroke-dasharray:' + c.toFixed(1) + ";stroke-dashoffset:" + off.toFixed(1) + '"/></svg><b>' + pct + "%</b></div>";
   }
 
-  function rowHtml(o) {
-    var t = T(), b = stOf(o.w).b, cls = b >= KNOWN_BOX ? "k" : b > 0 ? "l" : "n";
-    var lbl = b >= KNOWN_BOX ? t.known : b > 0 ? t.review + " " + b + "/5" : t.fresh;
+  function statusPill(x, t) {
+    var s = statusOf(x), cls = s === 2 ? "k" : s === 1 ? "b" : "n";
+    var lbl = s === 2 ? t.known : s === 1 ? t.learning : t.fresh;
+    return '<span class="st ' + cls + '">' + lbl + "</span>";
+  }
+  function rowHtml(o, showLv) {
+    var t = T();
     return '<div class="lxv-row"><span class="spk" data-spk="' + esc(o.w) + '" title="' + t.speak + '">' + ic("head") + "</span>" +
       '<div class="tx"><b>' + esc(o.w) + "</b><small>" + esc(tr(o.d)) + "</small></div>" +
-      '<span class="st ' + cls + '">' + lbl + "</span></div>";
+      (showLv ? '<span class="lxv-ltag">' + o.lv + "</span>" : "") + statusPill(o.w, t) + "</div>";
   }
 
   function renderMain(el) {
-    var t = T(), s = state(), lv = s.level, p = progress(lv), due = reviewCount(), acc = LV_ACCENT[lv];
+    var t = T(), s = state(), lv = s.level, p = progress(lv), box = boxWords().length, fresh = p.fresh, acc = LV_ACCENT[lv];
     var hero = '<div class="lxv-hero"><div class="row"><span class="lxv-mascot">' + flame(38) + '</span><div><h2>' + t.title + '</h2><p>' + t.sub + '</p></div>' + ringHtml(p.pct) + '</div>' +
       '<div class="lxv-badges"><span class="lxv-badge" style="background:' + acc + '33;border-color:' + acc + '66">' + t.level + " " + lv + "</span>" +
       '<span class="lxv-badge">' + lvName(lv) + '</span><span class="lxv-badge">' + p.known + " / " + p.total + " " + t.words + "</span></div>" +
-      '<div class="lxv-actions"><button class="lxv-btn p" id="lxvStudy">' + ic("play") + " " + t.learn + "</button>" +
-      '<button class="lxv-btn g" id="lxvReview">' + ic("hist") + " " + t.review + (due ? " <em>" + due + "</em>" : "") + "</button></div></div>";
+      '<div class="lxv-actions"><button class="lxv-btn p" id="lxvStudy"' + (fresh ? "" : " disabled") + ">" + ic("play") + " " + t.learn + (fresh ? " <em>" + fresh + "</em>" : "") + "</button>" +
+      '<button class="lxv-btn g" id="lxvReview">' + ic("hist") + " " + t.review + (box ? " <em>" + box + "</em>" : "") + "</button></div></div>";
 
     var stats = '<div class="lxv-stats">' +
       '<div class="lxv-stat" style="--ac:#12A15C"><b>' + p.known + '</b><small>' + t.known + '</small></div>' +
-      '<div class="lxv-stat" style="--ac:#F2B100"><b>' + p.learning + '</b><small>' + t.learning + '</small></div>' +
+      '<div class="lxv-stat" style="--ac:#F2B100"><b>' + p.box + '</b><small>' + t.learning + '</small></div>' +
       '<div class="lxv-stat" style="--ac:#7A40FF"><b>' + p.fresh + '</b><small>' + t.fresh + '</small></div></div>';
 
     var chips = LEVELS.map(function (l) {
@@ -270,7 +277,6 @@
     }).join("");
 
     var search = '<div class="lxv-search" id="lxvSearchBox"><span class="si">' + ic("search") + '</span><input id="lxvQ" placeholder="' + t.search + '" autocomplete="off"><button class="lxv-clr" id="lxvClr" aria-label="clear">' + ic("x") + "</button></div>";
-
     var add = '<div class="lxv-add"><b>' + ic("plus") + " " + t.addT + '</b><div class="f"><input id="lxvAddW" placeholder="' + t.wordPh + '"><input id="lxvAddT" placeholder="' + t.transPh + '"><button id="lxvAdd">' + ic("plus") + " " + t.add + "</button></div></div>";
 
     el.innerHTML = hero + stats + '<div class="lxv-levels" id="lxvLevels">' + chips + "</div>" + search + '<div class="lxv-results" id="lxvResults"></div>' + add;
@@ -278,18 +284,18 @@
     el.querySelectorAll("[data-lv]").forEach(function (b) {
       b.addEventListener("click", function () { var v = state(); v.level = b.dataset.lv; v.manual = true; saveVocab(); renderMain(el); });
     });
-    $("#lxvStudy", el).addEventListener("click", function () { startSession(el, sessionQueue(lv)); });
+    $("#lxvStudy", el).addEventListener("click", function () { startGroup(el, lv); });
     $("#lxvReview", el).addEventListener("click", function () {
-      var q = dueWords();
+      var q = boxWords();
       if (!q.length) { toast(t.revNone); return; }
-      startSession(el, q);
+      startSession(el, { queue: q, mode: "review", lv: lv });
     });
 
-    var box = $("#lxvSearchBox", el), q = $("#lxvQ", el);
+    var boxEl = $("#lxvSearchBox", el), q = $("#lxvQ", el);
     function drawQ() {
       var v = q.value;
-      box.classList.toggle("has", !!v);
-      $("#lxvResults", el).innerHTML = resultsHtml(lv, v);
+      boxEl.classList.toggle("has", !!v);
+      $("#lxvResults", el).innerHTML = resultsHtml(v);
       el.querySelectorAll("[data-spk]").forEach(function (b) { b.addEventListener("click", function () { speak(b.dataset.spk); }); });
     }
     q.addEventListener("input", drawQ);
@@ -305,41 +311,36 @@
     });
   }
 
-  function resultsHtml(lv, query) {
+  function resultsHtml(query) {
     var t = T(), q = (query || "").trim().toLowerCase();
-    var all = byLevel(lv);
     if (!q) {
-      return '<div class="lxv-hint"><div class="lxv-mascot">' + flame(28) + "</div>" + t.hint + "<br><b>" + all.length + " " + t.lvWords + "</b></div>";
+      return '<div class="lxv-hint"><div class="lxv-mascot">' + flame(28) + "</div>" + t.hint + "<br><b>" + totalAll() + " " + t.words + "</b></div>";
     }
-    var res = all.filter(function (o) { return (o.w + " " + tr(o.d)).toLowerCase().indexOf(q) > -1; });
+    var res = allEntries().filter(function (o) { return (o.w + " " + tr(o.d)).toLowerCase().indexOf(q) > -1; });
     if (!res.length) return '<div class="lxv-hint">' + t.notFound + "</div>";
-    return res.slice(0, 80).map(rowHtml).join("");
+    return res.slice(0, 100).map(function (o) { return rowHtml(o, true); }).join("");
   }
 
-  function sessionQueue(lv) {
-    var seen = {}, inProg = [], fresh = [];
-    byLevel(lv || state().level).forEach(function (o) {
-      if (seen[o.w]) return; seen[o.w] = 1;
-      var b = stOf(o.w).b;
-      if (b > 0 && b < KNOWN_BOX) inProg.push(o); else if (b === 0) fresh.push(o);
-    });
-    return inProg.concat(fresh);
+  function startGroup(el, lv) {
+    var t = T(), fresh = rnd(newWords(lv));
+    if (!fresh.length) { toast(t.newNone); return; }
+    startSession(el, { queue: fresh.slice(0, GROUP), mode: "study", lv: lv });
   }
 
-  function startSession(el, queue) {
-    if (!queue.length) { toast(T().revNone); return; }
-    el._sess = { queue: queue, i: 0, shown: false, knew: 0, total: 0 };
+  function startSession(el, se) {
+    se.i = 0; se.shown = false; se.knew = 0; se.dont = 0;
+    el._sess = se;
     drawSession(el);
   }
 
   function drawSession(el) {
     var t = T(), se = el._sess;
     if (se.i >= se.queue.length) { drawDone(el, se); return; }
-    var o = se.queue[se.i], b = stOf(o.w).b;
-    var kind = b >= KNOWN_BOX ? t.knowLbl : b ? t.revLbl + " " + b + "/5" : t.newLbl;
+    var o = se.queue[se.i];
+    var kind = se.mode === "review" ? t.revWord : t.newWord;
     var pct = Math.round(se.i / se.queue.length * 100);
     el.innerHTML = '<div class="lxv-sess">' +
-      '<div class="top"><span class="lv" style="color:' + LV_ACCENT[o.lv] + '">' + o.lv + " · " + lvName(o.lv) + '</span><span class="cnt">' + (se.i + 1) + " " + t.of + " " + se.queue.length + "</span></div>" +
+      '<div class="top"><span class="lv" style="color:' + LV_ACCENT[o.lv] + '">' + o.lv + " · " + lvName(o.lv) + '</span><span class="cnt">' + (se.i + 1) + " " + t.of + " " + se.queue.length + '</span><button class="lxv-exit" id="lxvQuit">' + ic("x") + " " + t.exit + "</button></div>" +
       '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
       '<div class="lxv-card"><div class="inner">' +
       '<div class="kind">' + esc(kind) + '</div>' +
@@ -349,8 +350,7 @@
       (se.shown
         ? '<button class="lxv-cbtn no" id="lxvNo">' + t.dont + '</button><button class="lxv-cbtn yes" id="lxvYes">' + t.know + "</button>"
         : '<button class="lxv-cbtn show" id="lxvShow">' + t.show + "</button>") +
-      "</div></div></div>" +
-      '<div class="lxv-cta"><button class="lnk" id="lxvQuit">' + t.finish + "</button></div></div>";
+      "</div></div></div></div>";
 
     el.querySelectorAll("[data-spk]").forEach(function (x) { x.addEventListener("click", function () { speak(x.dataset.spk); }); });
     if (se.shown) {
@@ -359,33 +359,37 @@
     } else {
       $("#lxvShow", el).addEventListener("click", function () { se.shown = true; drawSession(el); });
     }
-    $("#lxvQuit", el).addEventListener("click", function () { se.i = se.queue.length; drawSession(el); });
+    $("#lxvQuit", el).addEventListener("click", function () { el._sess = null; renderMain(el); });
   }
 
   function afterAnswer(el, word, knew) {
     answer(word, knew);
     var se = el._sess;
-    if (knew) se.knew++; else se.total++;
+    if (knew) se.knew++; else se.dont++;
     se.i++; se.shown = false;
     drawSession(el);
   }
 
   function drawDone(el, se) {
     var t = T();
+    var title = se.mode === "review" ? t.doneRev : t.done;
+    var more = se.mode === "study" && newWords(se.lv).length;
     el.innerHTML = '<div class="lxv-sess"><div class="lxv-done"><div class="em">🎉</div>' +
-      "<h2>" + t.done + "</h2>" +
+      "<h2>" + title + "</h2>" +
       '<div class="stats"><div><b style="color:#39D98A">' + se.knew + "</b><small>" + t.known + "</small></div>" +
-      '<div><b style="color:#FF8A6A">' + se.total + "</b><small>" + t.dont + "</small></div>" +
+      '<div><b style="color:#FF8A6A">' + se.dont + "</b><small>" + t.dont + "</small></div>" +
       '<div><b>' + se.queue.length + "</b><small>" + t.words + "</small></div></div>" +
-      '<button class="lxv-btn p" id="lxvBack" style="background:#fff;color:#12261F">' + ic("chev") + " " + t.back + "</button></div></div>";
+      '<div class="row2">' + (more ? '<button class="lxv-btn" id="lxvMore">' + ic("play") + " " + t.next + "</button>" : "") +
+      '<button class="lxv-btn' + (more ? " ghost" : "") + '" id="lxvBack">' + ic("chev") + " " + t.back + "</button></div></div></div>";
     try { w.Lexy.addMin(3); } catch (e) {}
+    var moreBtn = $("#lxvMore", el); if (moreBtn) moreBtn.addEventListener("click", function () { startGroup(el, se.lv); });
     $("#lxvBack", el).addEventListener("click", function () { el._sess = null; renderMain(el); });
   }
 
   w.LexyVocab = {
     WORDS: WORDS, LEVELS: LEVELS,
     render: render,
-    dueCount: reviewCount,
+    dueCount: function () { return boxWords().length; },
     total: totalAll,
     answer: answer
   };
