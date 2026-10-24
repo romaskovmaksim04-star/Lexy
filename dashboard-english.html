@@ -214,10 +214,16 @@
     var pct = Math.round(TQ.i / TQ.list.length * 100);
     el.innerHTML = '<div class="testbar"><span class="tmrwrap">' + ic("clock") + ' <b id="tmr">0:00</b></span><span class="qcnt">' + (TQ.i + 1) + " / " + TQ.list.length + '</span></div>' +
       '<div class="progress"><i style="width:' + pct + '%"></i></div>' +
-      '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + T("question") + " " + (TQ.i + 1) + '</div><div class="bsub">' + esc(course().level) + '</div></div></div>' +
+      '<div class="block"><div class="bhead"><span class="bic">' + ic(q.listen ? "head" : "file") + '</span><div><div class="btitle">' + (q.listen ? T("audio") : T("question")) + " " + (TQ.i + 1) + '</div><div class="bsub">' + esc(course().level) + '</div></div></div>' +
+      (q.listen ? '<div class="player"><button class="pbtn" id="tplay">' + ic("play") + '</button><div class="ptx"><b>' + T("audio") + '</b><small>' + T("audio") + '</small></div></div><audio id="tau" preload="none" src="' + C.audioFor(q.listen) + '"></audio>' : "") +
       '<div class="qtext">' + esc(q.q) + '</div><div class="opts">' +
       mapped.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(o.o) + "</button>"; }).join("") + "</div>" +
       '<button class="btn p big" id="nq" disabled style="margin-top:16px">' + T("answer") + '</button></div>';
+    if (q.listen) {
+      var pb = $("#tplay"), au = $("#tau");
+      if (au) au.addEventListener("error", function () { au.dataset.fail = "1"; });
+      if (pb) pb.addEventListener("click", function () { if (au && !au.dataset.fail) { try { var pr = au.play(); if (pr && pr.catch) pr.catch(function () { speak(q.listen, pb); }); } catch (e) { speak(q.listen, pb); } } else speak(q.listen, pb); });
+    }
     el.querySelectorAll(".opt").forEach(function (b) { b.addEventListener("click", function () { if (TQ.answered) return; el.querySelectorAll(".opt").forEach(function (x) { x.classList.remove("on"); }); b.classList.add("on"); TQ.picked = +b.dataset.x; $("#nq").disabled = false; }); });
     $("#nq").addEventListener("click", function () {
       if (TQ.picked == null) return;
