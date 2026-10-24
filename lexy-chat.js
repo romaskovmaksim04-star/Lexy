@@ -247,7 +247,13 @@
       if (ui.busy) return; ui.busy = true; tb.classList.add("on"); tb.innerHTML = ic("spark") + " Подбираем…";
       call({ mode: "writing-topic", level: level, exam: exam }).then(function (d) {
         ui.busy = false; st.topic = (d && d.topic) || ""; st.result = null; st.essay = ""; persist(st); drawWriting(body, st, level, exam);
-      }).catch(function (err) { ui.busy = false; drawWriting(body, st, level, exam); if (err && err.code === "premium_required") toast("Нужен Premium"); else toast("Не удалось получить тему"); });
+        if (d && d.remaining != null) toast("Тема готова · осталось тем сегодня: " + d.remaining);
+      }).catch(function (err) {
+        ui.busy = false; drawWriting(body, st, level, exam);
+        if (err && err.code === "premium_required") toast("Нужен Premium");
+        else if (err && err.code === "limit") toast("Дневной лимит тем исчерпан");
+        else toast("Не удалось получить тему");
+      });
     });
     var nt = $("#lxaNewTopic", body);
     if (nt) nt.addEventListener("click", function () { st.topic = ""; st.essay = ""; st.result = null; persist(st); drawWriting(body, st, level, exam); });

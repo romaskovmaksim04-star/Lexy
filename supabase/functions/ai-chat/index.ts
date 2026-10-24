@@ -59,10 +59,14 @@ Deno.serve(async (req: Request) => {
 
   const CHAT_BUDGET = plan === "pro_plus" ? 160000 : plan === "pro" ? 60000 : 0;
   const WRITE_LIMIT = plan === "pro_plus" ? 6 : plan === "pro" ? 2 : 0;
+  const TOPIC_LIMIT = plan === "pro_plus" ? 20 : plan === "pro" ? 10 : 0;
 
   if (mode === "writing-check") {
     if (WRITE_LIMIT === 0) return json({ error: "premium_required" }, 403);
     if ((usage.writing_count || 0) >= WRITE_LIMIT) return json({ error: "limit", limit: WRITE_LIMIT }, 429);
+  } else if (mode === "writing-topic") {
+    if (TOPIC_LIMIT === 0) return json({ error: "premium_required" }, 403);
+    if ((usage.topics_count || 0) >= TOPIC_LIMIT) return json({ error: "limit", limit: TOPIC_LIMIT }, 429);
   } else {
     if (CHAT_BUDGET === 0) return json({ error: "premium_required" }, 403);
     if ((usage.chat_tokens || 0) >= CHAT_BUDGET) return json({ error: "limit" }, 429);
@@ -93,8 +97,8 @@ Deno.serve(async (req: Request) => {
         : "You are a friendly English writing coach. Reply ONLY with one short writing task (a paragraph, email or short article) suitable for a " + lvl + " learner, 1-2 sentences. No extra text.";
       const d = await ai([{ role: "system", content: sys }, { role: "user", content: "Give me one writing task." }], { temperature: 0.9, max_tokens: 140 });
       const topic = (d?.choices?.[0]?.message?.content || "").trim();
-      await bump({ chat_tokens: (usage.chat_tokens || 0) + (d?.usage?.total_tokens || 0) });
-      return json({ ok: true, topic });
+      await bump({ chat_tokens: (usage.chat_tokens || 0) + (d?.usage?.total_tokens || 0), topics_count: (usage.topics_count || 0) + 1 });
+      return json({ ok: true, topic, remaining: TOPIC_LIMIT - ((usage.topics_count || 0) + 1) });
     }
 
     if (mode === "writing-check") {
