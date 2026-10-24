@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Админка — Lexy</title>
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--fire:#FF5A1F;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--ok:#12A15C;--display:"Unbounded",system-ui,sans-serif;--body:"Onest",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 15px/1.5 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;min-height:100dvh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:rgba(247,245,252,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:12px;height:60px;padding:0 18px}
+.logo{display:flex;align-items:center;gap:8px;font:800 20px var(--display);letter-spacing:-.03em}
+.logo i{width:22px;height:26px;display:block;background:linear-gradient(135deg,#FF4E1A,#FF9A0A);border-radius:6px 6px 50% 50%}
+.who{margin-left:auto;font-size:13px;color:var(--soft)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 70px}
+h1{font:800 clamp(22px,4vw,30px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:6px}
+.sub{color:var(--soft);font-size:14px;margin-bottom:20px}
+.block{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+input.q{flex:1;min-width:200px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;outline:none;font:500 14px var(--body)}
+input.q:focus{border-color:var(--fire)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--soft);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td .em{font-weight:700}
+select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body);background:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:11px;background:var(--fire);color:#fff;font:700 13px var(--body)}
+.btn:hover{filter:brightness(1.05)}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font:700 11px var(--display);letter-spacing:.03em}
+.pill.free{background:#EEF0F5;color:#6B6585}
+.pill.pro{background:#FFF0E8;color:#FF5A1F}
+.pill.pro_plus{background:#EFE7FF;color:#6D5BFF}
+.center{text-align:center;padding:50px 20px;color:var(--soft)}
+.loading{color:var(--soft);padding:30px;text-align:center}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat .s{background:var(--mist);border-radius:14px;padding:14px}
+.stat b{font:800 22px var(--display);display:block}
+.stat small{color:var(--soft)}
+@media(max-width:640px){table .hide{display:none}.stat{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="bar"><span class="logo"><i></i>Lexy Admin</span><span class="who" id="who"></span><a class="btn ghost" id="back" href="main.html">← На сайт</a></div></header>
+<main id="app"><div class="loading">Загрузка…</div></main>
+
+<script src="lexy-config.js?v=7"></script>
+<script src="lexy-auth.js?v=9"></script>
+<script>
+(function(){
+  var ADMIN = "romaskovmaksim04@gmail.com";
+  var app = document.getElementById('app');
+  var who = document.getElementById('who');
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function planPill(p){ return '<span class="pill '+esc(p)+'">'+esc(p)+'</span>'; }
+
+  function gate(){
+    if(!window.LexyAuth){ app.innerHTML = '<div class="center">Не удалось загрузить авторизацию. Обнови страницу.</div>'; return; }
+    LexyAuth.ready.then(function(){
+      var u = LexyAuth.user();
+      who.textContent = u ? u.email : '';
+      if(!u){ app.innerHTML = '<div class="center"><h1>Нужен вход</h1><p class="sub">Войди под аккаунтом администратора.</p><a class="btn" href="login.html">Войти</a></div>'; return; }
+      if((u.email||'').toLowerCase() !== ADMIN){
+        app.innerHTML = '<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для '+esc(ADMIN)+'.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>';
+        return;
+      }
+      load();
+    });
+  }
+
+  var USERS = [];
+  function load(){
+    app.innerHTML = '<div class="loading">Загружаю пользователей…</div>';
+    LexyAuth.client().rpc('lexy_admin_users').then(function(res){
+      if(res.error){ app.innerHTML = '<div class="center">Ошибка: '+esc(res.error.message)+'</div>'; return; }
+      USERS = res.data || [];
+      render();
+    }).catch(function(){ app.innerHTML = '<div class="center">Не удалось получить данные.</div>'; });
+  }
+
+  function render(){
+    var total = USERS.length;
+    var paid = USERS.filter(function(u){ return u.plan !== 'free'; }).length;
+    app.innerHTML =
+      '<h1>Пользователи</h1><p class="sub">Переключай тарифы и следи за базой. Изменения применяются сразу.</p>' +
+      '<div class="stat" style="margin-bottom:16px"><div class="s"><b>'+total+'</b><small>всего аккаунтов</small></div><div class="s"><b style="color:var(--fire)">'+paid+'</b><small>с Premium</small></div><div class="s"><b>'+(total-paid)+'</b><small>бесплатных</small></div></div>' +
+      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…"><button class="btn ghost" id="reload">Обновить</button></div></div>' +
+      '<div class="block" style="padding:0;overflow:auto"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th>До</th><th>Срок</th></tr></thead><tbody id="tb"></tbody></table></div>';
+    document.getElementById('reload').addEventListener('click', load);
+    document.getElementById('q').addEventListener('input', drawRows);
+    drawRows();
+  }
+
+  function drawRows(){
+    var q = (document.getElementById('q').value||'').trim().toLowerCase();
+    var tb = document.getElementById('tb');
+    var list = USERS.filter(function(u){ return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q) > -1; });
+    if(!list.length){ tb.innerHTML = '<tr><td colspan="5" class="center">Ничего не найдено</td></tr>'; return; }
+    tb.innerHTML = list.map(function(u){
+      var until = u.plan_expires_at ? new Date(u.plan_expires_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      return '<tr data-id="'+esc(u.id)+'">' +
+        '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc((u.path||'путь не выбран'))+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>' +
+        '<td class="hide">'+esc(u.name||'—')+'</td>' +
+        '<td><select data-plan>'+['free','pro','pro_plus'].map(function(p){ return '<option value="'+p+'"'+(u.plan===p?' selected':'')+'>'+p+'</option>'; }).join('')+'</select></td>' +
+        '<td>'+esc(until)+'</td>' +
+        '<td><button class="btn" data-save>Сохранить</button></td></tr>';
+    }).join('');
+    tb.querySelectorAll('[data-save]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var tr = b.closest('tr'); var id = tr.getAttribute('data-id');
+        var plan = tr.querySelector('[data-plan]').value;
+        b.disabled = true; b.textContent = '…';
+        LexyAuth.client().rpc('lexy_admin_set_plan', { p_user_id: id, p_plan: plan, p_days: 30 }).then(function(res){
+          b.disabled = false; b.textContent = 'Сохранить';
+          if(res.error){ alert('Ошибка: '+res.error.message); return; }
+          var u = res.data && res.data[0] ? res.data[0] : res.data;
+          var idx = USERS.findIndex(function(x){ return x.id === id; });
+          if(idx > -1 && u){ USERS[idx].plan = u.plan; USERS[idx].plan_expires_at = u.plan_expires_at; }
+          render(); drawRows();
+        }).catch(function(){ b.disabled = false; b.textContent = 'Сохранить'; alert('Не получилось сохранить'); });
+      });
+    });
+  }
+
+  gate();
+})();
+</script>
+</body>
+</html>

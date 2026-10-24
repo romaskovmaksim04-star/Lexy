@@ -271,6 +271,7 @@ function renderProfile() {
       '<div class="xp" id="xp-sub" hidden>' + t.premDesc +
       '<br><a class="btn p sm" href="' + CFG.pricing + '">' + t.choosePlan + '</a>' + (CFG.demo ? '<button class="btn g sm" data-act="demoPro">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div></div>" +
     '<div class="card g"><div class="rw" data-act="guar" style="cursor:pointer"><div><b>' + ic("shield") + " " + t.guarantee + "</b></div>" + ic("down") + '</div><div class="xp" id="xp-guar" hidden>' + t.guaranteeText + "</div></div>" +
+    (U.email && U.email.toLowerCase() === "romaskovmaksim04@gmail.com" ? '<div class="card g"><a class="rw" href="admin.html"><div><b>' + ic("shield") + " Админ-панель</b><small>Пользователи, тарифы, задания</small></div>" + ic("chev") + "</a></div>" : "") +
     '<div class="card out"><button class="btn g blk" data-act="logout">' + ic("logout") + " " + t.logout + "</button><small>" + t.created + " " + d + "</small></div>" +
     '<div class="dz">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button class="btn d sm" data-act="del">' + t.delBtn + "</button></div></div>";
 }
