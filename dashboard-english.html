@@ -822,9 +822,9 @@
 .pgslabels span{flex:1;text-align:center;font:700 10px var(--display);color:var(--soft)}
 .pgc.pgtb{grid-column:1 / -1}
 .pgtm{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
-.pgtm div{flex:1;text-align:center;background:var(--mist);border-radius:14px;padding:12px 6px}
-.pgtm b{font:800 22px var(--display);display:block;color:var(--ink);white-space:nowrap}
-.pgtm small{color:var(--soft);font-size:11.5px}
+.pgtm>div{flex:1 1 0;min-width:0;text-align:center;background:var(--mist);border-radius:14px;padding:12px 6px}
+.pgtm b{font:800 clamp(15px,4.4vw,22px) var(--display);display:block;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pgtm small{display:block;color:var(--soft);font-size:11.5px;line-height:1.25;overflow-wrap:anywhere}
 .pgplan .lb{display:flex;align-items:center;gap:7px}
 .plbar{height:9px;border-radius:999px;background:var(--mist);overflow:hidden;margin:14px 0 8px}
 .plbar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#12A15C,#39D98A);transition:width 1s cubic-bezier(.3,1,.4,1)}
@@ -851,7 +851,9 @@
   .pghfl{width:64px;height:64px}
   .pgh h2{font-size:30px}
   .pgh h2 svg{width:22px;height:22px}
-  .pgtm b{font-size:16px}
+  .pgtm{gap:6px}
+  .pgtm>div{padding:10px 4px}
+  .pgtm b{font-size:15px}
   .pgc{padding:16px}
 }
 `;
