@@ -164,9 +164,12 @@
   function flushChat() {
     if (chatT.pend <= 0) return;
     var u = w.Lexy && w.Lexy.user; if (!u) return;
-    var sec = Math.round((u.chatSec || 0) + chatT.pend);
-    chatT.pend = 0;
-    try { w.Lexy.save({ chatSec: sec }); } catch (e) {}
+    var secs = chatT.pend; chatT.pend = 0;
+    var totalSec = Math.round((u.chatSec || 0) + secs);
+    u.chatAppMin = (u.chatAppMin || 0) + secs / 60;
+    var whole = Math.floor(u.chatAppMin);
+    try { w.Lexy.save({ chatSec: totalSec, chatAppMin: u.chatAppMin - whole }); } catch (e) {}
+    if (whole > 0) { try { w.Lexy.addMin(whole); } catch (e) {} }
   }
 
   function render(el, opts) {
