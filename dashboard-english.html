@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lexy.css">
+<link rel="stylesheet" href="lexy.css?v=3">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=10"></script>
 <script src="lexy-core.js?v=14"></script>
@@ -128,8 +128,8 @@
     var levelDone = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) levelDone++;
     var pct = Math.round(levelDone / total * 100);
     var seg = '<div class="seg"><button class="' + (mapView === "course" ? "on" : "") + '" data-view="course">' + T("course") + '</button><button class="' + (mapView === "theory" ? "on" : "") + '" data-view="theory">' + T("theory") + '</button><button class="' + (mapView === "history" ? "on" : "") + '" data-view="history">' + T("history") + "</button></div>";
-    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + c.level + '</span><div><h2 class="lvname">' + lvName(c.level, 0) + '</h2><p class="lvdesc">' + esc(C.levelDesc(c.level)) + '</p></div></div>' +
-      '<div class="lvrow"><span>' + T("lessonsDone") + ": <b>" + levelDone + " / " + total + '</b></span><button class="btn ghost sm" data-change>' + ic("swap") + " " + T("change") + '</button></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + c.level + '</span><div><h2 class="lvname">' + lvName(c.level, 0) + '</h2><p class="lvdesc">' + esc(C.levelDesc(c.level, lang())) + '</p></div></div>' +
+      '<div class="lvrow"><span>' + T("lessonsDone") + ": <b>" + levelDone + " / " + total + '</b></span><button class="btn ghost sm" data-change>' + ic("swap") + " " + T("change") + '</button></div>' + '<div class="bar"><i style="width:' + pct + '%"></i></div></div>';
     var content;
     if (mapView === "theory") content = theoryBlock(c.level);
     else if (mapView === "history") content = histBlock();
@@ -145,7 +145,7 @@
       if (!acc && !done) st += " blurrow";
       var badge = done ? "✓" : current ? T("nowT") : "";
       var sub = done ? T("doneT") : current ? T("nowT") : acc ? "" : T("lockT");
-      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d)) + '</b><small>' + sub + '</small></span><span class="dbadge">' + badge + "</span></button>";
+      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d, lang())) + '</b><small>' + sub + '</small></span><span class="dbadge">' + badge + "</span></button>";
     }
     return '<div class="dlist">' + h + "</div>";
   }
@@ -247,13 +247,15 @@
   }
   function drawListening(d) {
     var url = C.audioFor(d.script);
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic("head") + '</span><div><div class="btitle">' + T("audio") + '</div><div class="bsub">' + T("audio") + '</div></div></div>' +
+    var sub = esc(C.lessonTitle(RUN.plan.level, RUN.plan.day, lang()));
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("head") + '</span><div><div class="btitle">' + T("audio") + '</div><div class="bsub">' + sub + '</div></div></div>' +
       '<div class="player"><button class="pbtn" id="play">' + ic("play") + '</button><div class="ptx"><b>' + T("audio") + '</b><small>' + T("audio") + "</small></div></div>" + (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") +
       '<button class="btn ghost sm trbtn" id="showtr">' + T("theoryT") + "</button>" + '<div id="tr" hidden class="readpg" style="margin-top:10px">' + esc(d.script) + "</div>" +
       '<div id="qarea" style="margin-top:16px"></div></div>';
   }
   function drawQuiz(d) {
-    return '<div class="block"><div class="bhead"><span class="bic">' + ic(d.kind === "words" ? "vocab" : d.kind === "grammar" ? "book" : "spark") + '</span><div><div class="btitle">' + T(d.kind === "words" ? "words" : d.kind === "grammar" ? "grammar" : "practice") + '</div><div class="bsub">' + (d.t ? esc(d.t) : "") + '</div></div></div><div id="qarea"></div></div>';
+    var sub = esc(C.lessonTitle(RUN.plan.level, RUN.plan.day, lang()));
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic(d.kind === "words" ? "vocab" : d.kind === "grammar" ? "book" : "spark") + '</span><div><div class="btitle">' + T(d.kind === "words" ? "words" : d.kind === "grammar" ? "grammar" : "practice") + '</div><div class="bsub">' + sub + '</div></div></div><div id="qarea"></div></div>';
   }
   function drawTest(d) { return '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + esc(d.title) + '</div><div class="bsub" id="tmr"></div></div></div><div id="qarea"></div></div>'; }
 

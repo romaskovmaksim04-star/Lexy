@@ -68,17 +68,29 @@
     B2: "Выше среднего: беглость и точность, формальные тексты, аргументация, IELTS 6–7.",
     C1: "Продвинутый: нюансы, стиль, академическая речь, IELTS 7+."
   };
-  function levelDesc(level) { return LEVEL_DESC[level] || ""; }
+  function levelDesc(level, lang) {
+    var map = w.LEXY_A1_I18N;
+    if (map && map.levelDesc && map.levelDesc[lang] && map.levelDesc[lang][level]) return map.levelDesc[lang][level];
+    return LEVEL_DESC[level] || "";
+  }
   function theory(level, day, lang) {
     var ls = lessons(level);
     if (!ls) return null;
     var idx = (day - 1) % ls.length, L = ls[idx];
-    var e = L.th.e, ex = L.th.ex;
-    var map = w.LEXY_A1_I18N;
-    if (map && map[lang] && map[lang][idx]) e = map[lang][idx];
-    return { t: L.t, e: e, ex: ex };
+    var e = L.th.e, ex = L.th.ex, t = L.t, map = w.LEXY_A1_I18N;
+    if (map) {
+      if (map[lang] && map[lang][idx]) e = map[lang][idx];
+      if (map.titles && map.titles[lang] && map.titles[lang][idx]) t = map.titles[lang][idx];
+    }
+    return { t: t, e: e, ex: ex };
   }
-  function lessonTitle(level, day) { var ls = lessons(level); if (ls) { var L = ls[(day - 1) % ls.length]; return L.t; } var g = GRAMMAR[level] || GRAMMAR.A1; return g[(day - 1) % g.length].t; }
+  function lessonTitle(level, day, lang) {
+    var idx = day - 1, map = w.LEXY_A1_I18N;
+    if (map && map.titles && map.titles[lang] && map.titles[lang][idx]) return map.titles[lang][idx];
+    var ls = lessons(level);
+    if (ls) return ls[idx % ls.length].t;
+    var g = GRAMMAR[level] || GRAMMAR.A1; return g[idx % g.length].t;
+  }
   var GOALS = [
     { id: "study", t: "Учёба" },
     { id: "travel", t: "Путешествия" },
@@ -298,10 +310,10 @@
       var mixed = L.gr.slice(0, 2).concat(wq.slice(0, 2));
       var blocks = [
         { type: "theory", data: { t: L.t, e: L.th.e, ex: L.th.ex, level: level, day: day } },
-        { type: "quiz", data: { t: "Грамматика · " + L.t, q: L.gr, kind: "grammar" } },
-        { type: "quiz", data: { t: "Слова", q: wq, kind: "words" } },
-        { type: "listening", data: { t: "Аудирование", script: L.li.script, q: L.li.q } },
-        { type: "quiz", data: { t: "Практика · повторение", q: mixed, kind: "mix" } }
+        { type: "quiz", data: { q: L.gr, kind: "grammar" } },
+        { type: "quiz", data: { q: wq, kind: "words" } },
+        { type: "listening", data: { script: L.li.script, q: L.li.q } },
+        { type: "quiz", data: { q: mixed, kind: "mix" } }
       ];
       return { level: level, day: day, isTest: false, title: "Урок " + day + " · " + level, blocks: blocks };
     }
