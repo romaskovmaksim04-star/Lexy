@@ -147,6 +147,7 @@ function fl(h) { return '<svg class="f" viewBox="0 0 100 120" style="width:' + M
 var LAB = {
   ru: { path: "Путь", talk: "Разговор", vocab: "Словарь", progress: "Прогресс", home: "Главная", tests: "Тесты", stats: "Статистика", ai: "Lexy AI", games: "Игры", profile: "Личный кабинет", prem: "Получить Premium" },
   en: { path: "Path", talk: "Talk", vocab: "Vocabulary", progress: "Progress", home: "Home", tests: "Tests", stats: "Statistics", ai: "Lexy AI", games: "Games", profile: "My account", prem: "Get Premium" },
+  kz: { path: "Жол", talk: "Сөйлесу", vocab: "Сөздік", progress: "Прогресс", home: "Басты бет", tests: "Тесттер", stats: "Статистика", ai: "Lexy AI", games: "Ойындар", profile: "Жеке кабинет", prem: "Premium алу" },
   uz: { path: "Yo‘l", talk: "Suhbat", vocab: "Lug‘at", progress: "Taraqqiyot", home: "Bosh sahifa", tests: "Testlar", stats: "Statistika", ai: "Lexy AI", games: "O‘yinlar", profile: "Kabinet", prem: "Premium olish" }
 };
 /* [id раздела, иконка, ключ замка]. Замок показывается, пока нет Premium */
@@ -155,6 +156,21 @@ var NAV = {
   ielts: [["home", "home"], ["tests", "file"], ["stats", "trend"], ["vocab", "vocab", "soft"], ["ai", "spark", "ai"], ["games", "game", "games"]]
 };
 function L() { return LAB[U.lang] || LAB.ru; }
+var PL = {
+  ru: { acc: "ТВОЙ АККАУНТ", none: "Не указано", premium: "Premium", freePlan: "Бесплатный план", profile: "Профиль", name: "Имя", editName: "Изменить имя", email: "Email", emailNote: "Используется для входа, изменить нельзя", news: "Рассылка по email", newsNote: "Получать советы и напоминания", settings: "Настройки", language: "Язык", usage: "Для чего ты используешь Lexy", usageNote: "Приложение подстроится под выбор: главная, меню и Lexy AI.", pathEn: "Разговорный английский", pathEnSub: "Уроки-разговоры с Lexy, слова и фразы", pathIe: "Подготовка к IELTS", pathIeSub: "Пробные экзамены, баллы и план до экзамена", support: "Поддержка", privacy: "Политика конфиденциальности", terms: "Условия пользования", subscription: "Подписка", active: "Активна", noSub: "Нет подписки", premDesc: "Premium открывает Lexy AI, словарь и игры.", choosePlan: "Выбрать тариф", guarantee: "Гарантия возврата", guaranteeText: "Двойная гарантия: не набрал нужный балл — вернём деньги или оплатим пересдачу. Условия уточняй в поддержке.", logout: "Выйти", created: "Аккаунт создан", delTitle: "Удаление аккаунта", delText: "Доступ закроется сразу, аккаунт и данные удалим через 30 дней. Восстановить — только через поддержку.", delBtn: "Удалить аккаунт", premiumActive: "Premium активен" },
+  en: { acc: "YOUR ACCOUNT", none: "Not set", premium: "Premium", freePlan: "Free plan", profile: "Profile", name: "Name", editName: "Edit name", email: "Email", emailNote: "Used for login, cannot be changed", news: "Email newsletter", newsNote: "Receive tips and reminders", settings: "Settings", language: "Language", usage: "What you use Lexy for", usageNote: "The app adapts to your choice: home, menu and Lexy AI.", pathEn: "Conversational English", pathEnSub: "Talk lessons with Lexy, words and phrases", pathIe: "IELTS preparation", pathIeSub: "Mock exams, scores and a plan until the exam", support: "Support", privacy: "Privacy Policy", terms: "Terms of Use", subscription: "Subscription", active: "Active", noSub: "No subscription", premDesc: "Premium unlocks Lexy AI, vocabulary and games.", choosePlan: "Choose a plan", guarantee: "Money-back guarantee", guaranteeText: "Double guarantee: if you don't reach the score — we refund or pay for a retake. Terms are in support.", logout: "Log out", created: "Account created", delTitle: "Delete account", delText: "Access closes immediately; we delete the account and data in 30 days. Only support can restore it.", delBtn: "Delete account", premiumActive: "Premium active" },
+  kz: { acc: "СЕНІҢ АККАУНТЫҢ", none: "Көрсетілмеген", premium: "Premium", freePlan: "Тегін жоспар", profile: "Профиль", name: "Аты", editName: "Атын өзгерту", email: "Email", emailNote: "Кіру үшін қолданылады, өзгертуге болмайды", news: "Email хабарлама", newsNote: "Кеңестер мен еске салғыштар алу", settings: "Параметрлер", language: "Тіл", usage: "Lexy-ді не үшін қолданасың", usageNote: "Қолданба таңдауыңа бейімделеді: басты бет, мәзір және Lexy AI.", pathEn: "Сөйлесу ағылшын тілі", pathEnSub: "Lexy-мен сөйлесу сабақтары, сөздер мен фразалар", pathIe: "IELTS-ке дайындық", pathIeSub: "Сынақ емтихандар, балдар және емтиханға дейінгі жоспар", support: "Қолдау", privacy: "Құпиялылық саясаты", terms: "Пайдалану шарттары", subscription: "Жазылым", active: "Белсенді", noSub: "Жазылым жоқ", premDesc: "Premium Lexy AI, сөздік және ойындарды ашады.", choosePlan: "Тариф таңдау", guarantee: "Ақшаны қайтару кепілдігі", guaranteeText: "Қос кепілдік: керекті баллды жинамасаң — ақшаңды қайтарамыз немесе қайта тапсыруды төлейміз. Шарттары қолдау қызметінде.", logout: "Шығу", created: "Аккаунт жасалды", delTitle: "Аккаунтты жою", delText: "Қолжетімділік бірден жабылады, аккаунт пен деректерді 30 күнде жоямыз. Тек қолдау арқылы қалпына келтіруге болады.", delBtn: "Аккаунтты жою", premiumActive: "Premium белсенді" },
+  uz: { acc: "SIZNING AKKAUNTINGIZ", none: "Ko'rsatilmagan", premium: "Premium", freePlan: "Bepul reja", profile: "Profil", name: "Ism", editName: "Ismni o'zgartirish", email: "Email", emailNote: "Kirish uchun ishlatiladi, o'zgartirib bo'lmaydi", news: "Email xabarnoma", newsNote: "Maslahat va eslatmalar olish", settings: "Sozlamalar", language: "Til", usage: "Lexydan nima uchun foydalanasiz", usageNote: "Ilova tanlovingizga moslashadi: bosh sahifa, menyu va Lexy AI.", pathEn: "So'zlashuv ingliz tili", pathEnSub: "Lexy bilan suhbat darslari, so'zlar va iboralar", pathIe: "IELTSga tayyorgarlik", pathIeSub: "Sinov imtihonlari, ballar va imtihongacha reja", support: "Qo'llab-quvvatlash", privacy: "Maxfiylik siyosati", terms: "Foydalanish shartlari", subscription: "Obuna", active: "Faol", noSub: "Obuna yo'q", premDesc: "Premium Lexy AI, lug'at va o'yinlarni ochadi.", choosePlan: "Tarif tanlash", guarantee: "Pulni qaytarish kafolati", guaranteeText: "Qo'sh kafolat: kerakli ballni to'plamasangiz — pulni qaytaramiz yoki qayta topshirishni to'laymiz. Shartlar qo'llab-quvvatlashda.", logout: "Chiqish", created: "Akkaunt yaratildi", delTitle: "Akkauntni o'chirish", delText: "Kirish darhol yopiladi, akkaunt va ma'lumotlarni 30 kunda o'chiramiz. Faqat qo'llab-quvvatlash orqali tiklash mumkin.", delBtn: "Akkauntni o'chirish", premiumActive: "Premium faol" }
+};
+function P() { return PL[U.lang] || PL.ru; }
+var DL = { ru: "ru-RU", en: "en-GB", kz: "kk-KZ", uz: "uz-UZ" };
+var MOD = {
+  ru: { nameQ: "Как тебя зовут?", nameLbl: "Имя", save: "Сохранить", cancel: "Отмена", nameSaved: "Имя сохранено", delQ: "Удалить аккаунт?", delQText: "Аккаунт и подписка удалятся сразу. Это действие нельзя отменить.", delYes: "Удалить" },
+  en: { nameQ: "What's your name?", nameLbl: "Name", save: "Save", cancel: "Cancel", nameSaved: "Name saved", delQ: "Delete account?", delQText: "The account and subscription will be removed immediately. This cannot be undone.", delYes: "Delete" },
+  kz: { nameQ: "Атың кім?", nameLbl: "Аты", save: "Сақтау", cancel: "Болдырмау", nameSaved: "Аты сақталды", delQ: "Аккаунтты жою?", delQText: "Аккаунт пен жазылым бірден жойылады. Бұл әрекетті қайтару мүмкін емес.", delYes: "Жою" },
+  uz: { nameQ: "Ismingiz nima?", nameLbl: "Ism", save: "Saqlash", cancel: "Bekor qilish", nameSaved: "Ism saqlandi", delQ: "Akkauntni o'chirish?", delQText: "Akkaunt va obuna darhol o'chiriladi. Bu amalni qaytarib bo'lmaydi.", delYes: "O'chirish" }
+};
+function M() { return MOD[U.lang] || MOD.ru; }
 
 /* ---------- модалка / тост ---------- */
 function modal(o) {
@@ -197,7 +213,7 @@ function side() {
   if (!U.dismiss.android) h += '<div class="pr red"><button class="x" data-act="dismiss" data-k="android" aria-label="Закрыть">×</button><b>Lexy скоро на Android</b><small>Приложение появится в Google Play</small></div>';
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="Закрыть">×</button><span class="pi">' + ic("send") + "</span><div><b>Наш Telegram-канал</b><small>Лайфхаки и разборы ошибок</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
-  h += U.premium ? '<div class="prem" style="background:var(--ok)">' + ic("check") + " Premium активен</div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + l.prem + "</a>";
+  h += U.premium ? '<div class="prem" style="background:var(--ok)">' + ic("check") + " " + P().premiumActive + "</div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + l.prem + "</a>";
   $("#side").innerHTML = h + "</div>";
 }
 
@@ -234,27 +250,29 @@ function switchPath(p) {
 function sh(i, t) { return '<div class="sh"><span class="si">' + ic(i) + "</span><h3>" + t + "</h3></div>"; }
 function renderProfile() {
   var el = $("#s-profile"); if (!el) return;
-  var d = new Date(U.created).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  var t = P();
+  var d = new Date(U.created).toLocaleDateString(DL[U.lang] || "ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  var plans = U.premium ? t.premium : t.freePlan;
   el.innerHTML =
-    '<div class="ph"><div class="av">' + fl(46) + "</div><div><small>ТВОЙ АККАУНТ</small><h2>" + esc(U.name || "Не указано") + "</h2><p>" + esc(U.email) + '</p><span class="bd">' + (U.premium ? "Premium" : "Бесплатный план") + "</span></div></div>" +
-    sh("user", "Профиль") + '<div class="card g">' +
-      '<div class="rw"><div><small>' + ic("user") + ' Имя</small><b>' + esc(U.name || "Не указано") + '</b></div><button class="ib" data-act="name" aria-label="Изменить имя">' + ic("pencil") + "</button></div>" +
-      '<div class="rw"><div><small>' + ic("mail") + " Email</small><b>" + esc(U.email) + '</b></div><span class="nt">Используется для входа, изменить нельзя</span></div>' +
-      '<div class="rw"><div><b>Рассылка по email</b><small>Получать советы и напоминания</small></div><label class="sw"><input type="checkbox" data-act="news"' + (U.news ? " checked" : "") + "><span></span></label></div></div>" +
-    sh("globe", "Настройки") + '<div class="card g">' +
-      '<div class="rw"><b>Язык</b><div class="lg">' + [["en", "EN"], ["ru", "RU"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + "</div></div>" +
-      '<div class="rw" style="display:block"><b>Для чего ты используешь Lexy</b><small>Приложение подстроится под выбор: главная, меню и Lexy AI.</small><div class="pu" style="margin-top:14px">' +
-        '<button class="pcard' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div><b>Разговорный английский</b><small>Уроки-разговоры с Lexy, слова и фразы</small></div></button>' +
-        '<button class="pcard' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div><b>Подготовка к IELTS</b><small>Пробные экзамены, баллы и план до экзамена</small></div></button></div></div></div>' +
-    sh("mail", "Поддержка") + '<div class="card g">' +
-      '<a class="rw" href="mailto:' + CFG.support + '"><div><small>' + ic("mail") + " Email</small><b>" + CFG.support + "</b></div>" + ic("chev") + "</a>" +
-      '<div class="lgl"><a href="' + CFG.privacy + '">Политика конфиденциальности</a><a href="' + CFG.terms + '">Условия пользования</a></div></div>' +
-    '<div class="card g" style="margin-top:16px"><div class="rw" data-act="sub" style="cursor:pointer"><div><small>' + ic("crown") + " Подписка</small><b>" + (U.premium ? "Premium" : "Бесплатный план") + '</b></div><span class="nt">' + (U.premium ? "Активна" : "Нет подписки") + " ⌄</span></div>" +
-      '<div class="xp" id="xp-sub" hidden>' + (U.premium ? "Premium открывает Lexy AI, словарь и игры." : "Premium открывает Lexy AI, словарь и игры.") +
-      '<br><a class="btn p sm" href="' + CFG.pricing + '">Выбрать тариф</a>' + (CFG.demo ? '<button class="btn g sm" data-act="demoPro">' + (U.premium ? "Выключить" : "Включить") + " Premium (демо)</button>" : "") + "</div></div>" +
-    '<div class="card g"><div class="rw" data-act="guar" style="cursor:pointer"><div><b>' + ic("shield") + " Гарантия возврата</b></div>" + ic("down") + '</div><div class="xp" id="xp-guar" hidden>Двойная гарантия: не набрал нужный балл — вернём деньги или оплатим пересдачу. Условия уточняй в поддержке.</div></div>' +
-    '<div class="card out"><button class="btn g blk" data-act="logout">' + ic("logout") + " Выйти</button><small>Аккаунт создан " + d + "</small></div>" +
-    '<div class="dz">' + ic("alert") + "<div><b>Удаление аккаунта</b><p>Доступ закроется сразу, аккаунт и данные удалим через 30 дней. Восстановить — только через поддержку.</p><button class=\"btn d sm\" data-act=\"del\">Удалить аккаунт</button></div></div>";
+    '<div class="ph"><div class="av">' + fl(46) + "</div><div><small>" + t.acc + "</small><h2>" + esc(U.name || t.none) + "</h2><p>" + esc(U.email) + '</p><span class="bd">' + plans + "</span></div></div>" +
+    sh("user", t.profile) + '<div class="card g">' +
+      '<div class="rw"><div><small>' + ic("user") + " " + t.name + "</small><b>" + esc(U.name || t.none) + '</b></div><button class="ib" data-act="name" aria-label="' + esc(t.editName) + '">' + ic("pencil") + "</button></div>" +
+      '<div class="rw"><div><small>' + ic("mail") + " " + t.email + "</small><b>" + esc(U.email) + '</b></div><span class="nt">' + t.emailNote + "</span></div>" +
+      '<div class="rw"><div><b>' + t.news + "</b><small>" + t.newsNote + '</small></div><label class="sw"><input type="checkbox" data-act="news"' + (U.news ? " checked" : "") + "><span></span></label></div></div>" +
+    sh("globe", t.settings) + '<div class="card g">' +
+      '<div class="rw"><b>' + t.language + '</b><div class="lg">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + "</div></div>" +
+      '<div class="rw" style="display:block"><b>' + t.usage + "</b><small>" + t.usageNote + '</small><div class="pu" style="margin-top:14px">' +
+        '<button class="pcard' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div><b>' + t.pathEn + "</b><small>" + t.pathEnSub + "</small></div></button>" +
+        '<button class="pcard' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div><b>' + t.pathIe + "</b><small>" + t.pathIeSub + "</small></div></button></div></div></div>" +
+    sh("mail", t.support) + '<div class="card g">' +
+      '<a class="rw" href="mailto:' + CFG.support + '"><div><small>' + ic("mail") + " " + t.email + "</small><b>" + CFG.support + "</b></div>" + ic("chev") + "</a>" +
+      '<div class="lgl"><a href="' + CFG.privacy + '">' + t.privacy + '</a><a href="' + CFG.terms + '">' + t.terms + "</a></div></div>" +
+    '<div class="card g" style="margin-top:16px"><div class="rw" data-act="sub" style="cursor:pointer"><div><small>' + ic("crown") + " " + t.subscription + "</small><b>" + plans + '</b></div><span class="nt">' + (U.premium ? t.active : t.noSub) + " ⌄</span></div>" +
+      '<div class="xp" id="xp-sub" hidden>' + t.premDesc +
+      '<br><a class="btn p sm" href="' + CFG.pricing + '">' + t.choosePlan + '</a>' + (CFG.demo ? '<button class="btn g sm" data-act="demoPro">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div></div>" +
+    '<div class="card g"><div class="rw" data-act="guar" style="cursor:pointer"><div><b>' + ic("shield") + " " + t.guarantee + "</b></div>" + ic("down") + '</div><div class="xp" id="xp-guar" hidden>' + t.guaranteeText + "</div></div>" +
+    '<div class="card out"><button class="btn g blk" data-act="logout">' + ic("logout") + " " + t.logout + "</button><small>" + t.created + " " + d + "</small></div>" +
+    '<div class="dz">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button class="btn d sm" data-act="del">' + t.delBtn + "</button></div></div>";
 }
 
 /* ---------- словарь (общий для обоих профилей) ---------- */
@@ -300,11 +318,12 @@ A.mok = function () { var f = MOK; if (f && f($("#mv")) === false) return; close
 A.dismiss = function (el, e) { e.preventDefault(); e.stopPropagation(); U.dismiss[el.dataset.k] = 1; save(); side(); };
 A.pick = function (el) { switchPath(el.dataset.p); };
 A.name = function () {
-  modal({ title: "Как тебя зовут?", body: '<label>Имя</label><input type="text" id="nm" maxlength="40" value="' + esc(U.name) + '">', ok: "Сохранить", cancel: "Отмена", init: function () { setTimeout(function () { $("#nm").focus(); }, 50); },
-    onOk: function () { save({ name: $("#nm").value.trim() }); renderProfile(); toast("Имя сохранено"); } });
+  var m = M();
+  modal({ title: m.nameQ, body: '<label>' + m.nameLbl + '</label><input type="text" id="nm" maxlength="40" value="' + esc(U.name) + '">', ok: m.save, cancel: m.cancel, init: function () { setTimeout(function () { $("#nm").focus(); }, 50); },
+    onOk: function () { save({ name: $("#nm").value.trim() }); renderProfile(); toast(m.nameSaved); } });
 };
 A.news = function (el) { save({ news: el.checked }); toast(el.checked ? "Рассылка включена" : "Рассылка выключена"); };
-A.lang = function (el) { save({ lang: el.dataset.l }); side(); renderProfile(); };
+A.lang = function (el) { save({ lang: el.dataset.l }); gates(); show(CUR); };
 A.sub = function () { $("#xp-sub").hidden = !$("#xp-sub").hidden; };
 A.guar = function () { $("#xp-guar").hidden = !$("#xp-guar").hidden; };
 A.demoPro = function () {
@@ -320,10 +339,11 @@ A.logout = function () {
   location.href = CFG.home;
 };
 A.del = function () {
-  modal({ title: "Удалить аккаунт?", body: "<p>Аккаунт и подписка удалятся сразу. Это действие нельзя отменить.</p>", ok: "Удалить", cancel: "Отмена",
+  var m = M();
+  modal({ title: m.delQ, body: "<p>" + m.delQText + "</p>", ok: m.delYes, cancel: m.cancel,
     onOk: function () {
       if (!w.LexyAuth) return;
-      var btn = $("#mv .btn.p"); if (btn) { btn.disabled = true; btn.textContent = "Удаляем…"; }
+      var btn = $("#mv .btn.p"); if (btn) { btn.disabled = true; btn.textContent = "…"; }
       w.LexyAuth.deleteAccount().then(function () {
         DB.remove(U.email);
         localStorage.removeItem(SES);

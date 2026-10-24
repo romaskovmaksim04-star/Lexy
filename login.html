@@ -48,6 +48,7 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 /* MAIN */
 main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
 .auth-box{width:100%;max-width:420px;animation:fadeUp .4s both}
+html.await .auth-box{visibility:hidden}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
 .auth-header{text-align:left;margin-bottom:24px}
@@ -426,13 +427,16 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
 
   var hadAuthHash = /access_token=|error_description=/.test(location.hash || '') || /[?&]code=/.test(location.search || '');
 
+  document.documentElement.classList.add('await');
+  function reveal(){ document.documentElement.classList.remove('await'); }
+  setTimeout(reveal, 2500);
+
   function handleUser(u){
     if(u){ showSigned(u); } else { showLoginForm(); }
+    reveal();
   }
 
   var u = window.LexyAuth ? LexyAuth.user() : null;
-  handleUser(u);
-
   if(hadAuthHash && !u){
     try{
       var hp = new URLSearchParams((location.hash || '').replace(/^#/, ''));
@@ -441,12 +445,16 @@ document.getElementById('btnGoogle').addEventListener('click', function(){
     }catch(e){}
   }
 
-  if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){
+  if(u){
+    handleUser(u);
+  } else if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){
     LexyAuth.ready.then(function(){
       var cu = LexyAuth.user();
       if(cu){ window.location.replace('dashboard.html'); return; }
       handleUser(null);
     });
+  } else {
+    handleUser(null);
   }
   window.addEventListener('lexy:auth', function(e){
     if(e.detail && e.detail.email){ window.location.replace('dashboard.html'); }

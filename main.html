@@ -1130,6 +1130,8 @@ document.querySelectorAll('[data-auth-login]').forEach(function(a){
   });
 });
 addEventListener('storage', function(e){ if(e.key === 'lexy_session') applyAuth(); });
+if(window.LexyAuth && LexyAuth.ready && LexyAuth.ready.then){ LexyAuth.ready.then(function(){ applyAuth(); }); }
+window.addEventListener('lexy:auth', function(){ applyAuth(); });
 
 /* ============ Language switcher (Mobile) ============ */
 var langPick = document.getElementById('langPick');

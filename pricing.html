@@ -230,6 +230,8 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
     </article>
   </div>
 
+  <p class="form-msg" id="payMsg" role="alert" hidden style="text-align:center;font-size:13px;font-weight:600;color:#E5443E;margin:0 auto 14px;max-width:600px"></p>
+
   <div class="guarantee-note">
     <svg><use href="#ic-shield"/></svg>
     <span data-i18n="guarantee.text">Если не получишь прогресс за 30 дней занятий — вернём деньги и оплатим пересдачу.</span>
@@ -542,8 +544,14 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
       throw { code: 'provider' };
     }).catch(function(err){
       setBusy(btn, false);
-      if(err && err.code === 'auth'){ goRegister(plan); return; }
-      alert('Не удалось создать платёж. Проверь соединение и попробуй ещё раз.');
+      if(err && err.code === 'auth'){ window.location.href = 'login.html'; return; }
+      var box = document.getElementById('payMsg');
+      if(box){
+        box.hidden = false;
+        box.textContent = 'Не удалось создать платёж (' + (err && err.code ? err.code : 'error') + '). Обнови страницу (Ctrl+F5) и попробуй снова.';
+      } else {
+        alert('Не удалось создать платёж. Попробуй ещё раз.');
+      }
     });
   }
   document.querySelectorAll('.plan .cta[data-plan]').forEach(function(btn){
