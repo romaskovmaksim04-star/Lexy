@@ -459,7 +459,7 @@
     $("#s-faq").innerHTML = '<h1 class="t">' + T("faq") + '</h1><p class="s" style="margin-bottom:6px">' + (lang === "en" ? "Everything about Lexy — short and to the point" : "Всё о Lexy — коротко и по делу") + "</p>" + items;
   }
   function renderTalk() {
-    if (window.LexyChat) { LexyChat.render($("#s-talk"), { level: course().level }); return; }
+    if (window.LexyChat) { LexyChat.render($("#s-talk"), { level: course().level, exam: false }); return; }
     $("#s-talk").innerHTML = '<h1 class="t">' + T("talk") + "</h1>";
   }
 
