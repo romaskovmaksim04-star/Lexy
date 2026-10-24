@@ -1,6 +1,6 @@
 /* ==========================================================
    lexy-chat.js — Lexy AI (Разговор): чат-практика + письмо
-   • DeepSeek через Supabase Edge Function ai-chat
+   • AI через Supabase Edge Function ai-chat
    • Уровень из курса; IELTS-письмо или общая практика письма
    • Инструкции, анимации, «печатает…», сохранение чата
    ========================================================== */
@@ -149,7 +149,7 @@
     if (!(w.Lexy.user && w.Lexy.user.premium)) { renderLock(el, exam); return; }
     injectCss();
     var st = store((w.Lexy.user && w.Lexy.user.email) || "anon");
-    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? "Практика разговора и IELTS Writing" : "Практика разговора и письма") + ' · уровень ' + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">🤖 DeepSeek</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? "IELTS-проверка" : "Общая проверка") + '</span></div><div class="lxa-breathe"></div></div>';
+    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? "Практика разговора и IELTS Writing" : "Практика разговора и письма") + ' · уровень ' + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">🤖 ИИ-собеседник</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? "IELTS-проверка" : "Общая проверка") + '</span></div><div class="lxa-breathe"></div></div>';
     var tabs = '<div class="lxa-tabs" id="lxaTabs"><button class="lxa-tab' + (st.tab === "chat" ? " on" : "") + '" data-t="chat">💬 Чат</button><button class="lxa-tab' + (st.tab === "writing" ? " on" : "") + '" data-t="writing">✍️ Письмо</button></div>';
     el.innerHTML = hero + tabs + '<div id="lxaBody"></div>';
     $("#lxaTabs", el).addEventListener("click", function (e) {
