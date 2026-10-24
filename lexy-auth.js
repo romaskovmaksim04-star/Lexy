@@ -75,6 +75,11 @@
     rec.supabase = true;
     rec.passHash = "supabase";
     rec.salt = "supabase";
+    // синхронизация прогресса между устройствами
+    if (profile.settings && profile.settings.app) {
+      var app = profile.settings.app;
+      for (var ak in app) { if (Object.prototype.hasOwnProperty.call(app, ak)) rec[ak] = app[ak]; }
+    }
     db[email] = rec;
     write(db);
     setSession(email);

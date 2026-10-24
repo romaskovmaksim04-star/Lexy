@@ -74,10 +74,15 @@ function load() {
   DB.save(U);
   return U;
 }
+var SYNC_KEYS = ["onboard", "course", "vocab", "tests", "mins", "streak", "words", "decks", "lessons", "phrases", "dismiss", "vsort", "news"];
+function snapshot() { var s = {}; SYNC_KEYS.forEach(function (k) { if (U[k] !== undefined) s[k] = U[k]; }); return s; }
 function save(p) {
   if (p) Object.assign(U, p);
   DB.save(U);
-  if (p && w.LexyAuth) { try { w.LexyAuth.update(p); } catch (e) {} }
+  if (w.LexyAuth) {
+    var patch = Object.assign({}, p || {}, { settings: { app: snapshot() } });
+    try { w.LexyAuth.update(patch); } catch (e) {}
+  }
 }
 
 /* статистика */
