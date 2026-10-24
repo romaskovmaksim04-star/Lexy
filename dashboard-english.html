@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=10"></script>
-<script src="lexy-core.js?v=16"></script>
+<script src="lexy-core.js?v=17"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-a1.js?v=1"></script>
@@ -26,6 +26,7 @@
 <script src="lexy-course-extra.js?v=1"></script>
 <script src="lexy-course.js?v=7"></script>
 <script src="lexy-vocab.js?v=1"></script>
+<script src="lexy-answers.js?v=1"></script>
 </head>
 <body>
 <script>Lexy.guard("english");</script>
@@ -34,7 +35,6 @@
 <main class="main">
   <section class="sec" id="s-path"></section>
   <section class="sec" id="s-practice"></section>
-  <section class="sec" id="s-faq"></section>
   <section class="sec" id="s-talk">
     <h1 class="t">Разговор</h1>
     <div data-gate="ai"></div>
@@ -407,7 +407,21 @@
         '<div class="bar" style="margin:8px 0 6px"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
         '<small style="color:var(--soft);font-weight:600">' + done + " из " + cnt + (b != null ? " · лучший " + b.toFixed(1) : "") + " · " + (p ? cnt + " заданий" : C2.freeLimit(s[0]) + " бесплатно") + '</small></div>' + ic("chev") + "</a>";
     }).join("");
-    $("#s-practice").innerHTML = hero + cards;
+    var lang = (Lexy.user.lang) || "ru";
+    var ANS = (window.LEXY_ANSWERS && (LEXY_ANSWERS[lang] || LEXY_ANSWERS.ru)) || [];
+    var ansBlock = '<div class="card" style="margin-top:16px"><h2 style="font:800 20px var(--display);letter-spacing:-.02em">' + (lang === "en" ? "Answer search" : "Поиск ответов") + '</h2><p class="s" style="margin:6px 0 12px">' + (lang === "en" ? "Didn't understand a topic? Search among 500+ answers." : "Не понял тему? Найди ответ среди 500+ ответов.") + '</p>' +
+      '<label style="display:flex;align-items:center;gap:8px;background:var(--mist);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px">' + ic("search") + '<input id="ansq" placeholder="' + (lang === "en" ? "e.g. Present Perfect, affect / effect…" : "Например: Present Perfect, affect / effect…") + '" style="border:0;background:none;outline:none;flex:1;font:500 14.5px var(--body)"></label>' +
+      '<div id="anslist" style="margin-top:12px"></div></div>';
+    $("#s-practice").innerHTML = hero + cards + ansBlock;
+    var ansq = $("#ansq"), anslist = $("#anslist");
+    function renderAns() {
+      var q = (ansq.value || "").trim().toLowerCase();
+      if (!q) { anslist.innerHTML = '<p class="s" style="color:var(--soft)">' + (lang === "en" ? "Start typing to search…" : "Начни печатать, чтобы искать…") + "</p>"; return; }
+      var res = ANS.filter(function (x) { return (x.q + " " + x.a + " " + x.tag).toLowerCase().indexOf(q) > -1; }).slice(0, 30);
+      anslist.innerHTML = res.length ? res.map(function (x) { return '<div class="card" style="margin-top:10px;padding:14px 16px"><b>' + esc(x.q) + '</b><div style="color:var(--soft);font-size:13.5px;line-height:1.55;margin-top:6px">' + esc(x.a) + '</div><small style="color:var(--fire);font-weight:700">' + esc(x.tag) + "</small></div>"; }).join("") : '<p class="s" style="color:var(--soft)">' + (lang === "en" ? "Nothing found" : "Ничего не нашлось") + "</p>";
+    }
+    ansq.addEventListener("input", renderAns);
+    renderAns();
   }
 
   /* ---------- ПРОГРЕСС ---------- */
@@ -443,8 +457,6 @@
     }).join("");
     $("#s-faq").innerHTML = '<h1 class="t">' + T("faq") + '</h1><p class="s" style="margin-bottom:6px">' + (lang === "en" ? "Everything about Lexy — short and to the point" : "Всё о Lexy — коротко и по делу") + "</p>" + items;
   }
-  $("#s-faq").addEventListener("click", function (e) { var b = e.target.closest("[data-faq]"); if (b) { var x = document.getElementById("faq-" + b.dataset.faq); if (x) x.hidden = !x.hidden; } });
-
   function renderTalk() {
     var body = paid()
       ? '<div class="card" style="margin-top:20px"><h3 style="font:800 20px var(--display);letter-spacing:-.02em">' + T("talkTitle") + '</h3><p class="s">' + T("talkSub") + '</p><a class="btn v" href="game-shadow.html">' + T("talkBtn") + "</a></div>"
@@ -452,7 +464,7 @@
     $("#s-talk").innerHTML = '<h1 class="t">' + T("talk") + "</h1>" + body;
   }
 
-  Lexy.init("english", { render: { path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); }, practice: renderPractice, faq: renderFaq, progress: renderProgress, talk: renderTalk } });
+  Lexy.init("english", { render: { path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); }, practice: renderPractice, progress: renderProgress, talk: renderTalk } });
 })();
 </script>
 </body>

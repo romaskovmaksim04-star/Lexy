@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=10"></script>
-<script src="lexy-core.js?v=16"></script>
+<script src="lexy-core.js?v=17"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-vocab.js?v=1"></script>
@@ -48,7 +48,6 @@
     </div>
   </section>
 
-  <section class="sec" id="s-faq"></section>
   <section class="sec" id="s-profile"></section>
 </main>
 
@@ -164,8 +163,7 @@
     }).join("");
     $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexy" : "Короткие ответы о Lexy") + "</p>" + items;
   }
-  document.getElementById("s-faq").addEventListener("click", function (e) { var b = e.target.closest("[data-faq]"); if (b) { var x = document.getElementById("faq-" + b.dataset.faq); if (x) x.hidden = !x.hidden; } });
-  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats, ai: renderAi, faq: renderFaq }, vocabGated: true });
+  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats, ai: renderAi }, vocabGated: true });
 })();
 </script>
 </body>
