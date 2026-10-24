@@ -206,6 +206,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
     b = Math.max(4, Math.min(9, b));
     return Math.round(b * 2) / 2;
   }
+  function shuffle(a){ for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function tests(){ return (LexyAuth.user() || {}).tests || {}; }
   function nextNum(s){
     var n = 1, t = tests();
@@ -326,7 +327,7 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
   function renderQuiz(k, n, isFull){
     var item = C.item(k, n);
     var list = item.q;
-    var i = 0, picked = null, score = 0, answered = false;
+    var i = 0, picked = null, score = 0, answered = false, correct = 0;
     function draw(){
       var q = list[i];
       var html = '<h1>' + SKILLS[k].name + ' · ' + item.t + '</h1>' +
@@ -340,9 +341,11 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
           '<div class="row" style="margin-top:0"><button class="btn" id="play">▶ Прослушать</button></div>' +
           '<audio id="au" preload="none" src="' + C.audioFor(item.script) + '"></audio>';
       }
+      var mapped = shuffle(q.o.map(function(o, x){ return { o: o, c: x === q.a }; }));
+      correct = mapped.findIndex(function(x){ return x.c; });
       html += '<div class="qtext">' + esc(q.q) + '</div>' +
-        '<div class="opts">' + q.o.map(function(o, x){
-          return '<button class="opt" data-x="' + x + '"><span class="key">' + 'ABCD'[x] + '</span>' + esc(o) + '</button>';
+        '<div class="opts">' + mapped.map(function(o, x){
+          return '<button class="opt" data-x="' + x + '"><span class="key">' + 'ABCD'[x] + '</span>' + esc(o.o) + '</button>';
         }).join('') + '</div>' +
         '<div class="row"><button class="btn" id="next" disabled>Далее →</button></div></div>';
       app.innerHTML = html;
@@ -372,10 +375,10 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
         if(!answered){
           answered = true;
           try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
-          var correct = app.querySelectorAll('.opt')[q.a];
-          correct.classList.add('right');
-          if(picked !== q.a){
-            app.querySelectorAll('.opt')[picked].classList.add('wrong');
+          var els = app.querySelectorAll('.opt');
+          els[correct].classList.add('right');
+          if(picked !== correct){
+            els[picked].classList.add('wrong');
           } else score++;
           var btn = document.getElementById('next');
           btn.textContent = i === list.length - 1 ? 'Показать результат →' : 'Следующий вопрос →';
