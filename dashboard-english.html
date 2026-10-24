@@ -167,8 +167,9 @@
     cc.prog[RUN.plan.level + "-" + RUN.plan.day] = { i: RUN.i, ts: Date.now() };
     Lexy.save({ course: cc });
     var B = RUN.plan.blocks[RUN.i];
-    var title = '<div class="top"><button class="lnk" id="back">← К карте</button></div>';
-    var stepbar = '<div class="progress"><i style="width:' + Math.round(RUN.i / RUN.plan.blocks.length * 100) + '%"></i></div><div class="qmeta"><span>' + esc(RUN.plan.title) + "</span><span>" + C.blockLabel(B.type) + " " + (RUN.i + 1) + " из " + RUN.plan.blocks.length + "</span></div>";
+    var dots = RUN.plan.blocks.map(function (x, idx) { return '<i class="' + (idx < RUN.i ? "done" : idx === RUN.i ? "on" : "") + '"></i>'; }).join("");
+    var title = '<div class="crun-top"><button class="lnk" id="back">← К карте</button><span class="lk">' + esc(RUN.plan.title) + " · " + C.blockLabel(B.type) + "</span></div>";
+    var stepbar = '<div class="dots">' + dots + "</div>";
     var body = "";
     if (B.type === "theory") body = drawTheory(B.data);
     else if (B.type === "vocab") body = drawVocab(B.data);
@@ -188,32 +189,39 @@
   }
 
   function drawTheory(d) {
-    return '<h1 class="t" style="font-size:24px">Практика с объяснением</h1>' +
-      '<div class="card" style="margin-top:14px"><div style="font:800 18px var(--display);letter-spacing:-.02em;margin-bottom:8px">' + esc(d.t) + "</div>" +
-      '<p class="s" style="font-size:15px;line-height:1.6;color:var(--ink)">' + esc(d.e) + "</p>" +
-      '<div class="rd" style="margin-top:12px">' + (d.ex || []).map(function (x) { return "• " + esc(x); }).join("<br>") + "</div>" +
-      '<button class="btn p" id="bnext" style="margin-top:6px">Понятно, к заданиям →</button></div>';
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">Практика с объяснением · разбор правила</div></div></div>' +
+      '<div class="lesson"><p>' + esc(d.e) + "</p></div>" +
+      '<div class="exlist">' + (d.ex || []).map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
+      '<div class="tip">💡 Прочитай примеры вслух — так правило запоминается быстрее.</div>' +
+      '<button class="btn p" id="bnext" style="margin-top:16px;width:100%">Понятно, к заданиям →</button></div>';
   }
   function wireTheory(el) { var b = $("#bnext", el); b && b.addEventListener("click", function () { nextBlock(1); }); }
   function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
 
   function drawVocab(d) {
-    return '<h1 class="t" style="font-size:26px">Слова · ' + esc(d.t) + '</h1><div class="card g" style="margin-top:14px">' +
-      d.w.map(function (x) { return '<div class="rw"><div><b>' + esc(x[0]) + '</b><small>' + esc(x[1]) + '</small></div><button class="ib" data-know="1" aria-label="know">' + ic("check") + "</button></div>"; }).join("") +
-      '</div><button class="btn p" id="bnext" style="margin-top:14px">Дальше →</button>';
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("vocab") + '</span><div><div class="btitle">Слова · ' + esc(d.t) + '</div><div class="bsub">Отметь ✓ слова, которые уже знаешь</div></div></div>' +
+      '<div class="wcards">' + d.w.map(function (x) { return '<div class="wcard"><div><div class="wbig">' + esc(x[0]) + '</div><div class="wt">' + esc(x[1]) + '</div></div><button class="kbtn" data-know aria-label="знаю">' + ic("check") + "</button></div>"; }).join("") + "</div>" +
+      '<button class="btn p" id="bnext" style="margin-top:16px;width:100%">Дальше →</button></div>';
   }
   function wireVocab(el) {
-    el.querySelectorAll("[data-know]").forEach(function (b) { b.addEventListener("click", function () { var r = b.closest(".rw"); r.style.opacity = ".45"; b.textContent = "✓"; }); });
+    el.querySelectorAll("[data-know]").forEach(function (b) { b.addEventListener("click", function () { b.classList.toggle("on"); }); });
     $("#bnext").addEventListener("click", function () { nextBlock(1); });
   }
 
   function drawReading(d) {
-    return '<h1 class="t" style="font-size:24px">' + esc(d.t) + '</h1><div class="card" style="margin-top:14px"><div class="rd">' + esc(d.p) + '</div><div id="qarea"></div></div>';
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">Чтение и грамматика · прочитай и ответь</div></div></div>' +
+      '<div class="readpg">' + esc(d.p) + '</div><div id="qarea" style="margin-top:18px"></div></div>';
   }
   function drawQuiz(d, type) {
     var url = type === "listening" && C.audioFor ? C.audioFor(d.script) : null;
-    var intro = type === "listening" ? '<div class="card" style="margin-top:14px"><div class="row" style="margin:0"><button class="btn" id="play">▶ Прослушать</button><span class="s" style="margin-left:10px">Аудио · нажми, чтобы включить</span></div>' + (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") + "</div>" : "";
-    return '<h1 class="t" style="font-size:24px">' + esc(d.t) + "</h1>" + intro + '<div class="card" style="margin-top:14px"><div id="qarea"></div></div>';
+    var head = '<div class="bhead"><span class="bic">' + ic(type === "listening" ? "head" : "spark") + '</span><div><div class="btitle">' + esc(d.t) + '</div><div class="bsub">' + (type === "listening" ? "Аудирование · послушай и ответь" : "Практика · выбери верный ответ") + "</div></div></div>";
+    var player = "";
+    if (type === "listening") {
+      player = '<div class="player"><button class="pbtn" id="play">' + ic("play") + '</button><div class="ptx"><b>Прослушай запись</b><small>Нажми на кнопку, чтобы включить</small></div></div>' +
+        (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") +
+        '<button class="btn ghost sm trbtn" id="showtr">Показать текст</button><div id="tr" hidden class="readpg" style="margin-top:10px">' + esc(d.script) + "</div>";
+    }
+    return '<div class="block">' + head + player + '<div id="qarea" style="margin-top:16px"></div></div>';
   }
   function wireQuiz(el, d, type) {
     if (type === "listening") {
@@ -225,6 +233,8 @@
           catch (e) { speak(d.script, pb); }
         } else { speak(d.script, pb); }
       });
+      var trb = $("#showtr", el), tr = $("#tr", el);
+      if (trb && tr) trb.addEventListener("click", function () { tr.hidden = !tr.hidden; trb.textContent = tr.hidden ? "Показать текст" : "Скрыть текст"; });
     }
     var list = d.q || d.questions, i = 0, score = 0, answered = false, picked = null;
     function draw() {
@@ -266,7 +276,7 @@
     $("#sample").addEventListener("click", function () { speak(RUN.plan.blocks[RUN.i].data.prompt + ". " + RUN.plan.blocks[RUN.i].data.points.join(". "), null); });
     done.addEventListener("click", function () { nextBlock(1); });
   }
-  function drawTest(d) { return '<h1 class="t" style="font-size:24px">' + esc(d.title) + '</h1><div class="card" style="margin-top:14px"><div id="qarea"></div></div>'; }
+  function drawTest(d) { return '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + esc(d.title) + '</div><div class="bsub">Проверка уровня · ответь на вопросы</div></div></div><div id="qarea"></div></div>'; }
   function wireTest(el) { wireQuiz(el, { q: RUN.plan.blocks[RUN.i].data.questions }, "test"); }
 
   function finishDay() {

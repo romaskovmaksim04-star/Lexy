@@ -293,3 +293,36 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .pill:hover{border-color:#FFC2A1;color:var(--fire)}
 .pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pill em{font-style:normal;opacity:.7;margin-left:4px}
+
+/* ---- rich course blocks ---- */
+.crun-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.crun-top .lk{font:700 13px var(--body);color:var(--soft)}
+.dots{display:flex;gap:6px;margin:6px 0 16px}
+.dots i{flex:1;height:6px;border-radius:999px;background:var(--line);transition:background .2s}
+.dots i.on{background:var(--fire)}
+.dots i.done{background:var(--ok)}
+.block{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 22px 46px -36px rgba(27,20,51,.55);position:relative;overflow:hidden}
+.block::before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,154,10,.14),transparent 65%);pointer-events:none}
+.block .bhead{display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative}
+.block .bic{width:48px;height:48px;flex:none;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EB,#FFE3D2);color:var(--fire);box-shadow:inset 0 0 0 1px rgba(255,90,31,.08)}
+.block .bic svg{width:22px;height:22px}
+.block .btitle{font:800 20px var(--display);letter-spacing:-.02em}
+.block .bsub{color:var(--soft);font-size:12.5px;margin-top:2px}
+.lesson p{font-size:15.5px;line-height:1.65;color:var(--ink)}
+.exlist{margin-top:14px;display:grid;gap:8px}
+.exlist div{background:var(--mist);border-radius:12px;padding:11px 14px;font:500 14.5px var(--body);color:var(--ink)}
+.tip{margin-top:14px;background:#FFF8F3;border:1px dashed #FFC2A1;border-radius:14px;padding:12px 14px;font-size:13px;color:var(--soft)}
+.wcards{display:grid;gap:10px}
+.wcard{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;transition:.15s}
+.wcard:hover{border-color:#FFC2A1}
+.wcard .wbig{font:800 18px var(--display);letter-spacing:-.02em}
+.wcard .wt{color:var(--soft);font-size:13.5px;margin-top:2px}
+.wcard .kbtn{margin-left:auto;width:42px;height:42px;flex:none;border-radius:12px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--soft);transition:.15s}
+.wcard .kbtn.on{background:#F1FBF6;border-color:#C8EAD7;color:var(--ok)}
+.player{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FFF3EB,#FFE9DF);border:1px solid #FFC2A1;border-radius:18px;padding:16px}
+.player .pbtn{width:54px;height:54px;flex:none;border-radius:50%;background:var(--fire);color:#fff;display:grid;place-items:center;box-shadow:0 12px 24px -12px rgba(255,90,31,.85)}
+.player .pbtn svg{width:22px;height:22px}
+.player .ptx b{display:block;font:700 14.5px var(--body)}
+.player .ptx small{color:var(--soft)}
+.trbtn{margin-top:12px}
+.readpg{background:var(--mist);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:15px;line-height:1.7;color:var(--ink)}
