@@ -135,9 +135,100 @@
     if (e.target.closest("#obgo")) { Lexy.save({ onboard: { goal: sel.goal, level: sel.level }, course: { level: sel.level, startLevel: sel.level, done: {}, passes: {}, prog: {} } }); Lexy.toast("OK"); renderCourse(); return; }
   });
 
+  /* ---------- ОБЩИЕ СТИЛИ ДАШБОРДА (Путь / Задания) ---------- */
+  function injectDsh() {
+    if (document.getElementById("dsh-css")) return;
+    var s = document.createElement("style"); s.id = "dsh-css";
+    s.textContent = `
+@keyframes dsh-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes dsh-row{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes dsh-drift{from{transform:translate3d(-6%,-4%,0) scale(1)}to{transform:translate3d(6%,4%,0) scale(1.14)}}
+#s-path .hx,#s-practice .hx{position:relative;overflow:hidden;border-radius:26px;padding:22px;margin-bottom:16px;background:linear-gradient(135deg,#12263A 0%,#1C1236 55%,#3A1440 100%);color:#fff;box-shadow:0 30px 60px -40px rgba(18,38,58,.95);animation:dsh-in .5s cubic-bezier(.2,.8,.3,1) both}
+#s-practice .hx{background:linear-gradient(135deg,#0F2A24 0%,#14364A 52%,#2A1240 100%)}
+#s-path .hx::after,#s-practice .hx::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 20% 18%,rgba(255,154,10,.28),transparent 42%),radial-gradient(circle at 85% 82%,rgba(122,64,255,.32),transparent 46%);animation:dsh-drift 15s ease-in-out infinite alternate;pointer-events:none}
+#s-path .hx>*,#s-practice .hx>*{position:relative;z-index:1}
+#s-path .hx .lvbox,#s-practice .hx .lvbox{display:flex;align-items:center;gap:15px}
+#s-path .hx .lvchip,#s-practice .hx .lvchip{width:58px;height:58px;flex:none;border-radius:18px;display:grid;place-items:center;font:800 20px var(--display);background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);color:#fff}
+#s-practice .hx .lvchip svg{width:26px;height:26px}
+#s-path .hx .lvname,#s-practice .hx .lvname{font:800 22px var(--display);letter-spacing:-.02em;margin:0}
+#s-path .hx .lvdesc,#s-practice .hx .lvdesc{margin:3px 0 0;color:rgba(255,255,255,.8);font-size:13px;line-height:1.4}
+#s-path .hx .lvrow,#s-practice .hx .lvrow{display:flex;align-items:center;gap:10px;margin-top:16px}
+#s-path .hx .lvrow span,#s-practice .hx .lvrow span{font-size:13px;color:rgba(255,255,255,.82)}
+#s-path .hx .lvrow b,#s-practice .hx .lvrow b{color:#fff}
+#s-path .hx .lvrow .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.22);margin-left:auto}
+#s-path .hx .bar,#s-practice .hx .bar{margin-top:12px;height:10px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden}
+#s-path .hx .bar i,#s-practice .hx .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,#FF4E1A);transition:width .9s cubic-bezier(.3,1,.4,1)}
+#s-path .seg{display:flex;gap:8px;margin-bottom:14px;background:none;border:0;padding:0;box-shadow:none}
+#s-path .seg button{flex:1;padding:12px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--soft);cursor:pointer;transition:.16s}
+#s-path .seg button:hover{border-color:var(--fire);color:var(--fire)}
+#s-path .seg button.on{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 14px 26px -18px rgba(27,20,51,.85)}
+#s-path .dlist{display:flex;flex-direction:column;gap:10px}
+#s-path .drow{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:18px;background:#fff;border:1.5px solid var(--line);text-align:left;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;animation:dsh-row .45s cubic-bezier(.2,.8,.3,1) both}
+#s-path .drow:hover{transform:translateY(-2px);border-color:#FFC2A1;box-shadow:0 18px 34px -26px rgba(27,20,51,.5)}
+#s-path .drow .dn{width:42px;height:42px;flex:none;border-radius:14px;display:grid;place-items:center;font:800 15px var(--display);background:var(--mist);color:var(--soft);transition:.2s}
+#s-path .drow .dtx{flex:1;min-width:0}
+#s-path .drow .dtx b{display:block;font:700 14.5px var(--body);color:var(--ink)}
+#s-path .drow .dtx small{display:block;color:var(--soft);font-size:12.5px;margin-top:1px}
+#s-path .drow .dbadge{flex:none;font:700 11px var(--display);color:var(--soft)}
+#s-path .drow.cur{border-color:var(--fire);box-shadow:0 18px 34px -26px rgba(255,90,31,.85)}
+#s-path .drow.cur .dn{background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff;box-shadow:0 12px 24px -12px rgba(255,90,31,.9)}
+#s-path .drow.done .dn{background:#DDF6EC;color:#0E8548}
+#s-path .drow.done .dtx b{color:var(--soft)}
+#s-path .drow.blurrow{filter:blur(1.6px);opacity:.72}
+#s-path .testcard{position:relative;overflow:hidden;background:linear-gradient(135deg,#1C1236 0%,#2C1342 55%,#16332C 100%);color:#fff;border:0;border-radius:22px;padding:20px;margin-top:16px;box-shadow:0 30px 60px -44px rgba(27,18,51,.95);animation:dsh-in .5s both}
+#s-path .testcard::after{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 15% 15%,rgba(18,161,92,.25),transparent 45%),radial-gradient(circle at 85% 85%,rgba(122,64,255,.25),transparent 45%);animation:dsh-drift 14s ease-in-out infinite alternate;pointer-events:none}
+#s-path .testcard>*{position:relative;z-index:1}
+#s-path .testcard .tcent{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+#s-path .testcard .tcent .bic{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff}
+#s-path .testcard .tcent b{font:800 17px var(--display);letter-spacing:-.02em}
+#s-path .testcard .tcent small{display:block;color:rgba(255,255,255,.72);margin-top:2px;font-size:12.5px;line-height:1.4}
+#s-path .testcard .btn.p{width:100%;background:#fff;color:#12261F}
+#s-path .free{background:#FFF8F3;border:1.5px dashed #FFC2A1;border-radius:18px;padding:16px;margin-top:14px;color:var(--soft);font-size:13.5px;line-height:1.6}
+#s-path .tcard{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-top:12px;display:flex;gap:14px;animation:dsh-row .45s cubic-bezier(.2,.8,.3,1) both;transition:.15s}
+#s-path .tcard:hover{border-color:#FFC2A1;transform:translateY(-2px)}
+#s-path .tcard .tnum{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;font:800 14px var(--display);background:var(--mist);color:var(--soft)}
+#s-path .tcard .tbody{flex:1;min-width:0}
+#s-path .tcard .tsug{color:var(--fire);font-size:12.5px;font-weight:600;margin-top:8px}
+#s-path .tcard .trow{display:flex;gap:8px;margin-top:10px}
+#s-path .tcard.blurred{filter:blur(2.2px);opacity:.6}
+#s-path .lockcard{border:1.5px dashed var(--line)}
+/* ---- задания ---- */
+#s-practice .tk{position:relative;display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:19px;padding:15px 16px;margin-bottom:11px;text-decoration:none;animation:dsh-row .45s cubic-bezier(.2,.8,.3,1) both;transition:transform .15s,border-color .15s,box-shadow .15s}
+#s-practice .tk:hover{transform:translateY(-2px);border-color:#FFC2A1;box-shadow:0 20px 36px -28px rgba(27,20,51,.55)}
+#s-practice .tk .tkico{width:48px;height:48px;flex:none;border-radius:15px;display:grid;place-items:center}
+#s-practice .tk .tkico svg{width:22px;height:22px}
+#s-practice .tk .tktx{flex:1;min-width:0}
+#s-practice .tk .tktx b{display:block;font:700 15px var(--body);color:var(--ink)}
+#s-practice .tk .tkbar{height:7px;border-radius:999px;background:var(--mist);overflow:hidden;margin:8px 0 6px}
+#s-practice .tk .tkbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,#FF4E1A)}
+#s-practice .tk .tktx small{color:var(--soft);font-weight:600;font-size:12px}
+#s-practice .tk .tkgo{flex:none;color:var(--soft)}
+#s-practice .tkans{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:20px;margin-top:18px;animation:dsh-in .5s both}
+#s-practice .tkans h2{font:800 20px var(--display);letter-spacing:-.02em;display:flex;align-items:center;gap:9px;margin:0}
+#s-practice .tkans h2 svg{width:20px;height:20px;color:var(--fire)}
+#s-practice .tkans>p{color:var(--soft);font-size:13.5px;margin:6px 0 12px}
+#s-practice .tkq{display:flex;align-items:center;gap:10px;background:var(--mist);border:1.5px solid var(--line);border-radius:15px;padding:13px 15px;transition:.15s}
+#s-practice .tkq:focus-within{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
+#s-practice .tkq svg{color:var(--soft);flex:none}
+#s-practice .tkq input{border:0;background:none;outline:none;flex:1;font:500 14.5px var(--body);color:var(--ink)}
+#s-practice .tkres{background:var(--mist);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px;animation:dsh-row .35s both}
+#s-practice .tkres b{display:block;font:700 14px var(--body)}
+#s-practice .tkres p{color:var(--soft);font-size:13.5px;line-height:1.55;margin:6px 0 0}
+#s-practice .tkres small{display:inline-block;color:var(--fire);font-weight:700;margin-top:6px}
+@media(max-width:560px){
+  #s-path .hx,#s-practice .hx{padding:18px}
+  #s-path .hx .lvname,#s-practice .hx .lvname{font-size:19px}
+  #s-path .hx .lvchip,#s-practice .hx .lvchip{width:50px;height:50px;font-size:17px}
+  #s-path .hx .lvrow,#s-practice .hx .lvrow{flex-wrap:wrap}
+}
+`;
+    document.head.appendChild(s);
+  }
+
   /* ---------- КАРТА КУРСА ---------- */
   var mapView = "course";
   function renderCourse() {
+    injectDsh();
     var el = $("#s-path"), c = course(), cur = currentDayFor(c.level), total = C.totalDays(c.level);
     var levelDone = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) levelDone++;
     var pct = Math.round(levelDone / total * 100);
@@ -159,7 +250,7 @@
       if (!acc && !done) st += " blurrow";
       var badge = done ? "✓" : current ? T("nowT") : "";
       var sub = done ? T("doneT") : current ? T("nowT") : acc ? "" : T("lockT");
-      h += '<button class="drow ' + st + '" data-day="' + d + '"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d, lang())) + '</b><small>' + sub + '</small></span><span class="dbadge">' + badge + "</span></button>";
+      h += '<button class="drow ' + st + '" data-day="' + d + '" style="animation-delay:' + (Math.min(d, 14) * 0.04).toFixed(2) + 's"><span class="dn">' + d + '</span><span class="dtx"><b>' + esc(C.lessonTitle(c.level, d, lang())) + '</b><small>' + sub + '</small></span><span class="dbadge">' + badge + "</span></button>";
     }
     return '<div class="dlist">' + h + "</div>";
   }
@@ -175,7 +266,7 @@
     if (!LS.length) return '<div class="card"><b>' + T("theoryT") + '</b><p class="s">—</p></div>';
     return LS.map(function (l, i) {
       var day = i + 1, info = accessInfo(level, day), tt = C.theory(level, day, lang());
-      return '<div class="card tcard' + (info ? " blurred" : "") + '" data-tday="' + day + '"><span class="tnum">' + day + '</span><div class="tbody">' +
+      return '<div class="card tcard' + (info ? " blurred" : "") + '" data-tday="' + day + '" style="animation-delay:' + (Math.min(i, 14) * 0.04).toFixed(2) + 's"><span class="tnum">' + day + '</span><div class="tbody">' +
         '<div class="btitle" style="font-size:17px">' + esc(tt.t) + '</div><p>' + esc(tt.e) + '</p>' +
         '<div class="exlist" data-ex hidden>' + tt.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" +
         '<div class="tsug">' + T("theoryTip") + '</div>' +
@@ -396,34 +487,33 @@
 
   /* ---------- ПРАКТИКА ---------- */
   function renderPractice() {
+    injectDsh();
     var C2 = window.LexyContent, p = paid();
     if (!C2) { $("#s-practice").innerHTML = ""; return; }
     var tests = (Lexy.user.tests) || {};
+    var lang = (Lexy.user.lang) || "ru";
     function dc(k) { var n = 0; Object.keys(tests).forEach(function (key) { if (key.indexOf(k + "-") === 0) n++; }); return n; }
     function bb(k) { var b = null; Object.keys(tests).forEach(function (key) { if (key.indexOf(k + "-") === 0) { var v = tests[key].band; if (v != null && (b == null || v > b)) b = v; } }); return b; }
-    function ico(i, bg, c) { return '<span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
     var SK = [["reading", "Reading", "book", "#E3F0FF", "#1E8FE8"], ["listening", "Listening", "head", "#FFE0DB", "#E5443E"], ["writing", "Writing", "pencil", "#FFE6D6", "#F7620B"], ["speaking", "Speaking", "mic", "#FFF3CC", "#E59A00"]];
     var td = 0, tc = 0; SK.forEach(function (s) { td += dc(s[0]); tc += C2.count(s[0]); });
-    var hero = '<div class="hx" style="margin-bottom:16px"><div class="lvbox"><span class="lvchip">' + ic("file") + '</span><div><h2 class="lvname">' + T("practice") + '</h2><p class="lvdesc">' + T("practiceSub") + '</p></div></div><div class="lvrow"><span>' + td + " / " + tc + '</span></div><div class="bar"><i style="width:' + (tc ? Math.round(td / tc * 100) : 0) + '%"></i></div></div>';
-    var cards = SK.map(function (s) {
+    var hero = '<div class="hx"><div class="lvbox"><span class="lvchip">' + ic("file") + '</span><div><h2 class="lvname">' + T("practice") + '</h2><p class="lvdesc">' + T("practiceSub") + '</p></div></div><div class="lvrow"><span>' + td + " / " + tc + " " + (lang === "en" ? "tasks" : "заданий") + '</span></div><div class="bar"><i style="width:' + (tc ? Math.round(td / tc * 100) : 0) + '%"></i></div></div>';
+    var cards = SK.map(function (s, i) {
       var cnt = C2.count(s[0]), done = dc(s[0]), b = bb(s[0]);
-      return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) +
-        '<div style="flex:1;min-width:0"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b>' +
-        '<div class="bar" style="margin:8px 0 6px"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
-        '<small style="color:var(--soft);font-weight:600">' + done + " из " + cnt + (b != null ? " · лучший " + b.toFixed(1) : "") + " · " + (p ? cnt + " заданий" : C2.freeLimit(s[0]) + " бесплатно") + '</small></div>' + ic("chev") + "</a>";
+      return '<a class="tk" href="test.html?skill=' + s[0] + '" style="animation-delay:' + (i * 0.07).toFixed(2) + 's"><span class="tkico" style="background:' + s[3] + ";color:" + s[4] + '">' + ic(s[2]) + '</span>' +
+        '<div class="tktx"><b>' + s[1] + '</b><div class="tkbar"><i style="width:' + Math.round(done / cnt * 100) + '%"></i></div>' +
+        '<small>' + done + " " + (lang === "en" ? "of" : "из") + " " + cnt + (b != null ? " · ★ " + b.toFixed(1) : "") + " · " + (p ? cnt + " " + (lang === "en" ? "tasks" : "заданий") : C2.freeLimit(s[0]) + " " + (lang === "en" ? "free" : "бесплатно")) + '</small></div><span class="tkgo">' + ic("chev") + "</span></a>";
     }).join("");
-    var lang = (Lexy.user.lang) || "ru";
     var ANS = (window.LEXY_ANSWERS && (LEXY_ANSWERS[lang] || LEXY_ANSWERS.ru)) || [];
-    var ansBlock = '<div class="card" style="margin-top:16px"><h2 style="font:800 20px var(--display);letter-spacing:-.02em">' + (lang === "en" ? "Answer search" : "Поиск ответов") + '</h2><p class="s" style="margin:6px 0 12px">' + (lang === "en" ? "Didn't understand a topic? Search among 500+ answers." : "Не понял тему? Найди ответ среди 500+ ответов.") + '</p>' +
-      '<label style="display:flex;align-items:center;gap:8px;background:var(--mist);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px">' + ic("search") + '<input id="ansq" placeholder="' + (lang === "en" ? "e.g. Present Perfect, affect / effect…" : "Например: Present Perfect, affect / effect…") + '" style="border:0;background:none;outline:none;flex:1;font:500 14.5px var(--body)"></label>' +
+    var ansBlock = '<div class="tkans"><h2>' + ic("search") + (lang === "en" ? "Answer search" : "Поиск ответов") + '</h2><p>' + (lang === "en" ? "Didn't understand a topic? Search among 500+ answers." : "Не понял тему? Найди ответ среди 500+ ответов.") + '</p>' +
+      '<label class="tkq">' + ic("search") + '<input id="ansq" placeholder="' + (lang === "en" ? "e.g. Present Perfect, affect / effect…" : "Например: Present Perfect, affect / effect…") + '"></label>' +
       '<div id="anslist" style="margin-top:12px"></div></div>';
     $("#s-practice").innerHTML = hero + cards + ansBlock;
     var ansq = $("#ansq"), anslist = $("#anslist");
     function renderAns() {
       var q = (ansq.value || "").trim().toLowerCase();
-      if (!q) { anslist.innerHTML = '<p class="s" style="color:var(--soft)">' + (lang === "en" ? "Start typing to search…" : "Начни печатать, чтобы искать…") + "</p>"; return; }
+      if (!q) { anslist.innerHTML = '<p class="s" style="color:var(--soft);padding:6px 2px">' + (lang === "en" ? "Start typing to search…" : "Начни печатать, чтобы искать…") + "</p>"; return; }
       var res = ANS.filter(function (x) { return (x.q + " " + x.a + " " + x.tag).toLowerCase().indexOf(q) > -1; }).slice(0, 30);
-      anslist.innerHTML = res.length ? res.map(function (x) { return '<div class="card" style="margin-top:10px;padding:14px 16px"><b>' + esc(x.q) + '</b><div style="color:var(--soft);font-size:13.5px;line-height:1.55;margin-top:6px">' + esc(x.a) + '</div><small style="color:var(--fire);font-weight:700">' + esc(x.tag) + "</small></div>"; }).join("") : '<p class="s" style="color:var(--soft)">' + (lang === "en" ? "Nothing found" : "Ничего не нашлось") + "</p>";
+      anslist.innerHTML = res.length ? res.map(function (x, i) { return '<div class="tkres" style="animation-delay:' + (Math.min(i, 12) * 0.03).toFixed(2) + 's"><b>' + esc(x.q) + "</b><p>" + esc(x.a) + "</p><small>" + esc(x.tag) + "</small></div>"; }).join("") : '<p class="s" style="color:var(--soft);padding:6px 2px">' + (lang === "en" ? "Nothing found" : "Ничего не нашлось") + "</p>";
     }
     ansq.addEventListener("input", renderAns);
     renderAns();
