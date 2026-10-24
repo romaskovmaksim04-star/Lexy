@@ -72,6 +72,7 @@ function load() {
   var t = iso();
   if (U.streak.indexOf(t) < 0) { U.streak.push(t); U.streak = U.streak.slice(-400); }
   DB.save(U);
+  if (w.LexyAuth) { try { w.LexyAuth.update({ settings: { app: snapshot() } }); } catch (e) {} }
   return U;
 }
 var SYNC_KEYS = ["onboard", "course", "vocab", "tests", "mins", "streak", "words", "decks", "lessons", "phrases", "dismiss", "vsort", "news"];
