@@ -15,16 +15,16 @@ body{font:400 15px/1.5 var(--body);color:var(--ink);background:var(--mist);-webk
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 .top{position:sticky;top:0;z-index:6;background:rgba(247,245,252,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
-.top .bar{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:10px;height:58px;padding:0 16px}
+.top .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:10px;height:58px;padding:0 16px}
 .logo{display:flex;align-items:center;gap:8px;font:800 19px var(--display);letter-spacing:-.03em}
 .logo i{width:22px;height:26px;display:block;background:linear-gradient(135deg,#FF4E1A,#FF9A0A);border-radius:6px 6px 50% 50%}
-.who{margin-left:auto;font-size:12.5px;color:var(--soft);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tabs{max-width:1060px;margin:0 auto;display:flex;gap:8px;padding:10px 16px 12px;overflow-x:auto;scrollbar-width:none}
+.who{margin-left:auto;font-size:12.5px;color:var(--soft);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{max-width:1080px;margin:0 auto;display:flex;gap:8px;padding:10px 16px 12px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:12px;background:#fff;border:1.5px solid var(--line);font:700 13.5px var(--body);color:var(--soft);transition:.15s}
 .tab:hover{border-color:var(--fire);color:var(--fire)}
 .tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
-main{max-width:1060px;margin:0 auto;padding:8px 16px 80px}
+main{max-width:1080px;margin:0 auto;padding:8px 16px 80px}
 h1{font:800 clamp(21px,4vw,28px)/1.15 var(--display);letter-spacing:-.03em;margin-bottom:4px}
 .sub{color:var(--soft);font-size:13.5px;margin-bottom:18px}
 .block{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
@@ -33,6 +33,7 @@ input.q,textarea.q,select.q{width:100%;padding:12px 14px;border:1.5px solid var(
 input.q:focus,textarea.q:focus,select.q:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.1)}
 textarea.q{min-height:140px;resize:vertical;font:400 14.5px/1.6 var(--body)}
 label.lbl{display:block;font:700 12px var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--soft);margin:0 0 6px 2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 th{color:var(--soft);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
@@ -42,22 +43,24 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:12px;background:linear-gradient(135deg,var(--fire),var(--fire2));color:#fff;font:700 13.5px var(--body);box-shadow:0 12px 24px -14px rgba(255,90,31,.9);transition:.15s}
 .btn:hover{transform:translateY(-1px)}
 .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn.mini{padding:7px 11px;font-size:12px;border-radius:10px}
 .btn:disabled{opacity:.55;transform:none;cursor:default}
 .pill{display:inline-block;padding:3px 9px;border-radius:999px;font:700 11px var(--display);letter-spacing:.03em}
 .pill.free{background:#EEF0F5;color:#6B6585}
 .pill.pro{background:#FFF0E8;color:#FF5A1F}
 .center{text-align:center;padding:50px 20px;color:var(--soft)}
 .loading{color:var(--soft);padding:30px;text-align:center}
-.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
 .stat .s{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;position:relative;overflow:hidden}
 .stat .s::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--ac,var(--fire))}
 .stat b{font:800 22px var(--display);display:block;color:var(--ac,var(--fire))}
-.stat small{color:var(--soft);font-size:12px}
+.stat small{color:var(--soft);font-size:11.5px}
 .nlist{display:flex;flex-direction:column;gap:10px}
-.nitem{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;animation:fadeUp .35s both}
+.nitem{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-left:4px solid var(--nc,var(--fire));border-radius:14px;padding:14px 16px;animation:fadeUp .35s both}
 .nitem .tx{flex:1;min-width:0}
 .nitem .tx p{font-weight:600;line-height:1.5;word-break:break-word}
 .nitem .tx small{color:var(--soft);font-size:11.5px}
+.nitem .nlink{display:inline-block;margin-top:6px;font-size:12px;color:var(--fire);font-weight:700;word-break:break-all}
 .nitem .del{flex:none;width:34px;height:34px;border-radius:10px;background:#FFF2F1;color:var(--bad);display:grid;place-items:center;border:1.5px solid #F3C6C2}
 .nitem .del:hover{background:#FFE4E1}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
@@ -66,11 +69,13 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .okmsg{color:var(--ok);font-weight:700}
 .errmsg{color:var(--bad);font-weight:700}
-@media(max-width:640px){
-  .top .bar{height:54px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);vertical-align:middle}
+.dot.off{background:var(--soft)}
+@media(max-width:720px){
+  .stat{grid-template-columns:1fr 1fr;gap:8px}
+  .grid2{grid-template-columns:1fr}
   .who{display:none}
-  .stat{grid-template-columns:1fr 1fr 1fr;gap:8px}
-  .stat b{font-size:18px}
   h1{font-size:21px}
   .block{padding:15px}
   table .hide{display:none}
@@ -82,7 +87,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   <div class="bar">
     <a class="logo" href="dashboard.html"><i></i>Lexy Admin</a>
     <span class="who" id="who"></span>
-    <a class="btn ghost" id="back" href="main.html">← На сайт</a>
+    <a class="btn ghost mini" id="back" href="main.html">← На сайт</a>
   </div>
   <nav class="tabs" id="tabs"></nav>
 </header>
@@ -96,11 +101,11 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   var app = document.getElementById('app');
   var who = document.getElementById('who');
   var tabsEl = document.getElementById('tabs');
-  var USERS = [], TAB = 'users', AUD = 'all';
+  var USERS = [], AUX = {}, STATS = {}, TAB = 'users', AUD = 'all', FILTER = 'all';
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-  function pill(p){ return '<span class="pill '+(p==='free'?'free':'pro')+'">'+(p==='free'?'Free':'Premium')+'</span>'; }
   function client(){ return LexyAuth.client(); }
+  function daysLeft(iso){ if(!iso) return null; return Math.max(0, Math.ceil((new Date(iso).getTime()-Date.now())/864e5)); }
 
   function drawTabs(){
     var T=[['users','Пользователи','👥'],['broadcast','Рассылка','✉️'],['notif','Уведомления','🔔']];
@@ -111,112 +116,132 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   function gate(){
     if(!window.LexyAuth){ app.innerHTML='<div class="center">Не удалось загрузить авторизацию. Обнови страницу.</div>'; return; }
     LexyAuth.ready.then(function(){
-      var u=LexyAuth.user(); who.textContent = u?u.email:'';
+      var u=LexyAuth.user(); who.textContent=u?u.email:'';
       if(!u){ app.innerHTML='<div class="center"><h1>Нужен вход</h1><p class="sub">Войди под аккаунтом администратора.</p><a class="btn" href="login.html">Войти</a></div>'; return; }
       if((u.email||'').toLowerCase()!==ADMIN){ app.innerHTML='<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для '+esc(ADMIN)+'.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>'; return; }
-      drawTabs(); loadUsers();
+      drawTabs(); loadAll();
     });
   }
 
-  function loadUsers(){
-    app.innerHTML='<div class="loading">Загружаю пользователей…</div>';
-    client().rpc('lexy_admin_users').then(function(res){
-      if(res.error){ app.innerHTML='<div class="center">Ошибка: '+esc(res.error.message)+'</div>'; return; }
-      USERS=res.data||[]; draw();
-    }).catch(function(){ app.innerHTML='<div class="center">Не удалось получить данные.</div>'; });
+  function loadAll(){
+    app.innerHTML='<div class="loading">Загружаю данные…</div>';
+    Promise.all([
+      client().rpc('lexy_admin_users').then(function(r){ return r.data||[]; }).catch(function(){ return []; }),
+      client().rpc('lexy_admin_recipients').then(function(r){ return r.data||[]; }).catch(function(){ return []; }),
+      client().rpc('lexy_admin_stats').then(function(r){ return r.data||{}; }).catch(function(){ return {}; })
+    ]).then(function(res){
+      USERS = res[0]||[];
+      AUX = {};
+      (res[1]||[]).forEach(function(x){ AUX[String(x.email||'').toLowerCase()] = x.news; });
+      STATS = res[2]||{};
+      draw();
+    });
   }
 
   function draw(){ if(TAB==='users') drawUsers(); else if(TAB==='broadcast') drawBroadcast(); else drawNotif(); }
 
-  function stats(){
-    var total=USERS.length, paid=USERS.filter(function(u){return u.plan!=='free';}).length;
-    return '<div class="stat"><div class="s" style="--ac:#7A40FF"><b>'+total+'</b><small>всего аккаунтов</small></div>'+
-      '<div class="s" style="--ac:#FF5A1F"><b>'+paid+'</b><small>с Premium</small></div>'+
-      '<div class="s" style="--ac:#12A15C"><b>'+(total-paid)+'</b><small>бесплатных</small></div></div>';
+  function statCards(){
+    function c(v,label,ac){ return '<div class="s" style="--ac:'+ac+'"><b>'+v+'</b><small>'+label+'</small></div>'; }
+    var total=STATS.total||USERS.length, prem=STATS.premium||USERS.filter(function(u){return u.plan!=='free';}).length;
+    return '<div class="stat">'+c(total,'всего','#7A40FF')+c(prem,'Premium','#FF5A1F')+c(total-prem,'бесплатных','#12A15C')+c(STATS.new7||0,'новых за 7 дней','#1E8FE8')+c(STATS.notif||0,'уведомлений','#C02FB0')+'</div>';
   }
 
   function drawUsers(){
     app.innerHTML =
-      '<h1>Пользователи</h1><p class="sub">Переключай тарифы и следи за базой — изменения применяются сразу.</p>'+
-      stats()+
-      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…" style="flex:1;min-width:180px"><button class="btn ghost" id="reload">Обновить</button></div></div>'+
-      '<div class="block" style="padding:0"><div class="tablewrap"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th class="hide">До</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>';
-    document.getElementById('reload').addEventListener('click', loadUsers);
+      '<h1>Пользователи</h1><p class="sub">Тарифы, доступ и база. Изменения применяются сразу.</p>'+
+      statCards()+
+      '<div class="block"><div class="row"><input class="q" id="q" placeholder="Поиск по email или имени…" style="flex:1;min-width:170px"><div class="seg" id="filt"><button data-f="all" class="on">Все</button><button data-f="premium">Premium</button><button data-f="free">Бесплатные</button></div><button class="btn ghost" id="csv">CSV</button><button class="btn ghost" id="reload">Обновить</button></div></div>'+
+      '<div class="block" style="padding:0"><div class="tablewrap"><table><thead><tr><th>Email</th><th class="hide">Имя</th><th>Тариф</th><th class="hide">Осталось</th><th>Действия</th></tr></thead><tbody id="tb"></tbody></table></div></div>';
+    document.getElementById('reload').addEventListener('click', loadAll);
+    document.getElementById('csv').addEventListener('click', exportCsv);
     document.getElementById('q').addEventListener('input', drawRows);
+    document.getElementById('filt').addEventListener('click', function(e){ var b=e.target.closest('[data-f]'); if(!b) return; FILTER=b.dataset.f; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); drawRows(); });
     drawRows();
   }
 
+  function filtered(){
+    var q=(document.getElementById('q')?document.getElementById('q').value:'').trim().toLowerCase();
+    return USERS.filter(function(u){
+      if(FILTER==='premium' && u.plan==='free') return false;
+      if(FILTER==='free' && u.plan!=='free') return false;
+      return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q)>-1;
+    });
+  }
   function drawRows(){
-    var q=(document.getElementById('q').value||'').trim().toLowerCase();
-    var tb=document.getElementById('tb');
-    var list=USERS.filter(function(u){ return !q || (u.email+' '+(u.name||'')).toLowerCase().indexOf(q)>-1; });
+    var tb=document.getElementById('tb'); if(!tb) return;
+    var list=filtered();
     if(!list.length){ tb.innerHTML='<tr><td colspan="5" class="center">Ничего не найдено</td></tr>'; return; }
     tb.innerHTML=list.map(function(u){
-      var until=u.plan_expires_at?new Date(u.plan_expires_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}):'—';
+      var dl=daysLeft(u.plan_expires_at), dlt=dl!=null?(dl+' дн'):'—';
+      var news=AUX[String(u.email||'').toLowerCase()];
       return '<tr data-id="'+esc(u.id)+'">'+
-        '<td><span class="em">'+esc(u.email)+'</span><br><small style="color:var(--soft)">'+esc(u.path||'путь не выбран')+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>'+
+        '<td><span class="em">'+esc(u.email)+'</span> <span class="dot'+(news===false?' off':'')+'" title="рассылка"></span><br><small style="color:var(--soft)">'+esc(u.path||'путь не выбран')+' · рег. '+new Date(u.created_at).toLocaleDateString('ru-RU')+'</small></td>'+
         '<td class="hide">'+esc(u.name||'—')+'</td>'+
-        '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+'</select> <input data-days type="number" min="1" value="30" title="дней" style="width:56px;padding:8px;border:1.5px solid var(--line);border-radius:10px;font:600 13px var(--body)"></td>'+
-        '<td class="hide">'+esc(until)+'</td>'+
-        '<td><button class="btn" data-save>Сохранить</button></td></tr>';
+        '<td><select data-plan>'+[['free','Free'],['pro','Premium']].map(function(p){return '<option value="'+p[0]+'"'+(u.plan===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+'</select></td>'+
+        '<td class="hide">'+esc(dlt)+'</td>'+
+        '<td><div class="quick"><button class="btn mini ghost" data-grant="30">+30д</button><button class="btn mini ghost" data-grant="90">+90д</button><button class="btn mini ghost" data-grant="365">+365д</button><button class="btn mini ghost" data-revoke>Отозвать</button><button class="btn mini" data-save>Сохранить</button></div></td></tr>';
     }).join('');
-    tb.querySelectorAll('[data-save]').forEach(function(b){
-      b.addEventListener('click',function(){
-        var tr=b.closest('tr'), id=tr.getAttribute('data-id');
-        var plan=tr.querySelector('[data-plan]').value;
-        var days=parseInt((tr.querySelector('[data-days]')||{}).value,10)||30;
-        b.disabled=true; b.textContent='…';
-        client().rpc('lexy_admin_set_plan',{p_user_id:id,p_plan:plan,p_days:days}).then(function(res){
-          b.disabled=false; b.textContent='Сохранить';
-          if(res.error){ alert('Ошибка: '+res.error.message); return; }
-          var u=res.data&&res.data[0]?res.data[0]:res.data;
-          var idx=USERS.findIndex(function(x){return x.id===id;});
-          if(idx>-1&&u){ USERS[idx].plan=u.plan; USERS[idx].plan_expires_at=u.plan_expires_at; }
-          drawUsers();
-        }).catch(function(){ b.disabled=false; b.textContent='Сохранить'; alert('Не получилось сохранить'); });
-      });
+    tb.querySelectorAll('tr').forEach(function(tr){
+      var id=tr.getAttribute('data-id');
+      function set(plan,days,btn){ if(btn){btn.disabled=true;} client().rpc('lexy_admin_set_plan',{p_user_id:id,p_plan:plan,p_days:days}).then(function(res){ if(res.error){alert('Ошибка: '+res.error.message); if(btn)btn.disabled=false; return;} var u=res.data&&res.data[0]?res.data[0]:res.data; var idx=USERS.findIndex(function(x){return x.id===id;}); if(idx>-1&&u){USERS[idx].plan=u.plan;USERS[idx].plan_expires_at=u.plan_expires_at;} loadAll(); }).catch(function(){ if(btn)btn.disabled=false; alert('Не получилось'); }); }
+      tr.querySelectorAll('[data-grant]').forEach(function(b){ b.addEventListener('click',function(){ set('pro',parseInt(b.dataset.grant,10),b); }); });
+      var rv=tr.querySelector('[data-revoke]'); if(rv) rv.addEventListener('click',function(){ set('free',30,rv); });
+      var sv=tr.querySelector('[data-save]'); if(sv) sv.addEventListener('click',function(){ set(tr.querySelector('[data-plan]').value,30,sv); });
     });
+  }
+
+  function exportCsv(){
+    var rows=[['email','name','plan','plan_expires_at','created_at','news']];
+    filtered().forEach(function(u){ rows.push([u.email,u.name||'',u.plan||'free',u.plan_expires_at||'',u.created_at||'',AUX[String(u.email||'').toLowerCase()]===false?'off':'on']); });
+    var csv=rows.map(function(r){ return r.map(function(x){ return '"'+String(x).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+    var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lexy-users.csv'; a.click();
+  }
+
+  function countAud(){
+    var n=0;
+    (Object.keys(AUX).length?Object.keys(AUX):[]).forEach(function(){}); // noop
+    var emails=USERS.map(function(u){ return {email:u.email, plan:u.plan, news:AUX[String(u.email||'').toLowerCase()]}; });
+    emails.forEach(function(r){
+      if(AUD==='test'){ return; }
+      if(r.news===false) return;
+      if(AUD==='premium' && r.plan==='free') return;
+      if(AUD==='free' && r.plan!=='free') return;
+      n++;
+    });
+    return AUD==='test'?1:n;
   }
 
   function drawBroadcast(){
     app.innerHTML =
       '<h1>Рассылка</h1><p class="sub">Напиши сообщение и выбери, кому отправить. Тем, кто выключил рассылку в профиле, письмо не уйдёт.</p>'+
-      '<div class="block"><label class="lbl">Кому отправить</label>'+
-        '<div class="seg" id="aud"><button data-a="all" class="on">Всем</button><button data-a="premium">С Premium</button><button data-a="free">Без Premium</button></div></div>'+
-      '<div class="block"><label class="lbl">Тема письма</label><input class="q" id="subj" placeholder="Например: Новые слова в словаре Lexy 🎉">'+
-        '<div style="height:14px"></div><label class="lbl">Сообщение</label><textarea class="q" id="msg" placeholder="Текст письма…"></textarea>'+
-        '<div class="row" style="margin-top:14px"><button class="btn" id="send">Отправить</button><span id="bres"></span></div></div>';
-    document.getElementById('aud').addEventListener('click',function(e){
-      var b=e.target.closest('[data-a]'); if(!b) return; AUD=b.dataset.a;
-      document.querySelectorAll('#aud button').forEach(function(x){ x.classList.toggle('on',x===b); });
-    });
+      '<div class="block"><label class="lbl">Кому отправить</label><div class="seg" id="aud"><button data-a="all" class="on">Всем</button><button data-a="premium">С Premium</button><button data-a="free">Без Premium</button><button data-a="test">Тест мне</button></div><p class="sub" style="margin:10px 0 0" id="audc"></p></div>'+
+      '<div class="block"><label class="lbl">Тема письма</label><input class="q" id="subj" placeholder="Например: Новые слова в словаре Lexy 🎉"><div style="height:14px"></div><label class="lbl">Сообщение</label><textarea class="q" id="msg" placeholder="Текст письма…"></textarea><div class="row" style="margin-top:14px"><button class="btn" id="send">Отправить</button><span id="bres"></span></div></div>';
+    function upd(){ var e=document.getElementById('audc'); if(e) e.textContent='Получателей: '+countAud(); }
+    document.getElementById('aud').addEventListener('click',function(e){ var b=e.target.closest('[data-a]'); if(!b) return; AUD=b.dataset.a; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); upd(); });
+    upd();
     document.getElementById('send').addEventListener('click',function(){
-      var subj=(document.getElementById('subj').value||'').trim();
-      var msg=(document.getElementById('msg').value||'').trim();
-      var out=document.getElementById('bres');
+      var subj=(document.getElementById('subj').value||'').trim(), msg=(document.getElementById('msg').value||'').trim(), out=document.getElementById('bres');
       if(!subj||!msg){ out.className='errmsg'; out.textContent='Заполни тему и сообщение.'; return; }
       var b=this; b.disabled=true; out.className=''; out.textContent='Отправляем…';
-      client().functions.invoke('admin-broadcast',{body:{audience:AUD,subject:subj,body:msg}}).then(function(res){
-        b.disabled=false;
-        var d=res.data;
-        if(res.error||!d||d.error){ out.className='errmsg'; out.textContent='Ошибка: '+((res.error&&res.error.message)||(d&&d.error)||'не удалось'); return; }
-        out.className='okmsg'; out.textContent='Отправлено: '+d.sent+' из '+d.total+(d.failed?(' (ошибок: '+d.failed+')'):'')+' 🎉';
-      }).catch(function(){ b.disabled=false; out.className='errmsg'; out.textContent='Не удалось отправить.'; });
+      client().functions.invoke('admin-broadcast',{body:{audience:AUD,subject:subj,body:msg}}).then(function(res){ b.disabled=false; var d=res.data; if(res.error||!d||d.error){ out.className='errmsg'; out.textContent='Ошибка: '+((res.error&&res.error.message)||(d&&d.error)||'не удалось'); return; } out.className='okmsg'; out.textContent='Отправлено: '+d.sent+' из '+d.total+(d.failed?(' (ошибок: '+d.failed+')'):'')+' 🎉'; }).catch(function(){ b.disabled=false; out.className='errmsg'; out.textContent='Не удалось отправить.'; });
     });
   }
 
   function drawNotif(){
     app.innerHTML =
-      '<h1>Уведомления</h1><p class="sub">Показываются в кабинете слева (максимум 2 — самые новые).</p>'+
-      '<div class="block"><label class="lbl">Новое уведомление</label><div class="row"><input class="q" id="nt" placeholder="Текст уведомления…" style="flex:1;min-width:200px"><button class="btn" id="nadd">Добавить</button></div><div id="nres" style="margin-top:8px"></div></div>'+
+      '<h1>Уведомления</h1><p class="sub">Показываются в кабинете слева (максимум 2 — самые новые). Можно добавить кнопку-ссылку.</p>'+
+      '<div class="block"><label class="lbl">Текст</label><input class="q" id="nt" placeholder="Текст уведомления…">'+
+        '<div style="height:12px"></div><div class="grid2"><div><label class="lbl">Ссылка (необязательно)</label><input class="q" id="nu" placeholder="https://t.me/LexiEnglishWorld"></div><div><label class="lbl">Надпись на кнопке</label><input class="q" id="nl" placeholder="Открыть"></div></div>'+
+        '<div style="height:12px"></div><label class="lbl">Тип</label><div class="seg" id="nk"><button data-k="info" class="on">Обычное</button><button data-k="success">Успех</button><button data-k="warn">Важное</button></div>'+
+        '<div class="row" style="margin-top:14px"><button class="btn" id="nadd">Добавить уведомление</button><span id="nres"></span></div></div>'+
       '<div id="nlist" class="nlist"><div class="loading">Загружаю…</div></div>';
+    var kind='info';
+    document.getElementById('nk').addEventListener('click',function(e){ var b=e.target.closest('[data-k]'); if(!b) return; kind=b.dataset.k; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); });
     document.getElementById('nadd').addEventListener('click',function(){
-      var t=(document.getElementById('nt').value||'').trim(); if(!t) return;
+      var t=(document.getElementById('nt').value||'').trim(); if(!t){ return; }
+      var url=(document.getElementById('nu').value||'').trim(), label=(document.getElementById('nl').value||'').trim();
       var b=this; b.disabled=true;
-      client().rpc('lexy_admin_add_notification',{p_text:t}).then(function(res){
-        b.disabled=false; if(res.error){ document.getElementById('nres').className='errmsg'; document.getElementById('nres').textContent=res.error.message; return; }
-        document.getElementById('nt').value=''; loadNotif();
-      }).catch(function(){ b.disabled=false; });
+      client().rpc('lexy_admin_add_notification',{p_text:t,p_url:url||null,p_label:label||null,p_kind:kind}).then(function(res){ b.disabled=false; if(res.error){ document.getElementById('nres').className='errmsg'; document.getElementById('nres').textContent=res.error.message; return; } document.getElementById('nt').value=''; document.getElementById('nu').value=''; document.getElementById('nl').value=''; loadNotif(); }).catch(function(){ b.disabled=false; });
     });
     loadNotif();
   }
@@ -225,10 +250,11 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
     client().rpc('lexy_admin_notifications').then(function(res){
       var rows=(res&&res.data)||[];
       if(!rows.length){ el.innerHTML='<div class="center" style="padding:24px">Пока нет уведомлений</div>'; return; }
-      el.innerHTML=rows.map(function(n){ return '<div class="nitem"><div class="tx"><p>'+esc(n.text)+'</p><small>'+new Date(n.created_at).toLocaleString('ru-RU')+'</small></div><button class="del" data-id="'+n.id+'">✕</button></div>'; }).join('');
-      el.querySelectorAll('.del').forEach(function(b){ b.addEventListener('click',function(){
-        client().rpc('lexy_admin_delete_notification',{p_id:Number(b.dataset.id)}).then(function(){ loadNotif(); });
-      }); });
+      el.innerHTML=rows.map(function(n){
+        var col=n.kind==='success'?'#12A15C':n.kind==='warn'?'#F2B100':'#FF5A1F';
+        return '<div class="nitem" style="--nc:'+col+'"><div class="tx"><p>'+esc(n.text)+'</p>'+(n.url?'<span class="nlink">🔗 '+esc(n.label||n.url)+' → '+esc(n.url)+'</span>':'')+'<br><small>'+new Date(n.created_at).toLocaleString('ru-RU')+'</small></div><button class="del" data-id="'+n.id+'">✕</button></div>';
+      }).join('');
+      el.querySelectorAll('.del').forEach(function(b){ b.addEventListener('click',function(){ client().rpc('lexy_admin_delete_notification',{p_id:Number(b.dataset.id)}).then(function(){ loadNotif(); }); }); });
     }).catch(function(){ el.innerHTML='<div class="center">Ошибка</div>'; });
   }
 

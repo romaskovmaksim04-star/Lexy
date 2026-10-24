@@ -268,6 +268,10 @@ function coreCss() {
 .prem.is svg{animation:core-spin 3.5s linear infinite}
 @keyframes core-drift{from{transform:translate3d(-8%,-6%,0) scale(1)}to{transform:translate3d(8%,6%,0) scale(1.2)}}
 @keyframes core-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.pr.ok{background:linear-gradient(135deg,#EAFBF3,#DFF6EC);border-color:#BFE9D3}
+.pr.warn{background:linear-gradient(135deg,#FFF7E6,#FFEFD2);border-color:#F3D9A6}
+.ntb{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:7px 12px;border-radius:10px;background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff!important;font:700 12px var(--body);text-decoration:none;box-shadow:0 10px 20px -12px rgba(255,90,31,.9)}
+.ntb:hover{filter:brightness(1.05);transform:translateY(-1px)}
 .fab{animation:core-fab 2.6s ease-in-out infinite}
 .fab:hover{animation-play-state:paused}
 @keyframes core-fab{0%,100%{transform:translateY(0) scale(1);box-shadow:0 12px 26px -12px rgba(255,90,31,.7)}50%{transform:translateY(-5px) scale(1.05);box-shadow:0 22px 38px -12px rgba(255,90,31,1)}}
@@ -293,7 +297,8 @@ function side() {
   h += '</nav><div class="bot">';
   var co = C();
   NOTIF.slice(0, 2).forEach(function (n) {
-    h += '<div class="pr red"><span class="pi">' + ic("star") + '</span><div><b>' + esc(n.text) + "</b></div></div>";
+    var kc = n.kind === "success" ? "ok" : n.kind === "warn" ? "warn" : "red";
+    h += '<div class="pr ' + kc + '"><span class="pi">' + ic("star") + '</span><div><b>' + esc(n.text) + "</b>" + (n.url ? '<a class="ntb" href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.label || "→") + "</a>" : "") + "</div></div>";
   });
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
