@@ -13,8 +13,9 @@
 <script src="lexy-core.js?v=12"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
+<script src="lexy-a1.js?v=1"></script>
 <script src="lexy-course-extra.js?v=1"></script>
-<script src="lexy-course.js?v=2"></script>
+<script src="lexy-course.js?v=3"></script>
 <script src="lexy-vocab.js?v=1"></script>
 </head>
 <body>
@@ -98,40 +99,68 @@
   });
 
   /* ---------- КАРТА КУРСА ---------- */
+  var mapView = "course";
   function renderCourse() {
     var el = $("#s-path"), c = course(), cur = currentDay();
+    var total = C.totalDays(c.level);
     var doneCount = Object.keys(c.done).length;
-    var levelDays = 0; for (var i = 1; i <= C.totalDays; i++) if (isDone(c.level, i)) levelDays++;
-    var pct = Math.round(levelDays / C.totalDays * 100);
+    var levelDays = 0; for (var i = 1; i <= total; i++) if (isDone(c.level, i)) levelDays++;
+    var pct = Math.round(levelDays / total * 100);
     var goal = (Lexy.user.onboard && Lexy.user.onboard.goal) || (Lexy.user.onboard && Lexy.user.onboard.g) || "study";
     var goalName = (GOALS.filter(function (g) { return g.id === goal; })[0] || {}).t || "Учёба";
 
     var head = '<div class="top"><h1 class="t">Курс английского</h1></div>';
-    el.innerHTML = head +
-      '<div class="pth"><div class="hero"><h2>' + c.level + " · " + levelTitle(c.level) + "</h2><p>Цель: " + esc(goalName) + " · уроков пройдено: " + doneCount + '</p><div class="bar"><i style="width:' + pct + '%"></i></div>' +
-      (cur > C.totalDays ? "<b>Курс уровня пройден 🎉</b>" : '<button class="btn" id="cont">' + ic("play") + " Продолжить: день " + cur + " (" + (C.isTestDay(cur) ? "тест уровня" : "5 блоков") + ")</button>") +
-      '<a class="lnk" href="#profile" data-goal="change">Сменить цель/уровень</a></div>' +
-      '<div class="days">' + grid(cur) + "</div>" +
-      (!paid() ? '<div class="card" style="margin-top:16px"><b>Бесплатно:</b> первые ' + C.FREE_DAYS + " дня вводного уровня. Полный курс (90 дней × 5 блоков, тесты каждые 7 дней) — в <a href=\"pricing.html\" style=\"color:var(--fire);font-weight:700\">тарифах</a>.</div>" : "") +
-      histBlock() +
-      '</div>';
-
-    $("#cont") && $("#cont").addEventListener("click", function () { openDay(cur); });
+    var hero = '<div class="pth"><div class="hero"><h2>' + c.level + " · " + levelTitle(c.level) + "</h2><p>Цель: " + esc(goalName) + " · пройдено уроков: " + doneCount + " из " + total + '</p><div class="bar"><i style="width:' + pct + '%"></i></div>' +
+      (cur > total ? "<b>Курс уровня пройден 🎉</b>" : '<button class="btn" id="cont">' + ic("play") + " Продолжить: урок " + cur + '</button>') +
+      '<a class="lnk" href="#profile" data-goal="change">Сменить цель/уровень</a></div></div>';
+    var seg = '<div class="seg"><button class="' + (mapView === "course" ? "on" : "") + '" data-view="course">Курс</button><button class="' + (mapView === "theory" ? "on" : "") + '" data-view="theory">Теория</button><button class="' + (mapView === "history" ? "on" : "") + '" data-view="history">История</button></div>';
+    var content;
+    if (mapView === "theory") content = theoryBlock(c.level);
+    else if (mapView === "history") content = histBlock();
+    else content = '<div class="days">' + grid(cur, total) + "</div>" + moduleTestBtn(levelDays, total) +
+      (!paid() ? '<div class="card" style="margin-top:16px"><b>Бесплатно:</b> первые ' + C.FREE_DAYS + " урока вводного уровня. Полный курс (все уроки и тесты) — в <a href=\"pricing.html\" style=\"color:var(--fire);font-weight:700\">тарифах</a>.</div>" : "");
+    el.innerHTML = head + hero + seg + content;
+    var cont = $("#cont"); if (cont) cont.addEventListener("click", function () { openDay(cur); });
   }
 
-  function grid(cur) {
+  function grid(cur, total) {
     var c = course(), h = "";
-    for (var d = 1; d <= C.totalDays; d++) {
-      var test = C.isTestDay(d), done = isDone(c.level, d), locked = !canAccess(c.level, d);
-      var cls = "dcard" + (test ? " test" : "") + (done ? " done" : "") + (locked ? " lock" : "") + (d === cur ? " cur" : "");
-      h += '<button class="' + cls + '" data-day="' + d + '"><b>' + d + "</b><small>" + (test ? "тест" : "5") + "</small></button>";
+    for (var d = 1; d <= total; d++) {
+      var done = isDone(c.level, d), locked = !canAccess(c.level, d);
+      var cls = "dcard" + (done ? " done" : "") + (locked ? " lock" : "") + (d === cur ? " cur" : "");
+      h += '<button class="' + cls + '" data-day="' + d + '"><b>' + d + "</b><small>" + (locked ? "🔒" : done ? "✓" : "5") + "</small></button>";
     }
     return h;
   }
 
+  function moduleTestBtn(done, total) {
+    var all = done >= total;
+    return '<div class="card" style="margin-top:16px"><div class="rw"><div><b>' + ic("file") + " Тестирование по модулю " + course().level + '</b><small>' + (all ? "Все уроки пройдены — проверь себя! Сдашь хорошо — откроем следующий уровень." : "Доступно в любой момент. Рекомендуем после " + total + " уроков.") + '</small></div></div>' +
+      '<button class="btn p" id="mtest" style="width:100%;margin-top:10px">' + ic("play") + " Пройти тестирование</button></div>";
+  }
+
+  function theoryBlock(level) {
+    var L = (window.LEXY_LESSONS && LEXY_LESSONS[level]) || [];
+    if (!L.length) return '<div class="card"><b>Теория</b><p class="s">Для этого уровня теория появится позже.</p></div>';
+    return L.map(function (l, i) {
+      return '<div class="card" style="margin-top:12px"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle" style="font-size:17px">Урок ' + (i + 1) + " · " + esc(l.t) + "</div><div class=bsub>Теория и правило</div></div></div>" +
+        '<p style="font-size:14.5px;line-height:1.6;color:var(--ink)">' + esc(l.th.e) + "</p>" +
+        '<div class="exlist">' + l.th.ex.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div></div>";
+    }).join("");
+  }
+
+  function runModuleTest() {
+    var c = course(), t = C.moduleTest(c.level);
+    RUN = { plan: { level: c.level, day: "test", isTest: true, title: "Тестирование · " + c.level, blocks: [{ type: "test", data: t }] }, i: 0, results: [] };
+    drawBlock();
+  }
+
   $("#s-path").addEventListener("click", function (e) {
+    var v = e.target.closest("[data-view]");
+    if (v) { mapView = v.dataset.view; renderCourse(); return; }
+    if (e.target.closest("#mtest")) { runModuleTest(); return; }
     var d = e.target.closest("[data-day]");
-    if (d) { var day = +d.dataset.day; if (!canAccess(course().level, day)) { Lexy.upsell && upsellDay(); return; } openDay(day); return; }
+    if (d) { var day = +d.dataset.day; if (!canAccess(course().level, day)) { upsellDay(); return; } openDay(day); return; }
     var g = e.target.closest("[data-goal='change']");
     if (g) { Lexy.save({ onboard: null, course: null }); sel = { goal: null, level: null }; renderOnboard(); }
   });
@@ -341,7 +370,7 @@
       return;
     }
     $("#s-progress").innerHTML = head +
-      '<div class="card ls"><div class="r"><b>Уровень курса</b><span class="n">' + c.level + "</span></div><div class=\"r\"><b>Пройдено дней</b><span class=\"n\">" + doneCount + " из " + C.totalDays + '</span></div><div class="r"><b>Время с Lexy</b><span class="n">' + m.day + " мин сегодня · " + m.all + " всего</span></div></div>";
+      '<div class="card ls"><div class="r"><b>Уровень курса</b><span class="n">' + c.level + "</span></div><div class=\"r\"><b>Пройдено уроков</b><span class=\"n\">" + doneCount + " из " + C.totalDays(c.level) + '</span></div><div class="r"><b>Время с Lexy</b><span class="n">' + m.day + " мин сегодня · " + m.all + " всего</span></div></div>";
   }
 
   /* ---------- ЗАПУСК ---------- */

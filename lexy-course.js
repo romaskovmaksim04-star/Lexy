@@ -265,28 +265,52 @@
     });
   }
 
-  /* ---------- СБОРКА ДНЯ ---------- */
-  function isTestDay(day) { return day % 7 === 0; }
+  /* ---------- УРОКИ (полный курс уровня) ---------- */
+  function lessons(level) { return (w.LEXY_LESSONS && w.LEXY_LESSONS[level]) || null; }
+  function lessonCount(level) { var ls = lessons(level); return ls ? ls.length : DAYS; }
+  function isTestDay(day) { return false; }
+
+  function wordQ(ws) { return ws.map(function (x) { return { q: "Как переводится «" + x.w + "»?", o: x.o, a: x.a }; }); }
 
   function plan(level, day) {
+    var ls = lessons(level);
+    if (ls) {
+      var L = ls[(day - 1) % ls.length];
+      var wq = wordQ(L.ws);
+      var mixed = L.gr.slice(0, 2).concat(wq.slice(0, 2));
+      var blocks = [
+        { type: "theory", data: { t: L.t, e: L.th.e, ex: L.th.ex } },
+        { type: "quiz", data: { t: "Грамматика · " + L.t, q: L.gr, kind: "grammar" } },
+        { type: "quiz", data: { t: "Слова", q: wq, kind: "words" } },
+        { type: "listening", data: { t: "Аудирование", script: L.li.script, q: L.li.q } },
+        { type: "quiz", data: { t: "Практика · повторение", q: mixed, kind: "mix" } }
+      ];
+      return { level: level, day: day, isTest: false, title: "Урок " + day + " · " + level, blocks: blocks };
+    }
+    // fallback: банк по ротации (для уровней без готовых уроков)
     var bank = BANK[level] || BANK.A1;
     var g = GRAMMAR[level] || GRAMMAR.A1;
     var idx = day;
     function pickSkill(skill, off) { var arr = bank[skill] || bank.vocab; return arr[(idx * 2 + off) % arr.length]; }
-    if (isTestDay(day)) {
-      return {
-        level: level, day: day, isTest: true, title: "Тест уровня · день " + day,
-        blocks: [{ type: "theory", data: g[(day - 1) % g.length] }, { type: "test", data: testFor(level, day) }]
-      };
-    }
-    var blocks = [
+    var blocks2 = [
       { type: "theory", data: g[(day - 1) % g.length] },
-      { type: "vocab", data: pickSkill("vocab", 1) },
+      { type: "quiz", data: { t: "Слова", q: (bank.vocab || [])[(idx) % (bank.vocab || [1]).length] ? wordQ((bank.vocab[(idx) % bank.vocab.length]).w.map(function (x) { return { w: x[0], o: shuffle4(x[1]), a: 0 }; })) : [], kind: "words" } },
       { type: "listening", data: pickSkill("listening", 2) },
       { type: "reading", data: pickSkill("reading", 3) },
       { type: "quiz", data: pickSkill("quiz", 4) }
     ];
-    return { level: level, day: day, isTest: false, title: "День " + day + " · " + level, blocks: blocks };
+    return { level: level, day: day, isTest: false, title: "День " + day + " · " + level, blocks: blocks2 };
+  }
+  function shuffle4(correct) { var a = [correct, "—", "—", "—"]; return a; }
+
+  function moduleTest(level) {
+    var ls = lessons(level);
+    if (!ls) return testFor(level, 7);
+    var pool = [];
+    ls.forEach(function (L) { L.gr.forEach(function (x) { pool.push(x); }); L.ws.forEach(function (x) { pool.push({ q: "Как переводится «" + x.w + "»?", o: x.o, a: x.a }); }); });
+    var out = [], n = 12;
+    for (var i = 0; i < n; i++) out.push(pool[Math.floor(i * pool.length / n)]);
+    return { title: "Тест уровня " + level, questions: out };
   }
 
   function testFor(level, day) {
@@ -306,7 +330,7 @@
   function hash(s) { var h = 5381; s = String(s); for (var i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; } return h.toString(16); }
   function audioFor(text) { return "audio/" + hash(text) + ".wav"; }
 
-  function totalDays() { return DAYS; }
+  function totalDays(level) { return level ? lessonCount(level) : DAYS; }
   function freeDays() { return FREE_DAYS; }
   function blockLabel(t) { return BLOCK_LABEL[t] || t; }
 
@@ -318,6 +342,8 @@
     hash: hash,
     isTestDay: isTestDay,
     totalDays: totalDays,
+    moduleTest: moduleTest,
+    lessonCount: lessonCount,
     freeDays: freeDays,
     blockLabel: blockLabel,
     isFree: function (level, day, premium, startLevel) {

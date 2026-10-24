@@ -326,3 +326,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .player .ptx small{color:var(--soft)}
 .trbtn{margin-top:12px}
 .readpg{background:var(--mist);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:15px;line-height:1.7;color:var(--ink)}
+
+.seg{display:flex;gap:6px;background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:5px;margin:16px 0}
+.seg button{flex:1;padding:10px;border-radius:10px;font:700 13px var(--body);color:var(--soft);transition:.15s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 8px 18px -14px rgba(27,20,51,.7)}
