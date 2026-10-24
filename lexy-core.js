@@ -253,34 +253,133 @@ function switchPath(p) {
 }
 
 /* ---------- профиль (Личный кабинет) ---------- */
-function sh(i, t) { return '<div class="sh"><span class="si">' + ic(i) + "</span><h3>" + t + "</h3></div>"; }
+function pfCss() {
+  if (document.getElementById("pf-css")) return;
+  var s = document.createElement("style"); s.id = "pf-css";
+  s.textContent = `
+.pfhero{position:relative;overflow:hidden;border-radius:26px;padding:26px;margin-bottom:20px;background:linear-gradient(135deg,#2A1240 0%,#4B1E6B 48%,#7A2B3A 100%);color:#fff;box-shadow:0 30px 60px -40px rgba(43,18,64,.9);display:flex;align-items:center;gap:18px;animation:pf-in .5s cubic-bezier(.2,.8,.3,1) both}
+.pfhero::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 18% 20%,rgba(255,154,10,.35),transparent 42%),radial-gradient(circle at 85% 82%,rgba(255,90,31,.35),transparent 46%);animation:pf-drift 15s ease-in-out infinite alternate;pointer-events:none}
+@keyframes pf-drift{from{transform:translate3d(-6%,-4%,0) scale(1)}to{transform:translate3d(6%,4%,0) scale(1.14)}}
+@keyframes pf-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pfhero>*{position:relative;z-index:1}
+.pfav{width:78px;height:78px;flex:none;border-radius:24px;display:grid;place-items:center;background:rgba(255,255,255,.12);backdrop-filter:blur(4px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);animation:pf-float 4s ease-in-out infinite}
+@keyframes pf-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pfi{flex:1;min-width:0}
+.pfi small{font:700 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.pfi h2{font:800 26px var(--display);letter-spacing:-.03em;margin:5px 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pfi p{margin:0;color:rgba(255,255,255,.82);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pfbadges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pfbadge{font:600 12px var(--body);background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:6px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
+.pfbadge.ok{background:rgba(57,217,138,.22);border-color:rgba(57,217,138,.5)}
+.pfsec{margin-top:22px;animation:pf-in .5s cubic-bezier(.2,.8,.3,1) both}
+.pfsec>h3{display:flex;align-items:center;gap:9px;font:800 14px var(--display);letter-spacing:.02em;color:var(--soft);text-transform:uppercase;margin:0 0 10px 4px}
+.pfsec>h3 .si{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff;box-shadow:0 8px 16px -8px rgba(255,90,31,.9);animation:pf-icon .5s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes pf-icon{from{opacity:0;transform:scale(.5) rotate(-20deg)}to{opacity:1;transform:none}}
+.pfcard{background:#fff;border:1.5px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 40px -34px rgba(27,20,51,.5)}
+.pfrow{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid var(--line);animation:pf-row .45s cubic-bezier(.2,.8,.3,1) both}
+.pfrow:last-child{border-bottom:0}
+.pfrow.tap{cursor:pointer;transition:background .15s}
+.pfrow.tap:hover{background:var(--mist)}
+.pfrow .ic{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;background:var(--mist);color:var(--fire);animation:pf-icon .5s cubic-bezier(.3,1.4,.5,1) both}
+.pfrow .tx{flex:1;min-width:0}
+.pfrow .tx b{display:block;font:700 14.5px var(--body);color:var(--ink)}
+.pfrow .tx small{display:block;color:var(--soft);font-size:12.5px;margin-top:1px}
+.pfrow .nt{color:var(--soft);font-size:12.5px;font-weight:600;flex:none;max-width:48%;text-align:right}
+.pfrow .go{flex:none;color:var(--soft);display:grid;place-items:center}
+@keyframes pf-row{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.pflang{display:flex;gap:6px;flex-wrap:wrap}
+.pflang button{padding:9px 14px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font:700 13px var(--display);color:var(--soft);cursor:pointer;transition:.15s}
+.pflang button:hover{border-color:var(--fire);color:var(--fire)}
+.pflang button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pfpaths{display:grid;gap:10px;padding:16px 18px}
+@media(min-width:620px){.pfpaths{grid-template-columns:1fr 1fr}}
+.pfp{display:flex;align-items:center;gap:13px;padding:15px;border-radius:17px;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:.16s;text-align:left;width:100%}
+.pfp:hover{border-color:var(--fire);transform:translateY(-2px)}
+.pfp.on{border-color:var(--fire);background:linear-gradient(135deg,#FFF3EC,#F3EEFF);box-shadow:0 16px 30px -22px rgba(255,90,31,.8)}
+.pfp .em{font-size:26px;flex:none}
+.pfp .tx{flex:1;min-width:0}
+.pfp .tx b{display:block;font:700 15px var(--body);color:var(--ink)}
+.pfp .tx small{display:block;color:var(--soft);font-size:12px;margin-top:2px;line-height:1.35}
+.pfp .tick{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:#fff}
+.pfp.on .tick{background:var(--fire);border-color:var(--fire)}
+.pfsw{position:relative;width:50px;height:29px;flex:none;display:inline-block}
+.pfsw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+.pfsw i{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}
+.pfsw i::after{content:"";position:absolute;left:3px;top:3px;width:23px;height:23px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.pfsw input:checked+i{background:linear-gradient(135deg,#12A15C,#1FBF7A)}
+.pfsw input:checked+i::after{transform:translateX(21px)}
+.pfxp{padding:0 18px 16px;color:var(--soft);font-size:13.5px;line-height:1.6}
+.pfout{display:block;width:100%;padding:15px;border-radius:18px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:700 14px var(--body);display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;transition:.15s;margin-top:22px}
+.pfout:hover{border-color:var(--fire);color:var(--fire)}
+.pfcreated{display:block;text-align:center;color:var(--soft);font-size:12px;margin-top:10px}
+.pfdz{display:flex;gap:14px;align-items:flex-start;margin-top:18px;padding:16px;border-radius:18px;background:#FFF6F5;border:1.5px solid #F3C6C2;color:#8A3B36;animation:pf-in .5s both}
+.pfdz .ic{color:#E5443E;flex:none}
+.pfdz b{display:block;font:800 14.5px var(--body)}
+.pfdz p{font-size:12.5px;line-height:1.55;color:#9B5B56;margin:4px 0 10px}
+.pfdz button{padding:10px 16px;border-radius:12px;border:0;background:#E5443E;color:#fff;font:700 13px var(--body);cursor:pointer}
+@media(max-width:560px){
+  .pfhero{flex-direction:column;align-items:flex-start;padding:22px}
+  .pfi h2{font-size:23px}
+  .pfrow .nt{max-width:42%}
+}
+`;
+  document.head.appendChild(s);
+}
 function renderProfile() {
   var el = $("#s-profile"); if (!el) return;
+  pfCss();
   var t = P();
   var d = new Date(U.created).toLocaleDateString(DL[U.lang] || "ru-RU", { day: "numeric", month: "long", year: "numeric" });
   var plans = U.premium ? t.premium : t.freePlan;
-  el.innerHTML =
-    '<div class="ph"><div class="av">' + fl(46) + "</div><div><small>" + t.acc + "</small><h2>" + esc(U.name || t.none) + "</h2><p>" + esc(U.email) + '</p><span class="bd">' + plans + "</span></div></div>" +
-    sh("user", t.profile) + '<div class="card g">' +
-      '<div class="rw"><div><small>' + ic("user") + " " + t.name + "</small><b>" + esc(U.name || t.none) + '</b></div><button class="ib" data-act="name" aria-label="' + esc(t.editName) + '">' + ic("pencil") + "</button></div>" +
-      '<div class="rw"><div><small>' + ic("mail") + " " + t.email + "</small><b>" + esc(U.email) + '</b></div><span class="nt">' + t.emailNote + "</span></div>" +
-      '<div class="rw"><div><b>' + t.news + "</b><small>" + t.newsNote + '</small></div><label class="sw"><input type="checkbox" data-act="news"' + (U.news ? " checked" : "") + "><span></span></label></div></div>" +
-    sh("globe", t.settings) + '<div class="card g">' +
-      '<div class="rw"><b>' + t.language + '</b><div class="lg">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + "</div></div>" +
-      '<div class="rw" style="display:block"><b>' + t.usage + "</b><small>" + t.usageNote + '</small><div class="pu" style="margin-top:14px">' +
-        '<button class="pcard' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div><b>' + t.pathEn + "</b><small>" + t.pathEnSub + "</small></div></button>" +
-        '<button class="pcard' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div><b>' + t.pathIe + "</b><small>" + t.pathIeSub + "</small></div></button></div></div></div>" +
-    sh("mail", t.support) + '<div class="card g">' +
-      '<a class="rw" href="mailto:' + CFG.support + '"><div><small>' + ic("mail") + " " + t.email + "</small><b>" + CFG.support + "</b></div>" + ic("chev") + "</a>" +
-      '<div class="lgl"><a href="' + CFG.privacy + '">' + t.privacy + '</a><a href="' + CFG.terms + '">' + t.terms + "</a></div></div>" +
-    '<div class="card g" style="margin-top:16px"><div class="rw" data-act="sub" style="cursor:pointer"><div><small>' + ic("crown") + " " + t.subscription + "</small><b>" + plans + '</b></div><span class="nt">' + (U.premium ? t.active : t.noSub) + " ⌄</span></div>" +
-      '<div class="xp" id="xp-sub" hidden>' + t.premDesc +
-      '<br><a class="btn p sm" href="' + CFG.pricing + '">' + t.choosePlan + '</a>' + (CFG.demo ? '<button class="btn g sm" data-act="demoPro">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div></div>" +
-    '<div class="card g"><div class="rw" data-act="guar" style="cursor:pointer"><div><b>' + ic("shield") + " " + t.guarantee + "</b></div>" + ic("down") + '</div><div class="xp" id="xp-guar" hidden>' + t.guaranteeText + "</div></div>" +
-    (U.email && U.email.toLowerCase() === "romaskovmaksim04@gmail.com" ? '<div class="card g"><a class="rw" href="admin.html"><div><b>' + ic("shield") + " Админ-панель</b><small>Пользователи, тарифы, задания</small></div>" + ic("chev") + "</a></div>" : "") +
-    '<div class="card out"><button class="btn g blk" data-act="logout">' + ic("logout") + " " + t.logout + "</button><small>" + t.created + " " + d + "</small></div>" +
-    '<div class="dz">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button class="btn d sm" data-act="del">' + t.delBtn + "</button></div></div>";
+  var isAdmin = U.email && U.email.toLowerCase() === "romaskovmaksim04@gmail.com";
+  var i = 0;
+  function dl(n) { return (i++ * 0.06).toFixed(2); }
+  function sec(icon, title) { return '<div class="pfsec" style="animation-delay:' + dl() + 's"><h3><span class="si">' + ic(icon) + "</span>" + title + "</h3>"; }
+  function rowA(icon, title, sub, right, act) {
+    return '<div class="pfrow' + (act ? " tap" : "") + '"' + (act ? ' data-act="' + act + '"' : "") + ' style="animation-delay:' + dl() + 's">' +
+      '<span class="ic">' + ic(icon) + "</span><div class=\"tx\"><b>" + title + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</div>" + (right || "") + "</div>";
+  }
+  var hero = '<div class="pfhero"><div class="pfav">' + fl(52) + "</div><div class=\"pfi\"><small>" + t.acc + "</small><h2>" + esc(U.name || t.none) + "</h2><p>" + esc(U.email) + '</p><div class="pfbadges">' +
+    '<span class="pfbadge' + (U.premium ? " ok" : "") + '">' + ic(U.premium ? "check" : "user") + " " + plans + "</span>" +
+    (U.path ? '<span class="pfbadge">' + ic("map") + " " + (U.path === "english" ? t.pathEn : t.pathIe) + "</span>" : "") +
+    '<span class="pfbadge">' + ic("globe") + " " + ({ en: "EN", ru: "RU", kz: "KZ", uz: "UZ" }[U.lang] || "RU") + "</span>" +
+    "</div></div></div>";
+
+  var prof = sec("user", t.profile) + '<div class="pfcard">' +
+    rowA("user", t.name, esc(U.name || t.none), '<span class="go">' + ic("pencil") + "</span>", "name") +
+    rowA("mail", t.email, esc(U.email), '<span class="nt">' + t.emailNote + "</span>") +
+    rowA("send", t.news, t.newsNote, '<label class="pfsw"><input type="checkbox" data-act="news"' + (U.news ? " checked" : "") + "><i></i></label>") +
+    "</div>";
+
+  var setg = sec("globe", t.settings) + '<div class="pfcard">' +
+    rowA("globe", t.language, "", '<div class="pflang">' + [["en", "EN"], ["ru", "RU"], ["kz", "KZ"], ["uz", "UZ"]].map(function (x) { return '<button class="' + (U.lang === x[0] ? "on" : "") + '" data-act="lang" data-l="' + x[0] + '">' + x[1] + "</button>"; }).join("") + "</div>") +
+    '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
+      '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
+      '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
+    "</div></div></div>";
+
+  var subs = sec("crown", t.subscription) + '<div class="pfcard">' +
+    '<div class="pfrow tap" data-act="sub" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("crown") + '</span><div class="tx"><b>' + plans + "</b><small>" + (U.premium ? t.active : t.noSub) + '</small></div><span class="nt">' + (U.premium ? "✓" : "⌄") + "</span></div>" +
+    '<div class="pfxp" id="xp-sub" hidden>' + t.premDesc + '<br><a class="btn p sm" href="' + CFG.pricing + '" style="margin-top:10px">' + t.choosePlan + "</a>" + (CFG.demo ? '<button class="btn g sm" data-act="demoPro" style="margin-left:8px">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div>" +
+    "</div>";
+
+  var guar = sec("shield", t.guarantee) + '<div class="pfcard">' +
+    '<div class="pfrow tap" data-act="guar" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>' + t.guarantee + "</b></div>" + '<span class="go">' + ic("down") + "</span></div>" +
+    '<div class="pfxp" id="xp-guar" hidden>' + t.guaranteeText + "</div></div>";
+
+  var sup = sec("mail", t.support) + '<div class="pfcard">' +
+    '<a class="pfrow tap" href="mailto:' + CFG.support + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("mail") + '</span><div class="tx"><b>' + CFG.support + "</b><small>" + t.support + '</small></div><span class="go">' + ic("chev") + "</span></a>" +
+    '<a class="pfrow tap" href="' + CFG.privacy + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>' + t.privacy + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
+    '<a class="pfrow tap" href="' + CFG.terms + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("file") + '</span><div class="tx"><b>' + t.terms + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
+    (isAdmin ? '<a class="pfrow tap" href="admin.html" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>Админ-панель</b><small>Пользователи, тарифы, задания</small></div><span class="go">' + ic("chev") + "</span></a>" : "") +
+    "</div>";
+
+  el.innerHTML = hero + prof + setg + subs + guar + sup +
+    '<button class="pfout" data-act="logout" style="animation-delay:' + dl() + 's">' + ic("logout") + " " + t.logout + "</button>" +
+    '<span class="pfcreated">' + t.created + " " + d + "</span>" +
+    '<div class="pfdz" style="animation-delay:' + dl() + 's">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button data-act="del">' + t.delBtn + "</button></div></div>";
 }
+function sh(i, t) { return '<div class="sh"><span class="si">' + ic(i) + "</span><h3>" + t + "</h3></div>"; }
 
 /* ---------- словарь (общий для обоих профилей) ---------- */
 var TOP = {

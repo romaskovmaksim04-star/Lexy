@@ -210,10 +210,8 @@
 
   function drawChat(body, st, level) {
     var info = '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки — просто перефразирует правильно.</li><li>Каждый ответ заканчивается вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>';
-    var chips = ["Hi! Let's chat", "Tell me about yourself", "Let's talk about food", "Ask me about my job", "I want to practise grammar", "Give me a topic to discuss"];
     var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
     body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexy</b><small id="lxaStatus">онлайн</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
-      '<div class="lxa-chips" id="lxaChips">' + chips.map(function (c) { return '<button class="lxa-chip" data-say="' + esc(c) + '">' + esc(c) + "</button>"; }).join("") + "</div>" +
       '<div class="lxa-input"><textarea id="lxaIn" placeholder="Напиши по-английски…" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="Отправить">' + ic("send") + "</button></div>" +
       '<div class="lxa-tools"><span class="lxa-hint">Enter — отправить · Shift+Enter — новая строка</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " Сбросить чат</button></div></div>";
     sc(stream); var box = $("#lxaStream", body); if (box) box.scrollTop = box.scrollHeight;
@@ -241,7 +239,6 @@
     var inp = $("#lxaIn", body), send = $("#lxaSend", body);
     function autoGrow() { inp.style.height = "auto"; inp.style.height = Math.min(140, inp.scrollHeight) + "px"; }
     inp.addEventListener("input", autoGrow);
-    body.querySelectorAll("[data-say]").forEach(function (c) { c.addEventListener("click", function () { inp.value = c.dataset.say; autoGrow(); go(); }); });
     send.addEventListener("click", go);
     inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); go(); } });
     function go() {
