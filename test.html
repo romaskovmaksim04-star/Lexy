@@ -399,8 +399,8 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
 
   function renderWriting(k, n, isFull){
     var item = C.item(k, n);
-    app.innerHTML = '<h1>Writing · Task 2</h1><p class="s">Напиши эссе по теме. Ориентир — ' + item.min + '+ слов.</p>' +
-      '<div class="card" style="margin-top:16px">' +
+    app.innerHTML = '<div class="card" style="margin-top:4px">' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">✍️</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Writing · Task 2</div><div class="s" style="margin:0">Эссе · ориентир ' + item.min + '+ слов</div></div></div>' +
         '<div class="qtext">' + esc(item.prompt) + '</div>' +
         '<textarea id="essay" placeholder="Начни писать здесь…"></textarea>' +
         '<div class="meta"><span>Слов: <b id="wc">0</b></span><span>Минимум: <b>' + item.min + '</b></span></div>' +
@@ -423,9 +423,9 @@ textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)
 
   function renderSpeaking(k, n, isFull){
     var item = C.item(k, n);
-    var note = 'Совет: включи диктофон и говори 1,5–2 минуты без пауз. Потом прослушай и отметь пункты, которые раскрыл.';
-    app.innerHTML = '<h1>Speaking · ' + item.part + '</h1><p class="s">Подготовь монолог на 1,5–2 минуты по карточке.</p>' +
-      '<div class="card" style="margin-top:16px">' +
+    var note = 'Совет: отвечай вслух 1,5–2 минуты, затронув все пункты. Записывать не нужно — просто отметь, что раскрыл.';
+    app.innerHTML = '<div class="card" style="margin-top:4px">' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#FFE3D2);font-size:22px">🗣</span><div><div style="font:800 20px var(--display);letter-spacing:-.02em">Speaking · ' + item.part + '</div><div class="s" style="margin:0">Практика Speaking · монолог</div></div></div>' +
         '<div class="qtext">' + esc(item.prompt) + '</div>' +
         '<p class="s" style="margin-bottom:14px">You should say:</p>' +
         item.points.map(function(p, i){
