@@ -1,5 +1,5 @@
 /* ==========================================================
-   lexy-content.js — банк заданий Lexy
+   lexy-content.js — банк заданий Lexi
    • READING / LISTENING / WRITING / SPEAKING / VOCAB
    • Бесплатно доступна часть (FREE), остальное — по Premium
    • Аудирование озвучивается бесплатно (Web Speech API)

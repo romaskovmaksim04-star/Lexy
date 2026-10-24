@@ -1,5 +1,5 @@
 /* ==========================================================
-   lexy-chat.js — Lexy AI (Разговор): чат-практика + письмо
+   lexy-chat.js — Lexi AI (Разговор): чат-практика + письмо
    • AI через Supabase Edge Function ai-chat
    • Уровень из курса; IELTS-письмо или общая практика письма
    • Инструкции, анимации, «печатает…», сохранение чата
@@ -41,14 +41,14 @@
       lockBody: "Живой чат-практика английского и проверка письма с ИИ — на тарифе Premium.",
       getPrem: "Получить Premium", online: "онлайн", typing: "печатает…",
       phInput: "Напиши по-английски…", ariaSend: "Отправить", hintEnter: "Enter — отправить · Shift+Enter — новая строка", reset: "Сбросить чат",
-      emptyHi: "Привет! Я Lexy 👋", emptySub: "Напиши что-нибудь по-английски — и начнём беседу.",
-      chatInfo: '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexy отвечает по твоему уровню и мягко исправляет ошибки.</li><li>Каждый ответ — с вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      emptyHi: "Привет! Я Lexi 👋", emptySub: "Напиши что-нибудь по-английски — и начнём беседу.",
+      chatInfo: '<div class="lxa-info"><b>Как работает чат</b><ol><li>Пиши по-английски на любую тему — об учёбе, планах, хобби.</li><li>Lexi отвечает по твоему уровню и мягко исправляет ошибки.</li><li>Каждый ответ — с вопросом, чтобы беседа продолжалась.</li></ol><div class="ex"><i>Пример:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
       okT: "✓ Написано верно", badT: "⚠ Есть, что поправить", fixedL: "Исправлено:",
       needPrem: "Нужен Premium", chatLimit: "Дневной лимит чата исчерпан", chatFail: "Не удалось ответить, попробуй ещё",
       resetQ: "Сбросить чат?", resetQBody: "Вся история беседы удалится. Начать заново?", resetOk: "Сбросить", cancel: "Отмена", chatCleared: "Чат очищен",
       writeGen: "Практика письма",
       writeInfoExam: '<div class="lxa-info"><b>Как проходит проверка IELTS Writing</b><ol><li>Нажми «Получить тему» — ИИ-экзаменатор выдаст вопрос Task 2.</li><li>Напиши эссе (250+ слов).</li><li>Нажми «Проверить» — ИИ оценит по критериям IELTS и даст балл + разбор.</li></ol><div class="ex"><i>Структура эссе:</i><br>1) Введение — перефраз темы + твоя позиция.<br>2) Абзац 1 — аргумент + пример.<br>3) Абзац 2 — второй аргумент + пример.<br>4) Заключение — вывод.<br><br><i>Связки:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
-      writeInfoGen: '<div class="lxa-info"><b>Как проходит практика письма</b><ol><li>Нажми «Получить задание» — Lexy даст короткую тему (абзац, письмо или заметка).</li><li>Напиши текст на английском.</li><li>Нажми «Проверить» — Lexy оценит уровень (A1–C1) и подскажет, что улучшить.</li></ol><div class="ex"><i>Пример задания:</i> Write a short email to a friend about your weekend.<br><br><i>Шаблон:</i><br>Hi {name}, …<br>— основная часть: что, где, когда.<br>Best, {твоё имя}.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Как проходит практика письма</b><ol><li>Нажми «Получить задание» — Lexi даст короткую тему (абзац, письмо или заметка).</li><li>Напиши текст на английском.</li><li>Нажми «Проверить» — Lexi оценит уровень (A1–C1) и подскажет, что улучшить.</li></ol><div class="ex"><i>Пример задания:</i> Write a short email to a friend about your weekend.<br><br><i>Шаблон:</i><br>Hi {name}, …<br>— основная часть: что, где, когда.<br>Best, {твоё имя}.</div></div>',
       topicL: "Тема:", phEssay: "Напиши текст здесь…", wordsL: "Слов:", minW: "минимум 250", moreW: "чем больше, тем лучше", otherTopic: "Другая тема", checkBtn: "Проверить",
       getTopicExam: "Получить тему", getTopicGen: "Получить задание",
       bandExam: "Оценка IELTS", bandGen: "Примерный уровень", strengths: "Сильные стороны", improve: "Что улучшить", notes: "Замечания",
@@ -64,14 +64,14 @@
       lockBody: "Live English chat practice and AI essay checking — on the Premium plan.",
       getPrem: "Get Premium", online: "online", typing: "typing…",
       phInput: "Write in English…", ariaSend: "Send", hintEnter: "Enter — send · Shift+Enter — new line", reset: "Reset chat",
-      emptyHi: "Hi! I'm Lexy 👋", emptySub: "Write something in English and let's start chatting.",
-      chatInfo: '<div class="lxa-info"><b>How the chat works</b><ol><li>Write in English on any topic — study, plans, hobbies.</li><li>Lexy replies at your level and gently fixes mistakes.</li><li>Every reply ends with a question so the talk keeps going.</li></ol><div class="ex"><i>Example:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      emptyHi: "Hi! I'm Lexi 👋", emptySub: "Write something in English and let's start chatting.",
+      chatInfo: '<div class="lxa-info"><b>How the chat works</b><ol><li>Write in English on any topic — study, plans, hobbies.</li><li>Lexi replies at your level and gently fixes mistakes.</li><li>Every reply ends with a question so the talk keeps going.</li></ol><div class="ex"><i>Example:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
       okT: "✓ Written correctly", badT: "⚠ Something to fix", fixedL: "Fixed:",
       needPrem: "Premium required", chatLimit: "Daily chat limit reached", chatFail: "Couldn't reply, try again",
       resetQ: "Reset chat?", resetQBody: "The whole conversation will be deleted. Start over?", resetOk: "Reset", cancel: "Cancel", chatCleared: "Chat cleared",
       writeGen: "Writing practice",
       writeInfoExam: '<div class="lxa-info"><b>How IELTS Writing checking works</b><ol><li>Tap “Get a topic” — the AI examiner gives a Task 2 question.</li><li>Write your essay (250+ words).</li><li>Tap “Check” — the AI scores it against IELTS criteria and gives feedback.</li></ol><div class="ex"><i>Essay structure:</i><br>1) Intro — paraphrase the task + your position.<br>2) Body 1 — argument + example.<br>3) Body 2 — second argument + example.<br>4) Conclusion — summary.<br><br><i>Linkers:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
-      writeInfoGen: '<div class="lxa-info"><b>How writing practice works</b><ol><li>Tap “Get a task” — Lexy gives a short topic (a paragraph, email or note).</li><li>Write your text in English.</li><li>Tap “Check” — Lexy rates your level (A1–C1) and suggests improvements.</li></ol><div class="ex"><i>Example task:</i> Write a short email to a friend about your weekend.<br><br><i>Template:</i><br>Hi {name}, …<br>— main part: what, where, when.<br>Best, {your name}.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>How writing practice works</b><ol><li>Tap “Get a task” — Lexi gives a short topic (a paragraph, email or note).</li><li>Write your text in English.</li><li>Tap “Check” — Lexi rates your level (A1–C1) and suggests improvements.</li></ol><div class="ex"><i>Example task:</i> Write a short email to a friend about your weekend.<br><br><i>Template:</i><br>Hi {name}, …<br>— main part: what, where, when.<br>Best, {your name}.</div></div>',
       topicL: "Topic:", phEssay: "Write your text here…", wordsL: "Words:", minW: "250 minimum", moreW: "the more the better", otherTopic: "Another topic", checkBtn: "Check",
       getTopicExam: "Get a topic", getTopicGen: "Get a task",
       bandExam: "IELTS score", bandGen: "Estimated level", strengths: "Strengths", improve: "What to improve", notes: "Notes",
@@ -87,14 +87,14 @@
       lockBody: "Ағылшын тілінде тірі чат-практика және ИИ-мен эссе тексеру — Premium тарифінде.",
       getPrem: "Premium алу", online: "желіде", typing: "жазып жатыр…",
       phInput: "Ағылшынша жаз…", ariaSend: "Жіберу", hintEnter: "Enter — жіберу · Shift+Enter — жаңа жол", reset: "Чатты тазалау",
-      emptyHi: "Сәлем! Мен Lexy 👋", emptySub: "Ағылшынша бірдеңе жазып, сөйлесуді бастайық.",
-      chatInfo: '<div class="lxa-info"><b>Чат қалай жұмыс істейді</b><ol><li>Кез келген тақырыпта ағылшынша жаз — оқу, жоспар, хобби.</li><li>Lexy деңгейіңе сай жауап беріп, қателерді жұмсақ түзетеді.</li><li>Әр жауап сұрақпен аяқталады, сөйлесу жалғасады.</li></ol><div class="ex"><i>Мысал:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      emptyHi: "Сәлем! Мен Lexi 👋", emptySub: "Ағылшынша бірдеңе жазып, сөйлесуді бастайық.",
+      chatInfo: '<div class="lxa-info"><b>Чат қалай жұмыс істейді</b><ol><li>Кез келген тақырыпта ағылшынша жаз — оқу, жоспар, хобби.</li><li>Lexi деңгейіңе сай жауап беріп, қателерді жұмсақ түзетеді.</li><li>Әр жауап сұрақпен аяқталады, сөйлесу жалғасады.</li></ol><div class="ex"><i>Мысал:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
       okT: "✓ Дұрыс жазылған", badT: "⚠ Түзететін нәрсе бар", fixedL: "Түзетілді:",
       needPrem: "Premium қажет", chatLimit: "Чаттың күндік шегі бітті", chatFail: "Жауап берілмеді, қайтала",
       resetQ: "Чатты тазалау?", resetQBody: "Барлық әңгіме тарихы жойылады. Қайта бастайсың ба?", resetOk: "Тазалау", cancel: "Болдырмау", chatCleared: "Чат тазаланды",
       writeGen: "Жазу практикасы",
       writeInfoExam: '<div class="lxa-info"><b>IELTS Writing тексеруі қалай өтеді</b><ol><li>«Тақырып алу» түймесін бас — ИИ-емтиханшы Task 2 сұрағын береді.</li><li>Эссе жаз (250+ сөз).</li><li>«Тексеру» түймесін бас — ИИ IELTS критерийлері бойынша бағалап, талдау береді.</li></ol><div class="ex"><i>Эссе құрылымы:</i><br>1) Кіріспе — тақырыпты қайталау + ұстанымың.<br>2) 1-абзац — дәлел + мысал.<br>3) 2-абзац — екінші дәлел + мысал.<br>4) Қорытынды.<br><br><i>Байланыстырғыштар:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
-      writeInfoGen: '<div class="lxa-info"><b>Жазу практикасы қалай өтеді</b><ol><li>«Тапсырма алу» түймесін бас — Lexy қысқа тақырып береді.</li><li>Ағылшынша мәтін жаз.</li><li>«Тексеру» түймесін бас — Lexy деңгейіңді (A1–C1) бағалап, не жақсарту керектігін айтады.</li></ol><div class="ex"><i>Тапсырма мысалы:</i> Write a short email to a friend about your weekend.<br><br><i>Үлгі:</i><br>Hi {name}, …<br>— негізгі бөлім: не, қайда, қашан.<br>Best, {атың}.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Жазу практикасы қалай өтеді</b><ol><li>«Тапсырма алу» түймесін бас — Lexi қысқа тақырып береді.</li><li>Ағылшынша мәтін жаз.</li><li>«Тексеру» түймесін бас — Lexi деңгейіңді (A1–C1) бағалап, не жақсарту керектігін айтады.</li></ol><div class="ex"><i>Тапсырма мысалы:</i> Write a short email to a friend about your weekend.<br><br><i>Үлгі:</i><br>Hi {name}, …<br>— негізгі бөлім: не, қайда, қашан.<br>Best, {атың}.</div></div>',
       topicL: "Тақырып:", phEssay: "Мәтінді осында жаз…", wordsL: "Сөз:", minW: "кемінде 250", moreW: "неғұрлым көп болса, соғұрлым жақсы", otherTopic: "Басқа тақырып", checkBtn: "Тексеру",
       getTopicExam: "Тақырып алу", getTopicGen: "Тапсырма алу",
       bandExam: "IELTS бағасы", bandGen: "Шамамен деңгей", strengths: "Күшті жақтары", improve: "Нені жақсарту керек", notes: "Ескертулер",
@@ -110,14 +110,14 @@
       lockBody: "Ingliz tilida jonli chat amaliyoti va AI bilan insho tekshirish — Premium tarifida.",
       getPrem: "Premium olish", online: "onlayn", typing: "yozmoqda…",
       phInput: "Inglizcha yozing…", ariaSend: "Yuborish", hintEnter: "Enter — yuborish · Shift+Enter — yangi qator", reset: "Chatni tozalash",
-      emptyHi: "Salom! Men Lexy 👋", emptySub: "Inglizcha biror narsa yozing va suhbatni boshlaymiz.",
-      chatInfo: '<div class="lxa-info"><b>Chat qanday ishlaydi</b><ol><li>Istalgan mavzuda inglizcha yozing — o‘qish, rejalar, sevimli mashg‘ulot.</li><li>Lexy darajangizga mos javob berib, xatolarni yumshoq tuzatadi.</li><li>Har bir javob savol bilan tugaydi, suhbat davom etadi.</li></ol><div class="ex"><i>Misol:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
+      emptyHi: "Salom! Men Lexi 👋", emptySub: "Inglizcha biror narsa yozing va suhbatni boshlaymiz.",
+      chatInfo: '<div class="lxa-info"><b>Chat qanday ishlaydi</b><ol><li>Istalgan mavzuda inglizcha yozing — o‘qish, rejalar, sevimli mashg‘ulot.</li><li>Lexi darajangizga mos javob berib, xatolarni yumshoq tuzatadi.</li><li>Har bir javob savol bilan tugaydi, suhbat davom etadi.</li></ol><div class="ex"><i>Misol:</i><br>— Hi! What did you do at the weekend?<br>— I go to cinema with friends.<br>— Nice! <i>I went</i> to the cinema with friends — that sounds fun. What film did you watch?</div></div>',
       okT: "✓ To‘g‘ri yozilgan", badT: "⚠ Tuzatadigan narsa bor", fixedL: "Tuzatildi:",
       needPrem: "Premium kerak", chatLimit: "Chatning kunlik limiti tugadi", chatFail: "Javob berilmadi, qayta urinib ko‘ring",
       resetQ: "Chatni tozalash?", resetQBody: "Butun suhbat tarixi o‘chiriladi. Qaytadan boshlaysizmi?", resetOk: "Tozalash", cancel: "Bekor qilish", chatCleared: "Chat tozalandi",
       writeGen: "Yozish amaliyoti",
       writeInfoExam: '<div class="lxa-info"><b>IELTS Writing tekshiruvi qanday o‘tadi</b><ol><li>«Mavzu olish» tugmasini bosing — AI imtihonchi Task 2 savolini beradi.</li><li>Insho yozing (250+ so‘z).</li><li>«Tekshirish» tugmasini bosing — AI IELTS mezonlari bo‘yicha baholab, tahlil beradi.</li></ol><div class="ex"><i>Insho tuzilishi:</i><br>1) Kirish — mavzuni qayta ifodalash + pozitsiyangiz.<br>2) 1-xatboshi — dalil + misol.<br>3) 2-xatboshi — ikkinchi dalil + misol.<br>4) Xulosa.<br><br><i>Bog‘lovchilar:</i> however, therefore, moreover, for example, in conclusion.</div></div>',
-      writeInfoGen: '<div class="lxa-info"><b>Yozish amaliyoti qanday o‘tadi</b><ol><li>«Topshiriq olish» tugmasini bosing — Lexy qisqa mavzu beradi.</li><li>Inglizcha matn yozing.</li><li>«Tekshirish» tugmasini bosing — Lexy darajangizni (A1–C1) baholab, nimani yaxshilashni aytadi.</li></ol><div class="ex"><i>Topshiriq misoli:</i> Write a short email to a friend about your weekend.<br><br><i>Shablon:</i><br>Hi {name}, …<br>— asosiy qism: nima, qayerda, qachon.<br>Best, {ismingiz}.</div></div>',
+      writeInfoGen: '<div class="lxa-info"><b>Yozish amaliyoti qanday o‘tadi</b><ol><li>«Topshiriq olish» tugmasini bosing — Lexi qisqa mavzu beradi.</li><li>Inglizcha matn yozing.</li><li>«Tekshirish» tugmasini bosing — Lexi darajangizni (A1–C1) baholab, nimani yaxshilashni aytadi.</li></ol><div class="ex"><i>Topshiriq misoli:</i> Write a short email to a friend about your weekend.<br><br><i>Shablon:</i><br>Hi {name}, …<br>— asosiy qism: nima, qayerda, qachon.<br>Best, {ismingiz}.</div></div>',
       topicL: "Mavzu:", phEssay: "Matnni shu yerga yozing…", wordsL: "So‘z:", minW: "kamida 250", moreW: "qancha ko‘p bo‘lsa, shuncha yaxshi", otherTopic: "Boshqa mavzu", checkBtn: "Tekshirish",
       getTopicExam: "Mavzu olish", getTopicGen: "Topshiriq olish",
       bandExam: "IELTS bahosi", bandGen: "Taxminiy daraja", strengths: "Kuchli tomonlar", improve: "Nimani yaxshilash", notes: "Izohlar",
@@ -281,7 +281,7 @@
     if (!(w.Lexy.user && w.Lexy.user.premium)) { renderLock(el, exam); return; }
     injectCss();
     var st = store((w.Lexy.user && w.Lexy.user.email) || "anon");
-    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + " · " + CT("lvl") + " " + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">' + CT("bot") + '</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? CT("bExam") : CT("bGen")) + '</span></div><div class="lxa-breathe"></div></div>';
+    var hero = '<div class="lxa-hero"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexi AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + " · " + CT("lvl") + " " + esc(level) + '</p></div></div><div class="lxa-badges"><span class="lxa-badge">' + CT("bot") + '</span><span class="lxa-badge">' + esc(level) + '</span><span class="lxa-badge">' + (exam ? CT("bExam") : CT("bGen")) + '</span></div><div class="lxa-breathe"></div></div>';
     var tabs = '<div class="lxa-tabs" id="lxaTabs"><button class="lxa-tab' + (st.tab === "chat" ? " on" : "") + '" data-t="chat">' + CT("tabChat") + '</button><button class="lxa-tab' + (st.tab === "writing" ? " on" : "") + '" data-t="writing">' + CT("tabWrite") + "</button></div>";
     el.innerHTML = hero + tabs + '<div id="lxaBody"></div>';
     $("#lxaTabs", el).addEventListener("click", function (e) {
@@ -296,8 +296,8 @@
 
   function renderLock(el, exam) {
     injectCss();
-    el.innerHTML = '<div class="lxa-hero" style="margin-bottom:16px"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexy AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + '</p></div></div></div>' +
-      '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexy AI — Premium</h2>' +
+    el.innerHTML = '<div class="lxa-hero" style="margin-bottom:16px"><div class="row"><span class="lxa-mascot">' + flame(38) + '</span><div><h2>Lexi AI</h2><p>' + (exam ? CT("heroExam") : CT("heroGen")) + '</p></div></div></div>' +
+      '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexi AI — Premium</h2>' +
       '<p class="s">' + CT("lockBody") + '</p>' +
       '<a class="btn p" href="pricing.html" style="margin-top:14px">' + CT("getPrem") + "</a></div>";
   }
@@ -312,7 +312,7 @@
   function drawChat(body, st, level) {
     var info = CT("chatInfo");
     var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
-    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexy</b><small id="lxaStatus">' + CT("online") + '</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
+    body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexi</b><small id="lxaStatus">' + CT("online") + '</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
       '<div class="lxa-input"><textarea id="lxaIn" placeholder="' + CT("phInput") + '" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="' + CT("ariaSend") + '">' + ic("send") + "</button></div>" +
       '<div class="lxa-tools"><span class="lxa-hint">' + CT("hintEnter") + '</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " " + CT("reset") + "</button></div></div>";
     sc(stream); var box = $("#lxaStream", body); if (box) box.scrollTop = box.scrollHeight;

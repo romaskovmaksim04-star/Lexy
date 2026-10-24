@@ -135,7 +135,7 @@ main{flex:1}
 </svg>
 
 <header class="top"><div class="bar">
- <a class="logo" href="dashboard.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>Lexy</a>
+ <a class="logo" href="dashboard.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>Lexi</a>
  <a class="menu-btn" href="main.html"><svg><use href="#home"/></svg><span data-i18n="menu">Главное меню</span></a>
 
  <div class="lang-wrap" id="lw">
@@ -309,21 +309,32 @@ demoBtn.onclick = function() {
   setLang(LK.indexOf(l) < 0 ? "ru" : l);
 })();
 
-// Логика для кнопки "Начать тренировку"
+// Кнопка "Начать тренировку": Premium → в кабинет (игры); иначе — заглушка
+function lexyUser(){
+  try{
+    var email = localStorage.getItem('lexy_session');
+    if(!email) return null;
+    var db = JSON.parse(localStorage.getItem('lexy_db_v1') || '{}');
+    return db[email] || db[String(email).toLowerCase()] || null;
+  }catch(e){ return null; }
+}
 document.getElementById('startGameBtn').addEventListener('click', function(e) {
   e.preventDefault();
-  var isLoggedIn = localStorage.getItem('user_logged_in');
-
-  if (isLoggedIn === 'true') {
-    // Если уже залогинен — кидаем сразу в игру
-    // (пока игры нет, можно кидать в тарифы или на главную)
-    window.location.href = 'main.html'; // или 'game-trap.html', когда сделаешь
-  } else {
-    // Если не залогинен — на регистрацию
-    window.location.href = 'reg.html';
-  }
+  var u = lexyUser();
+  if(!u){ window.location.href = 'reg.html'; return; }
+  if(!u.premium){ var g=document.getElementById('pgate'); if(g) g.style.display='flex'; return; }
+  window.location.href = (u.path === 'ielts') ? 'dashboard-ielts.html#games' : 'dashboard-english.html';
 });
 
 </script>
+<div id="pgate" style="display:none;position:fixed;inset:0;background:rgba(15,10,25,.55);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:22px;padding:28px;max-width:380px;text-align:center;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)">
+    <div style="font-size:40px">🔒</div>
+    <h3 style="font:800 22px var(--display,sans-serif);margin:10px 0 6px">Доступно с Premium</h3>
+    <p style="color:var(--soft,#6B6585);font-size:14px;margin-bottom:16px">Эта игра открывается на тарифе Premium. Оформи, чтобы играть.</p>
+    <a class="btn btn-primary" href="pricing.html">Получить Premium</a>
+    <button class="btn" style="margin-left:8px;background:#fff;color:#1B1433;border:1.5px solid #E6E1F0" onclick="document.getElementById('pgate').style.display='none'">Закрыть</button>
+  </div>
+</div>
 </body>
 </html>

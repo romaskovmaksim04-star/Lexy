@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lexy — Подготовка к IELTS</title>
+<title>Lexi — Подготовка к IELTS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@
   <!-- СЛОВАРЬ: рисуется ядром; действия закрыты замком, пока нет Premium -->
   <section class="sec" id="s-vocab"></section>
 
-  <!-- LEXY AI: под замком -->
+  <!-- LEXI AI: под замком -->
   <section class="sec" id="s-ai">
     <div data-gate="ai"></div>
     <div data-pro="ai" hidden id="aiBox"></div>
@@ -145,7 +145,7 @@
       '<div class="tgl">Только полные моки <label class="sw"><input type="checkbox" id="fo"' + (u.fullOnly ? " checked" : "") + "><span></span></label></div>" +
       '<div class="skg">' + [["Reading", "book", "#E3F0FF", "#1E8FE8"], ["Listening", "head", "#FFE0DB", "#E5443E"], ["Writing", "pencil", "#FFE6D6", "#F7620B"], ["Speaking", "mic", "#FFF3CC", "#E59A00"]].map(function (s) { return '<div class="skc">' + ico(s[1], s[2], s[3]) + '<div class="tx"><b>' + s[0] + "</b><small>0 тестов</small></div><span class=\"v\">—</span></div>"; }).join("") + "</div>" +
       '<div class="skc" style="margin-bottom:20px">' + ico("vocab", "#F6E1F6", "#C02FB0") + '<div class="tx"><b>Словарь</b><small>' + u.words.length + " слов в словаре</small></div></div>" +
-      '<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span class="ico" style="width:34px;height:34px">' + fl(20) + '</span><small style="color:var(--soft)">Время с Lexy</small></div><div class="tm"><div>' + m.day + ' мин<small>Сегодня</small></div><div>' + m.wk + ' мин<small>Неделя</small></div><div>' + m.all + ' мин<small>Всего</small></div></div></div>' +
+      '<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span class="ico" style="width:34px;height:34px">' + fl(20) + '</span><small style="color:var(--soft)">Время с Lexi</small></div><div class="tm"><div>' + m.day + ' мин<small>Сегодня</small></div><div>' + m.wk + ' мин<small>Неделя</small></div><div>' + m.all + ' мин<small>Всего</small></div></div></div>' +
       '<div class="card emp"><h3>Активность</h3><div class="eb" style="margin-top:20px">' + fl(30) + "</div><p>Нет данных за выбранный период</p></div>" +
       '<div class="card"><h3 style="font:800 20px var(--display)">Динамика баллов</h3><div class="lgd"><span><i style="background:#1E9BFF"></i>Reading</span><span><i style="background:#E5443E"></i>Listening</span><span><i style="background:#F7620B"></i>Writing</span><span><i style="background:#F2B100"></i>Speaking</span><span><i style="background:#999"></i>Цель</span></div><p class="s" style="margin:16px 0 0">Нет данных за выбранный период</p></div>';
   }
@@ -157,8 +157,8 @@
 
   function renderAi() { var lv = (Lexy.user.course && Lexy.user.course.level) || "B2"; if (window.LexyChat) LexyChat.render($("#aiBox"), { level: lv }); }
   var FAQ = [
-    { q: { ru: "Как готовиться в Lexy?", en: "How do I prepare in Lexy?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
-    { q: { ru: "Что открывает Premium?", en: "What does Premium unlock?" }, a: { ru: "Все задания (300+ попыток), Lexy AI, словарь с повторением, игры и детальная статистика.", en: "All tasks (300+ attempts), Lexy AI, the vocabulary with review, games and detailed statistics." } },
+    { q: { ru: "Как готовиться в Lexi?", en: "How do I prepare in Lexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
+    { q: { ru: "Что открывает Premium?", en: "What does Premium unlock?" }, a: { ru: "Все задания (300+ попыток), Lexi AI, словарь с повторением, игры и детальная статистика.", en: "All tasks (300+ attempts), Lexi AI, the vocabulary with review, games and detailed statistics." } },
     { q: { ru: "Как проходит тест модуля?", en: "How does the module test work?" }, a: { ru: "14 вопросов (2 — аудирование), с таймером. 85% и выше — переход на уровень выше.", en: "14 questions (2 listening), with a timer. 85% or more unlocks the next level." } },
     { q: { ru: "Как оплатить и есть ли гарантия?", en: "Payment and guarantee?" }, a: { ru: "Оплата через Platega на странице тарифов (Premium, 30 дней). Двойная гарантия: не получишь прогресс — вернём деньги.", en: "Pay via Platega on the pricing page (Premium, 30 days). Double guarantee: no progress — we refund you." } },
     { q: { ru: "Сохраняется ли прогресс между устройствами?", en: "Is progress synced across devices?" }, a: { ru: "Да, прогресс сохраняется в аккаунте и синхронизируется при входе по email.", en: "Yes, progress is saved to your account and synced when you log in with your email." } }
@@ -169,7 +169,7 @@
     var items = FAQ.map(function (f, i) {
       return '<div class="card" style="margin-top:10px"><button data-faq="' + i + '" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0"><div style="flex:1;font-weight:700">' + (f.q[lang] || f.q.ru) + "</div>" + Lexy.ic("down") + '</button><div id="faq-' + i + '" hidden style="color:var(--soft);font-size:14px;line-height:1.65;margin-top:10px">' + (f.a[lang] || f.a.ru) + "</div></div>";
     }).join("");
-    $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexy" : "Короткие ответы о Lexy") + "</p>" + items;
+    $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexi" : "Короткие ответы о Lexi") + "</p>" + items;
   }
   Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats, ai: renderAi }, vocabGated: true });
 })();

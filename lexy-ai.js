@@ -1,5 +1,5 @@
 /* ==========================================================
-   lexy-ai.js — Lexy AI (практика Speaking для Premium)
+   lexy-ai.js — Lexi AI (практика Speaking для Premium)
    • Вопросы IELTS Speaking + образцы ответов + советы
    • Озвучка вопроса (браузерный голос)
    • Разбор твоего ответа: объём, структура, частые ошибки
@@ -52,10 +52,10 @@
 
   function render(el) {
     if (!el) return;
-    if (!w.Lexy.user.premium) { el.innerHTML = '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexy AI — Premium</h2><p class="s">Разговорная практика с вопросами, образцами и разбором — на тарифе Premium.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>'; return; }
+    if (!w.Lexy.user.premium) { el.innerHTML = '<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">Lexi AI — Premium</h2><p class="s">Разговорная практика с вопросами, образцами и разбором — на тарифе Premium.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>'; return; }
     if (!cur) pick();
     var sampleWords = cur.sample.split(/\s+/).length;
-    el.innerHTML = '<h1 class="t">Lexy AI</h1><p class="s">Практика Speaking: ответь на вопрос, затем сверься с образцом и разбором</p>' +
+    el.innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Практика Speaking: ответь на вопрос, затем сверься с образцом и разбором</p>' +
       '<div class="block" style="margin-top:16px"><div class="bhead"><span class="bic">' + ic("mic") + '</span><div><div class="btitle">' + esc(cur.p) + '</div><div class="bsub">Вопрос для практики</div></div></div>' +
       '<div class="qtext" style="font-size:20px">' + esc(cur.q) + '</div>' +
       '<div class="row" style="margin-top:8px"><button class="btn ghost sm" id="ailisten">🔊 Прослушать вопрос</button><button class="btn ghost sm" id="ainew">Новый вопрос</button></div>' +
