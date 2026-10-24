@@ -215,6 +215,7 @@ var CO = {
 function C() { return CO[U.lang] || CO.ru; }
 var RENEW = { ru: "Продлить тариф", en: "Extend plan", kz: "Тарифті ұзарту", uz: "Tarifni uzaytirish" };
 function renewT() { return RENEW[U.lang] || RENEW.ru; }
+function mailLink(e) { return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(e || CFG.support); }
 
 /* ---------- модалка / тост ---------- */
 function modal(o) {
@@ -267,7 +268,11 @@ function coreCss() {
 .prem.is svg{animation:core-spin 3.5s linear infinite}
 @keyframes core-drift{from{transform:translate3d(-8%,-6%,0) scale(1)}to{transform:translate3d(8%,6%,0) scale(1.2)}}
 @keyframes core-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.fab{animation:core-fab 2.6s ease-in-out infinite}
+.fab:hover{animation-play-state:paused}
+@keyframes core-fab{0%,100%{transform:translateY(0) scale(1);box-shadow:0 12px 26px -12px rgba(255,90,31,.7)}50%{transform:translateY(-5px) scale(1.05);box-shadow:0 22px 38px -12px rgba(255,90,31,1)}}
 `;
+
   document.head.appendChild(s);
 }
 function loadNotifs() {
@@ -369,7 +374,9 @@ function pfCss() {
 .pflang button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pfsel{display:none;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);font:700 13px var(--display);background:#fff;color:var(--ink);max-width:150px}
 .pfok{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#12A15C,#1FBF7A);color:#fff;box-shadow:0 8px 16px -8px rgba(18,161,92,.9)}
-.pfrow-wrap{flex-wrap:wrap}
+.pfem{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#FFF3EC,#F3EEFF);font-size:15px;box-shadow:inset 0 0 0 1px var(--line)}
+.pfcard.pfvis{overflow:visible}
+.pfrow-wrap{flex-wrap:wrap;position:relative;z-index:40}
 .pfpick{position:relative;min-width:186px}
 .pfpick-btn{display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--mist);border:1.5px solid var(--line);border-radius:14px;font:600 14px var(--body);color:var(--ink);cursor:pointer;transition:.15s;width:100%}
 .pfpick-btn:hover{border-color:var(--fire);background:#FFF8F3}
@@ -379,7 +386,7 @@ function pfCss() {
 .pfpick-btn .cv{display:grid;place-items:center;color:var(--soft);transition:transform .25s}
 .pfpick-btn .cv svg{width:14px;height:14px}
 .pfpick.open .pfpick-btn .cv{transform:rotate(180deg)}
-.pfpick-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 46px -26px rgba(27,20,51,.55);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:.2s;z-index:20}
+.pfpick-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 46px -26px rgba(27,20,51,.55);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:.2s;z-index:90}
 .pfpick.open .pfpick-menu{opacity:1;transform:none;pointer-events:auto}
 .pfpick-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font:600 14px var(--body);text-align:left;color:var(--ink);cursor:pointer;transition:.15s}
 .pfpick-menu button:hover{background:#FFF3EC}
@@ -438,7 +445,7 @@ function renderProfile() {
       '<span class="ic">' + ic(icon) + "</span><div class=\"tx\"><b>" + title + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</div>" + (right || "") + "</div>";
   }
   var hero = '<div class="pfhero"><div class="pfav">' + fl(52) + "</div><div class=\"pfi\"><small>" + t.acc + "</small><h2>" + esc(U.name || t.none) + "</h2><p>" + esc(U.email) + '</p><div class="pfbadges">' +
-    '<span class="pfbadge' + (U.premium ? " ok" : "") + '">' + ic(U.premium ? "check" : "user") + " " + plans + "</span>" +
+    '<span class="pfbadge' + (U.premium ? " ok" : "") + '">' + (U.premium ? ic("check") : "✨") + " " + plans + "</span>" +
     (U.path ? '<span class="pfbadge">' + ic("map") + " " + (U.path === "english" ? t.pathEn : t.pathIe) + "</span>" : "") +
     '<span class="pfbadge">' + ic("globe") + " " + ({ en: "EN", ru: "RU", kz: "KZ", uz: "UZ" }[U.lang] || "RU") + "</span>" +
     "</div></div></div>";
@@ -453,7 +460,7 @@ function renderProfile() {
   var curL = LANGS.filter(function (x) { return x[0] === U.lang; })[0] || LANGS[0];
   var langPick = '<div class="pfpick" id="pfLangPick"><button class="pfpick-btn" id="pfLangBtn" aria-haspopup="listbox"><span class="flag">' + curL[1] + '</span><span class="name">' + curL[2] + '</span><span class="code">' + curL[3] + '</span><span class="cv">' + ic("down") + '</span></button><div class="pfpick-menu" role="listbox" id="pfLangMenu">' +
     LANGS.map(function (x) { return '<button data-l="' + x[0] + '"' + (U.lang === x[0] ? ' class="on"' : "") + '><span class="flag">' + x[1] + '</span><span class="name">' + x[2] + '</span><span class="code">' + x[3] + "</span></button>"; }).join("") + "</div></div>";
-  var setg = sec("globe", t.settings) + '<div class="pfcard">' +
+  var setg = sec("globe", t.settings) + '<div class="pfcard pfvis">' +
     '<div class="pfrow pfrow-wrap" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("globe") + '</span><div class="tx"><b>' + t.language + "</b></div>" + langPick + "</div>" +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
@@ -461,7 +468,7 @@ function renderProfile() {
     "</div></div></div>";
 
   var subs = sec("crown", t.subscription) + '<div class="pfcard">' +
-    '<div class="pfrow tap" data-act="sub" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("crown") + '</span><div class="tx"><b>' + plans + "</b><small>" + (U.premium ? t.active : t.noSub) + '</small></div>' + (U.premium ? '<span class="pfok">' + ic("check") + "</span>" : '<span class="nt">⌄</span>') + "</div>" +
+    '<div class="pfrow tap" data-act="sub" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("crown") +     '</span><div class="tx"><b>' + plans + "</b><small>" + (U.premium ? t.active : t.noSub) + '</small></div>' + (U.premium ? '<span class="pfok">' + ic("check") + "</span>" : '<span class="pfem">✨</span>') + "</div>" +
     '<div class="pfxp" id="xp-sub" hidden>' + t.premDesc + '<br><a class="btn p sm" href="' + CFG.pricing + '" style="margin-top:10px">' + (U.premium ? renewT() : t.choosePlan) + "</a>" + (CFG.demo ? '<button class="btn g sm" data-act="demoPro" style="margin-left:8px">' + (U.premium ? "Off" : "On") + " Premium (demo)</button>" : "") + "</div>" +
     "</div>";
 
@@ -470,7 +477,7 @@ function renderProfile() {
     '<div class="pfxp" id="xp-guar" hidden>' + t.guaranteeText + "</div></div>";
 
   var sup = sec("mail", t.support) + '<div class="pfcard">' +
-    '<a class="pfrow tap" href="mailto:' + CFG.support + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("mail") + '</span><div class="tx"><b>' + CFG.support + "</b><small>" + t.support + '</small></div><span class="go">' + ic("chev") + "</span></a>" +
+    '<a class="pfrow tap" href="' + mailLink() + '" target="_blank" rel="noopener" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("mail") + '</span><div class="tx"><b>' + CFG.support + "</b><small>" + t.support + '</small></div><span class="go">' + ic("chev") + "</span></a>" +
     '<a class="pfrow tap" href="' + CFG.privacy + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>' + t.privacy + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
     '<a class="pfrow tap" href="' + CFG.terms + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("file") + '</span><div class="tx"><b>' + t.terms + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
     (isAdmin ? '<a class="pfrow tap" href="admin.html" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>Админ-панель</b><small>Пользователи, тарифы, задания</small></div><span class="go">' + ic("chev") + "</span></a>" : "") +
@@ -621,7 +628,7 @@ function init(p, o) {
   PROF = p; H = (o && o.render) || {}; GATED = !!(o && o.vocabGated);
   document.body.insertAdjacentHTML("afterbegin", sprite() +
     '<div class="veil" data-act="burger"></div><div class="mbar"><button class="bb" data-act="burger" aria-label="Меню">' + ic("menu") + '</button><a class="brand" href="dashboard.html">' + fl(28) + 'Lexy</a></div><aside class="side" id="side"></aside>' +
-    '<div class="mv" id="mv"></div><div class="toast" id="toast"></div><a class="fab" href="mailto:' + CFG.support + '" aria-label="Поддержка">' + fl(26) + "</a>");
+    '<div class="mv" id="mv"></div><div class="toast" id="toast"></div><a class="fab" href="' + mailLink() + '" target="_blank" rel="noopener" aria-label="Поддержка">' + fl(26) + "</a>");
   document.addEventListener("click", function (e) {
     if (e.target.id === "mv" && !MLOCK) { closeM(); return; }
     var g = e.target.closest("[data-go]");
