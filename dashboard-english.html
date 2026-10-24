@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lexy — Разговорный английский</title>
+<title>Lexy — Английский</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
@@ -13,21 +13,15 @@
 <script src="lexy-core.js?v=11"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
+<script src="lexy-course.js?v=1"></script>
 </head>
 <body>
-<!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
 <script>Lexy.guard("english");</script>
-<!-- подтверждение возврата с оплаты Platega -->
 <script>if(window.LexyPay) LexyPay.handleReturn();</script>
 
 <main class="main">
-  <!-- ПУТЬ: опросник (если путь не собран) или карта уроков -->
   <section class="sec" id="s-path"></section>
-
-  <!-- ЗАДАНИЯ: практика по навыкам (рисуется скриптом ниже) -->
   <section class="sec" id="s-practice"></section>
-
-  <!-- РАЗГОВОР: под замком, пока нет Premium -->
   <section class="sec" id="s-talk">
     <h1 class="t">Разговор</h1>
     <div data-gate="ai"></div>
@@ -39,131 +33,282 @@
       </div>
     </div>
   </section>
-
-  <!-- СЛОВАРЬ: рисуется ядром (lexy-core.js) -->
   <section class="sec" id="s-vocab"></section>
-
-  <!-- ПРОГРЕСС -->
   <section class="sec" id="s-progress"></section>
-
-  <!-- ЛИЧНЫЙ КАБИНЕТ: рисуется ядром -->
-  <section class="sec" id="s-profile"></section>
 </main>
 
 <script>
 (function () {
-  var $ = function (s) { return document.querySelector(s); };
-  var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl;
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl, C = window.LexyCourse;
+  var paid = function () { return !!(Lexy.user && Lexy.user.premium); };
 
-  var GOALS = [["study", "🎓", "Учёба"], ["travel", "✈️", "Путешествия"], ["work", "💼", "Работа"], ["move", "🏠", "Переезд"]];
-  var LEVELS = [["A1", "Начинающий", "Знаю отдельные слова"], ["A2", "Элементарный", "Строю простые фразы"], ["B1", "Средний", "Объясняюсь, но с трудом"], ["B2", "Выше среднего", "Говорю, но с ошибками и паузами"], ["C1", "Продвинутый", "Говорю свободно, хочу отшлифовать"]];
-  var INT = [["🎬", "Фильмы и сериалы"], ["🎵", "Музыка"], ["✈️", "Путешествия"], ["💼", "Бизнес и карьера"], ["💻", "Технологии"], ["🏀", "Спорт"], ["🎮", "Игры"], ["🍜", "Еда"], ["👕", "Мода"], ["🔬", "Наука"], ["📖", "Книги"], ["❤️", "Отношения"], ["💡", "Психология"], ["💰", "Финансы"]];
-  var LES = {
-    study: ["Знакомство и первые фразы", "Расписание и аудитории", "Вопросы преподавателю", "Групповая работа", "Экзамены и дедлайны"],
-    travel: ["В аэропорту", "Отель и заселение", "Заказ в кафе", "Дорога и транспорт", "Если что-то пошло не так"],
-    work: ["Знакомство с коллегами", "Письма и созвоны", "Собеседование", "Переговоры", "Small talk в офисе"],
-    move: ["Документы и банк", "Жильё и аренда", "Магазины и сервисы", "Врач и аптека", "Новые друзья"]
-  };
-  var PH = {
-    study: [["Could you explain that once more?", "Не могли бы вы объяснить ещё раз?"], ["When is the deadline?", "Когда дедлайн?"], ["I'm taking a course in…", "Я учусь на курсе по…"], ["Can I join your group?", "Можно к вам в группу?"]],
-    travel: [["Where is the check-in desk?", "Где стойка регистрации?"], ["I'd like a table for two.", "Столик на двоих, пожалуйста."], ["How much is the ticket?", "Сколько стоит билет?"], ["I've lost my luggage.", "Я потерял багаж."]],
-    work: [["Let's schedule a quick call.", "Давайте назначим короткий созвон."], ["I'll get back to you by Friday.", "Вернусь к вам до пятницы."], ["Could you send me the details?", "Пришлите подробности?"], ["I'm happy to help.", "Рад помочь."]],
-    move: [["I'm looking for a flat to rent.", "Ищу квартиру в аренду."], ["Where can I open a bank account?", "Где открыть счёт в банке?"], ["I need to see a doctor.", "Мне нужно к врачу."], ["Nice to meet you!", "Приятно познакомиться!"]]
-  };
-  var sel = { g: null, l: null, i: [] };
+  var GOALS = C.GOALS;
+  var LEVELS = [
+    ["A1", "Начинающий", "Знаю отдельные слова"],
+    ["A2", "Элементарный", "Строю простые фразы"],
+    ["B1", "Средний", "Объясняюсь, но с трудом"],
+    ["B2", "Выше среднего", "Говорю с ошибками, но свободно"],
+    ["C1", "Продвинутый", "Хочу отшлифовать речь"]
+  ];
+  var sel = { goal: null, level: null };
 
   function dayWord(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "день" : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? "дня" : "дней"; }
-  function goalName(k) { return GOALS.filter(function (g) { return g[0] === k; })[0]; }
-  function lessonDone(g, i) { return !!Lexy.user.lessons[g + "-" + i]; }
+  function levelTitle(l) { return C.LEVEL_TITLE[l] || l; }
 
-  /* ---------- ПУТЬ ---------- */
-  function renderPath() {
-    var u = Lexy.user, n = Lexy.streakN(), el = $("#s-path");
-    var head = '<div class="top"><h1 class="t">Привет' + (u.name ? ", " + esc(u.name) : "") + '!</h1><div class="cs">' + ic("fire") + "<div><b>" + n + " " + dayWord(n) + "</b><small>подряд</small></div></div></div>";
-    if (!u.onboard) {
-      el.innerHTML = head + '<div class="card ob"><h3>Пара вопросов, чтобы собрать твой путь</h3><p class="sb">Подберём уроки под цель, уровень и интересы.</p>' +
-        "<h4>Зачем тебе английский?</h4><div class=\"og\">" + GOALS.map(function (g) { return '<button class="op' + (sel.g === g[0] ? " on" : "") + '" data-g="' + g[0] + '"><span class="em">' + g[1] + "</span>" + g[2] + "</button>"; }).join("") + "</div>" +
-        "<h4>Какой у тебя уровень английского сейчас?</h4><div class=\"ol\">" + LEVELS.map(function (l) { return '<button class="op' + (sel.l === l[0] ? " on" : "") + '" data-l="' + l[0] + '"><span class="lb2">' + l[0] + "</span><div>" + l[1] + "<small>" + l[2] + "</small></div></button>"; }).join("") + "</div>" +
-        "<h4>Что тебе интересно?</h4><div class=\"oi\">" + INT.map(function (x) { return '<button class="op' + (sel.i.indexOf(x[1]) > -1 ? " on" : "") + '" data-i="' + esc(x[1]) + '"><span>' + x[0] + "</span>" + x[1] + "</button>"; }).join("") + "</div>" +
-        '<button class="btn p" id="obgo"' + (sel.g && sel.l ? "" : " disabled") + ">Собрать мой путь</button></div>";
-      return;
-    }
-    var ob = u.onboard, g = goalName(ob.g), lv = ob.l, titles = LES[ob.g], done = 0;
-    titles.forEach(function (_, i) { if (lessonDone(ob.g, i)) done++; });
-    var next = 0; while (next < titles.length && lessonDone(ob.g, next)) next++;
-    el.innerHTML = head + '<div class="pth"><div class="hero"><h2>' + g[1] + " " + g[2] + " · " + lv + "</h2><p>" +
-      (ob.i.length ? "Интересы: " + ob.i.map(esc).join(", ") : "Интересы можно добавить, пройдя опрос заново") + '</p><div class="bar"><i style="width:' + Math.round(done / titles.length * 100) + '%"></i></div>' +
-      (done < titles.length ? '<button class="btn" id="cont">' + ic("play") + " Продолжить: " + esc(titles[next]) + "</button>" : '<b>Весь путь пройден 🎉</b>') +
-      '<button class="lnk" id="redo">Пройти опрос заново</button></div>' +
-      titles.map(function (t, i) {
-        var dn = lessonDone(ob.g, i), lk = i > next;
-        return '<button class="un' + (dn ? " done" : "") + (lk ? " lock" : "") + '" data-les="' + i + '"' + (lk ? " disabled" : "") + '><span class="nm">' + (dn ? ic("check") : i + 1) + "</span><div><b>" + t + "</b><small>Урок " + (i + 1) + " · " + lv + (dn ? ' · <span class="dn">пройден</span>' : "") + "</small></div></button>";
-      }).join("") + "</div>";
+  /* ---------- КУРС: состояние ---------- */
+  function course() {
+    var u = Lexy.user;
+    if (!u.course) u.course = { level: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", day: 1, startLevel: (u.onboard && (u.onboard.level || u.onboard.l)) || "A1", done: {}, passes: {} };
+    if (!u.course.done) u.course.done = {};
+    if (!u.course.passes) u.course.passes = {};
+    return u.course;
   }
-  function openLesson(i) {
-    var ob = Lexy.user.onboard, t = LES[ob.g][i], done = lessonDone(ob.g, i);
-    Lexy.modal({
-      title: t, body: "<p>Повтори вслух и запомни фразы урока:</p><ul class=\"ph4\">" + PH[ob.g].map(function (p) { return "<li>" + esc(p[0]) + "<span>" + esc(p[1]) + "</span></li>"; }).join("") + "</ul>",
-      ok: done ? "Закрыть" : "Завершить урок", cancel: done ? "" : "Позже",
-      onOk: function () {
-        if (done) return;
-        var l = Lexy.user.lessons; l[ob.g + "-" + i] = 1;
-        Lexy.save({ lessons: l, phrases: Lexy.user.phrases + PH[ob.g].length }); Lexy.addMin(5);
-        Lexy.toast("Урок пройден: +" + PH[ob.g].length + " фразы"); renderPath();
-      }
-    });
+  function isDone(level, day) { return !!course().done[level + "-" + day]; }
+  function currentDay() {
+    var c = course(), d = 1;
+    while (d <= C.totalDays && isDone(c.level, d)) d++;
+    return d > C.totalDays ? C.totalDays : d;
+  }
+  function canAccess(level, day) { return C.isFree(level, day, paid(), course().startLevel); }
+
+  /* ---------- ОНБОРДИНГ (цель + уровень) ---------- */
+  function renderOnboard() {
+    var el = $("#s-path");
+    var head = '<div class="top"><h1 class="t">Привет' + (Lexy.user.name ? ", " + esc(Lexy.user.name) : "") + '!</h1></div>';
+    el.innerHTML = head + '<div class="card ob"><h3>Соберём твой курс за 2 шага</h3><p class="sb">Никаких тем — только цель и уровень. Дальше Lexy сам составит 90 дней по 5 блоков в день.</p>' +
+      "<h4>Зачем тебе английский?</h4><div class=\"og\">" + GOALS.map(function (g) { return '<button class="op' + (sel.goal === g.id ? " on" : "") + '" data-goal="' + g.id + '"><span class="em">' + ({ study: "🎓", travel: "✈️", work: "💼", move: "🏠" }[g.id] || "•") + "</span>" + g.t + "</button>"; }).join("") + "</div>" +
+      "<h4>Какой у тебя уровень английского сейчас?</h4><div class=\"ol\">" + LEVELS.map(function (l) { return '<button class="op' + (sel.level === l[0] ? " on" : "") + '" data-level="' + l[0] + '"><span class="lb2">' + l[0] + "</span><div>" + l[1] + "<small>" + l[2] + "</small></div></button>"; }).join("") + "</div>" +
+      '<button class="btn p" id="obgo"' + (sel.goal && sel.level ? "" : " disabled") + ">Собрать курс</button></div>";
   }
   $("#s-path").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-g],[data-l],[data-i]");
-    if (b) {
-      if (b.dataset.g) { sel.g = b.dataset.g; document.querySelectorAll("[data-g]").forEach(function (x) { x.classList.toggle("on", x === b); }); }
-      else if (b.dataset.l) { sel.l = b.dataset.l; document.querySelectorAll("[data-l]").forEach(function (x) { x.classList.toggle("on", x === b); }); }
-      else { var k = b.dataset.i, ix = sel.i.indexOf(k); if (ix < 0) sel.i.push(k); else sel.i.splice(ix, 1); b.classList.toggle("on"); }
-      $("#obgo").disabled = !(sel.g && sel.l); return;
+    var g = e.target.closest("[data-goal]"), l = e.target.closest("[data-level]");
+    if (g) { sel.goal = g.dataset.goal; document.querySelectorAll("[data-goal]").forEach(function (x) { x.classList.toggle("on", x === g); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
+    if (l) { sel.level = l.dataset.level; document.querySelectorAll("[data-level]").forEach(function (x) { x.classList.toggle("on", x === l); }); $("#obgo").disabled = !(sel.goal && sel.level); return; }
+    if (e.target.closest("#obgo")) {
+      var u = Lexy.user;
+      Lexy.save({ onboard: { goal: sel.goal, level: sel.level }, course: { level: sel.level, startLevel: sel.level, day: 1, done: {}, passes: {} } });
+      Lexy.toast("Курс собран! День 1 ждёт тебя.");
+      openDay(1);
     }
-    if (e.target.closest("#obgo")) { Lexy.save({ onboard: { g: sel.g, l: sel.l, i: sel.i.slice() } }); Lexy.toast("Твой путь готов!"); renderPath(); return; }
-    if (e.target.closest("#redo")) { Lexy.save({ onboard: null }); sel = { g: null, l: null, i: [] }; renderPath(); return; }
-    if (e.target.closest("#cont")) { var ob = Lexy.user.onboard, nx = 0; while (nx < 5 && lessonDone(ob.g, nx)) nx++; openLesson(nx); return; }
-    var u = e.target.closest("[data-les]"); if (u) openLesson(+u.dataset.les);
   });
 
-  /* ---------- ПРОГРЕСС ---------- */
-  function renderProgress() {
-    var u = Lexy.user, n = Lexy.streakN(), m = Lexy.mins(), ob = u.onboard, DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-    var dots = Lexy.weekDots().map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + '"><i>' + (d.on ? ic("fire") : "") + "</i>" + DN[i] + "</div>"; }).join("");
-    var li = ob ? ["A1", "A2", "B1", "B2", "C1", "C2"].indexOf(ob.l) : -1;
-    var total = ob ? LES[ob.g].length : 0, done = 0;
-    if (ob) LES[ob.g].forEach(function (_, i) { if (lessonDone(ob.g, i)) done++; });
-    $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">Прогресс</h1>' +
-      '<div class="stk"><div class="fc">' + fl(46) + "</div><small>Серия</small><h2>" + ic("fire") + " " + n + " " + dayWord(n) + ' подряд</h2><div class="wd">' + dots + "</div></div>" +
-      '<div class="two"><div class="card"><div class="pc"><span class="ico" style="background:#DDF0FF;color:#1E8FE8">' + ic("clock") + '</span><div><small>Время разговора</small><div class="n">' + m.day + ' мин <em>сегодня</em></div><small>За неделю: ' + m.wk + " мин<br>За всё время: " + m.all + " мин</small></div></div></div>" +
-      '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><small style="color:var(--soft)">Твой уровень</small><b style="font:800 20px var(--display)">' + (ob ? ob.l : "Не указан") + '</b></div><div class="lv">' +
-      ["A1", "A2", "B1", "B2", "C1", "C2"].map(function (x, i) { return '<div class="' + (i <= li ? "on" : "") + '"><i></i>' + x + "</div>"; }).join("") + "</div></div></div>" +
-      '<div class="card ls"><div class="r"><b>Уроки</b><span class="n">' + done + " из " + total + '</span></div><div class="r"><b>Выучено фраз</b><span class="n">' + u.phrases + '</span></div><div class="r"><b>Слов и фраз в карточках</b><span class="n">' + u.words.length + "</span></div></div>";
+  /* ---------- КАРТА КУРСА ---------- */
+  function renderCourse() {
+    var el = $("#s-path"), c = course(), cur = currentDay();
+    var doneCount = Object.keys(c.done).length;
+    var levelDays = 0; for (var i = 1; i <= C.totalDays; i++) if (isDone(c.level, i)) levelDays++;
+    var pct = Math.round(levelDays / C.totalDays * 100);
+    var goal = (Lexy.user.onboard && Lexy.user.onboard.goal) || (Lexy.user.onboard && Lexy.user.onboard.g) || "study";
+    var goalName = (GOALS.filter(function (g) { return g.id === goal; })[0] || {}).t || "Учёба";
+
+    var head = '<div class="top"><h1 class="t">Курс английского</h1></div>';
+    el.innerHTML = head +
+      '<div class="pth"><div class="hero"><h2>' + c.level + " · " + levelTitle(c.level) + "</h2><p>Цель: " + esc(goalName) + " · уроков пройдено: " + doneCount + '</p><div class="bar"><i style="width:' + pct + '%"></i></div>' +
+      (cur > C.totalDays ? "<b>Курс уровня пройден 🎉</b>" : '<button class="btn" id="cont">' + ic("play") + " Продолжить: день " + cur + " (" + (C.isTestDay(cur) ? "тест уровня" : "5 блоков") + ")</button>") +
+      '<a class="lnk" href="#profile" data-goal="change">Сменить цель/уровень</a></div>' +
+      '<div class="days">' + grid(cur) + "</div>" +
+      (!paid() ? '<div class="card" style="margin-top:16px"><b>Бесплатно:</b> первые ' + C.FREE_DAYS + " дня вводного уровня. Полный курс (90 дней × 5 блоков, тесты каждые 7 дней) — в <a href=\"pricing.html\" style=\"color:var(--fire);font-weight:700\">тарифах</a>.</div>" : "") +
+      '</div>';
+
+    $("#cont") && $("#cont").addEventListener("click", function () { openDay(cur); });
   }
 
-  /* ---------- ЗАДАНИЯ ---------- */
+  function grid(cur) {
+    var c = course(), h = "";
+    for (var d = 1; d <= C.totalDays; d++) {
+      var test = C.isTestDay(d), done = isDone(c.level, d), locked = !canAccess(c.level, d);
+      var cls = "dcard" + (test ? " test" : "") + (done ? " done" : "") + (locked ? " lock" : "") + (d === cur ? " cur" : "");
+      h += '<button class="' + cls + '" data-day="' + d + '"><b>' + d + "</b><small>" + (test ? "тест" : "5") + "</small></button>";
+    }
+    return h;
+  }
+
+  $("#s-path").addEventListener("click", function (e) {
+    var d = e.target.closest("[data-day]");
+    if (d) { var day = +d.dataset.day; if (!canAccess(course().level, day)) { Lexy.upsell && upsellDay(); return; } openDay(day); return; }
+    var g = e.target.closest("[data-goal='change']");
+    if (g) { Lexy.save({ onboard: null, course: null }); sel = { goal: null, level: null }; renderOnboard(); }
+  });
+
+  function upsellDay() {
+    Lexy.modal({ title: "Доступно в Premium", body: "<p>Бесплатно открыто только первые " + C.FREE_DAYS + " дня вводного уровня. Чтобы открыть весь курс (90 дней, тесты, уровни A1–C1) — оформи Premium.</p>", ok: "Получить Premium", cancel: "Позже", onOk: function () { location.href = "pricing.html"; return false; } });
+  }
+
+  /* ---------- ПРОХОЖДЕНИЕ ДНЯ ---------- */
+  var RUN = null;
+  function openDay(day) {
+    var plan = C.plan(course().level, day);
+    RUN = { plan: plan, i: 0, results: [] };
+    drawBlock();
+  }
+  function drawBlock() {
+    var el = $("#s-path");
+    if (RUN.i >= RUN.plan.blocks.length) { finishDay(); return; }
+    var B = RUN.plan.blocks[RUN.i];
+    var title = '<div class="top"><button class="lnk" id="back">← К карте</button></div>';
+    var stepbar = '<div class="progress"><i style="width:' + Math.round(RUN.i / RUN.plan.blocks.length * 100) + '%"></i></div><div class="qmeta"><span>' + esc(RUN.plan.title) + "</span><span>" + C.blockLabel(B.type) + " " + (RUN.i + 1) + " из " + RUN.plan.blocks.length + "</span></div>";
+    var body = "";
+    if (B.type === "vocab") body = drawVocab(B.data);
+    else if (B.type === "listening") body = drawQuiz(B.data, "listening");
+    else if (B.type === "reading") body = drawReading(B.data);
+    else if (B.type === "speaking") body = drawSpeaking(B.data);
+    else if (B.type === "quiz") body = drawQuiz(B.data, "quiz");
+    else if (B.type === "test") body = drawTest(B.data);
+    el.innerHTML = title + stepbar + body;
+
+    $("#back").addEventListener("click", renderCourse);
+    if (B.type === "vocab") wireVocab(el);
+    else if (B.type === "reading" || B.type === "listening" || B.type === "quiz") wireQuiz(el, B.data, B.type);
+    else if (B.type === "speaking") wireSpeaking(el);
+    else if (B.type === "test") wireTest(el);
+  }
+  function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
+
+  function drawVocab(d) {
+    return '<h1 class="t" style="font-size:26px">Слова · ' + esc(d.t) + '</h1><div class="card g" style="margin-top:14px">' +
+      d.w.map(function (x) { return '<div class="rw"><div><b>' + esc(x[0]) + '</b><small>' + esc(x[1]) + '</small></div><button class="ib" data-know="1" aria-label="know">' + ic("check") + "</button></div>"; }).join("") +
+      '</div><button class="btn p" id="bnext" style="margin-top:14px">Дальше →</button>';
+  }
+  function wireVocab(el) {
+    el.querySelectorAll("[data-know]").forEach(function (b) { b.addEventListener("click", function () { var r = b.closest(".rw"); r.style.opacity = ".45"; b.textContent = "✓"; }); });
+    $("#bnext").addEventListener("click", function () { nextBlock(1); });
+  }
+
+  function drawReading(d) {
+    return '<h1 class="t" style="font-size:24px">' + esc(d.t) + '</h1><div class="card" style="margin-top:14px"><div class="rd">' + esc(d.p) + '</div><div id="qarea"></div></div>';
+  }
+  function drawQuiz(d, type) {
+    var url = type === "listening" && C.audioFor ? C.audioFor(d.script) : null;
+    var intro = type === "listening" ? '<div class="card" style="margin-top:14px"><div class="row" style="margin:0"><button class="btn" id="play">▶ Прослушать</button><span class="s" style="margin-left:10px">Аудио · нажми, чтобы включить</span></div>' + (url ? '<audio id="au" preload="none" src="' + url + '"></audio>' : "") + "</div>" : "";
+    return '<h1 class="t" style="font-size:24px">' + esc(d.t) + "</h1>" + intro + '<div class="card" style="margin-top:14px"><div id="qarea"></div></div>';
+  }
+  function wireQuiz(el, d, type) {
+    if (type === "listening") {
+      var pb = $("#play"), au = $("#au");
+      if (au) au.addEventListener("error", function () { au.dataset.fail = "1"; });
+      if (pb) pb.addEventListener("click", function () {
+        if (au && !au.dataset.fail) {
+          try { var pr = au.play(); if (pr && pr.catch) pr.catch(function () { speak(d.script, pb); }); }
+          catch (e) { speak(d.script, pb); }
+        } else { speak(d.script, pb); }
+      });
+    }
+    var list = d.q || d.questions, i = 0, score = 0, answered = false, picked = null;
+    function draw() {
+      var q = list[i];
+      $("#qarea").innerHTML = '<div class="qmeta"><span>Вопрос ' + (i + 1) + " из " + list.length + '</span></div><div class="qtext">' + esc(q.q) + '</div><div class="opts">' +
+        q.o.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(o) + "</button>"; }).join("") + "</div>" +
+        '<button class="btn" id="nq" disabled style="margin-top:14px">Далее →</button>';
+      picked = null; answered = false;
+      $("#qarea").querySelectorAll(".opt").forEach(function (b) {
+        b.addEventListener("click", function () {
+          if (answered) return;
+          $("#qarea").querySelectorAll(".opt").forEach(function (x) { x.classList.remove("on"); });
+          b.classList.add("on"); picked = +b.dataset.x; $("#nq").disabled = false;
+        });
+      });
+      $("#nq").addEventListener("click", function () {
+        if (picked == null) return;
+        if (!answered) {
+          answered = true;
+          var opts = $("#qarea").querySelectorAll(".opt");
+          opts[q.a].classList.add("right");
+          if (picked !== q.a) opts[picked].classList.add("wrong"); else score++;
+          $("#nq").textContent = i === list.length - 1 ? "Готово →" : "Следующий →";
+        } else { i++; if (i < list.length) draw(); else nextBlock(Math.round(score / list.length * 100)); }
+      });
+    }
+    draw();
+  }
+  function drawSpeaking(d) {
+    return '<h1 class="t" style="font-size:24px">Говорение · ' + esc(d.t) + '</h1><div class="card" style="margin-top:14px"><div class="qtext" style="font-size:20px">' + esc(d.prompt) + '</div><p class="s" style="margin:6px 0 10px">You should say:</p>' +
+      d.points.map(function (p, i) { return '<label class="check"><input type="checkbox" data-p="' + i + '"><span>' + esc(p) + "</span></label>"; }).join("") +
+      '<button class="btn ghost sm" id="sample" style="margin-top:8px">🔊 Прослушать тему</button>' +
+      '<div class="note">Совет: включи диктофон и говори 1–2 минуты, затронув все пункты.</div>' +
+      '<button class="btn p" id="bnext" style="margin-top:14px" disabled>Завершить блок</button></div>';
+  }
+  function wireSpeaking(el) {
+    var checks = el.querySelectorAll(".check input"), done = $("#bnext");
+    checks.forEach(function (c) { c.addEventListener("change", function () { done.disabled = false; }); });
+    $("#sample").addEventListener("click", function () { speak(RUN.plan.blocks[RUN.i].data.prompt + ". " + RUN.plan.blocks[RUN.i].data.points.join(". "), null); });
+    done.addEventListener("click", function () { nextBlock(1); });
+  }
+  function drawTest(d) { return '<h1 class="t" style="font-size:24px">' + esc(d.title) + '</h1><div class="card" style="margin-top:14px"><div id="qarea"></div></div>'; }
+  function wireTest(el) { wireQuiz(el, { q: RUN.plan.blocks[RUN.i].data.questions }, "test"); }
+
+  function finishDay() {
+    var c = course();
+    var day = RUN.plan.day;
+    var avg = RUN.results.length ? RUN.results.reduce(function (a, b) { return a + b; }, 0) / RUN.results.length : 100;
+    var key = c.level + "-" + day;
+    c.done[key] = { date: Date.now(), score: Math.round(avg) };
+    var levelUp = false;
+    if (RUN.plan.isTest) {
+      c.passes[key] = Math.round(avg);
+      if (avg >= 85) {
+        var idx = C.LEVELS.indexOf(c.level);
+        if (idx > -1 && idx < C.LEVELS.length - 1) { c.level = C.LEVELS[idx + 1]; c.day = 1; levelUp = true; }
+      }
+    }
+    Lexy.save({ course: c });
+    Lexy.addMin(15);
+    var el = $("#s-path");
+    el.innerHTML = '<div class="card" style="text-align:center;margin-top:40px"><div style="font-size:44px">🎉</div><h2 style="font:800 22px var(--display);margin:8px 0">' + (RUN.plan.isTest ? "Тест пройден!" : "День " + day + " пройден!") + '</h2><p class="s">' + (levelUp ? "Отличный результат — ты перешёл на уровень " + c.level + "!" : RUN.plan.isTest ? "Результат: " + Math.round(avg) + "%. Следуй дальше по курсу." : "Результат блока: " + Math.round(avg) + "%. Так держать!") + '</p><button class="btn p" id="tocourse" style="margin-top:14px">К карте курса</button><button class="btn ghost" id="nextday" style="margin-top:10px">Следующий день →</button></div>';
+    $("#tocourse").addEventListener("click", renderCourse);
+    $("#nextday").addEventListener("click", function () { renderCourse(); openDay(currentDay()); });
+  }
+
+  /* ---------- ОЗВУЧКА (браузерная, бесплатно; polza.ai — далее) ---------- */
+  var VOICE = null;
+  function pickVoice() { if (!("speechSynthesis" in window)) return; var v = speechSynthesis.getVoices() || []; VOICE = v.filter(function (x) { return /en[-_](GB|US|AU)/i.test(x.lang); })[0] || v.filter(function (x) { return /^en/i.test(x.lang); })[0] || null; }
+  if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  function speak(text, btn) {
+    if (!("speechSynthesis" in window)) { Lexy.toast("Озвучка не поддерживается"); return; }
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text); u.lang = (VOICE && VOICE.lang) || "en-GB"; if (VOICE) u.voice = VOICE; u.rate = 0.95;
+    if (btn) { btn.dataset.playing = "1"; var t = btn.textContent; btn.textContent = "⏸ Стоп"; u.onend = u.onerror = function () { btn.dataset.playing = ""; btn.textContent = t; }; }
+    speechSynthesis.speak(u);
+  }
+
+  /* ---------- ПРАКТИКА (ссылки на test.html) ---------- */
   function renderPractice() {
-    var u = Lexy.user, paid = !!u.premium, C = window.LexyContent;
-    if (!C) { $("#s-practice").innerHTML = ""; return; }
+    var C2 = window.LexyContent, p = paid();
+    if (!C2) { $("#s-practice").innerHTML = ""; return; }
     function ico(i, bg, c) { return '<span style="width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;background:' + bg + ";color:" + c + '">' + ic(i) + "</span>"; }
-    var SK = [["reading", "Чтение", "book", "#E3F0FF", "#1E8FE8", "Тексты и вопросы на понимание"],
-      ["listening", "Аудирование", "head", "#FFE0DB", "#E5443E", "Аудио с бесплатной озвучкой"],
-      ["writing", "Письмо", "pencil", "#FFE6D6", "#F7620B", "Эссе Task 2 · структура"],
-      ["speaking", "Говорение", "mic", "#FFF3CC", "#E59A00", "Монолог по карточке Part 2"]];
+    var SK = [["reading", "Чтение", "book", "#E3F0FF", "#1E8FE8", "Тексты и вопросы"], ["listening", "Аудирование", "head", "#FFE0DB", "#E5443E", "Аудио с озвучкой"], ["writing", "Письмо", "pencil", "#FFE6D6", "#F7620B", "Эссе и структура"], ["speaking", "Говорение", "mic", "#FFF3CC", "#E59A00", "Монолог по карточке"]];
     var cards = SK.map(function (s) {
-      var k = s[0], cnt = C.count(k), fl = C.freeLimit(k);
-      var sub = paid ? (cnt + " заданий · доступно") : (fl + " бесплатно из " + cnt);
-      return '<a href="test.html?skill=' + k + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;transition:border-color .2s;margin-bottom:12px">' +
-        ico(s[2], s[3], s[4]) + '<div style="flex:1;min-width:0"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b><small style="color:var(--soft)">' + s[5] + '</small><br><small style="color:var(--fire);font-weight:700">' + sub + "</small></div>" + ic("chev") + "</a>";
+      var cnt = C2.count(s[0]), flc = C2.freeLimit(s[0]);
+      return '<a href="test.html?skill=' + s[0] + '" style="display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px">' + ico(s[2], s[3], s[4]) + '<div style="flex:1"><b style="display:block;font:700 15px var(--body)">' + s[1] + '</b><small style="color:var(--soft)">' + s[5] + '</small><br><small style="color:var(--fire);font-weight:700">' + (p ? cnt + " заданий" : flc + " бесплатно из " + cnt) + "</small></div>" + ic("chev") + "</a>";
     }).join("");
-    var note = paid
-      ? '<div class="card" style="background:#F1FBF6;border-color:#C8EAD7"><b>Premium активен.</b> Доступны все задания, игры и Lexy AI.</div>'
-      : '<div class="card"><b>Бесплатный план:</b> часть заданий открыта. Полный доступ — в <a href="pricing.html" style="color:var(--fire);font-weight:700">тарифах</a>.</div>';
-    $("#s-practice").innerHTML = '<h1 class="t">Задания</h1><p class="s" style="margin-bottom:16px">Практика по всем навыкам</p>' + cards + note;
+    $("#s-practice").innerHTML = '<h1 class="t">Практика</h1><p class="s" style="margin-bottom:16px">Дополнительные задания по навыкам</p>' + cards;
   }
 
-  Lexy.init("english", { render: { path: renderPath, practice: renderPractice, progress: renderProgress } });
+  /* ---------- ПРОГРЕСС (статистика — только платным) ---------- */
+  function renderProgress() {
+    var u = Lexy.user, n = Lexy.streakN(), m = Lexy.mins(), c = course();
+    var DN = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+    var dots = Lexy.weekDots().map(function (d, i) { return '<div class="' + (d.on ? "on" : "") + '"><i>' + (d.on ? ic("fire") : "") + "</i>" + DN[i] + "</div>"; }).join("");
+    var doneCount = Object.keys(c.done).length;
+    var head = '<h1 class="t" style="margin-bottom:20px">Прогресс</h1>' +
+      '<div class="stk"><div class="fc">' + fl(46) + "</div><small>Серия</small><h2>" + ic("fire") + " " + n + " " + dayWord(n) + ' подряд</h2><div class="wd">' + dots + "</div></div>";
+    if (!paid()) {
+      $("#s-progress").innerHTML = head + '<div class="card emp"><div class="eb">' + fl(30) + '</div><h3 style="text-align:center">Статистика в Premium</h3><p>Подробная статистика по уровням, блокам и баллам доступна на тарифах Pro и Pro+. Твой прогресс сохраняется — открой его вместе с Premium.</p><a class="btn p" href="pricing.html" style="margin-top:14px">Получить Premium</a></div>';
+      return;
+    }
+    $("#s-progress").innerHTML = head +
+      '<div class="card ls"><div class="r"><b>Уровень курса</b><span class="n">' + c.level + "</span></div><div class=\"r\"><b>Пройдено дней</b><span class=\"n\">" + doneCount + " из " + C.totalDays + '</span></div><div class="r"><b>Время с Lexy</b><span class="n">' + m.day + " мин сегодня · " + m.all + " всего</span></div></div>";
+  }
+
+  /* ---------- ЗАПУСК ---------- */
+  Lexy.init("english", {
+    render: {
+      path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); },
+      practice: renderPractice,
+      progress: renderProgress
+    }
+  });
 })();
 </script>
 </body>
