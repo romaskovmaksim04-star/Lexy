@@ -12,6 +12,7 @@
 <script src="lexy-auth.js?v=7"></script>
 <script src="lexy-core.js?v=10"></script>
 <script src="lexy-pay.js?v=7"></script>
+<script src="lexy-content.js?v=1"></script>
 </head>
 <body>
 <!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
@@ -59,7 +60,8 @@
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var esc = Lexy.esc, ic = Lexy.ic, fl = Lexy.fl, T = Lexy.cfg.test;
-  var TEST_N = 24;   // сколько тестов показывать в каждой вкладке (замени на реальное число)
+  var C = window.LexyContent;
+  function prem(){ return !!(Lexy.user && Lexy.user.premium); }
 
   function dword(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "день" : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? "дня" : "дней"; }
   function daysTo(s) { var t = new Date(); t.setHours(0, 0, 0, 0); return Math.ceil((new Date(s + "T00:00:00") - t) / 864e5); }
@@ -93,13 +95,19 @@
   var tab = "reading";
   function tests() {
     var u = Lexy.user, t = TABS.filter(function (x) { return x[0] === tab; })[0], n, passed = 0, g = "";
+    var cnt = C.count(tab), fl = C.freeLimit(tab), paid = prem();
     Object.keys(u.tests).forEach(function (k) { if (k.indexOf(tab + "-") === 0) passed++; });
-    for (n = 1; n <= TEST_N; n++) g += '<a class="ti" href="' + T + "?skill=" + tab + "&n=" + n + '"><span class="ico" style="background:#E3F0FF;color:#1E8FE8">' + ic(t[2]) + "</span><div><b>" + t[0].charAt(0).toUpperCase() + t[0].slice(1) + " Test " + n + "</b><br><small>" + t[5] + '</small></div><span class="go">' + ic("play") + '</span><span class="cta">Начать тест</span></a>';
-    $("#s-tests").innerHTML = '<h1 class="t">Пробные тесты IELTS</h1><p class="s">Выберите тип теста и начните практику</p>' +
+    for (n = 1; n <= cnt; n++) {
+      var locked = C.isLocked(tab, n, paid);
+      var href = locked ? "pricing.html" : (T + "?skill=" + tab + "&n=" + n);
+      g += '<a class="ti" href="' + href + '"><span class="ico" style="background:#E3F0FF;color:#1E8FE8">' + ic(t[2]) + "</span><div><b>" + t[0].charAt(0).toUpperCase() + t[0].slice(1) + " Test " + n + "</b><br><small>" + t[5] + (locked ? ' · <span style="color:var(--fire);font-weight:700">Premium</span>' : "") + '</small></div><span class="go">' + (locked ? ic("lock") : ic("play")) + '</span><span class="cta">' + (locked ? "Premium" : "Начать тест") + "</span></a>";
+    }
+    $("#s-tests").innerHTML = '<h1 class="t">Пробные тесты IELTS</h1><p class="s">Всё по-настоящему: тексты, аудио с озвучкой, эссе и Speaking</p>' +
       '<div class="fx"><span class="ico">' + ic("play") + '</span><div class="tx"><b>Полный экзамен — генеральная репетиция</b><small>Все четыре навыка, условия как на экзамене и прогноз общего балла. ~2,5 ч.</small></div><a class="btn p sm" href="' + T + '?mode=full">Начать ' + ic("chev") + "</a></div>" +
-      '<div class="tabs" role="tablist">' + TABS.map(function (x) { return '<button class="tab' + (x[0] === tab ? " on" : "") + '" style="--c:' + x[3] + '" data-t="' + x[0] + '">' + ic(x[2]) + x[1] + " <em>" + TEST_N + "</em></button>"; }).join("") + "</div>" +
-      '<h2 class="vt" style="font-size:24px">' + t[4] + '</h2><p class="s" style="margin-bottom:0">' + TEST_N + " тестов · " + passed + ' пройдено</p>' +
+      '<div class="tabs" role="tablist">' + TABS.map(function (x) { var c = C.count(x[0]); return '<button class="tab' + (x[0] === tab ? " on" : "") + '" style="--c:' + x[3] + '" data-t="' + x[0] + '">' + ic(x[2]) + x[1] + " <em>" + c + "</em></button>"; }).join("") + "</div>" +
+      '<h2 class="vt" style="font-size:24px">' + t[4] + '</h2><p class="s" style="margin-bottom:0">' + cnt + " заданий · " + passed + " пройдено" + (paid ? " · Premium" : " · бесплатно " + fl) + '</p>' +
       '<div class="rnd"><span class="ico">' + ic("swap") + '</span><div class="tx"><b>Случайный тест</b><small>Сначала непройденные, затем давно пройденные</small></div><a class="btn sm" style="background:#1E9BFF;color:#fff" href="' + T + "?skill=" + tab + '&random=1">' + ic("swap") + " Начать</a></div>" +
+      (paid ? "" : '<div style="margin:14px 0 4px"><a class="btn p sm" href="pricing.html">' + ic("spark") + " Открыть все задания в Premium</a></div>") +
       '<div class="tgrid">' + g + "</div>";
   }
   $("#s-tests").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { tab = b.dataset.t; tests(); } });
