@@ -11,8 +11,54 @@
   var LEVELS = ["A1", "A2", "B1", "B2", "C1"];
   var DAYS = 90;
   var FREE_DAYS = 3;
-  var BLOCKS = ["vocab", "listening", "reading", "speaking", "quiz"];
-  var BLOCK_LABEL = { vocab: "Слова", listening: "Аудирование", reading: "Чтение/грамматика", speaking: "Говорение", quiz: "Практика" };
+  var BLOCKS = ["theory", "vocab", "listening", "reading", "quiz"];
+  var BLOCK_LABEL = { theory: "Практика с объяснением", vocab: "Слова", listening: "Аудирование", reading: "Чтение/грамматика", speaking: "Говорение", quiz: "Практика" };
+
+  /* ---------- ГРАММАТИКА (практика с объяснением) ---------- */
+  var GRAMMAR = {
+    A1: [
+      { t: "Глагол to be", e: "I am, you are, he/she/it is, we/they are. Используем, чтобы сказать кто/что есть.", ex: ["I am a student.", "She is happy.", "They are at home."] },
+      { t: "Present Simple", e: "Простое настоящее — для фактов и привычек. С he/she/it добавляем -s.", ex: ["I work every day.", "She works in a shop.", "They play football."] },
+      { t: "Артикли a / an / the", e: "a — перед согласной, an — перед гласной, the — когда предмет конкретный.", ex: ["a cat", "an apple", "the cat on the table"] },
+      { t: "Множественное число", e: "Обычно +s. После -s/-x/-ch: +es. city → cities.", ex: ["one book — two books", "one box — two boxes", "one city — two cities"] },
+      { t: "There is / There are", e: "There is — для одного, There are — для многих.", ex: ["There is a table.", "There are two chairs."] },
+      { t: "Модальный can", e: "can + глагол без to — про умение и возможность.", ex: ["I can swim.", "She can cook."] },
+      { t: "Предлоги места", e: "in — внутри, on — на поверхности, under — под.", ex: ["The pen is in the bag.", "The book is on the table.", "The cat is under the chair."] },
+      { t: "Like / want", e: "like — нравится, want — хотеть. Далее обычно существительное.", ex: ["I like tea.", "She wants water."] }
+    ],
+    A2: [
+      { t: "Present Continuous", e: "am/is/are + глагол-ing — действие прямо сейчас.", ex: ["I am reading now.", "She is working."] },
+      { t: "Past Simple", e: "Прошедшее: правильные глаголы +ed, неправильные — особые формы.", ex: ["I visited my friend.", "She went to London."] },
+      { t: "Сравнения", e: "Короткие: +er (bigger). Длинные: more + слово (more interesting).", ex: ["A car is faster than a bike.", "This book is more interesting."] },
+      { t: "Модальные should / must / might", e: "should — совет, must — обязанность, might — вероятность.", ex: ["You should rest.", "I must go.", "They might come."] },
+      { t: "Much / many / a few", e: "many — с исчисляемыми, much — с неисчисляемыми, a few — немного (считаемые).", ex: ["How many friends?", "How much water?", "a few apples"] },
+      { t: "Будущее: will / going to", e: "will — решение сейчас, going to — план заранее.", ex: ["I will help you.", "We are going to travel."] }
+    ],
+    B1: [
+      { t: "Present Perfect", e: "have/has + 3-я форма. Результат к настоящему, опыт. for — длительность, since — с момента.", ex: ["I have lived here for five years.", "She has just finished."] },
+      { t: "Условные 1 и 2", e: "1-й: If + present, will. 2-й: If + past, would.", ex: ["If it rains, I will stay.", "If I had time, I would travel."] },
+      { t: "Пассивный залог", e: "be + 3-я форма, когда важно действие, а не кто его сделал.", ex: ["The house was built in 1990.", "English is spoken here."] },
+      { t: "Косвенная речь", e: "He said (that)… Со временем сдвиг: is → was, will → would.", ex: ["He said he was tired.", "She told me she would come."] },
+      { t: "Связки", e: "although — хотя, however — однако, therefore — следовательно.", ex: ["Although it was cold, we went out.", "She studied hard; therefore she passed."] },
+      { t: "Relative clauses", e: "who — для людей, which — для вещей, that — для обоих.", ex: ["The man who called is my boss.", "The book which I read was great."] }
+    ],
+    B2: [
+      { t: "Условные 3", e: "If + had + 3-я форма, would have + 3-я форма — про прошлое.", ex: ["If I had known, I would have called."] },
+      { t: "Инверсия для акцента", e: "Not only did he…, Rarely have we… — усиление в формальном стиле.", ex: ["Not only did the policy cut costs, but it also helped.", "Rarely have we seen such change."] },
+      { t: "Формальные связки", e: "Furthermore, Nevertheless, Consequently, Provided that, Unless.", ex: ["Furthermore, the data support this.", "Unless costs fall, demand stays weak."] },
+      { t: "Модальные с перфектом", e: "should have / might have / could have + 3-я форма — оценка прошлого.", ex: ["You should have told me.", "They might have left already."] }
+    ],
+    C1: [
+      { t: "Точные связки", e: "Наличие оттенка: admittedly, arguably, notably, conversely.", ex: ["Admittedly, the plan has flaws; nevertheless, it is worth trying."] },
+      { t: "Уточнение и хеджирование", e: "Смягчение утверждений: arguably, to some extent, it could be argued.", ex: ["It could be argued that the measure is premature."] },
+      { t: "Сложные именные фразы", e: "Академическая плотность: 'the rapidly growing reliance on digital platforms'.", ex: ["The growing reliance on remote tools altered workflows."] },
+      { t: "Идиоматическая точность", e: "bear in mind, a double-edged sword, in the long run.", ex: ["It is a double-edged sword.", "Bear in mind the wider context."] }
+    ],
+    C2: [
+      { t: "Стилистический регистр", e: "Точный выбор между формальным и нейтральным выражением.", ex: ["The findings are indicative rather than conclusive."] },
+      { t: "Академическая аргументация", e: "Тезис → данные → оговорка → вывод, с чёткими связками.", ex: ["The evidence, while suggestive, is not decisive."] }
+    ]
+  };
 
   var LEVEL_TITLE = { A1: "Начальный", A2: "Элементарный", B1: "Средний", B2: "Выше среднего", C1: "Продвинутый" };
   var GOALS = [
@@ -215,22 +261,22 @@
 
   function plan(level, day) {
     var bank = BANK[level] || BANK.A1;
-    var idx = day; 
-    function pick(skill) { var arr = bank[skill] || bank.vocab; return arr[(idx + skill.length) % arr.length]; }
+    var g = GRAMMAR[level] || GRAMMAR.A1;
+    var idx = day;
+    function pickSkill(skill, off) { var arr = bank[skill] || bank.vocab; return arr[(idx * 2 + off) % arr.length]; }
     if (isTestDay(day)) {
       return {
         level: level, day: day, isTest: true, title: "Тест уровня · день " + day,
-        blocks: [{ type: "test", data: testFor(level, day) }]
+        blocks: [{ type: "theory", data: g[(day - 1) % g.length] }, { type: "test", data: testFor(level, day) }]
       };
     }
-    var order = BLOCKS;
-    var blocks = order.map(function (bt, i) {
-      var data = pick(bt);
-      // смещаем индекс для разнообразия внутри дня
-      var arr = bank[bt] || bank.vocab;
-      data = arr[(idx * 2 + i) % arr.length];
-      return { type: bt, data: data };
-    });
+    var blocks = [
+      { type: "theory", data: g[(day - 1) % g.length] },
+      { type: "vocab", data: pickSkill("vocab", 1) },
+      { type: "listening", data: pickSkill("listening", 2) },
+      { type: "reading", data: pickSkill("reading", 3) },
+      { type: "quiz", data: pickSkill("quiz", 4) }
+    ];
     return { level: level, day: day, isTest: false, title: "День " + day + " · " + level, blocks: blocks };
   }
 

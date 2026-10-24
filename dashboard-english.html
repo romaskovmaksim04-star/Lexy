@@ -111,6 +111,7 @@
       '<a class="lnk" href="#profile" data-goal="change">Сменить цель/уровень</a></div>' +
       '<div class="days">' + grid(cur) + "</div>" +
       (!paid() ? '<div class="card" style="margin-top:16px"><b>Бесплатно:</b> первые ' + C.FREE_DAYS + " дня вводного уровня. Полный курс (90 дней × 5 блоков, тесты каждые 7 дней) — в <a href=\"pricing.html\" style=\"color:var(--fire);font-weight:700\">тарифах</a>.</div>" : "") +
+      histBlock() +
       '</div>';
 
     $("#cont") && $("#cont").addEventListener("click", function () { openDay(cur); });
@@ -133,6 +134,17 @@
     if (g) { Lexy.save({ onboard: null, course: null }); sel = { goal: null, level: null }; renderOnboard(); }
   });
 
+  function histBlock() {
+    var c = course();
+    var keys = Object.keys(c.done).sort(function (a, b) { return (c.done[b].date || 0) - (c.done[a].date || 0); });
+    if (!keys.length) return '<div class="card" style="margin-top:16px"><b>История прохождения</b><p class="s" style="margin-top:6px">Пока пусто. Пройди первый день — здесь появится история с результатами (доступна бесплатно).</p></div>';
+    return '<div class="card" style="margin-top:16px"><div style="font:800 18px var(--display);margin-bottom:8px">История прохождения</div>' +
+      keys.slice(0, 30).map(function (k) {
+        var d = c.done[k], p = k.split("-");
+        return '<div class="rw"><div><b>' + p[0] + " · день " + p[1] + '</b><small>' + new Date(d.date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) + '</small></div><span class="nt" style="color:var(--ok);font-weight:700">' + (d.score != null ? d.score + "%" : "✓") + "</span></div>";
+      }).join("") + "</div>";
+  }
+
   function upsellDay() {
     Lexy.modal({ title: "Доступно в Premium", body: "<p>Бесплатно открыто только первые " + C.FREE_DAYS + " дня вводного уровня. Чтобы открыть весь курс (90 дней, тесты, уровни A1–C1) — оформи Premium.</p>", ok: "Получить Premium", cancel: "Позже", onOk: function () { location.href = "pricing.html"; return false; } });
   }
@@ -140,18 +152,26 @@
   /* ---------- ПРОХОЖДЕНИЕ ДНЯ ---------- */
   var RUN = null;
   function openDay(day) {
-    var plan = C.plan(course().level, day);
-    RUN = { plan: plan, i: 0, results: [] };
+    var c = course(), plan = C.plan(c.level, day);
+    var key = c.level + "-" + day;
+    var start = (c.prog && c.prog[key] && c.prog[key].i) || 0;
+    if (start >= plan.blocks.length) start = 0;
+    RUN = { plan: plan, i: start, results: [] };
     drawBlock();
   }
   function drawBlock() {
     var el = $("#s-path");
     if (RUN.i >= RUN.plan.blocks.length) { finishDay(); return; }
+    // сохраняем место, где остановились — при возврате продолжим отсюда
+    var cc = course(); if (!cc.prog) cc.prog = {};
+    cc.prog[RUN.plan.level + "-" + RUN.plan.day] = { i: RUN.i, ts: Date.now() };
+    Lexy.save({ course: cc });
     var B = RUN.plan.blocks[RUN.i];
     var title = '<div class="top"><button class="lnk" id="back">← К карте</button></div>';
     var stepbar = '<div class="progress"><i style="width:' + Math.round(RUN.i / RUN.plan.blocks.length * 100) + '%"></i></div><div class="qmeta"><span>' + esc(RUN.plan.title) + "</span><span>" + C.blockLabel(B.type) + " " + (RUN.i + 1) + " из " + RUN.plan.blocks.length + "</span></div>";
     var body = "";
-    if (B.type === "vocab") body = drawVocab(B.data);
+    if (B.type === "theory") body = drawTheory(B.data);
+    else if (B.type === "vocab") body = drawVocab(B.data);
     else if (B.type === "listening") body = drawQuiz(B.data, "listening");
     else if (B.type === "reading") body = drawReading(B.data);
     else if (B.type === "speaking") body = drawSpeaking(B.data);
@@ -160,11 +180,21 @@
     el.innerHTML = title + stepbar + body;
 
     $("#back").addEventListener("click", renderCourse);
-    if (B.type === "vocab") wireVocab(el);
+    if (B.type === "theory") wireTheory(el);
+    else if (B.type === "vocab") wireVocab(el);
     else if (B.type === "reading" || B.type === "listening" || B.type === "quiz") wireQuiz(el, B.data, B.type);
     else if (B.type === "speaking") wireSpeaking(el);
     else if (B.type === "test") wireTest(el);
   }
+
+  function drawTheory(d) {
+    return '<h1 class="t" style="font-size:24px">Практика с объяснением</h1>' +
+      '<div class="card" style="margin-top:14px"><div style="font:800 18px var(--display);letter-spacing:-.02em;margin-bottom:8px">' + esc(d.t) + "</div>" +
+      '<p class="s" style="font-size:15px;line-height:1.6;color:var(--ink)">' + esc(d.e) + "</p>" +
+      '<div class="rd" style="margin-top:12px">' + (d.ex || []).map(function (x) { return "• " + esc(x); }).join("<br>") + "</div>" +
+      '<button class="btn p" id="bnext" style="margin-top:6px">Понятно, к заданиям →</button></div>';
+  }
+  function wireTheory(el) { var b = $("#bnext", el); b && b.addEventListener("click", function () { nextBlock(1); }); }
   function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
 
   function drawVocab(d) {
@@ -227,7 +257,7 @@
     return '<h1 class="t" style="font-size:24px">Говорение · ' + esc(d.t) + '</h1><div class="card" style="margin-top:14px"><div class="qtext" style="font-size:20px">' + esc(d.prompt) + '</div><p class="s" style="margin:6px 0 10px">You should say:</p>' +
       d.points.map(function (p, i) { return '<label class="check"><input type="checkbox" data-p="' + i + '"><span>' + esc(p) + "</span></label>"; }).join("") +
       '<button class="btn ghost sm" id="sample" style="margin-top:8px">🔊 Прослушать тему</button>' +
-      '<div class="note">Совет: включи диктофон и говори 1–2 минуты, затронув все пункты.</div>' +
+      '<div class="note">Совет: отвечай вслух 1–2 минуты, затронув все пункты. Записывать не нужно.</div>' +
       '<button class="btn p" id="bnext" style="margin-top:14px" disabled>Завершить блок</button></div>';
   }
   function wireSpeaking(el) {
@@ -245,6 +275,7 @@
     var avg = RUN.results.length ? RUN.results.reduce(function (a, b) { return a + b; }, 0) / RUN.results.length : 100;
     var key = c.level + "-" + day;
     c.done[key] = { date: Date.now(), score: Math.round(avg) };
+    if (c.prog) delete c.prog[key];
     var levelUp = false;
     if (RUN.plan.isTest) {
       c.passes[key] = Math.round(avg);
@@ -256,9 +287,8 @@
     Lexy.save({ course: c });
     Lexy.addMin(15);
     var el = $("#s-path");
-    el.innerHTML = '<div class="card" style="text-align:center;margin-top:40px"><div style="font-size:44px">🎉</div><h2 style="font:800 22px var(--display);margin:8px 0">' + (RUN.plan.isTest ? "Тест пройден!" : "День " + day + " пройден!") + '</h2><p class="s">' + (levelUp ? "Отличный результат — ты перешёл на уровень " + c.level + "!" : RUN.plan.isTest ? "Результат: " + Math.round(avg) + "%. Следуй дальше по курсу." : "Результат блока: " + Math.round(avg) + "%. Так держать!") + '</p><button class="btn p" id="tocourse" style="margin-top:14px">К карте курса</button><button class="btn ghost" id="nextday" style="margin-top:10px">Следующий день →</button></div>';
+    el.innerHTML = '<div class="card" style="text-align:center;margin-top:40px"><div style="font-size:44px">🎉</div><h2 style="font:800 22px var(--display);margin:8px 0">' + (RUN.plan.isTest ? "Тест пройден!" : "День " + day + " пройден!") + '</h2><p class="s">' + (levelUp ? "Отличный результат — ты перешёл на уровень " + c.level + "!" : RUN.plan.isTest ? "Результат: " + Math.round(avg) + "%. Следуй дальше по курсу." : "Результат: " + Math.round(avg) + "%. Хорошая работа!") + '</p><button class="btn p" id="tocourse" style="margin-top:14px">К карте курса</button></div>';
     $("#tocourse").addEventListener("click", renderCourse);
-    $("#nextday").addEventListener("click", function () { renderCourse(); openDay(currentDay()); });
   }
 
   /* ---------- ОЗВУЧКА (браузерная, бесплатно; polza.ai — далее) ---------- */
