@@ -256,6 +256,15 @@
     }
   };
 
+  /* ---------- ДОПОЛНИТЕЛЬНЫЙ КОНТЕНТ (lexy-course-extra.js) ---------- */
+  if (w.LEXY_COURSE_EXTRA) {
+    Object.keys(w.LEXY_COURSE_EXTRA).forEach(function (lv) {
+      var ex = w.LEXY_COURSE_EXTRA[lv], b = BANK[lv];
+      if (!b || !ex) return;
+      Object.keys(ex).forEach(function (sk) { if (b[sk] && ex[sk]) b[sk] = b[sk].concat(ex[sk]); });
+    });
+  }
+
   /* ---------- СБОРКА ДНЯ ---------- */
   function isTestDay(day) { return day % 7 === 0; }
 
