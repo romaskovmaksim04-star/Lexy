@@ -216,6 +216,8 @@ function C() { return CO[U.lang] || CO.ru; }
 var RENEW = { ru: "Продлить тариф", en: "Extend plan", kz: "Тарифті ұзарту", uz: "Tarifni uzaytirish" };
 function renewT() { return RENEW[U.lang] || RENEW.ru; }
 function mailLink(e) { return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(e || CFG.support); }
+var THEM = { ru: "Тёмная тема", en: "Dark theme", kz: "Қараңғы тақырып", uz: "Qorong'i mavzu" };
+function THt() { return THEM[U.lang] || THEM.ru; }
 
 /* ---------- модалка / тост ---------- */
 function modal(o) {
@@ -272,6 +274,7 @@ function coreCss() {
 .pr.warn{background:linear-gradient(135deg,#FFF7E6,#FFEFD2);border-color:#F3D9A6}
 .ntb{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:7px 12px;border-radius:10px;background:linear-gradient(135deg,#FF5A1F,#FF9A0A);color:#fff!important;font:700 12px var(--body);text-decoration:none;box-shadow:0 10px 20px -12px rgba(255,90,31,.9)}
 .ntb:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.side-th{margin-top:10px;width:100%;height:42px;font-size:18px}
 .fab{animation:core-fab 2.6s ease-in-out infinite}
 .fab:hover{animation-play-state:paused}
 @keyframes core-fab{0%,100%{transform:translateY(0) scale(1);box-shadow:0 12px 26px -12px rgba(255,90,31,.7)}50%{transform:translateY(-5px) scale(1.05);box-shadow:0 22px 38px -12px rgba(255,90,31,1)}}
@@ -303,6 +306,7 @@ function side() {
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
   h += U.premium ? '<div class="prem is">' + ic("crown") + "<span>" + P().premiumActive + "</span></div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + "<span>" + l.prem + "</span></a>";
+  h += '<button class="thbtn side-th" data-theme-toggle aria-label="Тема"><span class="th-ic">🌙</span></button>';
   $("#side").innerHTML = h + "</div>";
 }
 
@@ -467,6 +471,7 @@ function renderProfile() {
     LANGS.map(function (x) { return '<button data-l="' + x[0] + '"' + (U.lang === x[0] ? ' class="on"' : "") + '><span class="flag">' + x[1] + '</span><span class="name">' + x[2] + '</span><span class="code">' + x[3] + "</span></button>"; }).join("") + "</div></div>";
   var setg = sec("globe", t.settings) + '<div class="pfcard pfvis">' +
     '<div class="pfrow pfrow-wrap" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("globe") + '</span><div class="tx"><b>' + t.language + "</b></div>" + langPick + "</div>" +
+    '<div class="pfrow" style="animation-delay:' + dl() + 's"><span class="ic">🌙</span><div class="tx"><b>' + THt() + '</b></div><button class="thbtn" data-theme-toggle aria-label="Тема"><span class="th-ic">🌙</span></button></div>' +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
       '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +

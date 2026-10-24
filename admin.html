@@ -83,12 +83,14 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   table .hide{display:none}
 }
 </style>
+<link rel="stylesheet" href="lexy-dark.css?v=1">
 </head>
 <body>
 <header class="top">
   <div class="bar">
     <a class="logo" href="dashboard.html"><i></i>Lexy Admin</a>
     <span class="who" id="who"></span>
+    <button class="thbtn" data-theme-toggle aria-label="Тема" style="width:36px;height:36px;font-size:16px"><span class="th-ic">🌙</span></button>
     <a class="btn ghost mini" id="back" href="main.html">← На сайт</a>
   </div>
   <nav class="tabs" id="tabs"></nav>
@@ -272,5 +274,6 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
   gate();
 })();
 </script>
+<script src="lexy-theme.js?v=1"></script>
 </body>
 </html>

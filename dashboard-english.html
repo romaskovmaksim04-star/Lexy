@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=11"></script>
-<script src="lexy-core.js?v=29"></script>
+<script src="lexy-core.js?v=30"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-a1.js?v=1"></script>
@@ -24,7 +24,8 @@
 <script src="lexy-c1.js?v=1"></script>
 <script src="lexy-c1-i18n.js?v=1"></script>
 <script src="lexy-course-extra.js?v=1"></script>
-<script src="lexy-course.js?v=8"></script>
+<script src="lexy-reading.js?v=1"></script>
+<script src="lexy-course.js?v=9"></script>
 <script src="lexy-vocab-data.js?v=1"></script>
 <script src="lexy-vocab-data2.js?v=1"></script>
 <script src="lexy-vocab-data3.js?v=1"></script>
@@ -34,6 +35,7 @@
 <script src="lexy-vocab.js?v=7"></script>
 <script src="lexy-answers.js?v=2"></script>
 <script src="lexy-chat.js?v=8"></script>
+<link rel="stylesheet" href="lexy-dark.css?v=1">
 </head>
 <body>
 <script>Lexy.guard("english");</script>
@@ -82,6 +84,16 @@
 
   function L() { return CU[(Lexy.user && Lexy.user.lang) || "ru"] || CU.ru; }
   function T(k) { var l = L(); return l[k] != null ? l[k] : (CU.ru[k] != null ? CU.ru[k] : k); }
+  /* ---------- переводы слов под язык профиля ---------- */
+  var VOC = {}, RU2EN = {};
+  (function () {
+    function add(a2) { (a2 || []).forEach(function (o) { var e = String(o[0]).toLowerCase(); if (!VOC[e]) VOC[e] = { ru: o[1], kz: o[2], uz: o[3], en: o[4] }; if (o[1]) RU2EN[String(o[1]).toLowerCase()] = e; }); }
+    var d = window.LEXY_VOCAB_DATA || {}, ex = window.LEXY_VOCAB_EXTRA || {};
+    ["A1", "A2", "B1", "B2", "C1", "C2"].forEach(function (l) { add(d[l]); add(ex[l]); });
+  })();
+  function locRu(ru) { var l = lang(); if (l === "ru") return ru; var e = RU2EN[String(ru).toLowerCase()]; if (!e) return ru; var v = VOC[e]; return (v && v[l]) ? v[l] : ru; }
+  var WQ = { ru: function (w) { return "Как переводится «" + w + "»?"; }, en: function (w) { return "What does «" + w + "» mean?"; }, kz: function (w) { return "«" + w + "» қалай аударылады?"; }, uz: function (w) { return "«" + w + "» qanday tarjima qilinadi?"; } };
+  function wQ(w) { return (WQ[lang()] || WQ.ru)(w); }
 
   var GOALS = [["study", "🎓"], ["travel", "✈️"], ["work", "💼"], ["move", "🏠"]];
   var GOAL_T = { ru: { study: "Учёба", travel: "Путешествия", work: "Работа", move: "Переезд" }, en: { study: "Study", travel: "Travel", work: "Work", move: "Moving abroad" }, kz: { study: "Оқу", travel: "Саяхат", work: "Жұмыс", move: "Көшу" }, uz: { study: "O'qish", travel: "Sayohat", work: "Ish", move: "Ko'chish" } };
@@ -275,6 +287,7 @@
 #s-path .ptx small{color:var(--soft);font-size:12.5px}
 #s-path .trbtn{margin:6px 0}
 #s-path .readpg{background:var(--mist);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:var(--soft)}
+#s-path .readpass{background:linear-gradient(160deg,#FFF8F3,#F3EEFF);border:1px solid var(--line);border-left:4px solid var(--fire);border-radius:16px;padding:16px 18px;font-size:15px;line-height:1.75;color:var(--ink)}
 #s-path .progress{height:9px;border-radius:999px;background:var(--mist);overflow:hidden;margin:8px 0 18px}
 #s-path .progress i,#s-path .bar i,#s-path .hx .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#FF9A0A,#FF4E1A);animation:dsh-grow 1s cubic-bezier(.3,1,.4,1) both}
 @keyframes dsh-grow{from{width:0}}
@@ -343,6 +356,20 @@
 .bdno{color:#E5443E}
 .bdok2{color:#0E8548}
 .bdnone{color:var(--ok);font-weight:700;text-align:center;padding:12px}
+#s-path .wshow{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:11px 16px;border-radius:14px;border:1.5px dashed #F3C6C2;background:#FFF6F5;color:#E5443E;font:700 13.5px var(--body);cursor:pointer;animation:dsh-in .4s both}
+#s-path .wkw{position:relative;overflow:hidden;background:linear-gradient(135deg,#FFF6F5,#FFF3EC);border:1.5px solid #F3C6C2;border-radius:20px;padding:16px;margin-bottom:16px;animation:dsh-in .45s both}
+#s-path .wkw::after{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 85% 15%,rgba(229,68,62,.12),transparent 45%);animation:dsh-drift 12s ease-in-out infinite alternate;pointer-events:none}
+#s-path .wkh{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative;z-index:1}
+#s-path .wkem{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#E5443E,#FF8A6A);color:#fff;box-shadow:0 12px 24px -14px rgba(229,68,62,.9)}
+#s-path .wkh b{font:800 16px var(--display)}
+#s-path .wkh small{display:block;color:var(--soft);font-size:12.5px}
+#s-path .wkhide{margin-left:auto;width:32px;height:32px;border-radius:10px;background:#fff;border:1.5px solid var(--line);color:var(--soft);cursor:pointer}
+#s-path .wkl{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+#s-path .wki{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;cursor:pointer;transition:.15s;animation:dsh-row .35s both}
+#s-path .wki:hover{border-color:var(--fire);transform:translateY(-1px)}
+#s-path .wki .dn{width:34px;height:34px;flex:none;border-radius:11px;display:grid;place-items:center;font:800 13px var(--display);background:var(--mist);color:var(--soft)}
+#s-path .wki .wktx{flex:1;min-width:0;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#s-path .wki .dbd{flex:none}
 @media(max-width:560px){#s-path .mgrid{grid-template-columns:1fr}#s-path .trow2{flex-wrap:wrap}#s-path .trow2 .tw{min-width:0}#s-path .drow{flex-wrap:wrap}}
 `;
     document.head.appendChild(s);
@@ -362,7 +389,28 @@
     if (mapView === "theory") content = theoryBlock(c.level);
     else if (mapView === "history") content = histBlock();
     else content = daysList(cur) + testCard(levelDone, total) + (!paid() ? '<div class="card free">' + T("free") + "</div>" : "");
-    el.innerHTML = hero + seg + content;
+    var weakW = (mapView === "course") ? weakWidget(weakList()) : "";
+    el.innerHTML = hero + seg + weakW + content;
+  }
+
+  var WK = { ru: { t: "Слабые места", s: "Повтори уроки, где были ошибки", r: "Повторить" }, en: { t: "Weak spots", s: "Revisit lessons where you made mistakes", r: "Review" }, kz: { t: "Әлсіз тұстар", s: "Қате кеткен сабақтарды қайтала", r: "Қайталау" }, uz: { t: "Zaif joylar", s: "Xato qilgan darslarni takrorlang", r: "Takrorlash" } };
+  function WKt(k) { var d2 = WK[lang()] || WK.ru; return d2[k] != null ? d2[k] : WK.ru[k]; }
+  function weakList() {
+    var c = course(), lv = c.level, out = [];
+    Object.keys(c.done).forEach(function (k) {
+      var p = k.split("-"); if (p[0] !== lv) return;
+      var d = c.done[k]; if (d && d.last && d.last.mistakes && d.last.mistakes.length) out.push({ day: +p[1], wrong: d.last.mistakes.length });
+    });
+    out.sort(function (a, b) { return b.wrong - a.wrong; });
+    return out.slice(0, 3);
+  }
+  function weakWidget(list) {
+    if (!list.length) return "";
+    if (Lexy.user.hideWeak) return '<button class="wshow" data-wshow>' + ic("alert") + " " + WKt("t") + " (" + list.length + ")</button>";
+    var items = list.map(function (w) {
+      return '<div class="wki" data-day="' + w.day + '"><span class="dn">' + w.day + '</span><span class="wktx">' + esc(C.lessonTitle(course().level, w.day, lang())) + '</span><span class="dbad">✗ ' + w.wrong + '</span><span class="dbd">' + WKt("r") + "</span></div>";
+    }).join("");
+    return '<div class="wkw"><div class="wkh"><span class="wkem">' + ic("alert") + '</span><div><b>' + WKt("t") + "</b><small>" + WKt("s") + '</small></div><button class="wkhide" data-whide>' + ic("x") + "</button></div><div class=\"wkl\">" + items + "</div></div>";
   }
 
   function daysList(cur) {
@@ -494,6 +542,8 @@
     if (tex) { var card = tex.closest(".tcard"), ex = card.querySelector("[data-ex]"); ex.hidden = !ex.hidden; tex.textContent = ex.hidden ? T("readMore") : T("hideExamples"); return; }
     var tl = e.target.closest("[data-tlesson]");
     if (tl) { var d1 = +tl.closest(".tcard").dataset.tday, i1 = accessInfo(lv, d1); if (i1) { lockModal(lv, d1, i1); return; } openDay(d1); return; }
+    if (e.target.closest("[data-whide]")) { e.stopPropagation(); Lexy.save({ hideWeak: true }); renderCourse(); return; }
+    if (e.target.closest("[data-wshow]")) { Lexy.save({ hideWeak: false }); renderCourse(); return; }
     var bd = e.target.closest("[data-bd]");
     if (bd) { openBreakdown(course().level, +bd.dataset.bd); return; }
     var d = e.target.closest("[data-day]"); if (d) { var day = +d.dataset.day, info = accessInfo(lv, day); if (info) { lockModal(lv, day, info); return; } openDay(day); }
@@ -522,7 +572,7 @@
     var B = RUN.plan.blocks[RUN.i];
     var dots = RUN.plan.blocks.map(function (x, idx) { return '<i class="' + (idx < RUN.i ? "done" : idx === RUN.i ? "on" : "") + '"></i>'; }).join("");
     var title = '<div class="crun-top"><button class="lnk" id="back">← ' + T("stay") + '</button><span class="lk">' + esc(RUN.plan.title || "") + '</span></div>';
-    var body = B.type === "theory" ? drawTheory(B.data) : B.type === "listening" ? drawListening(B.data) : B.type === "test" ? drawTest(B.data) : B.type === "order" ? drawOrder(B.data) : B.type === "typing" ? drawTyping(B.data) : B.type === "match" ? drawMatch(B.data) : B.type === "quiz" ? drawQuiz(B.data) : drawTheory(B.data);
+    var body = B.type === "theory" ? drawTheory(B.data) : B.type === "listening" ? drawListening(B.data) : B.type === "test" ? drawTest(B.data) : B.type === "reading" ? drawReading(B.data) : B.type === "order" ? drawOrder(B.data) : B.type === "typing" ? drawTyping(B.data) : B.type === "match" ? drawMatch(B.data) : B.type === "quiz" ? drawQuiz(B.data) : drawTheory(B.data);
     el.innerHTML = title + '<div class="dots">' + dots + "</div>" + body;
     $("#back").addEventListener("click", renderCourse);
     if (B.type === "theory") $("#bnext").addEventListener("click", function () { nextBlock(1); });
@@ -531,6 +581,7 @@
     else if (B.type === "order") wireOrder(el, B.data);
     else if (B.type === "typing") wireTyping(el, B.data);
     else if (B.type === "match") wireMatch(el, B.data);
+    else if (B.type === "reading") wireQuiz(el, B.data, false);
     else if (B.type === "quiz") wireQuiz(el, B.data, false);
   }
   function nextBlock(score) { RUN.results.push(score || 0); RUN.i++; drawBlock(); }
@@ -556,6 +607,14 @@
     return '<div class="block"><div class="bhead"><span class="bic">' + ic(d.kind === "words" ? "vocab" : d.kind === "grammar" ? "book" : "spark") + '</span><div><div class="btitle">' + T(d.kind === "words" ? "words" : d.kind === "grammar" ? "grammar" : "practice") + '</div><div class="bsub">' + sub + '</div></div></div><div id="qarea"></div></div>';
   }
   function drawTest(d) { return '<div class="block"><div class="bhead"><span class="bic">' + ic("file") + '</span><div><div class="btitle">' + esc(d.title) + '</div><div class="bsub" id="tmr"></div></div></div><div id="qarea"></div></div>'; }
+
+  /* ---------- ЧТЕНИЕ ---------- */
+  var RT = { ru: "Чтение", en: "Reading", kz: "Оқу", uz: "O'qish" };
+  function RTt() { return RT[lang()] || RT.ru; }
+  function drawReading(d) {
+    return '<div class="block"><div class="bhead"><span class="bic">' + ic("book") + '</span><div><div class="btitle">' + esc(d.title || RTt()) + '</div><div class="bsub">' + RTt() + '</div></div></div>' +
+      '<div class="readpass">' + esc(d.passage || "") + '</div><div id="qarea" style="margin-top:16px"></div></div>';
+  }
 
   /* ---------- НОВЫЕ ТИПЫ ЗАДАНИЙ ---------- */
   var NTXT = {
@@ -600,6 +659,7 @@
   }
 
   function drawTyping(d) {
+    (d.items || []).forEach(function (it) { it.a = locRu(it.a); });
     var rows = (d.items || []).map(function (it, i) { return '<div class="trow2"><div class="tw">' + esc(it.w) + '</div><input class="tin" data-i="' + i + '" placeholder="' + NT("ph") + '" autocomplete="off"></div>'; }).join("");
     return '<div class="block"><div class="bhead"><span class="bic">' + ic("pencil") + '</span><div><div class="btitle">' + NT("typeT") + '</div><div class="bsub">' + NT("typeHint") + '</div></div></div>' +
       rows + '<button class="btn p big" id="typeCheck" style="margin-top:16px">' + NT("check") + '</button><div id="typeRes"></div></div>';
@@ -620,6 +680,7 @@
   }
 
   function drawMatch(d) {
+    (d.pairs || []).forEach(function (p) { p[1] = locRu(p[1]); });
     var left = shuffle((d.pairs || []).map(function (p, i) { return { t: p[0], i: i }; }));
     var right = shuffle((d.pairs || []).map(function (p, i) { return { t: p[1], i: i }; }));
     function col(arr, side) { return '<div class="mcol">' + arr.map(function (o) { return '<button class="mcell" data-side="' + side + '" data-i="' + o.i + '">' + esc(o.t) + "</button>"; }).join("") + "</div>"; }
@@ -659,14 +720,15 @@
       mapped = shuffle(mapped.slice());
       correct = mapped.findIndex(function (x) { return x.c; });
       opts = mapped;
-      $("#qarea", el).innerHTML = '<div class="qmeta"><span>' + T("question") + " " + (i + 1) + " / " + list.length + '</span></div><div class="qtext">' + esc(q.q) + '</div><div class="opts">' +
-        mapped.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(o.o) + "</button>"; }).join("") + "</div>" +
+      var qtext = q.q; if (lang() !== "ru") { var mm = String(q.q).match(/«(.+?)»/); if (mm) qtext = wQ(mm[1]); }
+      $("#qarea", el).innerHTML = '<div class="qmeta"><span>' + T("question") + " " + (i + 1) + " / " + list.length + '</span></div><div class="qtext">' + esc(qtext) + '</div><div class="opts">' +
+        mapped.map(function (o, x) { return '<button class="opt" data-x="' + x + '"><span class="key">' + "ABCD"[x] + "</span>" + esc(lang() === "ru" ? o.o : locRu(o.o)) + "</button>"; }).join("") + "</div>" +
         '<button class="btn p big" id="nq" disabled style="margin-top:16px">' + T("next") + " →</button>";
       picked = null; answered = false;
       $("#qarea", el).querySelectorAll(".opt").forEach(function (b) { b.addEventListener("click", function () { if (answered) return; $("#qarea", el).querySelectorAll(".opt").forEach(function (x) { x.classList.remove("on"); }); b.classList.add("on"); picked = +b.dataset.x; $("#nq").disabled = false; }); });
       $("#nq").addEventListener("click", function () {
         if (picked == null) return;
-        if (!answered) { answered = true; RUN.ansTotal++; if (picked !== correct) { RUN.ansWrong++; recWrong(q.q, mapped[picked].o, mapped[correct].o); } var all = $("#qarea", el).querySelectorAll(".opt"); all[correct].classList.add("right"); if (picked !== correct) all[picked].classList.add("wrong"); else score++; $("#nq").textContent = i === list.length - 1 ? T("finish") + " →" : T("next") + " →"; }
+        if (!answered) { answered = true; RUN.ansTotal++; var Lc = function (s2) { return lang() === "ru" ? s2 : locRu(s2); }; if (picked !== correct) { RUN.ansWrong++; recWrong(qtext, Lc(mapped[picked].o), Lc(mapped[correct].o)); } var all = $("#qarea", el).querySelectorAll(".opt"); all[correct].classList.add("right"); if (picked !== correct) all[picked].classList.add("wrong"); else score++; $("#nq").textContent = i === list.length - 1 ? T("finish") + " →" : T("next") + " →"; }
         else { i++; if (i < list.length) draw(); else nextBlock(Math.round(score / list.length * 100)); }
       });
     }
@@ -784,6 +846,8 @@
     if (u.daily.date !== t) { u.daily.date = t; u.daily.items.forEach(function (i) { i.d = false; }); }
     return u.daily;
   }
+  var BADT = { ru: "Достижения", en: "Achievements", kz: "Жетістіктер", uz: "Yutuqlar" };
+  function BADu(k) { return BADT[lang()] || BADT.ru; }
   function progressCss() {
     if (document.getElementById("pg-css")) return;
     var s = document.createElement("style"); s.id = "pg-css";
@@ -845,6 +909,14 @@
 .pladd svg{color:var(--soft);flex:none}
 .pladd input{flex:1;border:0;background:none;outline:none;font:500 14.5px var(--body);color:var(--ink);min-width:0}
 .pladd button{flex:none;padding:10px 16px;border-radius:11px;background:linear-gradient(135deg,#12A15C,#1FBF7A);color:#fff;font:700 13.5px var(--body);border:0;cursor:pointer}
+.pgbadges .lb{display:flex;align-items:center;gap:7px}
+.bgcnt{margin-left:auto;color:var(--soft);font-size:12px;font-weight:700}
+.bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.bcell{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--mist);border:1.5px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;opacity:.45;filter:grayscale(1);animation:pg-in .4s both;transition:.2s}
+.bcell.on{opacity:1;filter:none;background:linear-gradient(135deg,#FFF8F3,#FFF3EC);border-color:#FFD9A8;transform:translateY(-1px)}
+.bcell .bem{font-size:24px}
+.bcell small{font-size:10.5px;color:var(--soft);line-height:1.2}
+@media(max-width:560px){.bgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:560px){
   .pgh{flex-direction:column;align-items:flex-start;padding:20px}
   .pghbody{width:100%}
@@ -903,7 +975,25 @@
     var pl = planState(), pdone = pl.items.filter(function (i) { return i.d; }).length, ptot = pl.items.length, ppct = ptot ? Math.round(pdone / ptot * 100) : 0;
     var planItems = pl.items.length ? pl.items.map(function (it, i) { return '<div class="plitem' + (it.d ? " done" : "") + '" data-pl="' + i + '" style="animation-delay:' + (Math.min(i, 12) * 0.04).toFixed(2) + 's"><span class="plchk">' + (it.d ? "✓" : "") + '</span><span class="pltxt">' + esc(it.t) + '</span><button class="pldel" data-pldel="' + i + '">✕</button></div>'; }).join("") : '<div class="plempty">' + PN("empty") + "</div>";
     var planCard = '<div class="pgc pgtb pgplan" style="--ac:#12A15C"><div class="lb">' + ic("check") + " " + PN("t") + '</div><div class="plbar"><i id="plBar"></i></div><div class="plsmall">' + PN("done") + ": " + pdone + " / " + ptot + " · " + ppct + '%</div><div class="pllist" id="plList">' + planItems + '</div><label class="pladd">' + ic("plus") + '<input id="plIn" placeholder="' + PN("ph") + '" autocomplete="off"><button id="plAdd">' + PN("add") + "</button></label></div>";
-    $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">' + T("progress") + "</h1>" + hero + '<div class="pggrid">' + lvlCard + lesCard + wCard + chatCard + timeCard + planCard + "</div>";
+    var lessonsTotal = Object.keys(c.done).length;
+    var passedTest = Object.keys(c.passes || {}).some(function (k) { return (c.passes[k] || 0) >= 60; });
+    var perfect = Object.keys(c.done).some(function (k) { return c.done[k].score === 100; });
+    var ds = Lexy.streakN();
+    var BADGES = [
+      { em: "🔥", t: { ru: "Серия 7 дней", en: "7-day streak", kz: "7 күн серия", uz: "7 kun" }, ok: ds >= 7 },
+      { em: "🏆", t: { ru: "Серия 30 дней", en: "30-day streak", kz: "30 күн серия", uz: "30 kun" }, ok: ds >= 30 },
+      { em: "📚", t: { ru: "100 слов", en: "100 words", kz: "100 сөз", uz: "100 so'z" }, ok: known >= 100 },
+      { em: "🧠", t: { ru: "500 слов", en: "500 words", kz: "500 сөз", uz: "500 so'z" }, ok: known >= 500 },
+      { em: "🌱", t: { ru: "Первый урок", en: "First lesson", kz: "Алғашқы сабақ", uz: "Birinchi dars" }, ok: lessonsTotal >= 1 },
+      { em: "🚀", t: { ru: "10 уроков", en: "10 lessons", kz: "10 сабақ", uz: "10 dars" }, ok: lessonsTotal >= 10 },
+      { em: "🎓", t: { ru: "Тест уровня", en: "Level test", kz: "Деңгей тесті", uz: "Daraja testi" }, ok: passedTest },
+      { em: "💯", t: { ru: "Идеальный урок", en: "Perfect lesson", kz: "Мінсіз сабақ", uz: "Mukammal dars" }, ok: perfect },
+      { em: "💬", t: { ru: "Разговор с Lexy", en: "Chat with Lexy", kz: "Lexy-мен сөйлесу", uz: "Lexy suhbati" }, ok: (Lexy.user.chatSec || 0) > 0 },
+      { em: "✅", t: { ru: "План выполнен", en: "Plan done", kz: "Жоспар орындалды", uz: "Reja bajarildi" }, ok: ptot > 0 && pdone === ptot }
+    ];
+    var earned = BADGES.filter(function (b) { return b.ok; }).length;
+    var badgeCard = '<div class="pgc pgtb pgbadges" style="--ac:#F2B100"><div class="lb">' + ic("star") + " " + BADu() + ' <span class="bgcnt">' + earned + " / " + BADGES.length + '</span></div><div class="bgrid">' + BADGES.map(function (b, i) { return '<div class="bcell' + (b.ok ? " on" : "") + '" style="animation-delay:' + (i * 0.04).toFixed(2) + 's"><span class="bem">' + b.em + "</span><small>" + esc(b.t[lang()] || b.t.ru) + "</small></div>"; }).join("") + "</div></div>";
+    $("#s-progress").innerHTML = '<h1 class="t" style="margin-bottom:20px">' + T("progress") + "</h1>" + hero + '<div class="pggrid">' + lvlCard + lesCard + wCard + chatCard + timeCard + planCard + badgeCard + "</div>";
     setTimeout(function () {
       countUp($("#pgStreak"), n, 1000); countUp($("#pgLessons"), done, 900); countUp($("#pgWords"), known, 900); countUp($("#pgChat"), chatMin, 900);
       var lb = $("#pgLessonsBar"); if (lb) lb.style.width = (total ? Math.round(done / total * 100) : 0) + "%";
@@ -953,5 +1043,6 @@
   Lexy.init("english", { render: { path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); }, practice: renderPractice, progress: renderProgress, talk: renderTalk } });
 })();
 </script>
+<script src="lexy-theme.js?v=1"></script>
 </body>
 </html>

@@ -305,6 +305,7 @@
   function orderBlock(L) { var ex = (L.th && L.th.ex) || []; var exs = ex.filter(function (s) { return String(s).split(/\s+/).length >= 4; }); var s = exs[0] || ex[0] || "I like English."; return { type: "order", data: { sentence: s, sub: L.t || "" } }; }
   function typingBlock(L) { var items = (L.ws || []).slice(0, 3).map(function (x) { return { w: x.w, a: x.o[x.a] }; }); return { type: "typing", data: { items: items } }; }
   function matchBlock(L) { var pairs = (L.ws || []).slice(0, 5).map(function (x) { return [x.w, x.o[x.a]]; }); return { type: "match", data: { pairs: pairs } }; }
+  function readingBlock(level, day) { var R = (w.LEXY_READING && w.LEXY_READING[level]) || []; if (!R.length) return null; var r = R[(day - 1) % R.length]; return { type: "reading", data: { title: r.t, passage: r.p, q: r.q } }; }
 
   function plan(level, day) {
     var ls = lessons(level);
@@ -319,9 +320,10 @@
         { type: "quiz", data: { q: wq, kind: "words" } },
         typingBlock(L),
         matchBlock(L),
+        readingBlock(level, day),
         { type: "listening", data: { script: L.li.script, q: L.li.q } },
         { type: "quiz", data: { q: mixed, kind: "mix" } }
-      ];
+      ].filter(Boolean);
       return { level: level, day: day, isTest: false, title: "Урок " + day + " · " + level, blocks: blocks };
     }
     // fallback: банк по ротации (для уровней без готовых уроков)

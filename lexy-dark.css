@@ -1,0 +1,50 @@
+/* ==========================================================
+   lexy-dark.css — тёмная тема (data-theme="dark")
+   Перекрывает переменные и частые компоненты на всех страницах.
+   ========================================================== */
+[data-theme="dark"]{
+  --ink:#EDEAF7; --soft:#A9A3C4; --mist:#171327; --line:#2E2844;
+  --ok:#2ED08A; --bad:#FF6A5A; --vio:#9C7BFF; --fire:#FF6A2B; --fire2:#FFAE3A;
+  --peach:#2A1F3A; --bg:#0E0B18; --card:#1B1630; --card2:#221C39;
+}
+html[data-theme="dark"]{color-scheme:dark}
+[data-theme="dark"] body{background:var(--bg)!important;color:var(--ink)}
+[data-theme="dark"] .side,[data-theme="dark"] .mbar,[data-theme="dark"] .top,[data-theme="dark"] .header{background:#141021!important;border-color:var(--line)!important}
+[data-theme="dark"] .card,[data-theme="dark"] .block,[data-theme="dark"] .plan,[data-theme="dark"] .drow,
+[data-theme="dark"] .opt,[data-theme="dark"] .skill,[data-theme="dark"] .taskrow,[data-theme="dark"] .hrow,
+[data-theme="dark"] .wc,[data-theme="dark"] .tk,[data-theme="dark"] .pfcard,[data-theme="dark"] .pfrow,
+[data-theme="dark"] .pgc,[data-theme="dark"] .wki,[data-theme="dark"] .readpass,[data-theme="dark"] .exlist>div,
+[data-theme="dark"] .plitem,[data-theme="dark"] .bcell,[data-theme="dark"] .lks,[data-theme="dark"] .tcard,
+[data-theme="dark"] .stat .s,[data-theme="dark"] .nitem,[data-theme="dark"] .tkans,[data-theme="dark"] .pfpick-btn,
+[data-theme="dark"] .pfpick-menu,[data-theme="dark"] .trow2,[data-theme="dark"] .ordchip,[data-theme="dark"] .mcell,
+[data-theme="dark"] .ob,[data-theme="dark"] .op,[data-theme="dark"] .tkl,[data-theme="dark"] .pladd,
+[data-theme="dark"] .card.g,[data-theme="dark"] .rw,[data-theme="dark"] .dk{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)}
+[data-theme="dark"] .pfpick-menu{box-shadow:0 24px 46px -20px rgba(0,0,0,.8)}
+[data-theme="dark"] input,[data-theme="dark"] textarea,[data-theme="dark"] select,
+[data-theme="dark"] input.q,[data-theme="dark"] textarea.q,[data-theme="dark"] select.q{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)!important}
+[data-theme="dark"] input::placeholder,[data-theme="dark"] textarea::placeholder{color:#8A83A6}
+[data-theme="dark"] .btn.ghost,[data-theme="dark"] .seg button,[data-theme="dark"] .tab,
+[data-theme="dark"] .wkhide,[data-theme="dark"] .pldel,[data-theme="dark"] .cpy,[data-theme="dark"] .back,
+[data-theme="dark"] .menu-btn,[data-theme="dark"] .lang-btn,[data-theme="dark"] .lang-pick-btn,
+[data-theme="dark"] .lang-item,[data-theme="dark"] .lxa-chip{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] .btn.ghost:hover,[data-theme="dark"] .seg button:hover,[data-theme="dark"] .tab:hover{color:var(--fire)!important;border-color:var(--fire)!important}
+[data-theme="dark"] .seg button.on,[data-theme="dark"] .tab.on{background:var(--fire)!important;color:#fff!important;border-color:var(--fire)!important}
+[data-theme="dark"] .side .nv{color:var(--soft)}
+[data-theme="dark"] .side .nv.on{background:#2A2342;color:var(--ink)}
+[data-theme="dark"] .pr,[data-theme="dark"] .pr.wh,[data-theme="dark"] .pr.red,[data-theme="dark"] .free,
+[data-theme="dark"] .tip,[data-theme="dark"] .lxa-info,[data-theme="dark"] .pfxp,[data-theme="dark"] .pladd,
+[data-theme="dark"] .readpg,[data-theme="dark"] .transcript{background:#221C39!important;border-color:var(--line)!important}
+[data-theme="dark"] table th{color:var(--soft)!important}
+[data-theme="dark"] th,[data-theme="dark"] td{border-color:var(--line)!important}
+[data-theme="dark"] .who,[data-theme="dark"] .s,[data-theme="dark"] small{color:var(--soft)}
+[data-theme="dark"] .logo,[data-theme="dark"] .brand{color:var(--ink)!important}
+[data-theme="dark"] .opts .opt.on,[data-theme="dark"] .opt.on{background:#33214a!important}
+[data-theme="dark"] .plitem.done,[data-theme="dark"] .opt.right,[data-theme="dark"] .mcell.done,[data-theme="dark"] .taskrow.done{background:#16301f!important;border-color:#265a3c!important}
+[data-theme="dark"] .opt.wrong,[data-theme="dark"] .mcell.bad{background:#3a1c1c!important;border-color:#7a2e2e!important}
+[data-theme="dark"] .drow:hover,[data-theme="dark"] .opt:hover,[data-theme="dark"] .tk:hover,[data-theme="dark"] .wki:hover{border-color:#7a4a2a!important}
+[data-theme="dark"] .pladd input,[data-theme="dark"] .tkq input,[data-theme="dark"] .srch input{background:transparent!important}
+[data-theme="dark"] .hx,[data-theme="dark"] .pgh,[data-theme="dark"] .pfhero,[data-theme="dark"] .lxa-hero{color:#fff}
+/* переключатель темы */
+.thbtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:#fff;border:1.5px solid var(--line);font-size:18px;cursor:pointer;transition:.15s;line-height:1}
+.thbtn:hover{border-color:var(--fire);transform:translateY(-1px)}
+[data-theme="dark"] .thbtn{background:#241E3B;border-color:var(--line)}
