@@ -27,6 +27,7 @@
 <script src="lexy-course.js?v=7"></script>
 <script src="lexy-vocab.js?v=1"></script>
 <script src="lexy-answers.js?v=1"></script>
+<script src="lexy-chat.js?v=1"></script>
 </head>
 <body>
 <script>Lexy.guard("english");</script>
@@ -458,10 +459,8 @@
     $("#s-faq").innerHTML = '<h1 class="t">' + T("faq") + '</h1><p class="s" style="margin-bottom:6px">' + (lang === "en" ? "Everything about Lexy — short and to the point" : "Всё о Lexy — коротко и по делу") + "</p>" + items;
   }
   function renderTalk() {
-    var body = paid()
-      ? '<div class="card" style="margin-top:20px"><h3 style="font:800 20px var(--display);letter-spacing:-.02em">' + T("talkTitle") + '</h3><p class="s">' + T("talkSub") + '</p><a class="btn v" href="game-shadow.html">' + T("talkBtn") + "</a></div>"
-      : '<div class="card" style="text-align:center;margin-top:20px"><div style="font-size:38px">🔒</div><h2 style="font:800 22px var(--display);margin:10px 0">' + T("premTitle") + "</h2><p class=\"s\">" + T("premBody") + '</p><a class="btn p" href="pricing.html" style="margin-top:12px">' + T("premBtn") + "</a></div>";
-    $("#s-talk").innerHTML = '<h1 class="t">' + T("talk") + "</h1>" + body;
+    if (window.LexyChat) { LexyChat.render($("#s-talk"), { level: course().level }); return; }
+    $("#s-talk").innerHTML = '<h1 class="t">' + T("talk") + "</h1>";
   }
 
   Lexy.init("english", { render: { path: function () { course(); if (!Lexy.user.onboard) renderOnboard(); else renderCourse(); }, practice: renderPractice, progress: renderProgress, talk: renderTalk } });

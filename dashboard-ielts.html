@@ -15,6 +15,7 @@
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-vocab.js?v=1"></script>
 <script src="lexy-ai.js?v=1"></script>
+<script src="lexy-chat.js?v=1"></script>
 </head>
 <body>
 <!-- если в БД выбран другой профиль — мгновенно перекидывает на нужный файл -->
@@ -147,7 +148,7 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
-  function renderAi() { if (window.LexyAI) LexyAI.render($("#aiBox")); }
+  function renderAi() { var lv = (Lexy.user.course && Lexy.user.course.level) || "B2"; if (window.LexyChat) LexyChat.render($("#aiBox"), { level: lv }); }
   var FAQ = [
     { q: { ru: "Как готовиться в Lexy?", en: "How do I prepare in Lexy?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
     { q: { ru: "Что открывает Premium?", en: "What does Premium unlock?" }, a: { ru: "Все задания (300+ попыток), Lexy AI, словарь с повторением, игры и детальная статистика.", en: "All tasks (300+ attempts), Lexy AI, the vocabulary with review, games and detailed statistics." } },
