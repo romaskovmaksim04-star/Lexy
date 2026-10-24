@@ -302,6 +302,9 @@
   function isTestDay(day) { return false; }
 
   function wordQ(ws) { return ws.map(function (x) { return { q: "Как переводится «" + x.w + "»?", o: x.o, a: x.a }; }); }
+  function orderBlock(L) { var ex = (L.th && L.th.ex) || []; var exs = ex.filter(function (s) { return String(s).split(/\s+/).length >= 4; }); var s = exs[0] || ex[0] || "I like English."; return { type: "order", data: { sentence: s, sub: L.t || "" } }; }
+  function typingBlock(L) { var items = (L.ws || []).slice(0, 3).map(function (x) { return { w: x.w, a: x.o[x.a] }; }); return { type: "typing", data: { items: items } }; }
+  function matchBlock(L) { var pairs = (L.ws || []).slice(0, 5).map(function (x) { return [x.w, x.o[x.a]]; }); return { type: "match", data: { pairs: pairs } }; }
 
   function plan(level, day) {
     var ls = lessons(level);
@@ -312,7 +315,10 @@
       var blocks = [
         { type: "theory", data: { t: L.t, e: L.th.e, ex: L.th.ex, level: level, day: day } },
         { type: "quiz", data: { q: L.gr, kind: "grammar" } },
+        orderBlock(L),
         { type: "quiz", data: { q: wq, kind: "words" } },
+        typingBlock(L),
+        matchBlock(L),
         { type: "listening", data: { script: L.li.script, q: L.li.q } },
         { type: "quiz", data: { q: mixed, kind: "mix" } }
       ];
