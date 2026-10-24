@@ -253,6 +253,23 @@ function gates() {
 }
 
 /* ---------- уведомления из админки ---------- */
+function coreCss() {
+  if (document.getElementById("core-css")) return;
+  var s = document.createElement("style"); s.id = "core-css";
+  s.textContent = `
+.prem{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:12px;padding:13px 16px;border-radius:16px;font:800 13.5px var(--display);letter-spacing:.01em;text-decoration:none;background:linear-gradient(135deg,#2A1240,#7A2B3A);color:#fff;box-shadow:0 18px 34px -22px rgba(122,43,58,.9);transition:.18s}
+.prem:hover{transform:translateY(-2px)}
+.prem svg{width:18px;height:18px;flex:none}
+.prem::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 20% 20%,rgba(255,154,10,.4),transparent 45%);animation:core-drift 9s ease-in-out infinite alternate;pointer-events:none}
+.prem span{position:relative;z-index:1}
+.prem.is{background:linear-gradient(135deg,#0F7A48,#1FBF7A);box-shadow:0 18px 34px -22px rgba(18,161,92,.95)}
+.prem.is::after{background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.35),transparent 45%)}
+.prem.is svg{animation:core-spin 3.5s linear infinite}
+@keyframes core-drift{from{transform:translate3d(-8%,-6%,0) scale(1)}to{transform:translate3d(8%,6%,0) scale(1.2)}}
+@keyframes core-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+`;
+  document.head.appendChild(s);
+}
 function loadNotifs() {
   if (!w.LexyAuth || !w.LexyAuth.client) return;
   try {
@@ -275,7 +292,7 @@ function side() {
   });
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
-  h += U.premium ? '<div class="prem" style="background:var(--ok)">' + ic("check") + " " + P().premiumActive + "</div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + l.prem + "</a>";
+  h += U.premium ? '<div class="prem is">' + ic("crown") + "<span>" + P().premiumActive + "</span></div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + "<span>" + l.prem + "</span></a>";
   $("#side").innerHTML = h + "</div>";
 }
 
@@ -598,6 +615,7 @@ function init(p, o) {
     U = Object.assign(U, n);
     if (n.path && n.path !== PROF) location.replace(CFG.pages[n.path]);
   });
+  coreCss();
   gates();
   loadNotifs();
   CUR = (location.hash || "").slice(1) || NAV[p][0][0];
