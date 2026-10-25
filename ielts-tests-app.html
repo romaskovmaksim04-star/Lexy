@@ -16,7 +16,7 @@
 (function () {
   function run() {
     var el = document.getElementById("root");
-    if (el && window.LexiTests) window.LexiTests.mount(el, { user: { focusSkill: "reading", format: "academic" }, attempts: [] });
+    if (el && window.LexiTests) { var att = []; try { att = JSON.parse(localStorage.getItem("lexy_attempts") || "[]"); } catch (e) { att = []; } window.LexiTests.mount(el, { user: { focusSkill: "reading", format: "academic" }, attempts: att }); }
   }
   if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
 })();

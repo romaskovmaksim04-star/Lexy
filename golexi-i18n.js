@@ -54,6 +54,8 @@
     "Экзаменатор задаёт вопрос…": { en: "The examiner is asking…", kz: "Емтихан алушы сұрақ қоюда…", uz: "Imtihon oluvchi savol bermoqda…" },
     "Готово": { en: "Done", kz: "Дайын", uz: "Tayyor" },
     "Дальше": { en: "Next", kz: "Әрі қарай", uz: "Keyingi" },
+    "Далее": { en: "Next", kz: "Әрі қарай", uz: "Keyingi" },
+    "Закончить": { en: "Finish", kz: "Аяқтау", uz: "Tugatish" },
     "Стоп": { en: "Stop", kz: "Тоқтату", uz: "To‘xtatish" },
     "Ошибки": { en: "Mistakes", kz: "Қателер", uz: "Xatolar" },
     "Оценка по критериям": { en: "Band by criteria", kz: "Критерийлер бойынша баға", uz: "Mezonlar bo‘yicha ball" },
@@ -96,7 +98,8 @@
     [/^Цель взята\. Держи планку\.$/, { en: "Target reached. Keep it up.", kz: "Мақсат орындалды. Ұстап тұр.", uz: "Maqsadga erishildi. Davom eting." }],
     [/^До цели ([\d.]+) совсем близко\.$/, { en: "Very close to target $1.", kz: "Мақсат $1-ге өте жақын.", uz: "Maqsad $1 ga juda yaqin." }],
     [/^До цели ([\d.]+): ([\d.]+)\. Разбери ошибки и вернись\.$/, { en: "To target $1: $2. Review mistakes and come back.", kz: "Мақсат $1: $2. Қателерді талдап, қайта кел.", uz: "Maqsad $1: $2. Xatolarni ko‘rib chiqib, qaytib keling." }],
-    [/^(Reading|Listening|Writing|Speaking) · (\d+) из (\d+)$/, { en: "$1 · $2 of $3", kz: "$1 · $2 / $3", uz: "$1 · $2 / $3" }]
+    [/^(Reading|Listening|Writing|Speaking) · (\d+) из (\d+)$/, { en: "$1 · $2 of $3", kz: "$1 · $2 / $3", uz: "$1 · $2 / $3" }],
+    [/^Ты: (.+)$/, { en: "You: $1", kz: "Сен: $1", uz: "Siz: $1" }]
   ];
 
   function tr(text) {
