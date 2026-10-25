@@ -22,6 +22,7 @@
 <script src="lexy-vocab.js?v=7"></script>
 <script src="lexy-ai.js?v=1"></script>
 <script src="lexy-chat.js?v=9"></script>
+<script src="lexy-ielts-data.js?v=1"></script>
 <link rel="stylesheet" href="lexy-dark.css?v=13">
 </head>
 <body>
@@ -119,7 +120,32 @@
       (paid ? "" : '<div style="margin:14px 0 4px"><a class="btn p sm" href="pricing.html">' + ic("spark") + " Открыть все задания в Premium</a></div>") +
       '<div class="tgrid">' + g + "</div>";
   }
-  $("#s-tests").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { tab = b.dataset.t; tests(); } });
+  $("#s-tests").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { tab = b.dataset.t; testsNew(); } });
+
+  /* ---------- ЗАДАНИЯ IELTS (формат экзамена, из GoLexi) ---------- */
+  function ieltsBank(k) { return (window.LEXY_IELTS && window.LEXY_IELTS[k]) || []; }
+  function testsNew() {
+    var u = Lexy.user, t = TABS.filter(function (x) { return x[0] === tab; })[0], paid = prem();
+    var list = ieltsBank(tab), passed = 0;
+    Object.keys(u.tests).forEach(function (k) { if (k.indexOf(tab + "-") === 0) passed++; });
+    var g = list.map(function (it, i) {
+      var href = "ielts-test.html#/" + tab + "/" + it.id, tag = "", meta = "";
+      if (tab === "reading" || tab === "listening") {
+        var qn = (it.groups || []).reduce(function (a, gr) { return a + gr.questions.length; }, 0);
+        tag = it.topic || it.context || ""; meta = qn + " вопр. · " + it.minutes + " мин";
+      } else if (tab === "writing") {
+        tag = (it.task === "task1" ? "Task 1" : "Task 2") + " · " + it.type; meta = it.minWords + " слов · " + it.minutes + " мин";
+      } else {
+        tag = "Part " + it.part + " · " + it.topic; meta = it.questions.length + " вопрос(ов)";
+      }
+      var name = it.title || (tab === "writing" ? it.type : ("Part " + it.part + " · " + it.topic));
+      return '<a class="ti" href="' + href + '"><span class="ico" style="background:#E3F0FF;color:#1E8FE8">' + ic(t[2]) + '</span><div><b>' + esc(name) + '</b><br><small>' + esc(tag) + ' · ' + meta + '</small></div><span class="go">' + ic("play") + '</span><span class="cta">Открыть</span></a>';
+    }).join("");
+    $("#s-tests").innerHTML = '<h1 class="t">Задания IELTS</h1><p class="s">Все задания в формате экзамена — Reading, Listening, Writing, Speaking: с проверкой, разбором и прогнозом балла</p>' +
+      '<div class="tabs" role="tablist">' + TABS.map(function (x) { return '<button class="tab' + (x[0] === tab ? " on" : "") + '" style="--c:' + x[3] + '" data-t="' + x[0] + '">' + ic(x[2]) + x[1] + " <em>" + ieltsBank(x[0]).length + "</em></button>"; }).join("") + "</div>" +
+      '<h2 class="vt" style="font-size:24px">' + t[4] + '</h2><p class="s" style="margin-bottom:0">' + list.length + " заданий" + (paid ? " · Premium" : "") + '</p>' +
+      '<div class="tgrid">' + g + "</div>";
+  }
 
   /* ---------- СТАТИСТИКА ---------- */
   var st = { p: "month", s: "overview" };
@@ -156,7 +182,27 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
-  function renderAi() { var lv = (Lexy.user.course && Lexy.user.course.level) || "B2"; if (window.LexyChat) LexyChat.render($("#aiBox"), { level: lv }); }
+  function aiCss() { if (document.getElementById("ai-two-css")) return; var s = document.createElement("style"); s.id = "ai-two-css"; s.textContent = ".ai-two{display:grid;gap:16px;margin-top:18px}@media(min-width:820px){.ai-two{grid-template-columns:1fr 1fr}}.ai-card{display:flex;gap:16px;background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:20px}.ai-card.live{background:linear-gradient(135deg,#7A2B3A,#2A1240);color:#fff;border:0}.ai-card .ai-em{font-size:30px;width:56px;height:56px;flex:none;border-radius:18px;display:grid;place-items:center;background:var(--mist)}.ai-card.live .ai-em{background:rgba(255,255,255,.14)}.ai-card h3{font:800 20px var(--display);margin-bottom:6px}.ai-card p{font-size:13.5px;line-height:1.6;color:var(--soft);max-width:48ch}.ai-card.live p{color:rgba(255,255,255,.85)}.ai-card.live .btn{background:#fff;color:#2A1240}"; document.head.appendChild(s); }
+  function openLiveCall(lv) {
+    if (window.LexiLive && window.LexiLive.open) { window.LexiLive.open({ level: lv }); return; }
+    var b = $("#aiLive"); if (b) b.disabled = true;
+    if (window.LexyChat) LexyChat.render($("#aiChatBox"), { level: lv });
+  }
+  function renderAi() {
+    var lv = (Lexy.user.course && Lexy.user.course.level) || "B2";
+    aiCss();
+    $("#aiBox").innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Два способа заниматься с Lexi</p>' +
+      '<div class="ai-two">' +
+        '<div class="ai-card live"><div class="ai-em">🎙️</div><div><h3>Живой разговор с Lexi</h3>' +
+          '<p>Настоящий голосовой звонок в реальном времени: Lexi слушает и отвечает голосом, поправляет ошибки прямо в разговоре, а после звонка даёт разбор. Характер и голос выбираешь сам.</p>' +
+          '<button class="btn p big" id="aiLive" style="margin-top:14px">Начать разговор</button></div></div>' +
+        '<div class="ai-card"><div class="ai-em">💬</div><div><h3>Чат Lexi и Writing</h3>' +
+          '<p>Текстовая практика: переписка с Lexi по твоему уровню и проверка эссе Writing с разбором по критериям IELTS.</p>' +
+          '<button class="btn big" id="aiChat" style="margin-top:14px">Открыть чат и письмо</button></div></div>' +
+      '</div><div id="aiChatBox" style="margin-top:18px"></div>';
+    $("#aiChat").addEventListener("click", function () { if (window.LexyChat) { LexyChat.render($("#aiChatBox"), { level: lv }); this.style.display = "none"; } });
+    $("#aiLive").addEventListener("click", function () { openLiveCall(lv); });
+  }
   var FAQ = [
     { q: { ru: "Как готовиться в Lexi?", en: "How do I prepare in Lexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
     { q: { ru: "Что открывает Premium?", en: "What does Premium unlock?" }, a: { ru: "Все задания (300+ попыток), Lexi AI, словарь с повторением, игры и детальная статистика.", en: "All tasks (300+ attempts), Lexi AI, the vocabulary with review, games and detailed statistics." } },
@@ -172,7 +218,7 @@
     }).join("");
     $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexi" : "Короткие ответы о Lexi") + "</p>" + items;
   }
-  Lexy.init("ielts", { render: { home: home, tests: tests, stats: stats, ai: renderAi }, vocabGated: true });
+  Lexy.init("ielts", { render: { home: home, tests: testsNew, stats: stats, ai: renderAi }, vocabGated: true });
 })();
 </script>
 <script src="lexy-theme.js?v=2"></script>
