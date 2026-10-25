@@ -81,6 +81,7 @@
     "История попыток": { en: "Attempt history", kz: "Талпыныстар тарихы", uz: "Urinishlar tarixi" },
     "Повторить": { en: "Retry", kz: "Қайталау", uz: "Qayta urinish" },
     "Разбор": { en: "Review", kz: "Талдау", uz: "Tahlil" },
+    "Выбрать": { en: "Choose", kz: "Таңдау", uz: "Tanlash" },
     "Выйти": { en: "Exit", kz: "Шығу", uz: "Chiqish" },
     "Начать Part": { en: "Start Part", kz: "Бастау: Part", uz: "Boshlash: Part" },
     "Интервью: короткие вопросы о тебе. Отвечай по 2-4 предложения.": { en: "Interview: short questions about you. Answer in 2-4 sentences.", kz: "Сұхбат: өзің туралы қысқа сұрақтар. 2-4 сөйлеммен жауап бер.", uz: "Intervyu: o‘zingiz haqida qisqa savollar. 2-4 gap bilan javob bering." },
