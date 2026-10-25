@@ -112,6 +112,32 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .spk-timers{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .spkt{font:800 34px var(--display);margin-top:14px}
 .spkt.low{color:var(--bad)}
+.spk-q{display:block;margin-top:12px}
+.spk-q small{display:block;font-weight:700;font-size:12px;color:var(--soft);margin-bottom:4px}
+.spk-ta{min-height:110px;margin-top:4px}
+.exres{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:22px;margin-top:20px}
+.exhead{display:flex;gap:18px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.exring{width:96px;height:96px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7A40FF,#FF4E1A);color:#fff;text-align:center}
+.exring b{font:800 26px var(--display);display:block}
+.exring small{font-size:11px;opacity:.9}
+.exhead h3{font:800 20px var(--display);margin-bottom:4px}
+.exhead p{color:var(--soft);font-size:13.5px;max-width:60ch}
+.exc{border-top:1px solid var(--line);padding:12px 0}
+.exh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.exh b{font:700 15px var(--body)}
+.exb{font:800 15px var(--display);color:#fff;background:var(--fire);border-radius:10px;padding:3px 10px}
+.exc ul{margin:8px 0 0 18px;color:var(--soft);font-size:13.5px;line-height:1.6}
+.exres h4{font:800 14px var(--display);margin:16px 0 8px}
+.exm{padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.exm .exw{color:var(--bad);text-decoration:line-through}
+.exm small{display:block;color:var(--soft);font-size:12.5px;margin-top:3px}
+.exrw{display:grid;gap:12px}
+@media(min-width:760px){.exrw{grid-template-columns:1fr 1fr}}
+.exrw>div{background:var(--mist);border-radius:14px;padding:14px}
+.exrw b{font-size:12.5px;color:var(--soft)}
+.exrw p{margin-top:6px;font-size:14px;line-height:1.6}
+.exrw .exi{background:#E9F9F1}
+.exnext{margin:6px 0 0 18px;font-size:14px;line-height:1.7}
 footer{text-align:center;color:var(--soft);font-size:12.5px;padding:30px 20px}
 [data-theme="dark"] .top{background:rgba(20,16,34,.94)}
 [data-theme="dark"] .tabs button,[data-theme="dark"] .row,[data-theme="dark"] .grp,[data-theme="dark"] .card,[data-theme="dark"] .ta,[data-theme="dark"] .gap-in,[data-theme="dark"] .opt,[data-theme="dark"] .tmr,[data-theme="dark"] .tr,[data-theme="dark"] .result,[data-theme="dark"] .model{background:#1C1633;border-color:#332A52;color:#EDE9F7}
@@ -121,6 +147,9 @@ footer{text-align:center;color:var(--soft);font-size:12.5px;padding:30px 20px}
 [data-theme="dark"] .opt.wrong{background:#331620}
 [data-theme="dark"] .q.ok .gap-in{background:#12301F}
 [data-theme="dark"] .q.bad .gap-in{background:#331620}
+[data-theme="dark"] .exres{background:#1C1633;border-color:#332A52;color:#EDE9F7}
+[data-theme="dark"] .exrw>div{background:#241C40}
+[data-theme="dark"] .exrw .exi{background:#12301F}
 </style>
 </head>
 <body>
@@ -133,6 +162,8 @@ footer{text-align:center;color:var(--soft);font-size:12.5px;padding:30px 20px}
 <main id="app"></main>
 <footer>Lexi · IELTS тренажёр · задания с разбором и прогнозом балла</footer>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A0A"/><stop offset="1" stop-color="#FF4E1A"/></linearGradient><symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/></symbol></defs></svg>
+<script src="lexy-config.js?v=7"></script>
+<script src="lexy-auth.js?v=11"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
 <script src="lexy-ielts-runner.js?v=1"></script>
 <script src="lexy-theme.js?v=2"></script>

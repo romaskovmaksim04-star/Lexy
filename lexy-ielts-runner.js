@@ -12,6 +12,26 @@
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function el(tag, cls, html) { var e = d.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
+  /* ---------- ИИ-экзаменатор (Supabase Edge Function ielts-examiner) ---------- */
+  function isAuthed() { try { return !!(w.LexyAuth && w.LexyAuth.user && w.LexyAuth.user()); } catch (e) { return false; } }
+  function examCall(body) {
+    var c = w.LEXY_SUPABASE || {};
+    var base = String(c.url || "").replace(/\/+$/, "");
+    return w.LexyAuth.token().then(function (t) {
+      if (!t) throw { code: "auth" };
+      return fetch(base + "/functions/v1/ielts-examiner", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + t, apikey: c.anonKey || "" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.text().then(function (tx) { var dj = null; try { dj = tx ? JSON.parse(tx) : null; } catch (e) {} if (!r.ok) throw { code: (dj && dj.error) || "http" }; return dj; }); });
+    });
+  }
+  function renderExaminer(host, ex) {
+    if (!ex) { host.innerHTML = '<div class="card">Не удалось получить разбор, попробуй ещё.</div>'; return; }
+    var crit = (ex.criteria || []).map(function (c) { return '<div class="exc"><div class="exh"><b>' + esc(c.title) + '</b><span class="exb">' + fmt(c.band) + '</span></div><ul>' + (c.notes || []).map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul></div>"; }).join("");
+    var ms = (ex.mistakes || []).map(function (m) { return '<div class="exm"><span class="exw">' + esc(m.wrong) + '</span> → <b>' + esc(m.right) + "</b>" + (m.why ? "<small>" + esc(m.why) + "</small>" : "") + "</div>"; }).join("");
+    var rw = ex.rewrite ? '<div class="exrw"><div><b>Было</b><p>' + esc(ex.rewrite.original) + '</p></div><div class="exi"><b>Лучше (Band 7.5+)</b><p>' + esc(ex.rewrite.improved) + "</p></div></div>" : "";
+    var nx = (ex.next || []).map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("");
+    host.innerHTML = '<div class="exres"><div class="exhead"><div class="exring"><b>' + fmt(ex.band) + '</b><small>Band</small></div><div><h3>Разбор ИИ-экзаменатора</h3><p>' + esc(ex.summary) + "</p></div></div>" + crit + (ms ? "<h4>Ошибки</h4>" + ms : "") + (rw ? "<h4>Как усилить</h4>" + rw : "") + (nx ? "<h4>Что делать дальше</h4><ul class=\"exnext\">" + nx + "</ul>" : "") + "</div>";
+  }
+
   /* ---------- band tables (lib/band.ts) ---------- */
   var L_ROWS = [[39,9],[37,8.5],[35,8],[32,7.5],[30,7],[26,6.5],[23,6],[18,5.5],[16,5],[13,4.5],[10,4],[8,3.5],[6,3],[4,2.5],[2,2],[1,1]];
   var RA_ROWS = [[39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],[23,6],[19,5.5],[15,5],[13,4.5],[10,4],[8,3.5],[6,3],[4,2.5],[2,2],[1,1]];
@@ -273,8 +293,8 @@
       '<div class="bar2"><span class="bt">' + (t.task === "task1" ? "Task 1" : "Task 2") + " · " + esc(t.type) + '</span><span class="meta">' + min + " слов · " + t.minutes + ' мин</span><span id="tmrhost"></span></div>' +
       '<div class="card"><div class="prompt">' + esc(t.text).replace(/\n/g, "<br>") + "</div>" + (t.chart ? '<div class="chart">' + chartSvg(t.chart) + "</div>" : "") + "</div>" +
       '<textarea id="ta" class="ta" placeholder="Напиши ответ здесь…"></textarea>' +
-      '<div class="foot"><span id="wc">0 слов</span><button class="btn p" id="done">Показать пример Band 8–9</button></div>' +
-      '<div id="model"></div></div>';
+      '<div class="foot"><span id="wc">0 слов</span><button class="btn" id="ai">🤖 ИИ-разбор</button><button class="btn p" id="done">Показать пример Band 8–9</button></div>' +
+      '<div id="aires"></div><div id="model"></div></div>';
     var timer = makeTimer(t.minutes, function () {});
     $("#tmrhost").appendChild(timer.bar);
     var ta = $("#ta");
@@ -284,6 +304,14 @@
       $("#model").innerHTML = '<div class="model"><h3>Пример ответа (Band 8–9)</h3><div>' + esc(t.model || "").replace(/\n/g, "<br>") + "</div></div>";
       $("#model").scrollIntoView({ behavior: "smooth" });
     });
+    $("#ai").addEventListener("click", function () {
+      var host = $("#aires"), text = ta.value;
+      if ((text.trim().match(/\S+/g) || []).length < 15) { host.innerHTML = '<div class="card">Напиши хотя бы ~15 слов, чтобы ИИ-разбор был осмысленным.</div>'; return; }
+      host.innerHTML = '<div class="card">Разбираем твой ответ…</div>';
+      examCall({ kind: "writing", task: t.task, format: t.format, prompt: t.text, chart: t.chart, text: text, words: (text.trim().match(/\S+/g) || []).length })
+        .then(function (r) { renderExaminer(host, r.examiner); host.scrollIntoView({ behavior: "smooth" }); })
+        .catch(function (e) { host.innerHTML = '<div class="card">' + (e && e.code === "auth" ? "Войди в аккаунт, чтобы получить разбор ИИ." : "Не удалось получить разбор, попробуй ещё.") + "</div>"; });
+    });
   }
 
   function renderSpeaking(t) {
@@ -291,7 +319,8 @@
     var html = '<div class="wrap">' + backLink("#/") + '<div class="bar2"><span class="bt">Speaking · Part ' + t.part + '</span><span class="meta">' + esc(t.topic) + '</span></div>';
     html += '<div class="card spk"><div class="cue">' + t.questions.map(function (q) { return "<p>" + esc(q).replace(/\n/g, "<br>") + "</p>"; }).join("") + "</div>";
     if (t.part === 2) html += '<p class="s">Подготовка ~1 мин, ответ ~2 мин. Используй таймеры ниже.</p>';
-    html += '<div class="spk-timers">' + (t.prepSeconds ? '<button class="btn" data-sec="' + t.prepSeconds + '">Подготовка ' + t.prepSeconds + 'с</button>' : "") + (t.answerSeconds ? '<button class="btn p" data-sec="' + t.answerSeconds + '">Ответ ' + t.answerSeconds + "с</button>" : "") + '</div><div id="spkt" class="spkt">—</div></div></div>';
+    html += '<div class="spk-timers">' + (t.prepSeconds ? '<button class="btn" data-sec="' + t.prepSeconds + '">Подготовка ' + t.prepSeconds + 'с</button>' : "") + (t.answerSeconds ? '<button class="btn p" data-sec="' + t.answerSeconds + '">Ответ ' + t.answerSeconds + "с</button>" : "") + '</div><div id="spkt" class="spkt">—</div></div>';
+    html += '<div class="card"><b>Напиши, что ты сказал(а)</b><p class="s">Введи ответ по-английски на каждый вопрос — ИИ-экзаменатор оценит по критериям IELTS (пунктуация не важна).</p>' + t.questions.map(function (q, i) { return '<label class="spk-q"><small>Q' + (i + 1) + '</small><textarea class="ta spk-ta" data-i="' + i + '" placeholder="Твой ответ…"></textarea></label>'; }).join("") + '<button class="btn p" id="spk-ai">🤖 ИИ-разбор</button><div id="spk-res"></div></div></div>';
     app.innerHTML = html;
     var iv = null;
     app.querySelectorAll("[data-sec]").forEach(function (b) {
@@ -301,6 +330,15 @@
         function tick() { host.textContent = Math.floor(left / 60) + ":" + ("0" + (left % 60)).slice(-2); host.classList.toggle("low", left <= 10); if (left <= 0) { clearInterval(iv); host.textContent = "Готово ✓"; w.speechSynthesis && w.speechSynthesis.cancel(); } left--; }
         tick(); iv = setInterval(tick, 1000);
       });
+    });
+    $("#spk-ai").addEventListener("click", function () {
+      var host = $("#spk-res");
+      var parts = t.questions.map(function (q, i) { var ta = app.querySelector('.spk-ta[data-i="' + i + '"]'); return { question: String(q).replace(/\n/g, " "), text: (ta && ta.value) || "", seconds: t.answerSeconds || 0 }; });
+      if (!parts.some(function (p) { return p.text.trim().length > 3; })) { host.innerHTML = '<div class="card">Напиши ответ хотя бы на один вопрос.</div>'; return; }
+      host.innerHTML = '<div class="card">Разбираем твой ответ…</div>';
+      examCall({ kind: "speaking", part: t.part, topic: t.topic, parts: parts, wpm: 0, fillers: 0 })
+        .then(function (r) { renderExaminer(host, r.examiner); host.scrollIntoView({ behavior: "smooth" }); })
+        .catch(function (e) { host.innerHTML = '<div class="card">' + (e && e.code === "auth" ? "Войди в аккаунт, чтобы получить разбор ИИ." : "Не удалось получить разбор, попробуй ещё.") + "</div>"; });
     });
   }
 
