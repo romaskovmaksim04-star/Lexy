@@ -74,7 +74,31 @@
     "В кабинет": { en: "Back to dashboard", kz: "Кабинетке", uz: "Kabinetga" },
     "Пройти ещё раз": { en: "Try again", kz: "Қайта тапсыру", uz: "Yana urinish" },
     "Результат не найден.": { en: "Result not found.", kz: "Нәтиже табылмады.", uz: "Natija topilmadi." },
-    "К заданиям": { en: "To tasks", kz: "Тапсырмаларға", uz: "Topshiriqlarga" }
+    "К заданиям": { en: "To tasks", kz: "Тапсырмаларға", uz: "Topshiriqlarga" },
+    "Интервью: короткие вопросы о тебе. Отвечай по 2-4 предложения.": { en: "Interview: short questions about you. Answer in 2-4 sentences.", kz: "Сұхбат: өзің туралы қысқа сұрақтар. 2-4 сөйлеммен жауап бер.", uz: "Intervyu: o‘zingiz haqida qisqa savollar. 2-4 gap bilan javob bering." },
+    "Карточка: минута на подготовку и до двух минут монолога.": { en: "Cue card: one minute to prepare, up to two minutes to speak.", kz: "Карточка: бір минут дайындық және екі минутқа дейін сөйлеу.", uz: "Karta: bir daqiqa tayyorgarlik va ikki daqiqagacha gapirish." },
+    "Дискуссия: развёрнутые ответы с аргументами и примерами.": { en: "Discussion: extended answers with reasons and examples.", kz: "Пікірталас: дәлелдер мен мысалдармен кеңейтілген жауаптар.", uz: "Muhokama: dalillar va misollar bilan kengaytirilgan javoblar." },
+    "Экзаменатор зачитает каждый вопрос вслух. Запись начнётся сама, нажми «Далее», когда закончишь ответ.": { en: "The examiner reads each question aloud. Recording starts automatically; press Next when you finish.", kz: "Емтихан алушы әр сұрақты дауыстап оқиды. Жазба өзі басталады, аяқтағанда «Далее» бас.", uz: "Imtihon oluvchi har bir savolni ovoz chiqarib o‘qiydi. Yozuv o‘zi boshlanadi, tugatgach «Далее» bosing." },
+    "Медленный темп речи экзаменатора": { en: "Slower examiner speech", kz: "Емтихан алушының баяу сөйлеуі", uz: "Imtihon oluvchining sekin nutqi" },
+    "Браузер спросит доступ к микрофону, разреши его.": { en: "Your browser will ask for microphone access — allow it.", kz: "Браузер микрофонға рұқсат сұрайды — рұқсат бер.", uz: "Brauzer mikrofonga ruxsat so‘raydi — ruxsat bering." },
+    "Транскрибируем речь и оцениваем": { en: "Transcribing and scoring your speech", kz: "Сөйлеуді транскрипциялап, бағалаймыз", uz: "Nutqni transkripsiya qilib, baholaymiz" },
+    "Не получилось записать ответ": { en: "Couldn't record your answer", kz: "Жауапты жазу мүмкін болмады", uz: "Javobni yozib olib bo‘lmadi" },
+    "Попробовать снова": { en: "Try again", kz: "Қайта көру", uz: "Qayta urinish" },
+    "К тестам": { en: "To tests", kz: "Тесттерге", uz: "Testlarga" },
+    "Заметки": { en: "Notes", kz: "Жазбалар", uz: "Eslatmalar" },
+    "Ключевые слова для каждого пункта": { en: "Key words for each point", kz: "Әр тармаққа кілт сөздер", uz: "Har bir band uchun kalit so‘zlar" },
+    "Я готов(а), начать ответ": { en: "I'm ready, start answering", kz: "Дайынмын, жауапты бастау", uz: "Tayyorman, javobni boshlash" },
+    "Повторить вопрос": { en: "Repeat the question", kz: "Сұрақты қайталау", uz: "Savolni takrorlash" },
+    "Включаем микрофон…": { en: "Turning on the microphone…", kz: "Микрофонды қосамыз…", uz: "Mikrofon yoqilmoqda…" },
+    "Проверки на сегодня закончились": { en: "No checks left today", kz: "Бүгінгі тексерулер бітті", uz: "Bugungi tekshiruvlar tugadi" },
+    "Бесплатно доступны 3 проверки Speaking в день. С Premium до 80.": { en: "Free plan: 3 Speaking checks a day. With Premium up to 80.", kz: "Тегін: күніне 3 Speaking тексеруі. Premium-мен 80-ге дейін.", uz: "Bepul: kuniga 3 Speaking tekshiruvi. Premium bilan 80 gacha." },
+    "На экзамене за это снижают балл. Отправить всё равно?": { en: "On the exam this lowers your band. Submit anyway?", kz: "Емтиханда бұл үшін балл төмендейді. Бәрібір жіберу керек пе?", uz: "Imtihonda bu ballni pasaytiradi. Baribir yuborilsinmi?" },
+    "Задание": { en: "Task", kz: "Тапсырма", uz: "Topshiriq" },
+    "Надень наушники и найди тихое место. Отвечай прямо во время прослушивания, как на экзамене.": { en: "Put on headphones and find a quiet place. Answer while listening, as in the exam.", kz: "Құлаққап киіп, тыныш орын тап. Емтихандағыдай тыңдау кезінде жауап бер.", uz: "Quloqchin taqing va tinch joy toping. Imtihondagidek tinglash paytida javob bering." },
+    "30 секунд на вопросы, потом запись один раз, без паузы.": { en: "30 seconds to read the questions, then the recording plays once, no pause.", kz: "Сұрақтарға 30 секунд, содан кейін жазба бір рет, кідіріссіз.", uz: "Savollarga 30 soniya, keyin yozuv bir marta, pauzasiz." },
+    "Пауза и повтор с начала, когда нужно.": { en: "Pause and replay from the start when needed.", kz: "Керек кезде кідіртіп, басынан қайтала.", uz: "Kerak bo‘lganda pauza qilib, boshidan qayta eshiting." },
+    "Озвучка сейчас недоступна. Обнови страницу через минуту.": { en: "Audio is unavailable right now. Refresh in a minute.", kz: "Дыбыс әзірге қолжетімсіз. Бір минуттан кейін бетті жаңарт.", uz: "Ovoz hozircha mavjud emas. Bir daqiqadan keyin sahifani yangilang." },
+    "Выдели слово или фразу, чтобы подсветить или сохранить в карточки.": { en: "Select a word or phrase to highlight or save to cards.", kz: "Бөлектеу немесе карточкаға сақтау үшін сөзді не сөз тіркесін таңда.", uz: "Ajratish yoki kartochkaga saqlash uchun so‘z yoki iborani belgilang." }
   };
 
   function pick(k) { var e = T[k]; return e ? (e[lang] || e.en) : null; }
