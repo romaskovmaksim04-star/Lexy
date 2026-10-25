@@ -146,7 +146,7 @@
   function css() {
     if (d.getElementById("lexy-ember-css")) return;
     var s = d.createElement("style"); s.id = "lexy-ember-css";
-    s.textContent = ".hero{position:relative}.hero>.lexy-ember{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none;overflow:hidden}.hero .wrap{position:relative;z-index:1}";
+    s.textContent = ".hero{position:relative}.hero>.lexy-ember{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 56%,rgba(0,0,0,.45) 80%,transparent 98%);mask-image:linear-gradient(to bottom,#000 56%,rgba(0,0,0,.45) 80%,transparent 98%)}.hero .wrap{position:relative;z-index:1}";
     d.head.appendChild(s);
   }
   function inject() {
