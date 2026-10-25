@@ -195,7 +195,7 @@
   }
   function testsMount() {
     var el = $("#s-tests");
-    el.innerHTML = '<iframe id="ieltsTestsFrame" src="ielts-tests-app.html" title="Тесты IELTS" style="width:100%;border:0;display:block;height:900px"></iframe>';
+    el.innerHTML = '<iframe id="ieltsTestsFrame" src="ielts-tests-app.html" title="Тесты IELTS" style="width:100%;border:0;display:block;height:1600px"></iframe>';
     var f = $("#ieltsTestsFrame"); if (f) syncFrameTheme(f);
     function fit() { try { var d = f.contentDocument; if (d && d.body) f.style.height = Math.max(640, d.documentElement.scrollHeight) + "px"; } catch (e) {} }
     f.addEventListener("load", function () {
@@ -206,7 +206,7 @@
   }
   function homeNew() {
     var el = $("#s-home");
-    el.innerHTML = '<iframe id="ieltsHomeFrame" src="ielts-home-app.html" title="Главная" style="width:100%;border:0;display:block;height:900px"></iframe>';
+    el.innerHTML = '<iframe id="ieltsHomeFrame" src="ielts-home-app.html" title="Главная" style="width:100%;border:0;display:block;height:1600px"></iframe>';
     var f = $("#ieltsHomeFrame"); if (f) syncFrameTheme(f);
     function fit() { try { var d = f.contentDocument; if (d && d.body) f.style.height = Math.max(640, d.documentElement.scrollHeight) + "px"; } catch (e) {} }
     f.addEventListener("load", function () {
@@ -216,19 +216,16 @@
     });
   }
   function renderAi() {
-    $("#aiBox").innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Выбери, как заниматься с Lexi</p>' +
-      '<div class="grid gap-4 mt-5" style="grid-template-columns:1fr;max-width:640px">' +
-        '<a href="lexi-app.html" class="relative overflow-hidden rounded-[2rem] p-6 text-[#1b1433] transition hover:-translate-y-0.5" style="background:linear-gradient(140deg, var(--fire-2), var(--fire));display:block">' +
-          '<p class="display text-xl font-bold">Поговори с Lexi</p>' +
-          '<p class="mt-1 max-w-[44ch] text-sm font-semibold">Живой голосовой разговор: Lexi слушает и отвечает голосом, поправляет ошибки на ходу, а после звонка пишет разбор по критериям IELTS.</p>' +
-          '<span class="mt-4 inline-flex items-center gap-1 text-sm font-bold">Начать разговор →</span>' +
-        '</a>' +
-        '<a href="lexi-chat.html" class="card flex items-center gap-4 p-5 transition hover:-translate-y-0.5" style="display:flex">' +
-          '<span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-surface-2" style="font-size:22px">💬</span>' +
-          '<span class="flex-1"><span class="block font-bold">Чат GoLexi и Writing</span><span class="text-sm text-muted">Текстовая практика и проверка эссе Writing с разбором</span></span>' +
-          '<span style="font-size:20px">→</span>' +
-        '</a>' +
+    $("#aiBox").innerHTML = '<iframe id="lexiFrame" src="lexi-app.html" title="Lexi AI" allow="microphone; autoplay" style="width:100%;border:0;display:block;height:1600px"></iframe>' +
+      '<div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px">' +
+        '<span style="font-size:22px">💬</span>' +
+        '<div style="flex:1;min-width:0"><b style="display:block">Чат Lexi и Writing</b><small style="color:var(--soft)">Текстовая практика с Lexi и проверка эссе</small></div>' +
+        '<a class="btn" href="lexi-chat.html">Открыть</a>' +
       '</div>';
+    var f = $("#lexiFrame");
+    function size() { try { f.style.height = (window.innerWidth < 640 ? 2500 : 1900) + "px"; } catch (e) {} }
+    size(); window.addEventListener("resize", size);
+    window.addEventListener("message", function (e) { if (e.data && e.data.t === "lexi-h" && e.data.h > 200) f.style.height = e.data.h + "px"; });
   }
   var FAQ = [
     { q: { ru: "Как готовиться в GoLexi?", en: "How do I prepare in GoLexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
