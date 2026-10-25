@@ -17,7 +17,7 @@
   <div id="root"></div>
 </main>
 <script src="lexy-ielts-data.js?v=1"></script>
-<script src="lexy-ielts-tasks.js?v=2"></script>
+<script src="lexy-ielts-tasks.js?v=3"></script>
 <script>
 (function () {
   function run() {
@@ -27,7 +27,9 @@
     try { a = JSON.parse(sessionStorage.getItem("lexy-attempt-" + id) || "null"); } catch (e) {}
     if (!a) { root.innerHTML = '<p class="text-muted">Результат не найден. <a href="dashboard-ielts.html" class="text-fire-text font-bold">← К заданиям</a></p>'; return; }
     var label = { reading: "Reading", listening: "Listening", writing: "Writing", speaking: "Speaking" }[a.section] || "";
-    window.IeltsTasks.mountResult(root, { band: a.band, target: 7, label: label + " · " + (a.correct || 0) + " из " + (a.total || 0), items: a.items || [] });
+    var opts = { band: a.band, target: 7, label: label + (a.section === "writing" ? "" : " · " + (a.correct || 0) + " из " + (a.total || 0)), items: a.items || [] };
+    if (a.examiner) opts.examiner = a.examiner;
+    window.IeltsTasks.mountResult(root, opts);
   }
   if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
 })();
