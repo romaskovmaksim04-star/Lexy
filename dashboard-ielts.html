@@ -216,13 +216,19 @@
     });
   }
   function renderAi() {
-    $("#aiBox").innerHTML = '<iframe id="lexiFrame" src="lexi-app.html" title="Lexi AI" allow="microphone; autoplay" style="width:100%;border:0;display:block;height:1600px"></iframe>' +
+    $("#aiBox").innerHTML =
+      '<div class="card" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;margin-bottom:12px">' +
+        '<b style="flex:1;min-width:0">Lexi — живой репетитор</b>' +
+        '<a class="btn" href="lexi-app.html" target="_blank" rel="noopener">Открыть отдельно ↗</a>' +
+      '</div>' +
+      '<iframe id="lexiFrame" src="lexi-app.html" title="Lexi AI" allow="microphone; autoplay" style="width:100%;border:0;display:block;height:1600px"></iframe>' +
       '<div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px">' +
         '<span style="font-size:22px">💬</span>' +
         '<div style="flex:1;min-width:0"><b style="display:block">Чат Lexi и Writing</b><small style="color:var(--soft)">Текстовая практика с Lexi и проверка эссе</small></div>' +
         '<a class="btn" href="lexi-chat.html">Открыть</a>' +
       '</div>';
     var f = $("#lexiFrame");
+    if (typeof syncFrameTheme === "function") syncFrameTheme(f);
     function size() { try { f.style.height = (window.innerWidth < 640 ? 2500 : 1900) + "px"; } catch (e) {} }
     size(); window.addEventListener("resize", size);
     window.addEventListener("message", function (e) { if (e.data && e.data.t === "lexi-h" && e.data.h > 200) f.style.height = e.data.h + "px"; });
