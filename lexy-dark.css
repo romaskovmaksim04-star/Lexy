@@ -193,6 +193,26 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .lead,[data-theme="dark"] .sub,[data-theme="dark"] .d,[data-theme="dark"] .reel b,[data-theme="dark"] .desk-lang-menu .code{color:var(--soft)!important}
 [data-theme="dark"] details summary,[data-theme="dark"] .rev b,[data-theme="dark"] .ugc b,[data-theme="dark"] .guar b,[data-theme="dark"] .stat b{color:var(--ink)!important}
 
+/* ===== регистрация / вход / опросник / тарифы / поддержка ===== */
+[data-theme="dark"] .lang-btn,[data-theme="dark"] .menu-btn,[data-theme="dark"] .btn-ghost{background:#241E3B!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .lang-menu{background:#1B1630!important;border-color:var(--line)!important;box-shadow:0 24px 46px -20px rgba(0,0,0,.8)}
+[data-theme="dark"] .lang-item{color:var(--ink)!important}
+[data-theme="dark"] .lang-item.on{background:#2A1F3A!important;color:var(--fire)!important}
+[data-theme="dark"] .badge,[data-theme="dark"] .opt,[data-theme="dark"] .review,[data-theme="dark"] .summary-card,
+[data-theme="dark"] .inc-item,[data-theme="dark"] .won,[data-theme="dark"] .bonus,[data-theme="dark"] .info-card,
+[data-theme="dark"] .faq details,[data-theme="dark"] .step-card,[data-theme="dark"] .req,[data-theme="dark"] .email-box,
+[data-theme="dark"] .discount-badge,[data-theme="dark"] .guarantee-note,[data-theme="dark"] .free-bar,
+[data-theme="dark"] .tl-item,[data-theme="dark"] .stage-item,[data-theme="dark"] .q,[data-theme="dark"] .survey-card
+{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .opt .ic,[data-theme="dark"] .inc-item .ic,[data-theme="dark"] .review .av,[data-theme="dark"] .step-card .num,[data-theme="dark"] .email-box .ic{background:#241E3B!important;color:var(--fire)!important}
+[data-theme="dark"] .opt.sel{background:#2A1F3A!important;border-color:var(--fire)!important}
+[data-theme="dark"] .field input,[data-theme="dark"] .otp input{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)!important}
+[data-theme="dark"] .field input::placeholder{color:var(--soft)}
+[data-theme="dark"] .free-bar button{background:#241E3B!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .plan.free .cta{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)!important}
+[data-theme="dark"] .plan .price .was,[data-theme="dark"] .plan .per,[data-theme="dark"] .plan .descr{color:var(--soft)!important}
+[data-theme="dark"] .review p,[data-theme="dark"] .summary-card p,[data-theme="dark"] .inc-item p{color:var(--soft)!important}
+
 /* ================= кнопка переключения темы ================= */
 .thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
 .thbtn:hover{transform:translateY(-2px);border-color:var(--fire)}
