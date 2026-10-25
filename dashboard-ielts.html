@@ -23,8 +23,10 @@
 <script src="lexy-ai.js?v=1"></script>
 <script src="lexy-chat.js?v=9"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
-<link rel="stylesheet" href="lexy-face.css?v=2">
+<link rel="stylesheet" href="lexy-face.css?v=3">
 <script src="lexy-face.js?v=1"></script>
+<script src="lexy-home.js?v=1"></script>
+<script src="lexy-lexi.js?v=1"></script>
 <script src="lexy-live.js?v=1"></script>
 <link rel="stylesheet" href="lexy-dark.css?v=13">
 </head>
@@ -185,6 +187,14 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
+  function homeNew() {
+    var u = Lexy.user, el = $("#s-home");
+    var data = {
+      user: { name: u.name || "друг", targetBand: u.target || 7, focusSkill: "reading", dailyMinutes: 30, format: "academic", examDate: u.examDate || null, streak: Lexy.streakN(), lastActive: Lexy.iso() },
+      attempts: [], dueWords: 0, talkedToday: false, recent: [], welcome: false
+    };
+    if (window.LexiHome) window.LexiHome.mount(el, data); else el.innerHTML = "";
+  }
   function renderAi() {
     $("#aiBox").innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Выбери, как заниматься с Lexi</p>' +
       '<div class="grid gap-4 mt-5" style="grid-template-columns:1fr;max-width:640px">' +
@@ -215,7 +225,7 @@
     }).join("");
     $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexi" : "Короткие ответы о Lexi") + "</p>" + items;
   }
-  Lexy.init("ielts", { render: { home: home, tests: testsNew, stats: stats, ai: renderAi }, vocabGated: true });
+  Lexy.init("ielts", { render: { home: homeNew, tests: testsNew, stats: stats, ai: renderAi }, vocabGated: true });
 })();
 </script>
 <script src="lexy-theme.js?v=2"></script>
