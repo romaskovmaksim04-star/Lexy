@@ -21,7 +21,7 @@
 <script src="lexy-vocab-data6.js?v=1"></script>
 <script src="lexy-vocab.js?v=7"></script>
 <script src="lexy-ai.js?v=1"></script>
-<script src="lexy-chat.js?v=9"></script>
+<script src="lexy-chat.js?v=10"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
 <link rel="stylesheet" href="lexy-face.css?v=4">
 <script src="lexy-face.js?v=1"></script>
@@ -216,20 +216,29 @@
     });
   }
   function renderAi() {
+    var mode = "voice"; try { mode = localStorage.getItem("lexy_ai_mode") || "voice"; } catch (e) {}
+    var isChat = mode === "chat";
+    var src = isChat ? "lexi-chat-setup.html" : "lexi-app.html";
+    var label = isChat ? "Чат с Lexi — настройка" : "Lexi — живой репетитор";
+    function tab(m, txt) {
+      var on = (m === mode);
+      return '<button type="button" data-aimode="' + m + '" style="flex:1;padding:12px;border:0;cursor:pointer;border-radius:14px;font:800 14px var(--display);transition:.15s;' + (on ? 'background:var(--fire);color:#1b1433;box-shadow:0 10px 24px -14px rgba(255,90,31,.9)' : 'background:transparent;color:var(--soft)') + '">' + txt + "</button>";
+    }
     $("#aiBox").innerHTML =
-      '<div class="card" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;margin-bottom:12px">' +
-        '<b style="flex:1;min-width:0">Lexi — живой репетитор</b>' +
-        '<a class="btn" href="lexi-app.html" target="_blank" rel="noopener">Открыть отдельно ↗</a>' +
+      '<div style="display:flex;gap:6px;padding:6px;border-radius:20px;background:var(--mist);margin-bottom:12px">' +
+        tab("voice", "🎙 Голосовой ИИ") + tab("chat", "💬 Чат с Lexi") +
       '</div>' +
-      '<iframe id="lexiFrame" src="lexi-app.html" title="Lexi AI" allow="microphone; autoplay" style="width:100%;border:0;display:block;height:1600px"></iframe>' +
-      '<div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px">' +
-        '<span style="font-size:22px">💬</span>' +
-        '<div style="flex:1;min-width:0"><b style="display:block">Чат Lexi и Writing</b><small style="color:var(--soft)">Текстовая практика с Lexi и проверка эссе</small></div>' +
-        '<a class="btn" href="lexi-chat.html">Открыть</a>' +
-      '</div>';
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+        '<b style="flex:1;min-width:0">' + label + "</b>" +
+        '<a class="btn" href="' + src + '" target="_blank" rel="noopener">Открыть отдельно ↗</a>' +
+      "</div>" +
+      '<iframe id="lexiFrame" src="' + src + '" title="Lexi AI" allow="microphone; autoplay" style="width:100%;border:0;display:block;height:1600px"></iframe>';
+    $("#aiBox").querySelectorAll("[data-aimode]").forEach(function (b) {
+      b.addEventListener("click", function () { try { localStorage.setItem("lexy_ai_mode", b.dataset.aimode); } catch (e) {} renderAi(); });
+    });
     var f = $("#lexiFrame");
     if (typeof syncFrameTheme === "function") syncFrameTheme(f);
-    function size() { try { f.style.height = (window.innerWidth < 640 ? 2500 : 1900) + "px"; } catch (e) {} }
+    function size() { try { f.style.height = (isChat ? (window.innerWidth < 640 ? 1500 : 1100) : (window.innerWidth < 640 ? 2500 : 1900)) + "px"; } catch (e) {} }
     size(); window.addEventListener("resize", size);
     window.addEventListener("message", function (e) { if (e.data && e.data.t === "lexi-h" && e.data.h > 200) f.style.height = e.data.h + "px"; });
   }

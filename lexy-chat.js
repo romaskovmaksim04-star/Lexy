@@ -392,7 +392,8 @@
       st.msgs.push(um); persist(st);
       appendMsg(um);
       showTyping();
-      call({ mode: "chat", level: level, messages: st.msgs }).then(function (d) {
+      var su = {}; try { su = JSON.parse(localStorage.getItem("lexi_chat_setup") || "{}") || {}; } catch (e) { su = {}; }
+      call({ mode: "chat", level: level, messages: st.msgs, persona: su.persona, swear: !!su.swear, lang: su.lang }).then(function (d) {
         ui.busy = false; hideTyping();
         if (d && d.grammar) { var c = { role: "check", correct: d.grammar.correct, explanation: d.grammar.explanation, corrected: d.grammar.corrected }; st.msgs.push(c); appendMsg(c); }
         if (d && d.reply) { var a = { role: "assistant", content: d.reply }; st.msgs.push(a); appendMsg(a); if (ui.voice) speakText(d.reply); }

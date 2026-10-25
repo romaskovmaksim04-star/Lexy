@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("lang");if(l)document.documentElement.setAttribute("lang",l);}catch(e){}</script>
+<title>Чат с Lexi — GoLexi</title>
+<link rel="stylesheet" href="golexi/fonts.css">
+<link rel="stylesheet" href="golexi/app.css">
+<style>:root{--font-unbounded:"Unbounded";--font-onest:"Onest"}html,body{margin:0}</style>
+</head>
+<body>
+<main class="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10">
+  <div class="mb-6">
+    <h1 class="display text-3xl font-bold">Чат с Lexi</h1>
+    <p class="mt-2 max-w-[60ch] text-muted">Переписка с живым ИИ-репетитором: он поправляет ошибки, объясняет и ведёт разговор. Выбери характер и стиль диалога перед началом.</p>
+  </div>
+
+  <fieldset>
+    <legend class="label">Характер</legend>
+    <div id="personas" class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </fieldset>
+
+  <div class="mt-6 grid items-start gap-4 lg:grid-cols-2">
+    <fieldset>
+      <legend class="label">Стиль диалога</legend>
+      <div class="mt-3 grid grid-cols-2 gap-2">
+        <button type="button" class="card p-4 text-left transition" data-lang="mix"><span class="block font-bold">По-русски</span><span class="mt-1 block text-xs text-muted">Объясняет по-русски, практика на английском</span></button>
+        <button type="button" class="card p-4 text-left transition" data-lang="en"><span class="block font-bold">Only English</span><span class="mt-1 block text-xs text-muted">Как на настоящем экзамене</span></button>
+      </div>
+    </fieldset>
+    <label class="card flex cursor-pointer items-center justify-between gap-4 p-4">
+      <span><span class="block font-bold">Без цензуры 16+</span><span class="block text-xs text-muted">Lexi может материться и не стесняться в выражениях. Особенно в «Прожарке».</span></span>
+      <input type="checkbox" id="swear" class="size-5 shrink-0 accent-[var(--fire)]">
+    </label>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <button id="start" class="btn btn-fire px-7 py-4 text-base">Начать чат →</button>
+    <p id="who" class="text-sm text-muted"></p>
+  </div>
+</main>
+<script>
+(function () {
+  var P = [
+    { id: "classic", name: "Лекси", tag: "Живой, весёлый и честный. Для ежедневной практики.", sample: "Tell me about your last weekend, in as much detail as you can." },
+    { id: "strict", name: "Строгий экзаменатор", tag: "Жёсткая мотивация. Честно и без прикрас.", sample: "Weak. Say it again, and this time properly." },
+    { id: "kind", name: "Добрый", tag: "Тёплый и поддерживающий. Мягкая обратная связь.", sample: "Take your time, you're doing really well. Keep going!" },
+    { id: "sarcastic", name: "Саркастичный", tag: "Колкий юмор держит в тонусе.", sample: "Oh, fantastic. Now say it like you actually believe it." },
+    { id: "roast", name: "Прожарка", tag: "Взрывается, роастит и орёт. Зато больше не забудешь.", sample: "Wait. You learn only the pretty words? Is this English class or a dating app?" },
+    { id: "bro", name: "Кореш", tag: "Болтает как друг, на сленге, без пафоса.", sample: "Yo, that's actually a solid answer, no cap. Now hit me with an example." },
+    { id: "drama", name: "Драма-квин", tag: "Переживает каждый твой ответ как сериал.", sample: "Oh my god. You used a linking word. I'm literally going to cry." }
+  ];
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem("lexi_chat_setup") || "{}") || {}; } catch (e) { saved = {}; }
+  var st = { persona: saved.persona || "classic", lang: saved.lang || "mix", swear: !!saved.swear };
+
+  var host = document.getElementById("personas");
+  host.innerHTML = P.map(function (p) {
+    var on = p.id === st.persona;
+    return '<label class="card relative flex cursor-pointer gap-3 p-5 transition ' + (on ? "ring-2 ring-fire" : "hover:-translate-y-0.5") + '" data-p="' + p.id + '">' +
+      '<input type="radio" name="persona" value="' + p.id + '" class="sr-only"' + (on ? " checked" : "") + '>' +
+      '<span class="min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold">' + (p.id === "roast" ? "🔥 " : "") + esc(p.name) + '</span>' +
+      '<span class="mt-0.5 block text-sm text-muted">' + esc(p.tag) + '</span>' +
+      '<span class="mt-3 block text-[14px] italic text-muted">“' + esc(p.sample) + '”</span></span></label>';
+  }).join("");
+
+  function paint() {
+    document.querySelectorAll("#personas label").forEach(function (l) { l.classList.toggle("ring-2", l.dataset.p === st.persona); l.classList.toggle("ring-fire", l.dataset.p === st.persona); });
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.classList.toggle("ring-2", b.dataset.lang === st.lang); b.classList.toggle("ring-fire", b.dataset.lang === st.lang); });
+    document.getElementById("swear").checked = st.swear;
+    var p = P.filter(function (x) { return x.id === st.persona; })[0] || P[0];
+    document.getElementById("who").textContent = "Выбран: " + p.name + " · " + (st.lang === "en" ? "English" : "RU/EN") + (st.swear ? " · 16+" : "");
+  }
+  host.addEventListener("click", function (e) { var l = e.target.closest("[data-p]"); if (!l) return; st.persona = l.dataset.p; paint(); });
+  document.querySelectorAll("[data-lang]").forEach(function (b) { b.addEventListener("click", function () { st.lang = b.dataset.lang; paint(); }); });
+  document.getElementById("swear").addEventListener("change", function () { st.swear = this.checked; paint(); });
+  document.getElementById("start").addEventListener("click", function () {
+    try { localStorage.setItem("lexi_chat_setup", JSON.stringify(st)); } catch (e) {}
+    location.href = "lexi-chat.html";
+  });
+  paint();
+})();
+</script>
+<script src="golexi-i18n.js?v=1"></script>
+</body>
+</html>
