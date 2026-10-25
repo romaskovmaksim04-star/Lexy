@@ -188,10 +188,15 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
+  function syncFrameTheme(f) {
+    function apply() { try { var d = f.contentDocument; if (!d) return; var de = d.documentElement; var th = document.documentElement.getAttribute("data-theme") || "light"; de.setAttribute("data-theme", th); var mo = document.documentElement.getAttribute("data-motion"); if (mo) de.setAttribute("data-motion", mo); } catch (e) {} }
+    f.addEventListener("load", apply); apply();
+    try { var ob = new MutationObserver(apply); ob.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-motion"] }); } catch (e) {}
+  }
   function testsMount() {
     var el = $("#s-tests");
     el.innerHTML = '<iframe id="ieltsTestsFrame" src="ielts-tests-app.html" title="Тесты IELTS" style="width:100%;border:0;display:block;height:900px"></iframe>';
-    var f = $("#ieltsTestsFrame");
+    var f = $("#ieltsTestsFrame"); if (f) syncFrameTheme(f);
     function fit() { try { var d = f.contentDocument; if (d && d.body) f.style.height = Math.max(640, d.documentElement.scrollHeight) + "px"; } catch (e) {} }
     f.addEventListener("load", function () {
       fit();
@@ -202,7 +207,7 @@
   function homeNew() {
     var el = $("#s-home");
     el.innerHTML = '<iframe id="ieltsHomeFrame" src="ielts-home-app.html" title="Главная" style="width:100%;border:0;display:block;height:900px"></iframe>';
-    var f = $("#ieltsHomeFrame");
+    var f = $("#ieltsHomeFrame"); if (f) syncFrameTheme(f);
     function fit() { try { var d = f.contentDocument; if (d && d.body) f.style.height = Math.max(640, d.documentElement.scrollHeight) + "px"; } catch (e) {} }
     f.addEventListener("load", function () {
       fit();
