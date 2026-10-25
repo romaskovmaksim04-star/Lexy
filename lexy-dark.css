@@ -219,6 +219,15 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .plan.free .cta{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)!important}
 [data-theme="dark"] .plan .price .was,[data-theme="dark"] .plan .per,[data-theme="dark"] .plan .descr{color:var(--soft)!important}
 [data-theme="dark"] .review p,[data-theme="dark"] .summary-card p,[data-theme="dark"] .inc-item p{color:var(--soft)!important}
+[data-theme="dark"] .summary-card{background:radial-gradient(120% 120% at 0% 0%,rgba(255,154,10,.12) 0%,transparent 45%),radial-gradient(120% 120% at 100% 100%,rgba(122,64,255,.12) 0%,transparent 50%),var(--card)!important}
+[data-theme="dark"] .summary-item{background:#241E3B!important;border-color:var(--line)!important}
+[data-theme="dark"] .summary-item .k{color:var(--soft)!important}
+[data-theme="dark"] .summary-item .v{color:var(--ink)!important}
+[data-theme="dark"] .review .body .tag{background:#16301f!important;color:var(--ok)!important}
+[data-theme="dark"] .tl-item .dot{background:#1B1630!important}
+[data-theme="dark"] .inc-item.green{background:#16301f!important;border-color:#265a3c!important}
+[data-theme="dark"] .inc-item .ic{background:#241E3B!important;color:var(--fire)!important}
+[data-theme="dark"] .won{background:var(--card)!important;border-color:var(--line)!important}
 
 /* ================= кнопка переключения темы ================= */
 .thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
