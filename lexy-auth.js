@@ -158,11 +158,21 @@
     return Promise.reject(mapped);
   }
 
+  function loadAttempts(rec) {
+    if (!rec || !client || !client.from) return Promise.resolve(rec);
+    return client.from("lexy_attempts").select("id,section,task_id,band,ts").order("ts", { ascending: false }).limit(120).then(function (res) {
+      if (!res.error && Array.isArray(res.data)) {
+        rec.attempts = res.data.map(function (r) { return { id: r.id, section: r.section, taskId: r.task_id, band: Number(r.band) || 0, ts: new Date(r.ts).getTime() }; });
+        var db = read(); db[rec.email] = rec; write(db); current = rec; emit();
+      }
+      return rec;
+    }).catch(function () { return rec; });
+  }
   function loadProfile(userObj) {
     authUser = userObj;
     return client.rpc("lexy_my_profile").then(function (res) {
       if (res.error) throw res.error;
-      return cacheProfile(res.data);
+      return loadAttempts(cacheProfile(res.data));
     }).catch(function () {
       return cacheBasic(userObj);
     });
