@@ -72,7 +72,9 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .pfi h2,[data-theme="dark"] .pfi p{color:#fff}
 [data-theme="dark"] .pfpick-btn,[data-theme="dark"] .pfpick-menu{background:#1B1630!important}
 [data-theme="dark"] .pfpick-menu button{color:var(--ink)}
-[data-theme="dark"] .pfpick-menu button:hover{background:#2A1F3A}
+[data-theme="dark"] .pfpick-menu button:hover,[data-theme="dark"] .pfpick-menu button.on,
+[data-theme="dark"] .pflang button.on,[data-theme="dark"] .lg button.on,[data-theme="dark"] .lang-item.on,
+[data-theme="dark"] .lang-pick-menu button.on,[data-theme="dark"] .desk-lang-menu button.on{background:#2A1F3A!important;color:var(--fire)!important}
 [data-theme="dark"] .pfsec>h3{color:var(--soft)}
 [data-theme="dark"] .pflang button{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
 [data-theme="dark"] .pflang button.on{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
