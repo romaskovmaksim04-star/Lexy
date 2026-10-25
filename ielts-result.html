@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Результат — Lexi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy-face.css?v=2">
+<link rel="stylesheet" href="lexy-dark.css?v=13">
+<style>:root{--font-unbounded:"Unbounded";--font-onest:"Onest"}*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);font-family:var(--font-onest),system-ui,sans-serif;-webkit-font-smoothing:antialiased;margin:0}</style>
+</head>
+<body>
+<main class="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10">
+  <div class="mb-6 flex items-center gap-3">
+    <a href="dashboard-ielts.html" class="btn btn-ghost btn-sm">← В кабинет</a>
+    <a href="dashboard-ielts.html" class="text-sm font-bold text-fire-text">Пройти ещё раз</a>
+  </div>
+  <div id="root"></div>
+</main>
+<script src="lexy-ielts-data.js?v=1"></script>
+<script src="lexy-ielts-tasks.js?v=1"></script>
+<script src="lexy-theme.js?v=2"></script>
+<script>
+(function () {
+  function run() {
+    var root = document.getElementById("root");
+    var id = (location.hash || "").replace(/^#\/?/, "");
+    var a = null;
+    try { a = JSON.parse(sessionStorage.getItem("lexy-attempt-" + id) || "null"); } catch (e) {}
+    if (!a) { root.innerHTML = '<p class="text-muted">Результат не найден. <a href="dashboard-ielts.html" class="text-fire-text font-bold">← К заданиям</a></p>'; return; }
+    var label = { reading: "Reading", listening: "Listening", writing: "Writing", speaking: "Speaking" }[a.section] || "";
+    window.IeltsTasks.mountResult(root, { band: a.band, target: 7, label: label + " · " + (a.correct || 0) + " из " + (a.total || 0), items: a.items || [] });
+  }
+  if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
+})();
+</script>
+</body>
+</html>

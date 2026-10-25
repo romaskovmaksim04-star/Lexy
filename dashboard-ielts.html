@@ -132,7 +132,7 @@
     var list = ieltsBank(tab), passed = 0;
     Object.keys(u.tests).forEach(function (k) { if (k.indexOf(tab + "-") === 0) passed++; });
     var g = list.map(function (it, i) {
-      var href = "ielts-test.html#/" + tab + "/" + it.id, tag = "", meta = "";
+      var href = "ielts-run.html#/" + tab + "/" + it.id, tag = "", meta = "";
       if (tab === "reading" || tab === "listening") {
         var qn = (it.groups || []).reduce(function (a, gr) { return a + gr.questions.length; }, 0);
         tag = it.topic || it.context || ""; meta = qn + " вопр. · " + it.minutes + " мин";
