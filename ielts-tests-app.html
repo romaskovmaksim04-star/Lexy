@@ -14,9 +14,17 @@
 <script src="lexy-tests.js?v=2"></script>
 <script>
 (function () {
+  function readAttempts() {
+    var out = [], seen = {};
+    function add(a) { if (!a || !a.id || seen[a.id]) return; seen[a.id] = 1; out.push(a); }
+    var e = ""; try { e = (localStorage.getItem("lexy_session") || "").toLowerCase(); } catch (x) {}
+    try { var k = "lexy_attempts" + (e ? "_" + e : ""); (JSON.parse(localStorage.getItem(k) || "[]") || []).forEach(add); } catch (x) {}
+    try { var db = JSON.parse(localStorage.getItem("lexy_db_v1") || "{}"); var rec = (e && (db[e] || db[e.toLowerCase()])) || {}; if (Array.isArray(rec.attempts)) rec.attempts.forEach(add); } catch (x) {}
+    return out;
+  }
   function run() {
     var el = document.getElementById("root");
-    if (el && window.LexiTests) { var att = []; try { att = JSON.parse(localStorage.getItem("lexy_attempts") || "[]"); } catch (e) { att = []; } window.LexiTests.mount(el, { user: { focusSkill: "reading", format: "academic" }, attempts: att }); }
+    if (el && window.LexiTests) window.LexiTests.mount(el, { user: { focusSkill: "reading", format: "academic" }, attempts: readAttempts() });
   }
   if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
 })();

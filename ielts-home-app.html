@@ -14,6 +14,14 @@
 <script src="lexy-home.js?v=1"></script>
 <script>
 (function () {
+  function readAttempts() {
+    var out = [], seen = {};
+    function add(a) { if (!a || !a.id || seen[a.id]) return; seen[a.id] = 1; out.push(a); }
+    var e = ""; try { e = (localStorage.getItem("lexy_session") || "").toLowerCase(); } catch (x) {}
+    try { var k = "lexy_attempts" + (e ? "_" + e : ""); (JSON.parse(localStorage.getItem(k) || "[]") || []).forEach(add); } catch (x) {}
+    try { var db = JSON.parse(localStorage.getItem("lexy_db_v1") || "{}"); var rec = (e && (db[e] || db[e.toLowerCase()])) || {}; if (Array.isArray(rec.attempts)) rec.attempts.forEach(add); } catch (x) {}
+    return out;
+  }
   function run() {
     var el = document.getElementById("root");
     if (!el || !window.LexiHome) return;
@@ -21,6 +29,9 @@
     try { email = localStorage.getItem("lexy_session"); } catch (e) {}
     try { db = JSON.parse(localStorage.getItem("lexy_db_v1") || "{}") || {}; } catch (e) { db = {}; }
     var u = (email && (db[email] || db[String(email).toLowerCase()])) || {};
+    var att = readAttempts();
+    var rows = att.map(function (a) { return { section: a.section, band: a.band, taskId: a.taskId, createdAt: new Date(a.ts || Date.now()) }; });
+    var recent = att.slice(0, 3).map(function (a) { return { id: a.id, section: a.section, band: a.band, taskId: a.taskId, createdAt: new Date(a.ts || Date.now()) }; });
     window.LexiHome.mount(el, {
       user: {
         name: u.name || "друг",
@@ -32,11 +43,12 @@
         streak: 0,
         lastActive: null,
       },
-      attempts: [], dueWords: 0, talkedToday: false, recent: [], welcome: false,
+      attempts: rows, dueWords: 0, talkedToday: false, recent: recent, welcome: false,
     });
   }
   if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
 })();
 </script>
+<script src="golexi-i18n.js?v=1"></script>
 </body>
 </html>
