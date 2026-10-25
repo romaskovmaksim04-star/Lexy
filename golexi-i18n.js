@@ -137,16 +137,18 @@
   function tr(text) {
     var t = text.trim();
     if (!t) return null;
-    var arrow = "";
-    if (/^[←→›»]\s+/.test(t)) { arrow = t.charAt(0) + " "; t = t.slice(2).trim(); }
+    var pre = "", post = "";
+    if (/^[←→›»]\s+/.test(t)) { pre = t.charAt(0) + " "; t = t.slice(2).trim(); }
+    var me = t.match(/\s*([→›»←])$/);
+    if (me) { post = " " + me[1]; t = t.slice(0, t.length - me[0].length).trim(); }
     var ex = pick(t);
-    if (ex) return arrow + ex;
+    if (ex) return pre + ex + post;
     for (var i = 0; i < RX.length; i++) {
       var m = t.match(RX[i][0]);
       if (m) {
         var rep = RX[i][1][lang] || RX[i][1].en;
         var out = rep.replace(/\$(\d)/g, function (_x, n) { return m[+n] || ""; });
-        return arrow + out;
+        return pre + out + post;
       }
     }
     return null;

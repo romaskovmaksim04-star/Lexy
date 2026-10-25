@@ -160,9 +160,9 @@
 
   function loadAttempts(rec) {
     if (!rec || !client || !client.from) return Promise.resolve(rec);
-    return client.from("lexy_attempts").select("id,section,task_id,band,ts").order("ts", { ascending: false }).limit(120).then(function (res) {
+    return client.from("lexy_attempts").select("id,section,task_id,band,ts,details").order("ts", { ascending: false }).limit(120).then(function (res) {
       if (!res.error && Array.isArray(res.data)) {
-        rec.attempts = res.data.map(function (r) { return { id: r.id, section: r.section, taskId: r.task_id, band: Number(r.band) || 0, ts: new Date(r.ts).getTime() }; });
+        rec.attempts = res.data.map(function (r) { return { id: r.id, section: r.section, taskId: r.task_id, band: Number(r.band) || 0, ts: new Date(r.ts).getTime(), details: r.details || null }; });
         var db = read(); db[rec.email] = rec; write(db); current = rec; emit();
       }
       return rec;
