@@ -184,7 +184,12 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .game-card,[data-theme="dark"] .game-tile,[data-theme="dark"] .reel .plat,[data-theme="dark"] .blk,
 [data-theme="dark"] .stat,[data-theme="dark"] .rev,[data-theme="dark"] .ugc,[data-theme="dark"] .guar,
 [data-theme="dark"] details,[data-theme="dark"] .phone,[data-theme="dark"] .app-hd,[data-theme="dark"] .ai-modes .mode,
-[data-theme="dark"] .ai-input,[data-theme="dark"] .dc,[data-theme="dark"] .item{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .ai-input,[data-theme="dark"] .dc,[data-theme="dark"] .item,
+[data-theme="dark"] .ai-head,[data-theme="dark"] .ai-head .meta,[data-theme="dark"] .chat-head,[data-theme="dark"] .app-hd .hd
+{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .ai-head .meta b{color:var(--ink)!important}
+[data-theme="dark"] .ai-head .meta span{color:var(--soft)!important}
+[data-theme="dark"] #btnGoogle,[data-theme="dark"] .btn-google,[data-theme="dark"] .gbtn{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)!important}
 [data-theme="dark"] .tabs,[data-theme="dark"] .seg,[data-theme="dark"] .seg span{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
 [data-theme="dark"] .seg .on,[data-theme="dark"] .ai-modes .mode.on{background:var(--fire)!important;color:#fff!important}
 [data-theme="dark"] .ai-input input,[data-theme="dark"] .ai-input button{background:#181330!important;color:var(--ink)!important;border-color:var(--line)!important}
