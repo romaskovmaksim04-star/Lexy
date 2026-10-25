@@ -133,6 +133,45 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .exlist>div{color:var(--ink)!important}
 [data-theme="dark"] .free,[data-theme="dark"] .readpg{color:var(--soft)!important}
 
+/* ===== Путь / Задания (высокая специфичность из-за #s-path/#s-practice) ===== */
+[data-theme="dark"] #s-path .tcard,[data-theme="dark"] #s-path .drow,[data-theme="dark"] #s-path .opt,
+[data-theme="dark"] #s-path .block,[data-theme="dark"] #s-path .result2,[data-theme="dark"] #s-path .tmrwrap,
+[data-theme="dark"] #s-path .op,[data-theme="dark"] #s-path .tnum,[data-theme="dark"] #s-path .readpg,
+[data-theme="dark"] #s-path .ordchip,[data-theme="dark"] #s-path .mcell,[data-theme="dark"] #s-path .trow2,
+[data-theme="dark"] #s-path .wki,[data-theme="dark"] #s-path .exlist>div,[data-theme="dark"] #s-path .lesson,
+[data-theme="dark"] #s-path .dlist,[data-theme="dark"] #s-path .pfxp
+{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] #s-path .tip,[data-theme="dark"] #s-path .readpass,[data-theme="dark"] #s-path .wkw,
+[data-theme="dark"] #s-path .ob,[data-theme="dark"] #s-path .player,[data-theme="dark"] #s-path .tmeta>div,
+[data-theme="dark"] #s-path .ordbuilt,[data-theme="dark"] #s-path .free,[data-theme="dark"] #s-path .testcard .tcent .bic
+{background:var(--card2)!important;border-color:var(--line)!important}
+[data-theme="dark"] #s-path .btitle,[data-theme="dark"] #s-path .qtext,[data-theme="dark"] #s-path .wktx,
+[data-theme="dark"] #s-path .lesson p,[data-theme="dark"] #s-path .tnum,[data-theme="dark"] #s-path .wkh b{color:var(--ink)!important}
+[data-theme="dark"] #s-path .bsub,[data-theme="dark"] #s-path .dtx small,[data-theme="dark"] #s-path .tkhint,
+[data-theme="dark"] #s-path .ordph,[data-theme="dark"] #s-path .tsug,[data-theme="dark"] #s-path .wkh small{color:var(--soft)!important}
+[data-theme="dark"] #s-path .seg button{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] #s-path .seg button.on{background:var(--fire)!important;color:#fff!important;border-color:var(--fire)!important}
+[data-theme="dark"] #s-path .opt.on{background:#33214a!important}
+[data-theme="dark"] #s-path .opt.right{background:#16301f!important;border-color:#265a3c!important}
+[data-theme="dark"] #s-path .opt.wrong{background:#3a1c1c!important;border-color:#7a2e2e!important}
+[data-theme="dark"] #s-path .opt:hover,[data-theme="dark"] #s-path .drow:hover{border-color:#7a4a2a!important}
+[data-theme="dark"] #s-path .tcard .trow .btn.ghost,[data-theme="dark"] #s-path .trbtn{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] #s-path .readpass,[data-theme="dark"] #s-path .exlist>div{border-left-color:var(--fire)!important}
+[data-theme="dark"] #s-practice .tk,[data-theme="dark"] #s-practice .tkans,[data-theme="dark"] #s-practice .tkres
+{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] #s-practice .tkq{background:#241E3B!important;border-color:var(--line)!important}
+[data-theme="dark"] #s-practice .tk .tkico,[data-theme="dark"] #s-practice .tk .tkico svg{background:#241E3B!important;color:var(--fire)!important}
+[data-theme="dark"] #s-practice .tk .tktx b{color:var(--ink)!important}
+[data-theme="dark"] #s-practice .tk .tktx small,[data-theme="dark"] #s-practice .tkans>p,[data-theme="dark"] #s-practice .tkres p{color:var(--soft)!important}
+[data-theme="dark"] #s-practice .tkq input{background:transparent!important;color:var(--ink)!important}
+/* иконки навыков (reading/listening и т.п.) — перекрываем инлайн-пастель */
+[data-theme="dark"] .ico{background:#241E3B!important;color:var(--fire)!important}
+/* ===== словарь: кнопки сессии ===== */
+[data-theme="dark"] .lxv-cbtn.show{background:var(--card)!important;color:var(--ink)!important;border-color:var(--line)!important}
+/* ===== чат/письмо: вкладки ===== */
+[data-theme="dark"] .lxa-tab{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] .lxa-tab.on{background:var(--fire)!important;color:#fff!important;border-color:var(--fire)!important}
+
 /* ================= кнопка переключения темы ================= */
 .thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
 .thbtn:hover{transform:translateY(-2px);border-color:var(--fire)}
