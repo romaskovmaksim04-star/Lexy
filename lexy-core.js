@@ -451,7 +451,7 @@ function renderProfile() {
   var t = P();
   var d = new Date(U.created).toLocaleDateString(DL[U.lang] || "ru-RU", { day: "numeric", month: "long", year: "numeric" });
   var plans = U.premium ? t.premium : t.freePlan;
-  var isAdmin = U.email && U.email.toLowerCase() === "romaskovmaksim04@gmail.com";
+
   var i = 0;
   function dl(n) { return (i++ * 0.06).toFixed(2); }
   function sec(icon, title) { return '<div class="pfsec" style="animation-delay:' + dl() + 's"><h3><span class="si">' + ic(icon) + "</span>" + title + "</h3>"; }
@@ -496,7 +496,7 @@ function renderProfile() {
     '<a class="pfrow tap" href="' + mailLink() + '" target="_blank" rel="noopener" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("mail") + '</span><div class="tx"><b>' + CFG.support + "</b><small>" + t.support + '</small></div><span class="go">' + ic("chev") + "</span></a>" +
     '<a class="pfrow tap" href="' + CFG.privacy + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>' + t.privacy + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
     '<a class="pfrow tap" href="' + CFG.terms + '" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("file") + '</span><div class="tx"><b>' + t.terms + "</b></div><span class=\"go\">" + ic("chev") + "</span></a>" +
-    (isAdmin ? '<a class="pfrow tap" href="admin.html" style="text-decoration:none;animation-delay:' + dl() + 's"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>Админ-панель</b><small>Пользователи, тарифы, задания</small></div><span class="go">' + ic("chev") + "</span></a>" : "") +
+    '<span id="pfAdminRow"></span>' +
     "</div>";
 
   el.innerHTML = hero + prof + setg + subs + guar + sup +
@@ -504,6 +504,18 @@ function renderProfile() {
     '<span class="pfcreated">' + t.created + " " + d + "</span>" +
     '<div class="pfdz" style="animation-delay:' + dl() + 's">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button data-act="del">' + t.delBtn + "</button></div></div>";
   try { if (w.LexyTheme && w.LexyTheme.paint) w.LexyTheme.paint(); } catch (e) {}
+  try {
+    if (w.LexyAuth && w.LexyAuth.client) {
+      w.LexyAuth.client().rpc("lexy_admin_me").then(function (res) {
+        var r = res && res.data && res.data.role;
+        if (!r || r === "none") return;
+        var lbl = r === "chief" ? "Главная админ-панель" : r === "admin" ? "Админ-панель" : "Панель менеджера";
+        var sub = r === "manager" ? "Управление подписками" : "Пользователи, рассылка, уведомления";
+        var host = document.getElementById("pfAdminRow");
+        if (host) host.outerHTML = '<a class="pfrow tap" href="admin.html" style="text-decoration:none"><span class="ic">' + ic("shield") + '</span><div class="tx"><b>' + lbl + "</b><small>" + sub + '</small></div><span class="go">' + ic("chev") + "</span></a>";
+      }).catch(function () {});
+    }
+  } catch (e) {}
 }
 function sh(i, t) { return '<div class="sh"><span class="si">' + ic(i) + "</span><h3>" + t + "</h3></div>"; }
 
