@@ -56,7 +56,7 @@
   function overlay() {
     var ov = d.createElement("div"); ov.className = "lxl-ov";
     ov.innerHTML = '<div class="lxl" role="dialog" aria-modal="true"><button class="lxl-x" aria-label="Закрыть">✕</button>' +
-      '<div class="lxl-set on"><h3>Живой разговор с Lexi</h3><p class="sub">Настоящий голосовой звонок. Lexi слушает, отвечает голосом и поправляет ошибки по ходу. Выбери характер, голос и тему.</p>' +
+      '<div class="lxl-set on" id="lxlSet"><h3>Живой разговор с Lexi</h3><p class="sub">Настоящий голосовой звонок. Lexi слушает, отвечает голосом и поправляет ошибки по ходу. Выбери характер, голос и тему.</p>' +
         '<div class="sec">Характер</div><div class="chips" id="lxlP">' + PERSONAS.map(function (p, i) { return '<button class="chip' + (i === 0 ? " on" : "") + '" data-p="' + p.id + '" data-v="' + p.voice + '">' + p.name + "</button>"; }).join("") + '</div>' +
         '<div class="sec">Голос</div><div class="row"><select id="lxlV">' + VOICES.map(function (v) { return '<option>' + v + "</option>"; }).join("") + '</select>' +
         '<div class="chips"><button class="chip" id="lxlLang">Язык: микс RU/EN</button><button class="chip" id="lxlSwear">Без мата</button></div></div>' +
@@ -112,6 +112,7 @@
       onDrop: function () { $("#lxlNote", ov).textContent = "Связь прервалась."; }
     }).then(function (l) { link = l; $("#lxlStat", ov).textContent = "Говори, я слушаю"; })
       .catch(function (err) {
+        try { console.warn("lexi live connect failed:", err && (err.message || err)); } catch (e) {}
         var n = err && err.name;
         if (n === "NotAllowedError") $("#lxlNote", ov).textContent = "Разреши доступ к микрофону.";
         else if (n === "NotFoundError") $("#lxlNote", ov).textContent = "Микрофон не найден.";
@@ -136,7 +137,10 @@
   function AC() { var A = w.AudioContext || w.webkitAudioContext; return new A(); }
   function connectLive(o) {
     return navigator.mediaDevices.getUserMedia({ audio: MIC }).then(function (stream) {
-      if (typeof RTCPeerConnection !== "undefined") return connectRtc(o, stream).catch(function (e) { console.warn("lexi live: rtc failed", e); return connectWs(o, stream); });
+      // Cross-origin (our static site → their live host): WebRTC needs a cross-origin POST
+      // to /live/rtc which CORS blocks, so go straight to the WebSocket (not CORS-restricted).
+      var cross = location.host !== LIVE_HOST;
+      if (!cross && typeof RTCPeerConnection !== "undefined") return connectRtc(o, stream).catch(function (e) { console.warn("lexi live: rtc failed", e); return connectWs(o, stream); });
       return connectWs(o, stream);
     });
   }
@@ -158,7 +162,7 @@
       return { kind: "rtc", sendText: function (text) { if (dc.readyState === "open") dc.send(JSON.stringify({ t: "text", text: text })); }, setMuted: function (on) { stream.getAudioTracks().forEach(function (t) { t.enabled = !on; }); }, voice: function () { return { level: 0, bright: 0.5, playing: false, analysed: false }; }, mic: function () { return 0; }, playing: function () { return false; }, hush: function () {}, end: function () { return new Promise(function (r) { if (dc.readyState === "open") dc.send(JSON.stringify({ t: "end" })); stream.getTracks().forEach(function (t) { t.stop(); }); setTimeout(r, 4000); }); }, close: function () { stream.getTracks().forEach(function (t) { t.stop(); }); player.srcObject = null; pc.close(); ctx.close().catch(function () {}); } };
     });
   }
-  var WORKLET = 'class LexyMic extends AudioWorkletProcessor{constructor(){super();this.ratio=sampleRate/16000;this.acc=0;this.sum=0;this.n=0;this.buf=new Int16Array(640);this.i=0;}process(inputs){const ch=inputs[0]&&inputs[0][0];if(!ch)return true;for(let k=0;k<ch.length;k++){this.sum+=ch[k];this.n++;this.acc++;if(this.acc>=this.ratio){this.acc-=this.ratio;const v=Math.max(-1,Math.min(1,this.sum/this.n));this.sum=0;this.n=0;this.buf[this.i++]=v<0?v*0x8000:v*0x7fff;if(this.i===640){this.port.postMessage(this.buf.buffer,[this.buf.buffer]);this.buf=new Int16Array(640);this.i=0;}}}}return true;}}registerProcessor("lexy-mic",LexyMic);';
+  var WORKLET = 'class LexyMic extends AudioWorkletProcessor{constructor(){super();this.ratio=sampleRate/16000;this.acc=0;this.sum=0;this.n=0;this.buf=new Int16Array(640);this.i=0;}process(inputs){const ch=inputs[0]&&inputs[0][0];if(!ch)return true;for(let k=0;k<ch.length;k++){this.sum+=ch[k];this.n++;this.acc++;if(this.acc>=this.ratio){this.acc-=this.ratio;const v=Math.max(-1,Math.min(1,this.sum/this.n));this.sum=0;this.n=0;this.buf[this.i++]=v<0?v*0x8000:v*0x7fff;if(this.i===640){this.port.postMessage(this.buf.buffer,[this.buf.buffer]);this.buf=new Int16Array(640);this.i=0;}}}return true;}}registerProcessor("lexy-mic",LexyMic);';
   function connectWs(o, stream) {
     var ctx = AC(); return ctx.resume().catch(function () {}).then(function () {
       var url = URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" }));
