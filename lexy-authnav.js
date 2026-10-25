@@ -17,13 +17,24 @@
     var dest = rec.path === "ielts" ? "dashboard-ielts.html" : "dashboard-english.html";
     var langs = { ru: "Назад", en: "Back", kz: "Артқа", uz: "Orqaga" };
     var back = langs[rec.lang] || langs.ru;
+    function setLabel(a) {
+      var lab = a.querySelector('span[data-i18n]') || a.querySelector("span:not([class*='arr']):not([class*='ic']):not([class*='ico'])");
+      if (lab) { lab.textContent = back; return; }
+      if (a.querySelector("svg") || a.querySelector("use")) {
+        var s = w.document.createElement("span");
+        s.setAttribute("data-i18n", "btn.menu");
+        s.textContent = back;
+        a.appendChild(s);
+        return;
+      }
+      a.textContent = "← " + back;
+    }
     function run() {
       var d = w.document;
       d.querySelectorAll("a.logo").forEach(function (a) { a.setAttribute("href", dest); });
       d.querySelectorAll(".menu-btn, a.back").forEach(function (a) {
         a.setAttribute("href", dest);
-        var s = a.querySelector("span");
-        if (s) s.textContent = back; else a.textContent = "← " + back;
+        setLabel(a);
       });
       d.querySelectorAll('a[href="reg.html"]').forEach(function (a) { a.style.display = "none"; });
       d.querySelectorAll('a[href="login.html"]').forEach(function (a) {
