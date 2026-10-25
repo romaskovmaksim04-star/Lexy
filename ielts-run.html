@@ -3,30 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Задание — Lexi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lexy-face.css?v=4">
-<link rel="stylesheet" href="lexy-dark.css?v=13">
-<style>:root{--font-unbounded:"Unbounded";--font-onest:"Onest"}*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);font-family:var(--font-onest),system-ui,sans-serif;-webkit-font-smoothing:antialiased;margin:0}</style>
+<title>Задание — GoLexi</title>
+<link rel="stylesheet" href="golexi/fonts.css">
+<link rel="stylesheet" href="golexi/app.css">
+<style>:root{--font-unbounded:"Unbounded";--font-onest:"Onest"}html,body{margin:0}</style>
 </head>
 <body>
 <main class="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10"><div id="root"></div></main>
+<script src="lexy-config.js?v=7"></script>
+<script src="lexy-auth.js?v=11"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
-<script src="lexy-ielts-tasks.js?v=1"></script>
-<script src="lexy-theme.js?v=2"></script>
+<script src="lexy-ielts-tasks.js?v=2"></script>
 <script>
 (function () {
+  var D = window.LEXY_IELTS || {};
+  function strip(groups) {
+    return (groups || []).map(function (g) {
+      return Object.assign({}, g, { questions: (g.questions || []).map(function (q) { return Object.assign({}, q, { answer: [], why: "" }); }) });
+    });
+  }
+  function token() { return (window.LexyAuth && LexyAuth.token) ? LexyAuth.token().catch(function () { return null; }) : Promise.resolve(null); }
+  function waitToken(n) {
+    n = n || 0;
+    return token().then(function (t) {
+      if (t) return t;
+      if (n > 25) return null;
+      return new Promise(function (r) { setTimeout(r, 300); }).then(function () { return waitToken(n + 1); });
+    });
+  }
+  function mountReading(t) { window.IeltsTasks.mount(document.getElementById("root"), { kind: "reading", test: t }); }
+  function mountListening(t) {
+    var groups = strip(t.groups);
+    var items = (t.script || []).map(function (l) { var v = ((t.speakers[l.speaker] || {}).voice) || "female"; return { text: l.text, voice: v }; });
+    waitToken().then(function (tk) {
+      var c = window.LEXY_SUPABASE || {}, base = String(c.url || "").replace(/\/+$/, "");
+      return fetch(base + "/functions/v1/tts-sign", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + tk, apikey: c.anonKey || "" }, body: JSON.stringify({ items: items }) }).then(function (r) { return r.json(); });
+    }).then(function (d) {
+      var audio = (d && d.audio) || [];
+      var lines = (t.script || []).map(function (l, i) { var v = ((t.speakers[l.speaker] || {}).voice) || "female"; return { audio: audio[i] || "", text: l.text, female: String(v).indexOf("female") === 0 }; });
+      window.IeltsTasks.mount(document.getElementById("root"), { kind: "listening", test: t, lines: lines, groups: groups });
+    }).catch(function () {
+      var lines = (t.script || []).map(function (l) { return { audio: "", text: l.text, female: false }; });
+      window.IeltsTasks.mount(document.getElementById("root"), { kind: "listening", test: t, lines: lines, groups: groups });
+    });
+  }
   function run() {
     var root = document.getElementById("root");
     var h = (location.hash || "").replace(/^#\/?/, "").split("/");
     var section = h[0], id = h[1];
-    var D = window.LEXY_IELTS || {};
-    if (section === "reading" && window.IeltsTasks) {
-      var test = (D.reading || []).filter(function (t) { return t.id === id; })[0];
-      if (test) { window.IeltsTasks.mount(root, { test: test }); return; }
-    }
+    if (section === "reading") { var t = (D.reading || []).filter(function (x) { return x.id === id; })[0]; if (t && window.IeltsTasks) { mountReading(t); return; } }
+    if (section === "listening") { var l = (D.listening || []).filter(function (x) { return x.id === id; })[0]; if (l && window.IeltsTasks) { mountListening(l); return; } }
     if (section && id) { location.replace("ielts-test.html#/" + section + "/" + id); return; }
     root.innerHTML = '<p>Задание не найдено. <a href="dashboard-ielts.html">← В кабинет</a></p>';
   }
