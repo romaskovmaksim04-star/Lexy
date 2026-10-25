@@ -216,8 +216,15 @@ function C() { return CO[U.lang] || CO.ru; }
 var RENEW = { ru: "Продлить тариф", en: "Extend plan", kz: "Тарифті ұзарту", uz: "Tarifni uzaytirish" };
 function renewT() { return RENEW[U.lang] || RENEW.ru; }
 function mailLink(e) { return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(e || CFG.support); }
-var THEM = { ru: "Тёмная тема", en: "Dark theme", kz: "Қараңғы тақырып", uz: "Qorong'i mavzu" };
-function THt() { return THEM[U.lang] || THEM.ru; }
+var THEM = {
+  ru: { sec: "Смена темы", light: "Светлая тема", dark: "Тёмная тема" },
+  en: { sec: "Theme", light: "Light theme", dark: "Dark theme" },
+  kz: { sec: "Тақырыпты ауыстыру", light: "Ашық тақырып", dark: "Қараңғы тақырып" },
+  uz: { sec: "Mavzuni almashtirish", light: "Yorug' mavzu", dark: "Qorong'i mavzu" }
+};
+function THm() { return THEM[U.lang] || THEM.ru; }
+function THs() { return THm().sec; }
+function THl(k) { return THm()[k]; }
 
 /* ---------- модалка / тост ---------- */
 function modal(o) {
@@ -306,7 +313,6 @@ function side() {
   if (!U.dismiss.tg) h += '<a class="pr wh" href="' + CFG.tg + '" target="_blank" rel="noopener"><button class="x" data-act="dismiss" data-k="tg" aria-label="' + co.close + '">×</button><span class="pi">' + ic("send") + "</span><div><b>" + co.tgT + "</b><small>" + co.tgS + "</small></div></a>";
   h += '<a class="nv' + (CUR === "profile" ? " on" : "") + '" data-go="profile" href="#profile">' + ic("user") + l.profile + "</a>";
   h += U.premium ? '<div class="prem is">' + ic("crown") + "<span>" + P().premiumActive + "</span></div>" : '<a class="prem" href="' + CFG.pricing + '">' + ic("spark") + "<span>" + l.prem + "</span></a>";
-  h += '<button class="thbtn side-th" data-theme-toggle aria-label="Тема"><span class="th-ic">🌙</span></button>';
   $("#side").innerHTML = h + "</div>";
 }
 
@@ -471,7 +477,7 @@ function renderProfile() {
     LANGS.map(function (x) { return '<button data-l="' + x[0] + '"' + (U.lang === x[0] ? ' class="on"' : "") + '><span class="flag">' + x[1] + '</span><span class="name">' + x[2] + '</span><span class="code">' + x[3] + "</span></button>"; }).join("") + "</div></div>";
   var setg = sec("globe", t.settings) + '<div class="pfcard pfvis">' +
     '<div class="pfrow pfrow-wrap" style="animation-delay:' + dl() + 's"><span class="ic">' + ic("globe") + '</span><div class="tx"><b>' + t.language + "</b></div>" + langPick + "</div>" +
-    '<div class="pfrow" style="animation-delay:' + dl() + 's"><span class="ic">🌙</span><div class="tx"><b>' + THt() + '</b></div><button class="thbtn" data-theme-toggle aria-label="Тема"><span class="th-ic">🌙</span></button></div>' +
+    '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + THs() + '</b></div><button class="thlong" data-theme-toggle data-light-label="' + THl("light") + '" data-dark-label="' + THl("dark") + '" aria-label="Тема"><span class="th-ic">🌙</span> <span class="th-lbl">' + THl("dark") + '</span></button></div>' +
     '<div class="pfrow" style="display:block;animation-delay:' + dl() + 's"><div class="tx"><b>' + t.usage + "</b><small>" + t.usageNote + '</small></div><div class="pfpaths" style="padding:14px 0 0">' +
       '<button class="pfp' + (U.path === "english" ? " on" : "") + '" data-act="pick" data-p="english"><span class="em">🗣</span><div class="tx"><b>' + t.pathEn + "</b><small>" + t.pathEnSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
       '<button class="pfp' + (U.path === "ielts" ? " on" : "") + '" data-act="pick" data-p="ielts"><span class="em">🎯</span><div class="tx"><b>' + t.pathIe + "</b><small>" + t.pathIeSub + '</small></div><span class="tick">' + ic("check") + "</span></button>" +
@@ -497,6 +503,7 @@ function renderProfile() {
     '<button class="pfout" data-act="logout" style="animation-delay:' + dl() + 's">' + ic("logout") + " " + t.logout + "</button>" +
     '<span class="pfcreated">' + t.created + " " + d + "</span>" +
     '<div class="pfdz" style="animation-delay:' + dl() + 's">' + ic("alert") + "<div><b>" + t.delTitle + "</b><p>" + t.delText + '</p><button data-act="del">' + t.delBtn + "</button></div></div>";
+  try { if (w.LexyTheme && w.LexyTheme.paint) w.LexyTheme.paint(); } catch (e) {}
 }
 function sh(i, t) { return '<div class="sh"><span class="si">' + ic(i) + "</span><h3>" + t + "</h3></div>"; }
 

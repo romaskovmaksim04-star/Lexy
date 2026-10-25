@@ -45,7 +45,7 @@ li{margin-bottom:6px}
 .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
 @media(max-width:520px){.top .back{display:none}}
 </style>
-<link rel="stylesheet" href="lexy-dark.css?v=5">
+<link rel="stylesheet" href="lexy-dark.css?v=6">
 </head>
 <body>
 <header class="top">
@@ -184,6 +184,6 @@ document.addEventListener('click',function(){ langWrap.classList.remove('open');
 (function(){ var s; try{ s=localStorage.getItem('lang'); }catch(e){} if(!s){ var n=(navigator.language||'ru').slice(0,2).toLowerCase(); s=TRANSLATIONS[n]?n:'ru'; } if(!TRANSLATIONS[s]) s='ru'; setLang(s); })();
 </script>
 <script src="lexy-authnav.js?v=3"></script>
-<script src="lexy-theme.js?v=1"></script>
+<script src="lexy-theme.js?v=2"></script>
 </body>
 </html>

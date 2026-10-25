@@ -11,12 +11,15 @@
   function set(t) { try { w.localStorage.setItem(KEY, t === "dark" ? "dark" : "light"); } catch (e) {} apply(t); paint(); }
   function toggle() { var t = get() === "dark" ? "light" : "dark"; set(t); return t; }
   function paint() {
-    var ico = get() === "dark" ? "☀️" : "🌙";
+    var dark = get() === "dark";
+    var ico = dark ? "🌙" : "☀️";
     try {
       w.document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
-        var s = b.querySelector(".th-ic"); if (s) s.textContent = ico; else b.textContent = ico;
-        b.setAttribute("aria-label", get() === "dark" ? "Светлая тема" : "Тёмная тема");
-        b.setAttribute("title", get() === "dark" ? "Светлая тема" : "Тёмная тема");
+        var s = b.querySelector(".th-ic"); if (s) s.textContent = ico; else if (!b.querySelector(".th-lbl")) b.textContent = ico;
+        var l = b.querySelector(".th-lbl");
+        if (l) l.textContent = dark ? (b.getAttribute("data-dark-label") || "Тёмная тема") : (b.getAttribute("data-light-label") || "Светлая тема");
+        b.setAttribute("aria-label", dark ? "Светлая тема" : "Тёмная тема");
+        b.setAttribute("title", dark ? "Светлая тема" : "Тёмная тема");
       });
     } catch (e) {}
   }
