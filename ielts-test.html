@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS тренажёр — Lexi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy-dark.css?v=13">
+<style>
+:root{--fire:#FF5A1F;--ink:#1B1433;--soft:#6B6585;--mist:#F7F5FC;--line:#E6E1F0;--peach:#FFE9DF;--ok:#12A15C;--bad:#E5484D;--display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 16px/1.6 var(--body);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.top{position:sticky;top:0;z-index:10;background:rgba(247,245,252,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .bar{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;height:64px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:9px;font:800 22px var(--display);letter-spacing:-.04em}
+.logo svg{width:26px;height:30px}
+.top .back{margin-left:auto;font-size:13.5px;font-weight:700;color:var(--soft)}
+.top .back:hover{color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:26px 20px 80px}
+.hd h1{font:800 clamp(26px,5vw,40px)/1.1 var(--display);letter-spacing:-.03em}
+.hd p{color:var(--soft);margin-top:10px;max-width:70ch}
+.tabs{display:flex;gap:8px;margin:22px 0 16px;flex-wrap:wrap}
+.tabs button{padding:11px 16px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font:700 14px var(--body);color:var(--soft)}
+.tabs button em{font-style:normal;opacity:.6;font-size:12px}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:18px;background:#fff;border:1.5px solid var(--line);transition:.15s}
+.row:hover{transform:translateY(-2px);border-color:#FFC2A1;box-shadow:0 18px 34px -26px rgba(27,20,51,.5)}
+.row .em{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--mist)}
+.row .tx{flex:1;min-width:0}
+.row .tx b{display:block;font:700 15px var(--body)}
+.row .tx small{display:block;color:var(--soft);font-size:12.5px;margin-top:2px}
+.row .ar{color:var(--soft);font-size:22px}
+.lnk{color:var(--soft);font-weight:700;font-size:13.5px;display:inline-block;margin-bottom:14px}
+.lnk:hover{color:var(--fire)}
+.bar2{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.bar2 .bt{font:800 18px var(--display)}
+.bar2 .meta{color:var(--soft);font-size:13px}
+.tmr{margin-left:auto;font:800 15px var(--display);background:#fff;border:1.5px solid var(--line);padding:6px 12px;border-radius:12px}
+.tmr.low{color:var(--bad);border-color:var(--bad)}
+.split{display:grid;gap:22px}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr;gap:30px}.passage{position:sticky;top:80px;max-height:calc(100dvh - 110px);overflow-y:auto;padding-right:8px}}
+.passage h2{font:800 20px var(--display);margin-bottom:8px}
+.passage p{margin:12px 0;line-height:1.75}
+.plab{display:inline-block;min-width:18px;font:800 12px var(--body);color:var(--fire);vertical-align:top;margin-right:6px}
+.groups{display:flex;flex-direction:column;gap:16px}
+.grp{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:18px}
+.grp-h b{font:800 15px var(--display);display:block}
+.grp-h span{display:block;color:var(--soft);font-size:12.5px;margin:4px 0 12px;line-height:1.5}
+.q{padding:12px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q-p{font-weight:600;font-size:14.5px;line-height:1.5}
+.q-hint{display:block;font:700 10.5px var(--body);letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin-top:5px}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opts.v3{grid-template-columns:repeat(3,1fr)}
+.opt{display:flex;align-items:center;gap:8px;text-align:left;padding:10px 12px;border-radius:12px;background:#fff;border:1.5px solid var(--line);font:600 14px var(--body);transition:.14s}
+.opt:hover{border-color:var(--fire)}
+.opt .key{width:22px;height:22px;flex:none;border-radius:7px;display:grid;place-items:center;font:800 12px var(--display);background:var(--mist);color:var(--soft)}
+.opt.on{border-color:var(--fire);background:#FFF3EC}
+.opt.on .key{background:var(--fire);color:#fff}
+.opt.right{border-color:var(--ok);background:#E9F9F1}
+.opt.right .key{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:#FDECEC}
+.opt.wrong .key{background:var(--bad);color:#fff}
+.gap-in{margin-top:10px;width:100%;max-width:280px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font:600 15px var(--body)}
+.gap-in:focus{outline:none;border-color:var(--fire)}
+.q.ok .gap-in{border-color:var(--ok);background:#E9F9F1}
+.q.bad .gap-in{border-color:var(--bad);background:#FDECEC}
+.why{margin-top:10px;font-size:13px;line-height:1.5;color:var(--soft);background:var(--mist);border-radius:10px;padding:9px 11px}
+.foot{display:flex;align-items:center;gap:14px;margin:20px 0;flex-wrap:wrap}
+.foot #prog{color:var(--soft);font-size:13.5px;font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font:700 14px var(--body);cursor:pointer}
+.btn:hover{border-color:var(--fire)}
+.btn.p{background:var(--fire);border-color:var(--fire);color:#fff}
+.foot .btn.p{margin-left:auto}
+.audio{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.play{padding:12px 18px;border-radius:14px;background:var(--ink);color:#fff;font:700 14px var(--body)}
+.tr{margin-top:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;max-height:280px;overflow:auto;font-size:14px}
+.tr p{margin:6px 0}
+.result{display:flex;gap:22px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:22px;margin-top:20px;flex-wrap:wrap}
+.result .ring{width:110px;height:110px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#FF9A0A,#FF4E1A);color:#fff;text-align:center}
+.result .ring b{font:800 26px var(--display);display:block}
+.result .ring small{font-size:12px;opacity:.9}
+.result .rb h3{font:800 20px var(--display);margin-bottom:6px}
+.result .band b{color:var(--fire);font-size:22px}
+.result .s{color:var(--soft);font-size:13px;margin:8px 0 12px;max-width:52ch}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.prompt{font-size:15.5px;line-height:1.7}
+.chart{margin-top:14px}
+.ch-fig{margin:0}
+.ch-fig figcaption{font-weight:700;font-size:13.5px;margin-bottom:6px}
+.ch-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--soft)}
+.ch-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.ch-pies{display:flex;gap:20px;flex-wrap:wrap}
+.ch-pies figure{text-align:center}
+.ch-pies figcaption{font-size:12.5px;margin:6px 0}
+.ch-tab{width:100%;border-collapse:collapse;font-size:13.5px}
+.ch-tab th,.ch-tab td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.ch-tab th{background:var(--mist)}
+.ta{width:100%;min-height:300px;padding:16px;border-radius:18px;border:1.5px solid var(--line);background:#fff;font:400 15px/1.7 var(--body);resize:vertical}
+.ta:focus{outline:none;border-color:var(--fire)}
+#wc{font-weight:700;color:var(--soft);font-size:13.5px}
+#wc.ok{color:var(--ok)}
+.model{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:20px;margin-top:16px}
+.model h3{font:800 18px var(--display);margin-bottom:10px}
+.model div{line-height:1.8;font-size:15px}
+.spk .cue{background:var(--mist);border-radius:14px;padding:16px;font-size:15px;line-height:1.7}
+.spk .cue p{margin:6px 0}
+.spk-timers{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.spkt{font:800 34px var(--display);margin-top:14px}
+.spkt.low{color:var(--bad)}
+footer{text-align:center;color:var(--soft);font-size:12.5px;padding:30px 20px}
+[data-theme="dark"] .top{background:rgba(20,16,34,.94)}
+[data-theme="dark"] .tabs button,[data-theme="dark"] .row,[data-theme="dark"] .grp,[data-theme="dark"] .card,[data-theme="dark"] .ta,[data-theme="dark"] .gap-in,[data-theme="dark"] .opt,[data-theme="dark"] .tmr,[data-theme="dark"] .tr,[data-theme="dark"] .result,[data-theme="dark"] .model{background:#1C1633;border-color:#332A52;color:#EDE9F7}
+[data-theme="dark"] .row .em,[data-theme="dark"] .spk .cue,[data-theme="dark"] .why,[data-theme="dark"] .opt .key,[data-theme="dark"] .ch-tab th{background:#241C40}
+[data-theme="dark"] .opt.on{background:#3A2214}
+[data-theme="dark"] .opt.right{background:#12301F}
+[data-theme="dark"] .opt.wrong{background:#331620}
+[data-theme="dark"] .q.ok .gap-in{background:#12301F}
+[data-theme="dark"] .q.bad .gap-in{background:#331620}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="dashboard-ielts.html" aria-label="Lexi"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexi</a>
+    <a class="back" href="dashboard-ielts.html">← В кабинет</a>
+  </div>
+</header>
+<main id="app"></main>
+<footer>Lexi · IELTS тренажёр · задания с разбором и прогнозом балла</footer>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A0A"/><stop offset="1" stop-color="#FF4E1A"/></linearGradient><symbol id="logo-flame" viewBox="0 0 100 120"><path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/></symbol></defs></svg>
+<script src="lexy-ielts-data.js?v=1"></script>
+<script src="lexy-ielts-runner.js?v=1"></script>
+<script src="lexy-theme.js?v=2"></script>
+</body>
+</html>
