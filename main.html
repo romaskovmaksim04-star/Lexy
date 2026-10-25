@@ -96,7 +96,7 @@ body.open .drawer{transform:none}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px}
 .mascot{position:relative;width:min(62vw,300px);margin:0 auto}
 .mascot::before{content:"";position:absolute;inset:-14% -14% 0;background:radial-gradient(circle,rgba(255,154,10,.28),transparent 65%);z-index:0}
-.mascot svg{position:relative;z-index:1;width:100%;height:auto;animation:bob 4s ease-in-out infinite}
+.mascot #lexi-spirit{position:relative;z-index:1;display:block}
 .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
 @keyframes bob{50%{transform:translateY(-8px)}}
 @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
@@ -365,7 +365,7 @@ body.open .drawer{transform:none}
 .hero p,.hero .cta-row,.hero .stats{animation:up .8s .3s both}.hero .cta-row{animation-delay:.42s}.hero .stats{animation-delay:.54s}
 .mascot{animation:squash 1s .15s cubic-bezier(.3,1.4,.5,1) both;cursor:pointer}
 .mascot::before{animation:glow 4s infinite}
-.mascot.boop svg{animation:boop .5s}
+.mascot.boop{animation:boop .5s}
 .look{transition:transform .18s;transform:translate(calc(var(--ex,0)*3px),calc(var(--ey,0)*2px))}
 .btn{position:relative;overflow:hidden}.btn:active{transform:scale(.96)}
 .btn-fire::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)}
@@ -468,6 +468,7 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
 </style>
 <script>document.documentElement.classList.add("js")</script>
 <link rel="stylesheet" href="lexy-dark.css?v=13">
+<link rel="stylesheet" href="lexy-face.css?v=1">
 </head>
 <body>
 
@@ -578,14 +579,9 @@ footer{background:#fff;border-top:1px solid var(--line);padding:44px 0 calc(32px
      <div><strong>7</strong><span data-i18n="stats.tools">инструментов в одном</span></div>
     </div>
    </div>
-   <div class="mascot" aria-label="Лекси — огонёк-талисман">
-    <svg viewBox="0 0 100 120" role="img" aria-label="Огонёк Lexi">
-     <path fill="url(#fg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/>
-     <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/>
-     <g class="look"><ellipse class="eye" cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse class="eye" cx="66" cy="79" rx="4" ry="6" fill="#151515"/>
-     <path d="M43.5 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></g>
-    </svg>
-   </div>
+    <div class="mascot" aria-label="Лекси — живой огонёк-талисман">
+     <div id="lexi-spirit"></div>
+    </div>
   </div>
  </section>
 
@@ -1407,6 +1403,11 @@ ms.onclick=function(){ms.classList.remove("boop");void ms.offsetWidth;ms.classLi
 <script src="lexy-theme.js?v=2"></script>
 <script src="lexy-ember.js?v=1"></script>
 <script src="lexy-ticker.js?v=1"></script>
+<script src="lexy-face.js?v=1"></script>
+<script>
+(function(){ function m(){ var el=document.getElementById("lexi-spirit"); if(el && window.LexiSpirit) window.LexiSpirit.mount(el); }
+  if(document.readyState!=="loading") m(); else document.addEventListener("DOMContentLoaded", m); })();
+</script>
 <script>
 (function(){ try{
   document.addEventListener('click', function(e){
