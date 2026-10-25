@@ -60,15 +60,10 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .hx,[data-theme="dark"] .pgh,[data-theme="dark"] .pfhero,[data-theme="dark"] .lxa-hero,[data-theme="dark"] .hero2{color:#fff}
 [data-theme="dark"] .tomato,[data-theme="dark"] .fire-bar{background:#2A1740!important}
 /* ================= кнопка переключения темы ================= */
-.thbtn{position:relative;width:42px;height:42px;flex:none;border:0;background:transparent;border-radius:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;isolation:isolate;transition:transform .2s}
-.thbtn:hover{transform:translateY(-2px)}
-.thbtn::before{content:"";position:absolute;inset:0;border-radius:14px;background:conic-gradient(from 0deg,#FF9A0A,#FF4E1A,#7A40FF,#39D98A,#1E8FE8,#FF9A0A);animation:th-rot 5s linear infinite;z-index:0}
-.thbtn::after{content:"";position:absolute;inset:2.5px;border-radius:11.5px;background:var(--thbg,#fff);z-index:0}
-.thbtn .th-ic{position:relative;z-index:2;font-size:19px;line-height:1;animation:th-bob 3.4s ease-in-out infinite}
-.thbtn:hover::before{animation-duration:1.6s}
-@keyframes th-rot{to{transform:rotate(360deg)}}
-@keyframes th-bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(10deg)}}
-[data-theme="dark"] .thbtn::after{background:#1C1730}
+.thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
+.thbtn:hover{transform:translateY(-2px);border-color:var(--fire)}
+.thbtn .th-ic{display:inline-block}
+[data-theme="dark"] .thbtn{background:linear-gradient(135deg,#241E3B,#3A2B57);border-color:#3A2B57;color:#fff;box-shadow:0 12px 26px -16px rgba(0,0,0,.8)}
 .side-th{width:100%;height:46px;margin-top:10px}
 .side-th .th-ic{font-size:20px}
 /* где показывать: main — только десктоп сверху и в бургер-меню (мобилка) */
