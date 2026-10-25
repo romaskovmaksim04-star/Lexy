@@ -13,7 +13,7 @@
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=11"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
-<script src="lexy-ielts-tasks.js?v=3"></script>
+<script src="lexy-ielts-tasks.js?v=4"></script>
 <script>
 (function () {
   var D = window.LEXY_IELTS || {};
@@ -47,6 +47,28 @@
       window.IeltsTasks.mount(document.getElementById("root"), { kind: "listening", test: t, lines: lines, groups: groups });
     });
   }
+  var INTRO = { 1: "Good morning. In this part, I'd like to ask you some questions about yourself.", 2: "Now I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. You have one minute to prepare. You can make some notes if you wish.", 3: "We've been talking about this topic. Now I'd like to discuss with you some more general questions related to it." };
+  function mountSpeaking(t) {
+    var qs = (t.questions || []).map(function (q, i) {
+      var spoken = String(q);
+      if (t.part === 2) spoken = spoken.split("\n")[0];
+      var say = i === 0 ? (INTRO[t.part] + " " + spoken) : spoken;
+      return { text: String(q), spoken: say };
+    });
+    var items = [];
+    qs.forEach(function (q) { items.push({ text: q.spoken, voice: "examiner", rate: "medium" }); items.push({ text: q.spoken, voice: "examiner", rate: "slow" }); });
+    waitToken().then(function (tk) {
+      var c = window.LEXY_SUPABASE || {}, base = String(c.url || "").replace(/\/+$/, "");
+      return fetch(base + "/functions/v1/tts-sign", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + tk, apikey: c.anonKey || "" }, body: JSON.stringify({ items: items }) }).then(function (r) { return r.json(); });
+    }).then(function (d) {
+      var audio = (d && d.audio) || [];
+      var questions = qs.map(function (q, i) { return { text: q.text, spoken: q.spoken, audio: audio[i * 2] || "", slow: audio[i * 2 + 1] || "" }; });
+      window.IeltsTasks.mount(document.getElementById("root"), { kind: "speaking", test: t, questions: questions });
+    }).catch(function () {
+      var questions = qs.map(function (q) { return { text: q.text, spoken: q.spoken, audio: "", slow: "" }; });
+      window.IeltsTasks.mount(document.getElementById("root"), { kind: "speaking", test: t, questions: questions });
+    });
+  }
   function run() {
     var root = document.getElementById("root");
     var h = (location.hash || "").replace(/^#\/?/, "").split("/");
@@ -54,6 +76,7 @@
     if (section === "reading") { var t = (D.reading || []).filter(function (x) { return x.id === id; })[0]; if (t && window.IeltsTasks) { mountReading(t); return; } }
     if (section === "listening") { var l = (D.listening || []).filter(function (x) { return x.id === id; })[0]; if (l && window.IeltsTasks) { mountListening(l); return; } }
     if (section === "writing") { var w = (D.writing || []).filter(function (x) { return x.id === id; })[0]; if (w && window.IeltsTasks) { window.IeltsTasks.mount(root, { kind: "writing", test: w }); return; } }
+    if (section === "speaking") { var sp = (D.speaking || []).filter(function (x) { return x.id === id; })[0]; if (sp && window.IeltsTasks) { mountSpeaking(sp); return; } }
     if (section && id) { location.replace("ielts-test.html#/" + section + "/" + id); return; }
     root.innerHTML = '<p>Задание не найдено. <a href="dashboard-ielts.html">← В кабинет</a></p>';
   }

@@ -29,12 +29,14 @@ function b64url(bytes: Uint8Array) {
   for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
-async function sign(text: string, voice: string) {
-  const payload = `tts|${voice}|medium|neutral||${text}`;
+async function sign(text: string, voice: string, rate: string) {
+  const r = rate === "slow" ? "slow" : "medium";
+  const payload = `tts|${voice}|${r}|neutral||${text}`;
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(AUTH_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload)));
   const s = b64url(sig).slice(0, 22);
   const q = new URLSearchParams({ t: text, v: voice, s });
+  if (r === "slow") q.set("r", "slow");
   return `${TTS_BASE}?${q.toString()}`;
 }
 
@@ -47,12 +49,13 @@ Deno.serve(async (req: Request) => {
 
   let body: any = {};
   try { body = await req.json(); } catch { body = {}; }
-  const items = (Array.isArray(body.items) ? body.items : []).slice(0, 80).map((it: any) => ({
+  const items = (Array.isArray(body.items) ? body.items : []).slice(0, 120).map((it: any) => ({
     text: String(it && it.text || "").slice(0, 1200),
     voice: String(it && it.voice || "examiner"),
+    rate: it && it.rate === "slow" ? "slow" : "medium",
   }));
   if (!items.length) return json({ audio: [] });
   const audio: string[] = [];
-  for (const it of items) audio.push(it.text ? await sign(it.text, it.voice) : "");
+  for (const it of items) audio.push(it.text ? await sign(it.text, it.voice, it.rate) : "");
   return json({ audio });
 });
