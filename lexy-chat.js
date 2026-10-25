@@ -133,6 +133,25 @@
     return d[k] != null ? d[k] : (TX.ru[k] != null ? TX.ru[k] : k);
   }
 
+  /* ---------- голосовой режим (микрофон + озвучка) ---------- */
+  var VX = {
+    ru: { listening: "Слушаю… (говори по-английски)", noVoice: "Голосовой ввод не поддерживается в этом браузере", micOn: "Голосовой режим включён", micOff: "Голосовой режим выключен", speakOn: "Озвучивать ответы Lexi", speakOff: "Не озвучивать" },
+    en: { listening: "Listening… (speak in English)", noVoice: "Voice input isn't supported in this browser", micOn: "Voice mode on", micOff: "Voice mode off", speakOn: "Speak Lexi's replies", speakOff: "Mute replies" },
+    kz: { listening: "Тыңдап тұрмын… (ағылшынша сөйле)", noVoice: "Бұл браузерде дауыспен енгізу қолдау көрсетпейді", micOn: "Дауыс режимі қосулы", micOff: "Дауыс режимі өшірулі", speakOn: "Lexi жауабын дыбыстау", speakOff: "Дыбысты өшіру" },
+    uz: { listening: "Tinglayapman… (inglizcha gapiring)", noVoice: "Bu brauzerda ovozli kiritish qo'llanmaydi", micOn: "Ovozli rejim yoqildi", micOff: "Ovozli rejim o'chirildi", speakOn: "Lexi javobini ovozda o'qish", speakOff: "Ovozni o'chirish" }
+  };
+  function V(k) { var l = (w.Lexy && w.Lexy.user && w.Lexy.user.lang) || "ru"; var d = VX[l] || VX.ru; return d[k] != null ? d[k] : (VX.ru[k] != null ? VX.ru[k] : k); }
+  var SPV = null;
+  function pickSpv() { if (!("speechSynthesis" in w)) return; var vs = w.speechSynthesis.getVoices().filter(function (v) { return /^en/i.test(v.lang); }); SPV = vs.filter(function (v) { return /en[-_]GB/i.test(v.lang); })[0] || vs[0] || null; }
+  if ("speechSynthesis" in w) { pickSpv(); w.speechSynthesis.onvoiceschanged = pickSpv; }
+  function speakText(t) {
+    if (!("speechSynthesis" in w) || !t) return;
+    try { w.speechSynthesis.cancel(); } catch (e) {}
+    var u = new SpeechSynthesisUtterance(String(t)); u.lang = (SPV && SPV.lang) || "en-GB"; if (SPV) u.voice = SPV; u.rate = 0.98;
+    w.speechSynthesis.speak(u);
+  }
+  function stopSpeak() { try { if ("speechSynthesis" in w) w.speechSynthesis.cancel(); } catch (e) {} }
+
   function injectCss() {
     if (document.getElementById("lexy-chat-css")) return;
     var s = document.createElement("style");
@@ -179,6 +198,10 @@
 .lxa-input textarea:focus{border-color:var(--fire);box-shadow:0 0 0 4px rgba(255,90,31,.12)}
 .lxa-send{width:48px;height:48px;flex:none;border-radius:16px;background:var(--fire);color:#fff;display:grid;place-items:center;box-shadow:0 14px 26px -14px rgba(255,90,31,.9);transition:.15s}
 .lxa-send:hover{transform:translateY(-2px)}
+.lxa-mic,.lxa-spk{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;border:1.5px solid var(--line);background:#fff;color:var(--soft);transition:.15s}
+.lxa-mic:hover,.lxa-spk:hover{color:var(--fire);border-color:var(--fire)}
+.lxa-mic.rec{background:var(--fire);color:#fff;border-color:var(--fire);animation:lxa-rec 1.1s ease-in-out infinite}
+@keyframes lxa-rec{0%,100%{box-shadow:0 0 0 0 rgba(255,90,31,.5)}50%{box-shadow:0 0 0 10px rgba(255,90,31,0)}}
 .lxa-send:disabled{opacity:.5;transform:none}
 .lxa-hint{font-size:12px;color:var(--soft);margin-top:8px}
 .lxa-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
@@ -244,7 +267,7 @@
   }
   function persist(st) { try { var c = {}; for (var x in st) if (x[0] !== "_") c[x] = st[x]; localStorage.setItem(st._k, JSON.stringify(c)); } catch (e) {} }
 
-  var ui = { busy: false, typing: false };
+  var ui = { busy: false, typing: false, voice: true };
 
   /* учёт времени общения с чатом (секунды, копим и раз в 30с сохраняем) */
   var chatT = { iv: null, last: 0, pend: 0 };
@@ -313,7 +336,7 @@
     var info = CT("chatInfo");
     var stream = st.msgs.length ? st.msgs.map(function (m, i) { return msgHtml(m, i); }).join("") : emptyChat();
     body.innerHTML = info + '<div class="lxa-chat"><div class="lxa-chathead"><span class="lxa-dot"></span><b>Lexi</b><small id="lxaStatus">' + CT("online") + '</small></div><div class="lxa-stream" id="lxaStream">' + stream + "</div>" +
-      '<div class="lxa-input"><textarea id="lxaIn" placeholder="' + CT("phInput") + '" rows="1"></textarea><button class="lxa-send" id="lxaSend" aria-label="' + CT("ariaSend") + '">' + ic("send") + "</button></div>" +
+      '<div class="lxa-input"><textarea id="lxaIn" placeholder="' + CT("phInput") + '" rows="1"></textarea><button class="lxa-spk" id="lxaVoice" aria-pressed="true">🔊</button><button class="lxa-mic" id="lxaMic" aria-label="' + V("micOn") + '" title="' + V("micOn") + '">' + ic("mic") + '</button><button class="lxa-send" id="lxaSend" aria-label="' + CT("ariaSend") + '">' + ic("send") + "</button></div>" +
       '<div class="lxa-tools"><span class="lxa-hint">' + CT("hintEnter") + '</span><button class="lxa-reset" id="lxaReset">' + ic("x") + " " + CT("reset") + "</button></div></div>";
     sc(stream); var box = $("#lxaStream", body); if (box) box.scrollTop = box.scrollHeight;
     wireChat(body, st, level);
@@ -342,6 +365,26 @@
     inp.addEventListener("input", autoGrow);
     send.addEventListener("click", go);
     inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); go(); } });
+
+    /* --- голос: озвучка ответов + микрофонный ввод --- */
+    var spkBtn = $("#lxaVoice", body), micBtn = $("#lxaMic", body);
+    ui.voice = ui.voice !== false;
+    function paintVoice() { if (spkBtn) { spkBtn.textContent = ui.voice ? "🔊" : "🔇"; spkBtn.setAttribute("aria-pressed", ui.voice ? "true" : "false"); spkBtn.title = ui.voice ? V("speakOn") : V("speakOff"); } }
+    paintVoice();
+    if (spkBtn) spkBtn.addEventListener("click", function () { ui.voice = !ui.voice; if (!ui.voice) stopSpeak(); paintVoice(); toast(ui.voice ? V("speakOn") : V("speakOff")); });
+    var SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR || !micBtn) { if (micBtn) micBtn.style.display = "none"; }
+    else {
+      var rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      var listening = false, finalTxt = "";
+      function setRec(on) { listening = on; if (micBtn) micBtn.classList.toggle("rec", on); if (!on) { var s = $("#lxaStatus", body); if (s) s.textContent = CT("online"); } }
+      micBtn.addEventListener("click", function () { if (listening) { try { rec.stop(); } catch (e) {} return; } finalTxt = ""; try { rec.start(); } catch (e) {} });
+      rec.onstart = function () { setRec(true); var s = $("#lxaStatus", body); if (s) s.textContent = V("listening"); toast(V("listening")); };
+      rec.onend = function () { setRec(false); var t = finalTxt.trim(); if (t) { inp.value = ((inp.value || "").trim() + " " + t).trim(); autoGrow(); ui.voice = true; paintVoice(); go(); } };
+      rec.onerror = function () { setRec(false); };
+      rec.onresult = function (e) { finalTxt = ""; for (var i = 0; i < e.results.length; i++) finalTxt += e.results[i][0].transcript + " "; };
+    }
+
     function go() {
       var text = (inp.value || "").trim(); if (!text || ui.busy) return;
       ui.busy = true; inp.value = ""; autoGrow();
@@ -352,7 +395,7 @@
       call({ mode: "chat", level: level, messages: st.msgs }).then(function (d) {
         ui.busy = false; hideTyping();
         if (d && d.grammar) { var c = { role: "check", correct: d.grammar.correct, explanation: d.grammar.explanation, corrected: d.grammar.corrected }; st.msgs.push(c); appendMsg(c); }
-        if (d && d.reply) { var a = { role: "assistant", content: d.reply }; st.msgs.push(a); appendMsg(a); }
+        if (d && d.reply) { var a = { role: "assistant", content: d.reply }; st.msgs.push(a); appendMsg(a); if (ui.voice) speakText(d.reply); }
         persist(st);
       }).catch(function (err) {
         ui.busy = false; hideTyping();
