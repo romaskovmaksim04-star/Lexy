@@ -23,9 +23,10 @@
 <script src="lexy-ai.js?v=1"></script>
 <script src="lexy-chat.js?v=9"></script>
 <script src="lexy-ielts-data.js?v=1"></script>
-<link rel="stylesheet" href="lexy-face.css?v=3">
+<link rel="stylesheet" href="lexy-face.css?v=4">
 <script src="lexy-face.js?v=1"></script>
 <script src="lexy-home.js?v=1"></script>
+<script src="lexy-tests.js?v=1"></script>
 <script src="lexy-lexi.js?v=1"></script>
 <script src="lexy-live.js?v=1"></script>
 <link rel="stylesheet" href="lexy-dark.css?v=13">
@@ -187,6 +188,11 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
+  function testsMount() {
+    var el = $("#s-tests");
+    var data = { user: { focusSkill: "reading", format: "academic" }, attempts: [] };
+    if (window.LexiTests) window.LexiTests.mount(el, data); else el.innerHTML = "";
+  }
   function homeNew() {
     var u = Lexy.user, el = $("#s-home");
     var data = {
@@ -225,7 +231,7 @@
     }).join("");
     $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexi" : "Короткие ответы о Lexi") + "</p>" + items;
   }
-  Lexy.init("ielts", { render: { home: homeNew, tests: testsNew, stats: stats, ai: renderAi }, vocabGated: true });
+  Lexy.init("ielts", { render: { home: homeNew, tests: testsMount, stats: stats, ai: renderAi }, vocabGated: true });
 })();
 </script>
 <script src="lexy-theme.js?v=2"></script>
