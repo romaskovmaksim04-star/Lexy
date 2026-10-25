@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Главная — GoLexi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy-face.css?v=4">
+<style>
+:root{--font-unbounded:"Unbounded";--font-onest:"Onest"}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-onest),system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+</style>
+</head>
+<body>
+<main class="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10"><div id="root"></div></main>
+<script src="lexy-home.js?v=1"></script>
+<script>
+(function () {
+  function run() {
+    var el = document.getElementById("root");
+    if (!el || !window.LexiHome) return;
+    var email = null, db = {};
+    try { email = localStorage.getItem("lexy_session"); } catch (e) {}
+    try { db = JSON.parse(localStorage.getItem("lexy_db_v1") || "{}") || {}; } catch (e) { db = {}; }
+    var u = (email && (db[email] || db[String(email).toLowerCase()])) || {};
+    window.LexiHome.mount(el, {
+      user: {
+        name: u.name || "друг",
+        targetBand: u.target || 7,
+        focusSkill: "reading",
+        dailyMinutes: 30,
+        format: "academic",
+        examDate: u.examDate || null,
+        streak: 0,
+        lastActive: null,
+      },
+      attempts: [], dueWords: 0, talkedToday: false, recent: [], welcome: false,
+    });
+  }
+  if (document.readyState !== "loading") run(); else document.addEventListener("DOMContentLoaded", run);
+})();
+</script>
+</body>
+</html>
