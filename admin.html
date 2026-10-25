@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Админка — Lexi</title>
+<title>Админка — GoLexi</title>
 <link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,7 +88,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
 <body>
 <header class="top">
   <div class="bar">
-    <a class="logo" href="dashboard.html"><i></i>Lexi Admin</a>
+    <a class="logo" href="dashboard.html"><i></i>GoLexi Admin</a>
     <span class="who" id="who"></span>
     <a class="btn ghost mini" id="back" href="main.html">← На сайт</a>
   </div>
@@ -125,7 +125,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
       if(!u){ app.innerHTML='<div class="center"><h1>Нужен вход</h1><p class="sub">Войди под аккаунтом администратора.</p><a class="btn" href="login.html">Войти</a></div>'; return; }
       client().rpc('lexy_admin_me').then(function(res){
         ROLE = (res && res.data && res.data.role) || 'none';
-        if(ROLE==='none'){ app.innerHTML='<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для администраторов Lexi.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>'; return; }
+        if(ROLE==='none'){ app.innerHTML='<div class="center"><h1>Доступ запрещён</h1><p class="sub">Эта панель только для администраторов GoLexi.</p><a class="btn ghost" href="dashboard.html">В кабинет</a></div>'; return; }
         var rn = ROLE==='chief'?'Главный админ':ROLE==='admin'?'Админ':'Менеджер';
         who.textContent = (u.email||'')+' · '+rn;
         drawTabs(); loadAll();
@@ -235,7 +235,7 @@ select{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;font:6
     app.innerHTML =
       '<h1>Рассылка</h1><p class="sub">Напиши сообщение и выбери, кому отправить. Тем, кто выключил рассылку в профиле, письмо не уйдёт.</p>'+
       '<div class="block"><label class="lbl">Кому отправить</label><div class="seg" id="aud"><button data-a="all" class="on">Всем</button><button data-a="premium">С Premium</button><button data-a="free">Без Premium</button><button data-a="test">Тест мне</button></div><p class="sub" style="margin:10px 0 0" id="audc"></p></div>'+
-      '<div class="block"><label class="lbl">Тема письма</label><input class="q" id="subj" placeholder="Например: Новые слова в словаре Lexi 🎉"><div style="height:14px"></div><label class="lbl">Сообщение</label><textarea class="q" id="msg" placeholder="Текст письма…"></textarea><div class="row" style="margin-top:14px"><button class="btn" id="send">Отправить</button><span id="bres"></span></div></div>';
+      '<div class="block"><label class="lbl">Тема письма</label><input class="q" id="subj" placeholder="Например: Новые слова в словаре GoLexi 🎉"><div style="height:14px"></div><label class="lbl">Сообщение</label><textarea class="q" id="msg" placeholder="Текст письма…"></textarea><div class="row" style="margin-top:14px"><button class="btn" id="send">Отправить</button><span id="bres"></span></div></div>';
     function upd(){ var e=document.getElementById('audc'); if(e) e.textContent='Получателей: '+countAud(); }
     document.getElementById('aud').addEventListener('click',function(e){ var b=e.target.closest('[data-a]'); if(!b) return; AUD=b.dataset.a; this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);}); upd(); });
     upd();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title data-i18n="meta.title">Поддержка — Lexi</title>
+<title data-i18n="meta.title">Поддержка — GoLexi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
@@ -89,6 +89,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 .btn:hover{transform:translateY(-2px)}
 </style>
 <link rel="stylesheet" href="lexy-dark.css?v=13">
+<style id="x-clamp-fix">html,body{overflow-x:hidden}body{overflow-wrap:anywhere}</style>
 </head>
 <body>
 
@@ -101,7 +102,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 
 <header class="top">
   <div class="bar">
-    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>Lexi</a>
+    <a class="logo" href="main.html"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#logo-flame"/></svg>GoLexi</a>
     <a class="menu-btn" href="main.html"><svg><use href="#ic-home"/></svg><span data-i18n="btn.menu">Главное меню</span></a>
     <div class="lang-wrap" id="langWrap">
       <button class="lang-btn" id="langBtn"><span id="curFlag">🇷🇺</span><span id="curLang">RU</span><svg><use href="#ic-chev"/></svg></button>
@@ -172,7 +173,7 @@ h1{font:800 clamp(28px,5vw,42px)/1.15 var(--display);letter-spacing:-.03em;margi
 <script>
 var TRANSLATIONS = {
   ru: {
-    "meta.title":"Поддержка — Lexi",
+    "meta.title":"Поддержка — GoLexi",
     "btn.menu":"Главное меню",
     "hero.title":"Поддержка",
     "hero.sub":"Здесь собрано всё, что нужно, если что-то не работает: как связаться с живым человеком, как управлять подпиской и отменить её, как вернуть деньги и как удалить аккаунт.",
@@ -205,7 +206,7 @@ var TRANSLATIONS = {
     "cta.btn":"НАЧАТЬ ПОДГОТОВКУ →"
   },
   en: {
-    "meta.title":"Support — Lexi",
+    "meta.title":"Support — GoLexi",
     "btn.menu":"Main menu",
     "hero.title":"Support",
     "hero.sub":"Everything you need if something goes wrong: how to reach a real person, how to manage and cancel your subscription, how to get a refund, and how to delete your account.",
@@ -230,7 +231,7 @@ var TRANSLATIONS = {
     "faq.q2":"The microphone doesn't pick me up",
     "faq.a2":"Allow microphone access in your browser or phone settings (\"Privacy\" → \"Microphone\"), make sure the correct microphone is selected and turned on, then click \"Try again\". Don't let the screen go dark while answering — a locked or sleeping screen may interrupt the recording.",
     "faq.q3":"I didn't get the login link email",
-    "faq.a3":"The code and login link are valid for 10 minutes, the email comes from Lexi, and the code is at the start of the subject line — if you don't see it in your Inbox, check Spam. If there's still no email, click \"Send again\" or log in with Google on the website.",
+    "faq.a3":"The code and login link are valid for 10 minutes, the email comes from GoLexi, and the code is at the start of the subject line — if you don't see it in your Inbox, check Spam. If there's still no email, click \"Send again\" or log in with Google on the website.",
     "docs.title":"Documents",
     "docs.terms":"Terms of Use",
     "docs.privacy":"Privacy Policy",
@@ -238,7 +239,7 @@ var TRANSLATIONS = {
     "cta.btn":"START PREPARING →"
   },
   kz: {
-    "meta.title":"Қолдау — Lexi",
+    "meta.title":"Қолдау — GoLexi",
     "btn.menu":"Басты мәзір",
     "hero.title":"Қолдау",
     "hero.sub":"Бірдеңе дұрыс істемесе, қажет нәрсенің бәрі осында: тірі адаммен қалай байланысуға, жазылымды қалай басқаруға және тоқтатуға, ақшаны қалай қайтаруға және аккаунтты қалай жоюға болады.",
@@ -271,7 +272,7 @@ var TRANSLATIONS = {
     "cta.btn":"ДАЙЫНДЫҚТЫ БАСТАУ →"
   },
   uz: {
-    "meta.title":"Qo‘llab-quvvatlash — Lexi",
+    "meta.title":"Qo‘llab-quvvatlash — GoLexi",
     "btn.menu":"Asosiy menyu",
     "hero.title":"Qo‘llab-quvvatlash",
     "hero.sub":"Biror narsa ishlamasa, kerakli hamma narsa shu yerda: jonli inson bilan qanday bog‘lanish, obunani qanday boshqarish va bekor qilish, pulni qanday qaytarish va akkauntni qanday o‘chirish.",
@@ -296,7 +297,7 @@ var TRANSLATIONS = {
     "faq.q2":"Mikrofon meni eshitmayapti",
     "faq.a2":"Brauzer yoki telefon sozlamalarida mikrofonga ruxsat bering («Maxfiylik» → «Mikrofon»), kerakli mikrofon tanlanganini va u yoqilganligini tekshiring, so‘ng «Qayta urinish» tugmasini bosing. Javob berayotganda ekran o‘chishiga yo‘l qo‘ymang — qulflangan yoki o‘chgan ekran yozuvni to‘xtatishi mumkin.",
     "faq.q3":"Kirish havolasi bilan xat kelmadi",
-    "faq.a3":"Kirish kodi va havolasi 10 daqiqa amal qiladi, xat Lexydan keladi va kod xat mavzusining boshida turadi — agar «Kiruvchilar»da bo‘lmasa, «Spam»ni tekshiring. Agar xat hali ham bo‘lmasa, «Qayta yuborish» tugmasini bosing yoki saytda Google orqali kiring.",
+    "faq.a3":"Kirish kodi va havolasi 10 daqiqa amal qiladi, xat GoLexidan keladi va kod xat mavzusining boshida turadi — agar «Kiruvchilar»da bo‘lmasa, «Spam»ni tekshiring. Agar xat hali ham bo‘lmasa, «Qayta yuborish» tugmasini bosing yoki saytda Google orqali kiring.",
     "docs.title":"Hujjatlar",
     "docs.terms":"Foydalanish shartlari",
     "docs.privacy":"Maxfiylik siyosati",

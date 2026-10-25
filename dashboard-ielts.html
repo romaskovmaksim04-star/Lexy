@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lexi — Подготовка к IELTS</title>
+<title>GoLexi — Подготовка к IELTS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lexy.css?v=4">
 <script src="lexy-config.js?v=7"></script>
 <script src="lexy-auth.js?v=13"></script>
-<script src="lexy-core.js?v=35"></script>
+<script src="lexy-core.js?v=36"></script>
 <script src="lexy-pay.js?v=7"></script>
 <script src="lexy-content.js?v=1"></script>
 <script src="lexy-vocab-data.js?v=1"></script>
@@ -44,7 +44,7 @@
   <!-- СЛОВАРЬ: рисуется ядром; действия закрыты замком, пока нет Premium -->
   <section class="sec" id="s-vocab"></section>
 
-  <!-- LEXI AI: под замком -->
+  <!-- GOLEXI AI: под замком -->
   <section class="sec" id="s-ai">
     <div data-gate="ai"></div>
     <div data-pro="ai" hidden id="aiBox"></div>
@@ -225,13 +225,13 @@
         '</a>' +
         '<a href="lexi-chat.html" class="card flex items-center gap-4 p-5 transition hover:-translate-y-0.5" style="display:flex">' +
           '<span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-surface-2" style="font-size:22px">💬</span>' +
-          '<span class="flex-1"><span class="block font-bold">Чат Lexi и Writing</span><span class="text-sm text-muted">Текстовая практика и проверка эссе Writing с разбором</span></span>' +
+          '<span class="flex-1"><span class="block font-bold">Чат GoLexi и Writing</span><span class="text-sm text-muted">Текстовая практика и проверка эссе Writing с разбором</span></span>' +
           '<span style="font-size:20px">→</span>' +
         '</a>' +
       '</div>';
   }
   var FAQ = [
-    { q: { ru: "Как готовиться в Lexi?", en: "How do I prepare in Lexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
+    { q: { ru: "Как готовиться в GoLexi?", en: "How do I prepare in GoLexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
     { q: { ru: "Что открывает Premium?", en: "What does Premium unlock?" }, a: { ru: "Все задания (300+ попыток), Lexi AI, словарь с повторением, игры и детальная статистика.", en: "All tasks (300+ attempts), Lexi AI, the vocabulary with review, games and detailed statistics." } },
     { q: { ru: "Как проходит тест модуля?", en: "How does the module test work?" }, a: { ru: "14 вопросов (2 — аудирование), с таймером. 85% и выше — переход на уровень выше.", en: "14 questions (2 listening), with a timer. 85% or more unlocks the next level." } },
     { q: { ru: "Как оплатить и есть ли гарантия?", en: "Payment and guarantee?" }, a: { ru: "Оплата через Platega на странице тарифов (Premium, 30 дней). Двойная гарантия: не получишь прогресс — вернём деньги.", en: "Pay via Platega on the pricing page (Premium, 30 days). Double guarantee: no progress — we refund you." } },
@@ -243,7 +243,7 @@
     var items = FAQ.map(function (f, i) {
       return '<div class="card" style="margin-top:10px"><button data-faq="' + i + '" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0"><div style="flex:1;font-weight:700">' + (f.q[lang] || f.q.ru) + "</div>" + Lexy.ic("down") + '</button><div id="faq-' + i + '" hidden style="color:var(--soft);font-size:14px;line-height:1.65;margin-top:10px">' + (f.a[lang] || f.a.ru) + "</div></div>";
     }).join("");
-    $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about Lexi" : "Короткие ответы о Lexi") + "</p>" + items;
+    $("#s-faq").innerHTML = '<h1 class="t">' + (lang === "en" ? "FAQ" : "Вопросы") + '</h1><p class="s">' + (lang === "en" ? "Short answers about GoLexi" : "Короткие ответы о Lexi") + "</p>" + items;
   }
   Lexy.init("ielts", { render: { home: homeNew, tests: testsMount, stats: stats, ai: renderAi }, vocabGated: true });
 })();
