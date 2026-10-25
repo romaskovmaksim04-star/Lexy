@@ -59,6 +59,44 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .exlist>div,[data-theme="dark"] .readpass{border-left-color:var(--fire)!important}
 [data-theme="dark"] .hx,[data-theme="dark"] .pgh,[data-theme="dark"] .pfhero,[data-theme="dark"] .lxa-hero,[data-theme="dark"] .hero2{color:#fff}
 [data-theme="dark"] .tomato,[data-theme="dark"] .fire-bar{background:#2A1740!important}
+/* ===== личный кабинет / профиль ===== */
+[data-theme="dark"] .pfout{background:#1B1630!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .pfdz{background:#2A1A22!important;border-color:#5A2A2A!important;color:#F0C6C6!important}
+[data-theme="dark"] .pfdz p{color:#D8A6A6!important}
+[data-theme="dark"] .pfp{background:#1B1630!important;border-color:var(--line)!important}
+[data-theme="dark"] .pfp.on{background:linear-gradient(135deg,#2A1F3A,#241C3A)!important;border-color:var(--fire)!important}
+[data-theme="dark"] .pfp .tx b{color:var(--ink)!important}
+[data-theme="dark"] .pfp .tx small{color:var(--soft)!important}
+[data-theme="dark"] .pfrow .ic{background:#241E3B!important}
+[data-theme="dark"] .pfrow .nt{color:var(--soft)!important}
+[data-theme="dark"] .pfi h2,[data-theme="dark"] .pfi p{color:#fff}
+[data-theme="dark"] .pfpick-btn,[data-theme="dark"] .pfpick-menu{background:#1B1630!important}
+[data-theme="dark"] .pfpick-menu button{color:var(--ink)}
+[data-theme="dark"] .pfpick-menu button:hover{background:#2A1F3A}
+[data-theme="dark"] .pfsec>h3{color:var(--soft)}
+[data-theme="dark"] .pflang button{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] .pflang button.on{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+[data-theme="dark"] .pgtm>div{background:var(--card2)!important}
+/* ===== дашборд: общие карточки и панели ===== */
+[data-theme="dark"] .pcard,[data-theme="dark"] .pu .pcard,[data-theme="dark"] .card,[data-theme="dark"] .card.g,
+[data-theme="dark"] .ls,[data-theme="dark"] .stk,[data-theme="dark"] .vh,[data-theme="dark"] .dk,[data-theme="dark"] .wc,
+[data-theme="dark"] .srch,[data-theme="dark"] .tb,[data-theme="dark"] .sw,[data-theme="dark"] .ib,[data-theme="dark"] .rw,
+[data-theme="dark"] .dz,[data-theme="dark"] .lks,[data-theme="dark"] .lki,[data-theme="dark"] .skc,[data-theme="dark"] .ti,
+[data-theme="dark"] .tm,[data-theme="dark"] .wd div,[data-theme="dark"] .cp,[data-theme="dark"] .vtools,[data-theme="dark"] .vl,
+[data-theme="dark"] .player,[data-theme="dark"] .bhead,[data-theme="dark"] .qmeta,[data-theme="dark"] .promo,
+[data-theme="dark"] .pladd,[data-theme="dark"] .plitem,[data-theme="dark"] .emp,[data-theme="dark"] .block .bhead,
+[data-theme="dark"] .hrow,[data-theme="dark"] .taskrow,[data-theme="dark"] .skill,[data-theme="dark"] .drow,
+[data-theme="dark"] .tkans,[data-theme="dark"] .tkres
+{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .lg button{background:#241E3B!important;border-color:var(--line)!important;color:var(--soft)!important}
+[data-theme="dark"] .lg button.on{background:var(--ink)!important;color:#fff!important}
+[data-theme="dark"] .toast{background:#241E3B!important;color:var(--ink)!important;border-color:var(--line)}
+[data-theme="dark"] #mv .mb{background:#1B1630!important;color:var(--ink)!important}
+[data-theme="dark"] #mv .mb h2{color:var(--ink)}
+[data-theme="dark"] .emp .eb,[data-theme="dark"] .fc,[data-theme="dark"] .eb{filter:none}
+[data-theme="dark"] .prem{color:#fff}
+[data-theme="dark"] .side .bot .pr b,[data-theme="dark"] .side .bot .pr small{color:var(--ink)}
+
 /* ================= кнопка переключения темы ================= */
 .thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
 .thbtn:hover{transform:translateY(-2px);border-color:var(--fire)}
