@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexi — чат и Writing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lexy.css?v=4">
+<link rel="stylesheet" href="lexy-dark.css?v=13">
+<script src="lexy-config.js?v=7"></script>
+<script src="lexy-auth.js?v=11"></script>
+<script src="lexy-core.js?v=35"></script>
+<script src="lexy-chat.js?v=9"></script>
+</head>
+<body>
+<main style="max-width:920px;margin:0 auto;padding:20px">
+  <a href="dashboard-ielts.html" style="font-weight:700;font-size:13.5px;color:var(--soft)">← В кабинет</a>
+  <div id="chat-root" style="margin-top:16px"></div>
+</main>
+<script src="lexy-theme.js?v=2"></script>
+<script>
+(function () {
+  function m() {
+    var el = document.getElementById("chat-root");
+    if (!el || !window.LexyChat) return;
+    var lv = (window.Lexy && Lexy.user && Lexy.user.course && Lexy.user.course.level) || "B2";
+    LexyChat.render(el, { level: lv });
+  }
+  if (document.readyState !== "loading") m(); else document.addEventListener("DOMContentLoaded", m);
+})();
+</script>
+</body>
+</html>

@@ -185,22 +185,20 @@
   });
   $("#s-stats").addEventListener("change", function (e) { if (e.target.id === "fo") Lexy.save({ fullOnly: e.target.checked }); });
 
-  function aiCss() { if (document.getElementById("ai-two-css")) return; var s = document.createElement("style"); s.id = "ai-two-css"; s.textContent = ".ai-two{display:grid;gap:16px;margin-top:18px}@media(min-width:820px){.ai-two{grid-template-columns:1fr 1fr}}.ai-card{display:flex;gap:16px;background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:20px}.ai-card.live{background:linear-gradient(135deg,#7A2B3A,#2A1240);color:#fff;border:0}.ai-card .ai-em{font-size:30px;width:56px;height:56px;flex:none;border-radius:18px;display:grid;place-items:center;background:var(--mist)}.ai-card.live .ai-em{background:rgba(255,255,255,.14)}.ai-card h3{font:800 20px var(--display);margin-bottom:6px}.ai-card p{font-size:13.5px;line-height:1.6;color:var(--soft);max-width:48ch}.ai-card.live p{color:rgba(255,255,255,.85)}.ai-card.live .btn{background:#fff;color:#2A1240}"; document.head.appendChild(s); }
-  function openLiveCall(lv) { location.href = "lexi-app.html"; }
   function renderAi() {
-    var lv = (Lexy.user.course && Lexy.user.course.level) || "B2";
-    aiCss();
-    $("#aiBox").innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Два способа заниматься с Lexi</p>' +
-      '<div class="ai-two">' +
-        '<div class="ai-card live"><div class="ai-em">🎙️</div><div><h3>Живой разговор с Lexi</h3>' +
-          '<p>Настоящий голосовой звонок в реальном времени: Lexi слушает и отвечает голосом, поправляет ошибки прямо в разговоре, а после звонка даёт разбор. Характер и голос выбираешь сам.</p>' +
-          '<button class="btn p big" id="aiLive" style="margin-top:14px">Начать разговор</button></div></div>' +
-        '<div class="ai-card"><div class="ai-em">💬</div><div><h3>Чат Lexi и Writing</h3>' +
-          '<p>Текстовая практика: переписка с Lexi по твоему уровню и проверка эссе Writing с разбором по критериям IELTS.</p>' +
-          '<button class="btn big" id="aiChat" style="margin-top:14px">Открыть чат и письмо</button></div></div>' +
-      '</div><div id="aiChatBox" style="margin-top:18px"></div>';
-    $("#aiChat").addEventListener("click", function () { if (window.LexyChat) { LexyChat.render($("#aiChatBox"), { level: lv }); this.style.display = "none"; } });
-    $("#aiLive").addEventListener("click", function () { openLiveCall(lv); });
+    $("#aiBox").innerHTML = '<h1 class="t">Lexi AI</h1><p class="s">Выбери, как заниматься с Lexi</p>' +
+      '<div class="grid gap-4 mt-5" style="grid-template-columns:1fr;max-width:640px">' +
+        '<a href="lexi-app.html" class="relative overflow-hidden rounded-[2rem] p-6 text-[#1b1433] transition hover:-translate-y-0.5" style="background:linear-gradient(140deg, var(--fire-2), var(--fire));display:block">' +
+          '<p class="display text-xl font-bold">Поговори с Lexi</p>' +
+          '<p class="mt-1 max-w-[44ch] text-sm font-semibold">Живой голосовой разговор: Lexi слушает и отвечает голосом, поправляет ошибки на ходу, а после звонка пишет разбор по критериям IELTS.</p>' +
+          '<span class="mt-4 inline-flex items-center gap-1 text-sm font-bold">Начать разговор →</span>' +
+        '</a>' +
+        '<a href="lexi-chat.html" class="card flex items-center gap-4 p-5 transition hover:-translate-y-0.5" style="display:flex">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-surface-2" style="font-size:22px">💬</span>' +
+          '<span class="flex-1"><span class="block font-bold">Чат Lexi и Writing</span><span class="text-sm text-muted">Текстовая практика и проверка эссе Writing с разбором</span></span>' +
+          '<span style="font-size:20px">→</span>' +
+        '</a>' +
+      '</div>';
   }
   var FAQ = [
     { q: { ru: "Как готовиться в Lexi?", en: "How do I prepare in Lexi?" }, a: { ru: "Пробные тесты по 4 навыкам, замер уровня, статистика и план до экзамена. Пройди замер — откроются баллы и рекомендации.", en: "Mock tests across 4 skills, a level check, statistics and a plan to your exam. Do the check to unlock scores and tips." } },
