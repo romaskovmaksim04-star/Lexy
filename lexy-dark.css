@@ -97,6 +97,42 @@ html[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] .prem{color:#fff}
 [data-theme="dark"] .side .bot .pr b,[data-theme="dark"] .side .bot .pr small{color:var(--ink)}
 
+/* ===== словарь ===== */
+[data-theme="dark"] .lxv-lchip,[data-theme="dark"] .lxv-search,[data-theme="dark"] .lxv-row,
+[data-theme="dark"] .lxv-stat,[data-theme="dark"] .lxv-clr,[data-theme="dark"] .lxv-add,
+[data-theme="dark"] .lxv-sess .bar,[data-theme="dark"] .lxv-row .spk,[data-theme="dark"] .lxv-hint .lxv-mascot,
+[data-theme="dark"] .lxv-sess .top .lv{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .lxv-lchip em{background:#241E3B!important;color:var(--soft)!important}
+[data-theme="dark"] .lxv-lchip:hover{border-color:var(--fire)!important;color:var(--fire)!important}
+[data-theme="dark"] .lxv-lchip.on{color:#fff!important}
+[data-theme="dark"] .lxv-row:hover{border-color:#7a4a2a!important}
+[data-theme="dark"] .lxv-row .tx b{color:var(--ink)!important}
+[data-theme="dark"] .lxv-row .tx small{color:var(--soft)!important}
+[data-theme="dark"] .lxv-search input,[data-theme="dark"] .lxv-add input{background:transparent!important;color:var(--ink)!important}
+[data-theme="dark"] .lxv-search input::placeholder,[data-theme="dark"] .lxv-add input::placeholder{color:var(--soft)}
+[data-theme="dark"] .lxv-add{background:linear-gradient(135deg,#221C39,#241C3A)!important;border-color:var(--line)!important}
+[data-theme="dark"] .lxv-add b,[data-theme="dark"] .lxv-hint,[data-theme="dark"] .lxv-sess .top .cnt{color:var(--soft)!important}
+/* ===== чат / письмо ===== */
+[data-theme="dark"] .lxa-info{background:#221C39!important;border-color:#3A2B57!important}
+[data-theme="dark"] .lxa-info b{color:var(--ink)!important}
+[data-theme="dark"] .lxa-info ol,[data-theme="dark"] .lxa-info ul{color:var(--soft)}
+[data-theme="dark"] .lxa-info .ex{background:#181330!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .lxa-write .topic{background:linear-gradient(135deg,#241C3A,#221C39)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .lxa-fix{background:#181330!important;color:var(--ink)!important}
+/* ===== задания (test.html) ===== */
+[data-theme="dark"] .transcript{background:var(--card2)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .check{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}
+[data-theme="dark"] .hero2{background:linear-gradient(135deg,#1B1630,#221C39)!important;color:var(--ink)!important}
+[data-theme="dark"] .hero2 h2,[data-theme="dark"] .hero2 b{color:var(--ink)!important}
+[data-theme="dark"] .hero2 .mut,[data-theme="dark"] .hero2 .s{color:var(--soft)!important}
+[data-theme="dark"] .meta,[data-theme="dark"] .qmeta{color:var(--soft)!important}
+/* ===== путь: теория/советы ===== */
+[data-theme="dark"] .tsug{color:var(--fire)!important}
+[data-theme="dark"] .tmeta>div{background:var(--card2)!important;color:var(--ink)!important}
+[data-theme="dark"] .tmeta b{color:var(--ink)!important}
+[data-theme="dark"] .exlist>div{color:var(--ink)!important}
+[data-theme="dark"] .free,[data-theme="dark"] .readpg{color:var(--soft)!important}
+
 /* ================= кнопка переключения темы ================= */
 .thbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:14px;background:#fff;border:1.5px solid var(--line);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 10px 22px -16px rgba(27,20,51,.5);transition:transform .15s,border-color .15s,background .2s}
 .thbtn:hover{transform:translateY(-2px);border-color:var(--fire)}
