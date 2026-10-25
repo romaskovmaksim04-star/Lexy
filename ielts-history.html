@@ -14,7 +14,7 @@
 <body>
 <main class="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10">
   <div class="mb-6 flex items-center justify-between gap-3">
-    <h1 class="display text-3xl font-bold">История попыток</h1>
+    <h1 class="display text-2xl font-bold sm:text-3xl">История попыток</h1>
     <a href="dashboard-ielts.html#tests" class="btn btn-ghost btn-sm">← К тестам</a>
   </div>
   <div id="list" class="grid gap-3"></div>
@@ -36,20 +36,25 @@
   function render() {
     var el = document.getElementById("list");
     var u = (window.LexyAuth && LexyAuth.user && LexyAuth.user()) || null;
-    if (!u) { el.innerHTML = '<div class="card p-6"><p class="text-muted">Войди в аккаунт, чтобы увидеть историю.</p><a class="btn btn-fire mt-4" href="login.html">Войти</a></div>'; return; }
+    if (!u) { el.innerHTML = '<div class="card p-6"><p class="text-muted">Войди в аккаунт, чтобы увидеть историю.</p><a class="btn btn-fire mt-4 w-full sm:w-auto" href="login.html">Войти</a></div>'; return; }
     var att = Array.isArray(u.attempts) ? u.attempts.slice() : [];
     att.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
-    if (!att.length) { el.innerHTML = '<div class="card p-6"><p class="text-muted">Пока нет попыток. Пройди первый тест.</p><a class="btn btn-fire mt-4" href="dashboard-ielts.html#tests">К тестам</a></div>'; return; }
+    if (!att.length) { el.innerHTML = '<div class="card p-6"><p class="text-muted">Пока нет попыток. Пройди первый тест.</p><a class="btn btn-fire mt-4 w-full sm:w-auto" href="dashboard-ielts.html#tests">К тестам</a></div>'; return; }
     el.innerHTML = att.map(function (a) {
       var date = a.ts ? new Date(a.ts).toLocaleDateString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
-      var review = "";
-      try { if (sessionStorage.getItem("lexy-attempt-" + a.id)) review = '<a class="btn btn-ghost btn-sm" href="ielts-result.html#' + esc(a.id) + '">Разбор</a>'; } catch (e) {}
-      return '<div class="card flex flex-wrap items-center gap-4 p-5">' +
-        '<span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-fire-soft font-bold text-fire-text">' + esc(SEC[a.section] || "") + '</span>' +
-        '<div class="min-w-0 flex-1"><p class="font-bold">' + esc(titleOf(a.section, a.taskId)) + '</p><p class="text-sm text-muted">' + esc(SEC[a.section] || "") + ' · ' + esc(date) + '</p></div>' +
-        '<span class="display text-2xl font-extrabold">' + (Number(a.band) || 0).toFixed(1) + '</span>' +
-        '<div class="flex gap-2"><a class="btn btn-fire btn-sm" href="ielts-run.html#/' + esc(a.section) + '/' + esc(a.taskId) + '">Повторить</a>' + review + '</div>' +
-        '</div>';
+      var hasReview = false;
+      try { hasReview = !!sessionStorage.getItem("lexy-attempt-" + a.id); } catch (e) {}
+      var review = hasReview ? '<a class="btn btn-ghost btn-sm w-full sm:w-auto" href="ielts-result.html#' + esc(a.id) + '">Разбор</a>' : "";
+      return '<div class="card grid gap-3 p-4 sm:flex sm:items-center sm:gap-4 sm:p-5">' +
+        '<div class="flex min-w-0 items-center gap-3">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-fire-soft text-xs font-bold text-fire-text">' + esc(SEC[a.section] || "") + '</span>' +
+          '<div class="min-w-0 flex-1"><p class="truncate font-bold">' + esc(titleOf(a.section, a.taskId)) + '</p><p class="text-sm text-muted">' + esc(SEC[a.section] || "") + ' · ' + esc(date) + '</p></div>' +
+          '<span class="display text-2xl font-extrabold">' + (Number(a.band) || 0).toFixed(1) + '</span>' +
+        '</div>' +
+        '<div class="grid gap-2 ' + (review ? 'grid-cols-2' : 'grid-cols-1') + ' sm:flex sm:shrink-0">' +
+          '<a class="btn btn-fire btn-sm w-full sm:w-auto" href="ielts-run.html#/' + esc(a.section) + '/' + esc(a.taskId) + '">Повторить</a>' + review +
+        '</div>' +
+      '</div>';
     }).join("");
   }
   function boot() {
