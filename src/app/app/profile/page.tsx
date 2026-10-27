@@ -45,6 +45,7 @@ export default async function Profile() {
         <ProfileForm
           user={{
             name: user.name,
+            goal: user.goal,
             format: user.format,
             targetBand: user.targetBand,
             focusSkill: user.focusSkill,

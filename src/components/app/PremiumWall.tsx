@@ -6,13 +6,14 @@ import { isPremium } from "@/lib/access";
 // Without Premium only the games and the profile are open (Maks, 2026-10-25). Every other
 // cabinet page returns this wall instead of its content, so nothing of it reaches the browser.
 
-export type Locked = "tests" | "lexi" | "words" | "progress" | "home";
+export type Locked = "tests" | "course" | "lexi" | "words" | "progress" | "home";
 
 const TEXT: Record<Locked, { title: string; text: string }> = {
   tests: { title: "Пробные тесты IELTS", text: "Reading, Listening, Writing и Speaking в формате экзамена: проверка, разбор ошибок и прогноз балла." },
   lexi: { title: "Lexi — живой репетитор", text: "Разговор вслух с ИИ: Lexi исправляет ошибки, подсказывает произношение и пишет разбор после звонка." },
   words: { title: "Словарь", text: "Карточки с интервальным повторением: слова из твоих тестов возвращаются, когда начинаешь их забывать." },
   progress: { title: "Статистика", text: "Прогноз балла, слабые места и динамика по каждой секции." },
+  course: { title: "Курс английского A1–C1", text: "150 уроков: грамматика, слова, чтение и аудирование, тест в конце каждого уровня." },
   home: { title: "Твой план до экзамена", text: "Прогноз балла, план на каждый день и разговоры с Lexi." },
 };
 

@@ -21,7 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="min-h-[100dvh] lg:grid lg:grid-cols-[248px_1fr]">
       <aside className="sticky top-0 hidden h-[100dvh] flex-col border-r border-line bg-surface px-4 py-6 lg:flex">
         <Link href="/" className="px-3"><Logo /></Link>
-        <AppNav variant="side" premium={premium} />
+        <AppNav variant="side" premium={premium} goal={user.goal} />
         <div className="mt-auto flex items-center justify-between px-2">
           <Link href="/app/profile" className="flex min-w-0 items-center gap-3 rounded-2xl px-1 py-1.5 hover:bg-surface-2">
             <span className="grid size-9 shrink-0 place-items-center rounded-full bg-fire-soft text-sm font-bold text-fire-text">{user.name.slice(0, 1).toUpperCase()}</span>
@@ -47,7 +47,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 md:px-8 md:py-10">{children}</main>
       </div>
 
-      <AppNav variant="bottom" premium={premium} />
+      <AppNav variant="bottom" premium={premium} goal={user.goal} />
     </div>
   );
 }

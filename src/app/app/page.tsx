@@ -134,6 +134,11 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
         </section>
 
         <aside className="grid content-start gap-3">
+          <Link href="/app/course" className={`card flex items-center gap-4 p-5 transition hover:-translate-y-0.5 ${user.goal === "english" ? "border-2 border-fire" : ""}`}>
+            <span className="grid size-11 place-items-center rounded-2xl bg-fire-soft text-fire-text"><BookOpenText size={24} weight="duotone" /></span>
+            <span className="flex-1"><span className="block font-bold">Курс английского</span><span className="text-sm text-muted">Уровень {user.courseLevel} · 30 уроков с тестом в конце</span></span>
+            <ArrowRight size={18} />
+          </Link>
           <Link href="/app/lexi" className="relative overflow-hidden rounded-[2rem] p-6 text-[#1b1433] transition hover:-translate-y-0.5" style={{ background: "linear-gradient(140deg, var(--fire-2), var(--fire))" }}>
             <Mascot animated className="absolute -bottom-3 -right-2 w-24" />
             <p className="display text-xl font-bold">Поговори с Lexi</p>

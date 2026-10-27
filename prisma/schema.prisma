@@ -33,6 +33,7 @@ model User {
   lexiVoice    String    @default("")         // Gemini voice the user picked, "" = the character's own
   lexiLang     String    @default("mix")      // mix (talks Russian, practice in English) | en
   lexiSwear    Boolean   @default(false)      // profanity allowed in Lexi's replies
+  courseLevel  String    @default("A1")       // highest open level of the English course
   xp           Int       @default(0)
   streak       Int       @default(0)
   lastActive   String?   // YYYY-MM-DD of the last practice day, drives the streak
@@ -49,6 +50,7 @@ model User {
   words         UserWord[]
   conversations Conversation[]
   usage         Usage[]
+  lessons       LessonResult[]
   orders        Order[]
   tickets       Ticket[]
 }
@@ -117,6 +119,19 @@ model Conversation {
   endedAt   DateTime?
 
   @@index([userId, createdAt])
+}
+
+// English course: best result per lesson (lesson 0 = the level test)
+model LessonResult {
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level     String   // A1..C1
+  lesson    Int
+  right     Int
+  total     Int
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, level, lesson])
 }
 
 // Per-day counters for limits (Preppy seconds, AI checks)

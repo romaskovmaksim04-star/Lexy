@@ -20,6 +20,9 @@ import { timing, type TimedWord } from "@/lib/speech";
 import { spend } from "@/lib/access";
 import { signTts } from "@/lib/voice";
 import { safeNext } from "@/lib/safe-next";
+import { isLevel, lessonSteps, levelTest, nextLevel, score, LEVEL_PASS, PASS } from "@/lib/course/course";
+import { LEVELS } from "@/lib/course/types";
+import { profileOf, sendCode, supabaseOn, userFromToken, verifyCode } from "@/lib/supabase";
 import { esc, notifyOwners } from "@/lib/notify";
 import { drawWheel, SEGMENTS, wheelDiscount } from "@/lib/wheel";
 import { cookies } from "next/headers";
@@ -105,6 +108,50 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
   redirect(safeNext(String(form.get("next") ?? "")));
 }
 
+/** First step of the email-code sign-in: Supabase mails a 6-digit code. */
+export async function sendLoginCode(email: string): Promise<{ ok: boolean; error?: string }> {
+  const e = email.trim().toLowerCase();
+  if (!z.string().email().safeParse(e).success) return { ok: false, error: "Проверь email" };
+  if (!supabaseOn()) return { ok: false, error: "Вход по коду временно недоступен" };
+  const err = await sendCode(e);
+  return err ? { ok: false, error: err } : { ok: true };
+}
+
+export async function verifyLoginCode(email: string, code: string, next: string): Promise<{ error?: string }> {
+  const token = await verifyCode(email.trim().toLowerCase(), code.replace(/\D/g, ""));
+  if (!token) return { error: "Код не подошёл или устарел" };
+  return finishSupabaseLogin(token, next);
+}
+
+/** Google sign-in ends here: /auth/callback hands over the token from the URL hash. */
+export async function finishSupabaseLogin(token: string, next: string): Promise<{ error?: string }> {
+  const su = await userFromToken(token);
+  if (!su) return { error: "Не удалось войти. Попробуй ещё раз" };
+  const prof = await profileOf(su.id);
+  // Premium bought on Maks's site carries over; the later expiry wins
+  const until = prof && prof.plan !== "free" && prof.plan_expires_at ? new Date(prof.plan_expires_at) : null;
+  const paid = until && until > new Date() ? until : null;
+  let user = await db.user.findUnique({ where: { email: su.email } });
+  if (!user) {
+    const exam = prof?.exam_date ? new Date(prof.exam_date) : null;
+    user = await db.user.create({
+      data: {
+        email: su.email,
+        name: (prof?.name || su.name || su.email.split("@")[0]).slice(0, 60),
+        goal: prof?.path === "english" ? "english" : "ielts",
+        targetBand: prof?.target && prof.target >= 4 && prof.target <= 9 ? prof.target : 6.5,
+        examDate: exam && exam.getFullYear() >= 2025 ? exam : null,
+        ...(paid ? { plan: "pro", premiumUntil: paid } : {}),
+      },
+    });
+    notifyOwners(`новая регистрация (${su.google ? "Google" : "код на почту"}${prof ? ", перенос со старого сайта" : ""}): <b>${esc(user.name)}</b>${paid ? ", Premium сохранён" : ""}`);
+  } else if (paid && (!user.premiumUntil || user.premiumUntil < paid)) {
+    user = await db.user.update({ where: { id: user.id }, data: { plan: user.plan === "free" ? "pro" : user.plan, premiumUntil: paid } });
+  }
+  await startSession(user.id);
+  redirect(safeNext(next));
+}
+
 export async function logout() {
   await endSession();
   redirect("/");
@@ -118,6 +165,7 @@ async function me() {
 
 const settingsSchema = z.object({
   name: z.string().trim().min(1, "Имя не может быть пустым").max(40),
+  goal: z.enum(["ielts", "english"]),
   format: z.enum(["academic", "general"]),
   targetBand: z.coerce.number().min(4).max(9),
   focusSkill: z.enum(["listening", "reading", "writing", "speaking"]),
@@ -171,6 +219,44 @@ async function record(section: string, taskId: string, band: number, details: un
   });
   revalidatePath("/app", "layout");
   return attempt.id;
+}
+
+/** Scored questions of a lesson in page order, the same list the runner walks through. */
+function lessonQuestions(level: string, n: number) {
+  if (!isLevel(level)) return null;
+  if (n === 0) { const t = levelTest(level); return [...t.questions, ...t.listen.questions]; }
+  const steps = lessonSteps(level, n);
+  if (!steps.length) return null;
+  return steps.flatMap((s) => (s.kind === "quiz" || s.kind === "reading" || s.kind === "listening" ? s.questions : []));
+}
+
+/** Ends a course lesson (n >= 1) or the level test (n = 0); keeps the best result. */
+export async function finishLesson(level: string, n: number, answers: (number | null)[]): Promise<{ right: number; total: number; passed: boolean; unlocked?: string }> {
+  const user = await me();
+  const qs = lessonQuestions(level, n);
+  if (!qs || !isLevel(level)) throw new Error("Unknown lesson");
+  const { right, total } = score(qs, answers.slice(0, qs.length));
+  const passed = right >= Math.ceil(total * (n === 0 ? LEVEL_PASS : PASS));
+  const key = { userId_level_lesson: { userId: user.id, level, lesson: n } };
+  const old = await db.lessonResult.findUnique({ where: key });
+  if (!old || right > old.right) await db.lessonResult.upsert({ where: key, create: { userId: user.id, level, lesson: n, right, total }, update: { right, total } });
+  // Passing a level test opens the next level
+  const up = n === 0 && passed ? nextLevel(level) : null;
+  const unlocked = up && LEVELS.indexOf(up) > LEVELS.indexOf(user.courseLevel as never) ? up : undefined;
+  await db.user.update({
+    where: { id: user.id },
+    data: { xp: { increment: 5 + right }, streak: nextStreak(user.streak, user.lastActive), lastActive: todayKey(), ...(unlocked ? { courseLevel: unlocked } : {}) },
+  });
+  revalidatePath("/app", "layout");
+  return { right, total, passed, unlocked };
+}
+
+/** The level the student starts from (placement by their own choice). */
+export async function setCourseLevel(level: string) {
+  const user = await me();
+  if (!isLevel(level)) return;
+  await db.user.update({ where: { id: user.id }, data: { courseLevel: level } });
+  revalidatePath("/app/course");
 }
 
 /** Reading and listening are scored on the server from the raw answers. */

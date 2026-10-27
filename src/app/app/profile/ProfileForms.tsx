@@ -5,7 +5,7 @@ import { Check, Copy } from "@phosphor-icons/react";
 import { deleteAccount, updateProfile, type FormState } from "@/app/actions";
 import { BANDS, SKILLS, SKILL_RU } from "@/lib/profile";
 
-type U = { name: string; format: string; targetBand: number; focusSkill: string; dailyMinutes: number; examDate: string; emailOptIn: boolean };
+type U = { name: string; goal: string; format: string; targetBand: number; focusSkill: string; dailyMinutes: number; examDate: string; emailOptIn: boolean };
 
 const MINUTES = [15, 30, 60, 120];
 
@@ -23,6 +23,13 @@ export function ProfileForm({ user }: { user: U }) {
         <label htmlFor="p-date" className="label">Дата экзамена</label>
         <input id="p-date" name="examDate" type="date" min={today} max={max} defaultValue={user.examDate} className="field" />
         <p className="text-xs text-muted">По дате план подбирает темп и показывает, успеваешь ли ты.</p>
+      </div>
+      <div className="grid gap-2">
+        <label htmlFor="p-goal" className="label">Для чего ты используешь GoLexi</label>
+        <select id="p-goal" name="goal" defaultValue={user.goal} className="field">
+          <option value="ielts">Подготовка к IELTS</option>
+          <option value="english">Разговорный английский</option>
+        </select>
       </div>
       <div className="grid gap-2">
         <label htmlFor="p-format" className="label">Формат IELTS</label>
