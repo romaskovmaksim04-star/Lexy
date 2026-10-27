@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Fire, SpeakerHigh, Translate } from "@phosphor-icons/react";
+import { ArrowRight, ChatCircleText, Fire, SpeakerHigh, Translate } from "@phosphor-icons/react";
 import { Mascot } from "@/components/ui/Mascot";
 import { playVoice, unlockAudio } from "@/components/app/voice-client";
 import { lexiSample } from "@/app/actions";
 import { LexiCall, type CallSetup } from "./LexiCall";
 import { LexiLive } from "./LexiLive";
+import { LexiChat } from "./LexiChat";
 
 // The Lexi page: pick a character and how Lexi talks, then the call (LexiLive, or LexiCall
 // when the live call is not available). No topic and no voice to choose: Lexi has one voice,
@@ -28,7 +29,7 @@ export function LexiRoom({
   const [lang, setLang] = useState(prefs.lang);
   const [swear, setSwear] = useState(prefs.swear);
   // "call" is the live call; "step" the step-by-step one it falls back to
-  const [phase, setPhase] = useState<"pick" | "call" | "step" | "rest">(secondsLeft > 0 ? "pick" : "rest");
+  const [phase, setPhase] = useState<"pick" | "call" | "step" | "chat" | "rest">(secondsLeft > 0 ? "pick" : "rest");
   const [setup, setSetup] = useState<CallSetup | null>(null);
 
   const p = personas.find((x) => x.id === persona)!;
@@ -56,6 +57,9 @@ export function LexiRoom({
 
   if (phase === "call" && setup) {
     return <LexiLive setup={setup} title={title} onLimit={() => setPhase("rest")} onFallback={() => setPhase("step")} />;
+  }
+  if (phase === "chat" && setup) {
+    return <LexiChat setup={setup} title={title} onLimit={() => setPhase("rest")} />;
   }
   if (phase === "step" && setup) {
     return <LexiCall setup={setup} title={title} onLimit={() => setPhase("rest")} />;
@@ -127,6 +131,9 @@ export function LexiRoom({
       <div className="flex flex-wrap items-center gap-4">
         <button onClick={begin} className="btn btn-fire px-7 py-4 text-base">
           Позвонить Lexi <ArrowRight size={18} weight="bold" />
+        </button>
+        <button onClick={() => { setSetup({ persona, topic: "auto", voice: "", lang, swear }); setPhase("chat"); }} className="btn btn-ghost px-7 py-4 text-base">
+          <ChatCircleText size={18} weight="bold" /> Написать в чат
         </button>
         <p className="text-sm text-muted">Осталось сегодня: {Math.floor(secondsLeft / 60)} мин · {p.name}</p>
       </div>

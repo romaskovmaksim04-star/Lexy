@@ -1,5 +1,7 @@
 // Core IELTS vocabulary with Russian translations, grouped by topic.
 
+import { VOCAB, VOCAB_LEVELS, type VocabLevel } from "./vocab.ts";
+
 export type Word = { id: string; en: string; ru: string; ipa: string; example: string; topic: string };
 
 const raw: [string, string, string, string, string][] = [
@@ -65,3 +67,12 @@ export const WORDS: Word[] = raw.map(([en, ru, ipa, example, topic]) => ({
 }));
 
 export const WORD_TOPICS = [...new Set(WORDS.map((w) => w.topic))];
+
+// Level decks from the big word bank; ids start with "v-" so they never clash with the topics above
+
+export type LevelWord = { id: string; en: string; ru: string; level: VocabLevel };
+const curated = new Set(WORDS.map((w) => w.en.toLowerCase()));
+export const LEVEL_WORDS: Record<VocabLevel, LevelWord[]> = Object.fromEntries(
+  VOCAB_LEVELS.map((lv) => [lv, VOCAB[lv].filter(([en]) => !curated.has(en.toLowerCase())).map(([en, ru]) => ({ id: "v-" + en.toLowerCase().replace(/\s+/g, "-"), en, ru, level: lv }))]),
+) as Record<VocabLevel, LevelWord[]>;
+export const LEVEL_WORD_BY_ID = new Map(VOCAB_LEVELS.flatMap((lv) => LEVEL_WORDS[lv].map((w) => [w.id, w] as const)));

@@ -58,7 +58,7 @@ function Highlighted({ text, fix }: { text: string; fix?: Fix | null }) {
   );
 }
 
-async function readStream(res: Response, on: (e: Record<string, unknown>) => void) {
+export async function readStream(res: Response, on: (e: Record<string, unknown>) => void) {
   const reader = res.body!.getReader();
   const dec = new TextDecoder();
   let buf = "";

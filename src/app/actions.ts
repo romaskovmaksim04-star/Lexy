@@ -12,7 +12,7 @@ import { getReading } from "@/lib/content/reading";
 import { getListening } from "@/lib/content/listening";
 import { getSpeaking, getWriting } from "@/lib/content/prompts";
 import { allQuestions, isCorrect } from "@/lib/content/types";
-import { WORDS } from "@/lib/content/words";
+import { LEVEL_WORD_BY_ID, WORDS } from "@/lib/content/words";
 import { review, type Grade } from "@/lib/srs";
 import { nextStreak, todayKey } from "@/lib/profile";
 import { stillHas } from "@/lib/grammar";
@@ -392,7 +392,7 @@ export async function removeWord(id: string) {
 /** Starts learning built-in words: puts them into the review queue. */
 export async function learnWords(ids: string[]) {
   const user = await me();
-  const valid = ids.filter((id) => WORDS.some((w) => w.id === id)).slice(0, 50);
+  const valid = ids.filter((id) => WORDS.some((w) => w.id === id) || LEVEL_WORD_BY_ID.has(id)).slice(0, 50);
   for (const wordId of valid) {
     await db.card.upsert({
       where: { userId_wordId: { userId: user.id, wordId } },

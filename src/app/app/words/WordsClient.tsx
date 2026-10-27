@@ -116,8 +116,8 @@ function Session({ cards, onDone }: { cards: StudyCard[]; onDone: (n: number) =>
 }
 
 export function WordsClient({
-  due, decks, own, stats, nextReview,
-}: { due: StudyCard[]; decks: Deck[]; own: Own[]; stats: { total: number; learned: number; due: number }; nextReview: string | null }) {
+  due, decks, levels, own, stats, nextReview,
+}: { due: StudyCard[]; decks: Deck[]; levels: Deck[]; own: Own[]; stats: { total: number; learned: number; due: number }; nextReview: string | null }) {
   const router = useRouter();
   const [studying, setStudying] = useState(false);
   const [finished, setFinished] = useState<number | null>(null);
@@ -194,6 +194,30 @@ export function WordsClient({
                 <button disabled={full || pending} onClick={() => start(async () => { await learnWords(d.ids); router.refresh(); })}
                   className={`btn btn-sm mt-auto ${full ? "btn-ghost" : "btn-ink"}`}>
                   {full ? <><Check size={16} weight="bold" /> В повторении</> : <><Star size={16} weight="fill" /> Учить колоду</>}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="display text-xl font-bold">Слова по уровням</h2>
+        <p className="mt-1 text-sm text-muted">Около 9700 слов от A1 до C2. Каждое нажатие добавляет в повторение следующие 20.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {levels.map((d) => {
+            const full = d.added >= d.total;
+            return (
+              <div key={d.topic} className="card flex flex-col gap-3 p-5">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="display text-lg font-bold">{d.topic}</p>
+                  <span className="chip">{d.added}/{d.total}</span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-surface-2"><div className="h-full rounded-full bg-fire" style={{ width: `${(d.added / Math.max(1, d.total)) * 100}%` }} /></div>
+                {!full && <p className="text-sm text-muted">Дальше: {d.sample.join(", ")}…</p>}
+                <button disabled={full || pending} onClick={() => start(async () => { await learnWords(d.ids); router.refresh(); })}
+                  className={`btn btn-sm mt-auto ${full ? "btn-ghost" : "btn-ink"}`}>
+                  {full ? <><Check size={16} weight="bold" /> Все слова в повторении</> : <><Star size={16} weight="fill" /> +{d.ids.length} слов</>}
                 </button>
               </div>
             );
