@@ -183,3 +183,13 @@ model Cost {
 
   @@id([day, purpose])
 }
+
+// A notice from the admin panel, shown on top of the cabinet until the student closes it
+model Notice {
+  id        String   @id @default(cuid())
+  text      String
+  link      String   @default("")
+  audience  String   @default("all") // all | free | premium
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

@@ -15,6 +15,8 @@ export function Footer() {
         <div className="grid content-start gap-3 text-sm">
           <p className="font-semibold">Бесплатно</p>
           <Link href="/tools/band" className="text-muted hover:text-ink">Калькулятор балла IELTS</Link>
+          <Link href="/guides" className="text-muted hover:text-ink">Гайды по IELTS</Link>
+          <Link href="/universities" className="text-muted hover:text-ink">Требования вузов</Link>
           <Link href="/#try" className="text-muted hover:text-ink">Проверка фразы</Link>
           <Link href="/quiz" className="text-muted hover:text-ink">Тест на персональный план</Link>
         </div>

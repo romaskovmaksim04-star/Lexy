@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const LINKS = [
   { href: "/games", label: "Игры" },
+  { href: "/guides", label: "Гайды" },
   { href: "/#lexi", label: "Lexi" },
   { href: "/#platform", label: "Платформа" },
   { href: "/pricing", label: "Тарифы" },
