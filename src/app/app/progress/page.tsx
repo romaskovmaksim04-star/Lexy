@@ -7,6 +7,7 @@ import { formatBand } from "@/lib/band";
 import { SKILLS, SKILL_RU, liveStreak, type Skill } from "@/lib/profile";
 import { activity, criteriaAverages, predicted, readiness, sectionBands, speakingAverages, topMistakes, trends } from "@/lib/insights";
 import { ActivityGrid, TrendChart } from "@/components/app/TrendChart";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Прогресс" };
 
@@ -20,6 +21,8 @@ const READY_TEXT = {
 } as const;
 
 export default async function Progress() {
+  const wall = await premiumGate("progress");
+  if (wall) return wall;
   const user = (await currentUser())!;
   const [rows, convs, cards] = await Promise.all([
     db.attempt.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 400, select: { section: true, band: true, createdAt: true, details: true, taskId: true } }),

@@ -127,7 +127,7 @@ MOODS = {
     "strict": "Sound strict and demanding.",
     "teasing": "Sound teasing and ironic.",
     "encouraging": "Sound encouraging and supportive.",
-    "angry": "Sound furious and exasperated, ranting loudly, but comic.",
+    "angry": "Sound genuinely furious: loud, fast and sharp, biting every word, real anger in the voice.",
     "shocked": "Sound completely shocked and stunned.",
     "disappointed": "Sound deeply disappointed, with a heavy sigh.",
     "proud": "Sound proud and moved.",

@@ -25,6 +25,7 @@ import { ChartView } from "@/components/app/ChartView";
 import { PendingRefresh } from "@/components/app/PendingRefresh";
 import { examinerPending } from "@/app/actions";
 import type { Examiner } from "@/lib/examiner";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Результат" };
 
@@ -172,6 +173,8 @@ function reviewed(questions: Question[], answers: Record<string, string>): Revie
 }
 
 export default async function Result({ params }: { params: Promise<{ id: string }> }) {
+  const wall = await premiumGate("tests");
+  if (wall) return wall;
   const { id } = await params;
   const user = (await currentUser())!;
   const a = await db.attempt.findFirst({ where: { id, userId: user.id } });

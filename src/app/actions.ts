@@ -24,7 +24,7 @@ import { esc, notifyOwners } from "@/lib/notify";
 import { drawWheel, SEGMENTS, wheelDiscount } from "@/lib/wheel";
 import { cookies } from "next/headers";
 import { persona as personaById } from "@/lib/preppy/personas";
-import { GEMINI_VOICE_IDS } from "@/lib/voices";
+import { LEXI_VOICE } from "@/lib/voices";
 import { finishConversation, writeReview, type StoredReview } from "@/lib/lexi-server";
 import { examineAttempt } from "@/lib/examiner-server";
 import { llmEnabled } from "@/lib/llm";
@@ -321,11 +321,10 @@ export async function learnWords(ids: string[]) {
 // The call itself streams through /api/lexi; these are the pieces around it.
 
 /** A signed sample of a character in a voice, for the picker (voiced once, then cached). */
-export async function lexiSample(personaId: string, voiceId: string): Promise<string> {
+export async function lexiSample(personaId: string): Promise<string> {
   await me();
   const p = personaById(personaId);
-  const v = GEMINI_VOICE_IDS.has(voiceId) ? voiceId : p.voice;
-  return signTts(p.sample, `g:${v}`, { style: p.id, mood: p.id === "roast" ? "dramatic" : "warm" });
+  return signTts(p.sample, `g:${LEXI_VOICE}`, { style: p.id, mood: p.id === "roast" ? "dramatic" : "warm" });
 }
 
 /** Ends a call: the review page opens at once, Lexi's written review follows in seconds. */

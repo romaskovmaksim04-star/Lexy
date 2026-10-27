@@ -4,11 +4,10 @@ import { ArrowRight, ChatsCircle } from "@phosphor-icons/react/dist/ssr";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { remaining } from "@/lib/access";
-import { GEMINI_VOICES } from "@/lib/voices";
 import { PERSONA_LIST } from "@/lib/preppy/personas";
-import { TOPICS } from "@/lib/preppy/topics";
 import { topicFor } from "@/lib/preppy/lexi";
 import { LexiRoom } from "./LexiRoom";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Lexi" };
 
@@ -21,18 +20,19 @@ function ago(d: Date) {
 }
 
 export default async function LexiPage() {
+  const wall = await premiumGate("lexi");
+  if (wall) return wall;
   const user = (await currentUser())!;
   const [left, recent] = await Promise.all([
     remaining(user, "preppy_seconds"),
     db.conversation.findMany({ where: { userId: user.id, endedAt: { not: null } }, orderBy: { createdAt: "desc" }, take: 4 }),
   ]);
   const personas = PERSONA_LIST.map((p) => ({ id: p.id, name: p.name, tagline: p.tagline, sample: p.sample, voice: p.voice }));
-  const prefs = { voice: user.lexiVoice, lang: user.lexiLang === "en" ? ("en" as const) : ("mix" as const), swear: user.lexiSwear };
-  const topics = TOPICS.map((t) => ({ id: t.id, title: t.title }));
+  const prefs = { lang: user.lexiLang === "en" ? ("en" as const) : ("mix" as const), swear: user.lexiSwear };
 
   return (
     <div className="grid gap-10">
-      <LexiRoom personas={personas} voices={GEMINI_VOICES} topics={topics} initialPersona={user.persona} prefs={prefs} secondsLeft={left} />
+      <LexiRoom personas={personas} initialPersona={user.persona} prefs={prefs} secondsLeft={left} />
 
       <section>
         <div className="flex items-end justify-between gap-4">

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { catalogFor } from "@/lib/catalog";
 import { SKILLS, type Skill } from "@/lib/profile";
 import { formatBand } from "@/lib/band";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Тесты" };
 
@@ -17,6 +18,8 @@ const TABS: Record<Skill, { label: string; icon: typeof Headphones; about: strin
 };
 
 export default async function Tests({ searchParams }: { searchParams: Promise<{ skill?: string }> }) {
+  const wall = await premiumGate("tests");
+  if (wall) return wall;
   const user = (await currentUser())!;
   const { skill: raw } = await searchParams;
   const skill: Skill = SKILLS.includes(raw as Skill) ? (raw as Skill) : (user.focusSkill as Skill);

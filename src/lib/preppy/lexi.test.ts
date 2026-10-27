@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chatMessages, clean, openingMessages, isFinal, marksFor, parseTagged, parseTurn, readMood, SayStream, speechParts, studentLine, systemPrompt, type LexiSettings } from "./lexi.ts";
+import { chatMessages, clean, liveOpening, openingMessages, isFinal, progressFrom, marksFor, parseTagged, pickFlavor, parseTurn, readMood, SayStream, speechParts, studentLine, swearReminder, systemPrompt, type LexiSettings } from "./lexi.ts";
 import { parseReview, speechStats } from "./lexi-review.ts";
 import { customTopic, cleanTopicTitle } from "./topics.ts";
 
@@ -151,4 +151,64 @@ test("mood tags inside the speech mark where the face changes, and are never spo
   const parts = [...s.push(raw).parts, ...s.finish().parts];
   const all = parts.flatMap((part) => marksFor(part, s.marks()).map(([i, m]) => `${m}@${part.slice(i, i + 5)}`));
   assert.deepEqual(all, ["shocked@Целые", "teasing@Ну ты"]);
+});
+
+test("each call gets its own length, mood of the day, style and questions", () => {
+  const seen = new Set<string>();
+  for (let i = 0; i < 40; i++) {
+    const f = pickFlavor(6);
+    assert.ok(f.turns >= 8 && f.turns <= 15);
+    assert.ok(f.questions.length >= 3 && f.questions.length <= 5);
+    assert.deepEqual(f.questions, [...f.questions].sort((a, b) => a - b));
+    assert.equal(new Set(f.questions).size, f.questions.length);
+    seen.add(f.style);
+  }
+  assert.ok(seen.size > 3);
+  assert.deepEqual(pickFlavor(0).questions, []);
+  const s: LexiSettings = { persona: "roast", lang: "mix", swear: true, name: "Костя", band: 6.5, flavor: { turns: 9, day: "You're tired.", style: "Debate: argue.", questions: [0] } };
+  const p = systemPrompt(s, "weekend");
+  assert.match(p, /THIS CALL\nYou're tired\.\nHow you run it: Debate: argue\./);
+  assert.match(p, /After about 9 student answers/);
+  assert.equal(isFinal({ say: "ok", end: false }, 12, 9), true);
+  assert.equal(isFinal({ say: "ok", end: false }, 12), false);
+});
+
+test("an angry Lexi is reminded to let the мат out", () => {
+  const s: LexiSettings = { persona: "roast", lang: "mix", swear: true, name: "", band: 6 };
+  assert.match(swearReminder(s, "angry")!, /worked up/);
+  assert.doesNotMatch(swearReminder(s, "warm")!, /worked up/);
+  assert.equal(swearReminder({ ...s, swear: false }, "angry"), null);
+});
+
+test("the live prompt talks in functions, not tags", () => {
+  const live = systemPrompt(base, "music", true);
+  assert.match(live, /report_bug/);
+  assert.match(live, /end_call/);
+  assert.match(live, /You hear the student yourself/);
+  assert.doesNotMatch(live, /<say>|<mood>|<end\/>|also heard as/);
+  // the step-by-step prompt is unchanged
+  assert.match(systemPrompt(base, "music"), /<say>what you say out loud<\/say>/);
+  // with profanity on the reminder goes at the end (no turn-by-turn messages in a live call)
+  assert.match(systemPrompt({ ...base, swear: true }, "music", true), /Profanity is ON: two or three real мат words/);
+  assert.match(liveOpening(), /^\(System:/);
+});
+
+test("progress from earlier reviews is short and newest first", () => {
+  const p = progressFrom([
+    { topic: "Выходные", day: "24 октября", bands: { overall: 5.5, fluency: 5, lexical: 5.5, grammar: 5 }, work: ["Past Simple"], mistakes: [{ wrong: "I am agree", right: "I agree" }] },
+    { topic: "Музыка", day: "23 октября" },
+  ]);
+  assert.match(p, /^- 24 октября, «Выходные»; band ≈ 5.5 \(fluency 5, vocabulary 5.5, grammar 5\); work on: Past Simple; mistakes: I am agree → I agree/);
+  assert.match(p, /\n- 23 октября, «Музыка»$/);
+  assert.ok(progressFrom(Array.from({ length: 50 }, () => ({ topic: "x".repeat(80), day: "1 мая" }))).length <= 1300);
+});
+
+test("a call without a topic is led by Lexi from the student's progress", () => {
+  const s = { ...base, auto: true, progress: "- 24 октября, «Выходные»; band ≈ 5.5" };
+  const prompt = systemPrompt(s, "music", true);
+  assert.match(prompt, /did not pick a topic: you lead/);
+  assert.match(prompt, /THEIR PROGRESS/);
+  // the language rule closes the live prompt
+  assert.match(prompt, /LANGUAGE CHECK before every reply: your reaction, jokes and explanations are in RUSSIAN/);
+  assert.match(systemPrompt({ ...base, lang: "en" }, "music", true), /LANGUAGE CHECK before every reply: English only\.$/);
 });

@@ -2,50 +2,41 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Fire, PencilSimple, SpeakerHigh, Translate } from "@phosphor-icons/react";
+import { ArrowRight, Fire, SpeakerHigh, Translate } from "@phosphor-icons/react";
 import { Mascot } from "@/components/ui/Mascot";
 import { playVoice, unlockAudio } from "@/components/app/voice-client";
 import { lexiSample } from "@/app/actions";
 import { LexiCall, type CallSetup } from "./LexiCall";
+import { LexiLive } from "./LexiLive";
 
-// The Lexi page: pick a character, a voice and a topic, then the call (LexiCall).
+// The Lexi page: pick a character and how Lexi talks, then the call (LexiLive, or LexiCall
+// when the live call is not available). No topic and no voice to choose: Lexi has one voice,
+// and she leads the conversation from where the student left off.
 
 type PersonaCard = { id: string; name: string; tagline: string; sample: string; voice: string };
-type VoiceCard = { id: string; hint: string; female: boolean };
-export type LexiPrefs = { voice: string; lang: "mix" | "en"; swear: boolean };
+export type LexiPrefs = { lang: "mix" | "en"; swear: boolean };
 
 export function LexiRoom({
-  personas, voices, topics, initialPersona, prefs, secondsLeft,
+  personas, initialPersona, prefs, secondsLeft,
 }: {
   personas: PersonaCard[];
-  voices: VoiceCard[];
-  topics: { id: string; title: string }[];
   initialPersona: string;
   prefs: LexiPrefs;
   secondsLeft: number;
 }) {
   const [persona, setPersona] = useState(personas.some((p) => p.id === initialPersona) ? initialPersona : personas[0].id);
-  const [topic, setTopic] = useState(topics[0].id);
-  const [customTitle, setCustomTitle] = useState("");
-  const [voice, setVoice] = useState(prefs.voice); // "" = the character's own voice
   const [lang, setLang] = useState(prefs.lang);
   const [swear, setSwear] = useState(prefs.swear);
-  const [phase, setPhase] = useState<"pick" | "call" | "rest">(secondsLeft > 0 ? "pick" : "rest");
+  // "call" is the live call; "step" the step-by-step one it falls back to
+  const [phase, setPhase] = useState<"pick" | "call" | "step" | "rest">(secondsLeft > 0 ? "pick" : "rest");
   const [setup, setSetup] = useState<CallSetup | null>(null);
-  const [notice, setNotice] = useState("");
 
   const p = personas.find((x) => x.id === persona)!;
-  const custom = topic === "custom";
-  const title = custom ? customTitle.trim() || "своя тема" : topics.find((t) => t.id === topic)?.title ?? "";
+  const title = p.name;
 
   const begin = () => {
-    if (custom && customTitle.trim().length < 2) {
-      setNotice("Напиши, о чём хочешь поговорить.");
-      return;
-    }
     unlockAudio(); // inside the click, so the browser allows Lexi's voice
-    setNotice("");
-    setSetup({ persona, topic, topicTitle: custom ? customTitle.trim() : undefined, voice, lang, swear });
+    setSetup({ persona, topic: "auto", voice: "", lang, swear });
     setPhase("call");
   };
 
@@ -64,16 +55,19 @@ export function LexiRoom({
   }
 
   if (phase === "call" && setup) {
+    return <LexiLive setup={setup} title={title} onLimit={() => setPhase("rest")} onFallback={() => setPhase("step")} />;
+  }
+  if (phase === "step" && setup) {
     return <LexiCall setup={setup} title={title} onLimit={() => setPhase("rest")} />;
   }
 
-  const sample = async (personaId: string, voiceId: string) => playVoice(await lexiSample(personaId, voiceId));
+  const sample = async (personaId: string) => playVoice(await lexiSample(personaId));
 
   return (
     <div className="grid gap-8">
       <div>
         <h1 className="display text-3xl font-bold md:text-4xl">Поговори с Lexi</h1>
-        <p className="mt-2 max-w-[60ch] text-muted">Звонок с живым репетитором: говоришь вслух, Lexi слушает, реагирует, поправляет ошибки на ходу, а в конце пишет разбор по критериям IELTS.</p>
+        <p className="mt-2 max-w-[60ch] text-muted">Звонок с живым репетитором: говоришь вслух, Lexi слушает, реагирует, поправляет ошибки на ходу, а в конце пишет разбор по критериям IELTS. Тему выбирать не нужно: Lexi помнит прошлые разговоры и продолжит с того места, где вы остановились.</p>
       </div>
 
       <fieldset>
@@ -91,7 +85,7 @@ export function LexiRoom({
                 </span>
                 <button
                   type="button"
-                  onClick={(e) => { e.preventDefault(); unlockAudio(); sample(x.id, voice || x.voice); }}
+                  onClick={(e) => { e.preventDefault(); unlockAudio(); sample(x.id); }}
                   className="grid size-10 shrink-0 place-items-center self-start rounded-full bg-surface-2 text-ink transition hover:bg-fire-soft hover:text-fire-text"
                   aria-label={`Послушать: ${x.name}`}
                 >
@@ -103,32 +97,7 @@ export function LexiRoom({
         </div>
       </fieldset>
 
-      <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <fieldset>
-          <legend className="label">Голос</legend>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setVoice("")}
-              aria-pressed={voice === ""}
-              className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${voice === "" ? "border-fire bg-fire-soft text-fire-text" : "border-line bg-surface text-muted hover:text-ink"}`}
-            >
-              Голос характера
-            </button>
-            {voices.map((v) => (
-              <span key={v.id} className={`inline-flex items-center rounded-full border text-sm font-semibold transition ${voice === v.id ? "border-fire bg-fire-soft text-fire-text" : "border-line bg-surface text-muted hover:text-ink"}`}>
-                <button type="button" onClick={() => { setVoice(v.id); unlockAudio(); sample(persona, v.id); }} aria-pressed={voice === v.id} className="py-2 pl-4 pr-2">
-                  {v.female ? "♀" : "♂"} {v.hint}
-                </button>
-                <button type="button" onClick={() => { unlockAudio(); sample(persona, v.id); }} className="grid size-8 place-items-center rounded-full pr-1 hover:text-fire-text" aria-label={`Послушать голос ${v.hint}`}>
-                  <SpeakerHigh size={15} weight="fill" />
-                </button>
-              </span>
-            ))}
-          </div>
-        </fieldset>
-
-        <div className="grid content-start gap-4">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
           <fieldset>
             <legend className="label">Как говорит Lexi</legend>
             <div className="mt-3 grid grid-cols-2 gap-2">
@@ -153,48 +122,7 @@ export function LexiRoom({
             </span>
             <input type="checkbox" checked={swear} onChange={(e) => setSwear(e.target.checked)} className="size-5 shrink-0 accent-[var(--fire)]" />
           </label>
-        </div>
       </div>
-
-      <fieldset>
-        <legend className="label">Тема</legend>
-        <div className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-          {topics.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setTopic(t.id)}
-              aria-pressed={t.id === topic}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${t.id === topic ? "border-fire bg-fire-soft text-fire-text" : "border-line bg-surface text-muted hover:text-ink"}`}
-            >
-              {t.title}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => setTopic("custom")}
-            aria-pressed={custom}
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border border-dashed px-4 py-2 text-sm font-semibold transition ${custom ? "border-fire bg-fire-soft text-fire-text" : "border-line bg-surface text-muted hover:text-ink"}`}
-          >
-            <PencilSimple size={15} /> Своя тема
-          </button>
-        </div>
-        {custom && (
-          <div className="mt-3 max-w-xl">
-            <label htmlFor="custom-topic" className="sr-only">Своя тема</label>
-            <input
-              id="custom-topic"
-              value={customTitle}
-              onChange={(e) => setCustomTitle(e.target.value)}
-              maxLength={80}
-              autoFocus
-              placeholder="Например: Dota 2, переезд в Германию, моя кошка"
-              className="field"
-            />
-            <p className="mt-1.5 text-xs text-muted">О чём угодно: Lexi сама придумает вопросы от простых к сложным, как на экзамене.</p>
-          </div>
-        )}
-      </fieldset>
 
       <div className="flex flex-wrap items-center gap-4">
         <button onClick={begin} className="btn btn-fire px-7 py-4 text-base">
@@ -202,7 +130,6 @@ export function LexiRoom({
         </button>
         <p className="text-sm text-muted">Осталось сегодня: {Math.floor(secondsLeft / 60)} мин · {p.name}</p>
       </div>
-      {notice && <p role="alert" className="text-sm font-semibold text-bad">{notice}</p>}
     </div>
   );
 }

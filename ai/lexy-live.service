@@ -1,0 +1,15 @@
+[Unit]
+Description=Lexy live calls (Gemini Live relay, WebRTC + WebSocket)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/lexy/ai
+EnvironmentFile=/opt/lexy/ai/.env
+ExecStart=/opt/lexy/ai/venv/bin/python live.py
+Restart=always
+RestartSec=2
+# Real-time audio: normal CPU priority (the speech service runs at Nice 10), little memory
+MemoryMax=800M
+
+[Install]
+WantedBy=multi-user.target

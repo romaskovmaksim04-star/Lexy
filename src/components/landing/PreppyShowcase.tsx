@@ -22,8 +22,6 @@ const DIALOGUE: Record<string, { you: string; follow: string }> = {
   roast: { you: "I learn only beautiful words, ugly words I don't learn.", follow: "Is this IELTS or a dating app? Every word gets a chance. Now: what word scares you most?" },
   bro: { you: "My friends and me goes to the gym every day.", follow: "Respect. What's your favourite exercise?" },
   drama: { you: "Yesterday I have watched a very sad film.", follow: "Tell me everything. Did you cry?" },
-  tsundere: { you: "I am agree with you about the homework.", follow: "It's \"I agree\". Not that I care. Why do you agree?" },
-  yandere: { you: "Yesterday I study with another app.", follow: "Another app? Hm~ It's \"I studied\". Tell me what you learned. With me."},
 };
 
 export function PreppyShowcase({ personas, signedIn }: { personas: P[]; signedIn: boolean }) {

@@ -13,6 +13,7 @@ import { AddWordButton } from "@/components/app/AddWordButton";
 import { Mascot } from "@/components/ui/Mascot";
 import { PendingRefresh } from "@/components/app/PendingRefresh";
 import { reviewPending } from "@/app/actions";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Разбор разговора" };
 
@@ -27,6 +28,8 @@ const CRITERIA = [
 ] as const;
 
 export default async function ReviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const wall = await premiumGate("lexi");
+  if (wall) return wall;
   const { id } = await params;
   const user = (await currentUser())!;
   const conv = await db.conversation.findFirst({ where: { id, userId: user.id } });

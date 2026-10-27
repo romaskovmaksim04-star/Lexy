@@ -4,11 +4,13 @@ import { db } from "./db";
 import { signTts } from "./voice";
 import { chat, llmEnabled } from "./llm";
 import { nextStreak, todayKey } from "./profile";
-import { GEMINI_VOICES, GEMINI_VOICE_IDS, type Mood } from "./voices";
+import { GEMINI_VOICES, GEMINI_VOICE_IDS, LEXI_VOICE, type Mood } from "./voices";
 import { persona as personaById } from "./preppy/personas";
 import * as engine from "./preppy/engine";
-import { speechParts, topicFor, type LexiSettings } from "./preppy/lexi";
+import { memoryFrom, pickFlavor, progressFrom, speechParts, topicFor, type LexiSettings, type PastCall } from "./preppy/lexi";
 import { parseReview, reviewMessages, speechStats, type LexiReview } from "./preppy/lexi-review";
+import { cleanTopicTitle, TOPICS } from "./preppy/topics";
+import type { PersonaId } from "./preppy/personas";
 
 // Server side of a call with Lexi, shared by the streaming route and the server actions.
 // Internal names keep "preppy" (database rows, quota keys); everything the user sees is Lexi.
@@ -19,10 +21,9 @@ export type StoredReview = engine.Review & { llm?: LexiReview; llmState?: "pendi
 
 type Prefs = Pick<User, "persona" | "lexiLang" | "lexiSwear" | "lexiVoice" | "name" | "targetBand">;
 
-/** The Gemini voice for this user and character, and whether it is a woman's voice. */
-export function voiceFor(user: Pick<User, "lexiVoice">, personaId: string): { voice: string; female: boolean } {
-  const id = GEMINI_VOICE_IDS.has(user.lexiVoice) ? user.lexiVoice : personaById(personaId).voice;
-  return { voice: `g:${id}`, female: GEMINI_VOICES.find((v) => v.id === id)?.female ?? true };
+/** Lexi's voice and whether it is a woman's: one voice for every user and character. */
+export function voiceFor(): { voice: string; female: boolean } {
+  return { voice: `g:${LEXI_VOICE}`, female: GEMINI_VOICES.find((v) => v.id === LEXI_VOICE)?.female ?? true };
 }
 
 export function settingsFor(user: Prefs, personaId: string, topicTitle?: string): LexiSettings {
@@ -32,9 +33,72 @@ export function settingsFor(user: Prefs, personaId: string, topicTitle?: string)
     swear: user.lexiSwear,
     name: user.name.split(/\s+/)[0] ?? "",
     band: user.targetBand,
-    female: voiceFor(user, personaId).female,
+    female: voiceFor().female,
     topicTitle,
   };
+}
+
+export type CallStart = { persona: PersonaId; topic: string; topicTitle?: string; voice: string; lang: "mix" | "en"; swear: boolean };
+
+/** A topic for a call where the student picked none: one not talked about for the longest time. */
+function nextTopic(recent: string[]): string {
+  const fresh = TOPICS.filter((t) => !recent.includes(t.id));
+  const pool = fresh.length ? fresh : TOPICS;
+  return pool[Math.floor(Math.random() * Math.min(pool.length, 4))].id;
+}
+
+/** The progress Lexi should know: what the reviews of the last calls found. */
+function pastCalls(calls: { topic: string; state: string; review: string | null; createdAt: Date }[]): PastCall[] {
+  return calls.flatMap((c) => {
+    if (!c.review) return [];
+    const r = JSON.parse(c.review) as StoredReview;
+    const title = topicFor(c.topic, (JSON.parse(c.state) as ConvState).topicTitle).title;
+    const day = c.createdAt.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+    return [{
+      topic: title,
+      day,
+      bands: r.llm?.bands,
+      work: r.llm?.work ?? r.toWork,
+      mistakes: (r.llm?.mistakes ?? r.fixes)?.map((m) => ({ wrong: m.wrong, right: m.right })),
+    }];
+  });
+}
+
+/**
+ * Opens a call: the picker's choices become the user's defaults, and the conversation is
+ * stored with how this call goes (character, memory of earlier calls and the progress their
+ * reviews found, flavour, voice). Topic "auto": Lexi leads, on a topic not done lately.
+ */
+export async function openConversation(user: Pick<User, "id">, o: CallStart) {
+  const recent = await db.conversation.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+    select: { topic: true, turns: true, state: true, review: true, createdAt: true },
+  });
+  const auto = o.topic === "auto";
+  const custom = o.topic === "custom" ? cleanTopicTitle(o.topicTitle ?? "") : "";
+  const topicId = custom ? "custom" : auto ? nextTopic(recent.map((c) => c.topic)) : (TOPICS.find((t) => t.id === o.topic) ?? TOPICS[0]).id;
+  const prefs = await db.user.update({
+    where: { id: user.id },
+    data: { persona: o.persona, lexiVoice: GEMINI_VOICE_IDS.has(o.voice) ? o.voice : "", lexiLang: o.lang, lexiSwear: o.swear },
+  });
+  const memory = memoryFrom(recent.slice(0, 2).map((c) => ({ topic: c.topic, turns: JSON.parse(c.turns) as engine.Turn[] })));
+  const progress = progressFrom(pastCalls(recent.filter((c) => c.review).slice(0, 5)));
+  const flavor = pickFlavor(custom ? 0 : (TOPICS.find((t) => t.id === topicId)?.questions.length ?? 0));
+  const settings: LexiSettings = {
+    ...settingsFor(prefs, o.persona, custom || undefined),
+    memory: memory || undefined,
+    progress: progress || undefined,
+    auto: auto || undefined,
+    flavor,
+  };
+  const { voice } = voiceFor();
+  const scripted = engine.start(o.persona, topicId, undefined, custom || undefined);
+  const conv = await db.conversation.create({
+    data: { userId: user.id, persona: o.persona, topic: topicId, turns: "[]", state: JSON.stringify({ ...scripted.state, lexi: settings, voice } satisfies ConvState) },
+  });
+  return { conv, settings, voice, topicId, scripted };
 }
 
 export function signPart(text: string, voice: string, personaId: string, mood: Mood): string {

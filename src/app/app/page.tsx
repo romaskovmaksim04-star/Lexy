@@ -8,6 +8,9 @@ import { buildPlan, type PlanTask } from "@/lib/plan";
 import { predicted, sectionBands } from "@/lib/insights";
 import { catalogItem } from "@/lib/catalog";
 import { Mascot } from "@/components/ui/Mascot";
+import { GameTiles } from "@/components/games/GameCards";
+import { PremiumCard } from "@/components/app/PremiumWall";
+import { isPremium } from "@/lib/access";
 
 const ICON: Record<PlanTask["kind"], typeof Headphones> = {
   listening: Headphones, reading: BookOpenText, writing: PencilLine, speaking: Microphone, words: CardsThree, preppy: ChatsCircle,
@@ -63,7 +66,7 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
   const diagnostic = plan.some((t) => t.diagnostic);
   const gap = pred.band !== null ? Math.max(0, user.targetBand - pred.band) : null;
 
-  return (
+  const body = (
     <div className="grid gap-6">
       {welcome && (
         <div className="relative overflow-hidden rounded-[2rem] bg-fire p-6 text-[#1b1433] md:p-8">
@@ -158,6 +161,22 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
             ) : <p className="mt-2 text-sm text-muted">Пробных тестов пока нет. Начни с первого задания плана.</p>}
           </section>
         </aside>
+      </div>
+    </div>
+  );
+  if (isPremium(user)) return body;
+
+  // Free: the games work, the rest of the page shows through a blur under the Premium card
+  return (
+    <div className="grid gap-6">
+      <section>
+        <h1 className="display text-3xl font-bold md:text-4xl">Привет, {user.name}!</h1>
+        <p className="mt-1 text-muted">Игры открыты бесплатно. Тесты, Lexi, словарь и статистика — в Premium.</p>
+        <div className="mt-5"><GameTiles /></div>
+      </section>
+      <div className="relative">
+        <div aria-hidden className="pointer-events-none max-h-[640px] select-none overflow-hidden opacity-70 blur-[6px]">{body}</div>
+        <div className="absolute inset-0 flex items-start justify-center pt-8"><PremiumCard section="home" /></div>
       </div>
     </div>
   );

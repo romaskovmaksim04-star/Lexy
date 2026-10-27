@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getSpeaking } from "@/lib/content/prompts";
 import { signTts } from "@/lib/voice";
 import { SpeakingRunner } from "./SpeakingRunner";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Speaking" };
 
@@ -13,6 +14,8 @@ const INTRO: Record<1 | 2 | 3, string> = {
 };
 
 export default async function SpeakingPage({ params }: { params: Promise<{ id: string }> }) {
+  const wall = await premiumGate("tests");
+  if (wall) return wall;
   const task = getSpeaking((await params).id);
   if (!task) notFound();
   const questions = task.questions.map((q, i) => {

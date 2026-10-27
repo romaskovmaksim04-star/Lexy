@@ -4,12 +4,11 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { remaining, spend } from "@/lib/access";
 import { chatStream, llmEnabled } from "@/lib/llm";
-import { GEMINI_VOICE_IDS, type Mood } from "@/lib/voices";
-import { persona as personaById, type PersonaId } from "@/lib/preppy/personas";
-import { cleanTopicTitle, TOPICS } from "@/lib/preppy/topics";
+import type { Mood } from "@/lib/voices";
+import type { PersonaId } from "@/lib/preppy/personas";
 import * as engine from "@/lib/preppy/engine";
-import { chatMessages, isFinal, marksFor, memoryFrom, openingMessages, SayStream, type Parsed } from "@/lib/preppy/lexi";
-import { fillers, finishConversation, nudge, settingsFor, signPart, signReply, voiceFor, writeReview, type ConvState } from "@/lib/lexi-server";
+import { chatMessages, isFinal, marksFor, openingMessages, SayStream, type Parsed } from "@/lib/preppy/lexi";
+import { fillers, finishConversation, nudge, openConversation, settingsFor, signPart, signReply, voiceFor, writeReview, type ConvState } from "@/lib/lexi-server";
 import { reportBug } from "@/lib/bug-report";
 
 // A call with Lexi, one request per line, answered as a stream of JSON lines:
@@ -24,7 +23,7 @@ export const dynamic = "force-dynamic";
 
 const startSchema = z.object({
   start: z.object({
-    persona: z.enum(["classic", "strict", "kind", "sarcastic", "roast", "bro", "drama", "tsundere", "yandere"]),
+    persona: z.enum(["classic", "strict", "kind", "sarcastic", "roast", "bro", "drama"]),
     topic: z.string().max(40),
     topicTitle: z.string().max(200).optional(),
     voice: z.string().max(40),
@@ -148,21 +147,7 @@ export async function POST(req: Request) {
   if (start.success) {
     const o = start.data.start;
     if ((await remaining(user, "preppy_seconds")) <= 0) return Response.json({ error: "limit" }, { status: 429 });
-    const custom = o.topic === "custom" ? cleanTopicTitle(o.topicTitle ?? "") : "";
-    const topicId = custom ? "custom" : (TOPICS.find((t) => t.id === o.topic) ?? TOPICS[0]).id;
-    // The picker's choices become the user's defaults
-    const prefs = await db.user.update({
-      where: { id: user.id },
-      data: { persona: o.persona, lexiVoice: GEMINI_VOICE_IDS.has(o.voice) ? o.voice : "", lexiLang: o.lang, lexiSwear: o.swear },
-    });
-    const earlier = await db.conversation.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 2, select: { topic: true, turns: true } });
-    const memory = memoryFrom(earlier.map((c) => ({ topic: c.topic, turns: JSON.parse(c.turns) as engine.Turn[] })));
-    const settings = { ...settingsFor(prefs, o.persona, custom || undefined), memory: memory || undefined };
-    const { voice } = voiceFor(prefs, o.persona);
-    const scripted = engine.start(o.persona, topicId, undefined, custom || undefined);
-    const conv = await db.conversation.create({
-      data: { userId: user.id, persona: o.persona, topic: topicId, turns: "[]", state: JSON.stringify({ ...scripted.state, lexi: settings, voice } satisfies ConvState) },
-    });
+    const { conv, settings, voice, topicId, scripted } = await openConversation(user, o);
     return stream(async (send, signal) => {
       send({ t: "call", id: conv.id, female: settings.female, fillers: fillers(settings, voice), nudge: nudge(settings, voice) });
       const out = await speak(send, signal, openingMessages(settings, topicId), "", voice, o.persona, () => ({ reply: scripted.reply }));
@@ -197,7 +182,7 @@ export async function POST(req: Request) {
   const personaId = conv.persona as PersonaId;
   const state = JSON.parse(conv.state) as ConvState;
   const settings = state.lexi ?? settingsFor(user, personaId);
-  const voice = state.voice ?? voiceFor(user, personaId).voice;
+  const voice = state.voice ?? voiceFor().voice;
   const answer = o.text.trim().slice(0, 3000);
   const turns = JSON.parse(conv.turns) as engine.Turn[];
   if (o.interrupted) {
@@ -215,7 +200,7 @@ export async function POST(req: Request) {
       () => ({ reply: scripted.reply, fix: scripted.fix, done: scripted.done }));
     if (signal.aborted) return; // the student kept talking: this line never happened
     const studentTurns = turns.filter((t) => t.role === "user").length + 1;
-    const final = isFinal({ say: out.reply, end: out.end }, studentTurns);
+    const final = isFinal({ say: out.reply, end: out.end }, studentTurns, settings.flavor?.turns);
     if (out.bug) {
       const recent = [...turns, userTurn].slice(-6).map((t) => `${t.role === "user" ? "👤" : "🔥"} ${t.text}`).join("\n");
       reportBug({ where: "call", summary: out.bug, who: user.email, context: recent,

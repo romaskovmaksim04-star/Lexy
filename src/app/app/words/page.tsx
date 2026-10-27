@@ -4,10 +4,13 @@ import { db } from "@/lib/db";
 import { WORDS, WORD_TOPICS } from "@/lib/content/words";
 import { signTts } from "@/lib/voice";
 import { WordsClient, type StudyCard } from "./WordsClient";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export const metadata: Metadata = { title: "Словарь" };
 
 export default async function WordsPage() {
+  const wall = await premiumGate("words");
+  if (wall) return wall;
   const user = (await currentUser())!;
   const [cards, own] = await Promise.all([
     db.card.findMany({ where: { userId: user.id }, orderBy: { due: "asc" } }),

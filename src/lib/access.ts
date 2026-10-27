@@ -10,9 +10,10 @@ export type Quota = "preppy_seconds" | "speech_checks" | "essay_checks";
 // Lexi is counted in seconds of the student's own speech. Each of those minutes is about six
 // lines of Lexi, roughly 0.9 ₽ of voice and model (measured 2026-10-23), hence the limits.
 const LIMITS: Record<Quota, { free: number; pro: number; proplus: number }> = {
-  preppy_seconds: { free: 3 * 60, pro: 30 * 60, proplus: 60 * 60 },
-  speech_checks: { free: 3, pro: 40, proplus: 80 },
-  essay_checks: { free: 2, pro: 15, proplus: 30 },
+  // Free = games only (Maks, 2026-10-25), so nothing paid is left for free users
+  preppy_seconds: { free: 0, pro: 30 * 60, proplus: 60 * 60 },
+  speech_checks: { free: 0, pro: 40, proplus: 80 },
+  essay_checks: { free: 0, pro: 15, proplus: 30 },
 };
 
 export function openBeta(): boolean {

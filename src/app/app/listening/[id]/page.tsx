@@ -4,6 +4,7 @@ import { getListening } from "@/lib/content/listening";
 import { stripAnswers } from "@/lib/content/public";
 import { signTts, type Voice } from "@/lib/voice";
 import { ListeningRunner } from "./ListeningRunner";
+import { premiumGate } from "@/components/app/PremiumWall";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const test = getListening((await params).id);
@@ -11,6 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function ListeningPage({ params }: { params: Promise<{ id: string }> }) {
+  const wall = await premiumGate("tests");
+  if (wall) return wall;
   const test = getListening((await params).id);
   if (!test) notFound();
   const lines = test.script.map((l) => {

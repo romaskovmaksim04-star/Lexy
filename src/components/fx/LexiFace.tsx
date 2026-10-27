@@ -23,6 +23,94 @@ import type { Mood } from "@/lib/voices";
 
 export type FaceMode = "idle" | "hearing" | "thinking" | "speaking";
 
+// The face is an 8-bit LED matrix (owners, 2026-10-24: "simpler, more 8-bit"): the same
+// expression numbers as before, drawn as pixels on a 32 x 16 grid behind the glass instead of
+// the openlura engine. Set to false to bring the smooth face back.
+const PIXEL_FACE = true;
+const PW = 32;
+const PH = 16;
+
+type PixelFace = {
+  openL: number; openR: number; // eye opening with blinks, 0..1+
+  happy: boolean; // ^ ^ eyes
+  lid: number; lidAngle: number; wide: number;
+  gx: number; gy: number; // gaze
+  mouthOpen: number; talking: boolean;
+  mw: number; mcl: number; mcr: number; mb: number; round: boolean;
+  color: string;
+};
+
+/** Is this cell of the grid behind the glass (the visor is a capsule)? */
+function inVisor(x: number, y: number): boolean {
+  const r = PH / 2;
+  const cx = x < r ? r : x >= PW - r ? PW - r : x + 0.5;
+  return (x + 0.5 - cx) ** 2 + (y + 0.5 - r) ** 2 <= r * r;
+}
+
+function drawPixels(ctx: CanvasRenderingContext2D, f: PixelFace) {
+  ctx.clearRect(0, 0, PW, PH);
+  // the unlit LEDs, faintly
+  ctx.fillStyle = f.color;
+  ctx.globalAlpha = 0.1;
+  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) if (inVisor(x, y)) ctx.fillRect(x, y, 1, 1);
+  ctx.globalAlpha = 1;
+  const px = (x: number, y: number) => { if (x >= 0 && x < PW && y >= 0 && y < PH && inVisor(x, y)) ctx.fillRect(x, y, 1, 1); };
+  const dx = Math.round(f.gx * 1.5);
+  const dy = Math.round(f.gy * 1.2);
+
+  // eyes: 4 x 6 blocks (5 x 7 when wide), ^ when happy, cut by the lid, slanted by its angle
+  const eye = (x0: number, open: number, inner: 1 | -1) => {
+    if (f.happy) {
+      const x = x0 + dx;
+      const y = 5 + dy;
+      px(x + 1, y); px(x + 2, y);
+      px(x, y + 1); px(x + 3, y + 1);
+      px(x - 1, y + 2); px(x + 4, y + 2);
+      return;
+    }
+    const w = f.wide > 1.08 ? 5 : 4;
+    const h = Math.max(1, Math.min(8, Math.round(6 * open * f.wide)));
+    const left = x0 + dx - (w === 5 && inner === 1 ? 1 : 0); // a wide eye grows outwards
+    const top = Math.round(6.5 - h / 2) + dy;
+    const lidRows = Math.round(Math.max(0, f.lid) * h * 0.85);
+    for (let r = 0; r < h; r++) {
+      for (let c = 0; c < w; c++) {
+        if (h >= 4 && (r === 0 || r === h - 1) && (c === 0 || c === w - 1)) continue; // round corners
+        if (r < lidRows) continue;
+        // a slanted lid: one row deeper on the inner side (angry) or the outer one (sad)
+        if (lidRows > 0 && r === lidRows && Math.abs(f.lidAngle) > 3) {
+          const innerSide = inner === 1 ? c >= w - 2 : c <= 1;
+          if (f.lidAngle > 0 ? innerSide : !innerSide) continue;
+        }
+        px(left + c, top + r);
+      }
+    }
+  };
+  eye(8, f.openL, 1);
+  eye(20, f.openR, -1);
+
+  // mouth: a line with corners up or down, a "D" when it beams, an "O" when shocked,
+  // a block that opens with her voice while she talks
+  const w = Math.max(3, Math.min(10, Math.round(f.mw * 1.3)));
+  const x0 = 16 - Math.floor(w / 2);
+  const row = 12;
+  if (f.talking && f.mouthOpen > 0.12) {
+    const h = Math.min(4, 1 + Math.round(f.mouthOpen * 3.5));
+    for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) {
+      if (h >= 3 && (r === 0 || r === h - 1) && (c === 0 || c === w - 1)) continue;
+      px(x0 + c, row - 1 + r);
+    }
+  } else if (f.round) {
+    for (const [c, r] of [[1, 0], [2, 0], [0, 1], [3, 1], [0, 2], [3, 2], [1, 3], [2, 3]] as const) px(14 + c, row - 1 + r);
+  } else {
+    for (let c = 0; c < w; c++) {
+      const lift = c === 0 ? f.mcl : c === w - 1 ? f.mcr : 0;
+      px(x0 + c, row + (lift > 1 ? -1 : lift < -1 ? 1 : 0));
+    }
+    if (f.mb > 6 && f.mcl > 1) for (let c = 1; c < w - 1; c++) px(x0 + c, row + 1); // a beaming "D"
+  }
+}
+
 export type FaceDriver = {
   mood: () => Mood;
   mode: () => FaceMode;
@@ -135,7 +223,7 @@ const MOTION: Record<Mood, { energy: number; dart: number; range: number; jitter
 };
 
 // The character's temperament scales all of it
-const TEMPER: Record<string, number> = { roast: 1.35, drama: 1.25, tsundere: 1.1, yandere: 0.75, bro: 1.05, classic: 1, sarcastic: 0.85, kind: 0.7, strict: 0.45 };
+const TEMPER: Record<string, number> = { roast: 1.35, drama: 1.25, bro: 1.05, classic: 1, sarcastic: 0.85, kind: 0.7, strict: 0.45 };
 
 // Our moods as openlura emotions
 const LURA: Record<Mood, string> = {
@@ -144,17 +232,12 @@ const LURA: Record<Mood, string> = {
   disappointed: "sad", proud: "proud", bored: "bored", dramatic: "worried", whisper: "shy",
 };
 
-// The LED face glows in the colour of the mood
-const CYAN = "#5fe3ff", PINK = "#ff6fd8", RED = "#ff3b3b", YELLOW = "#ffd166", VIOLET = "#a98bff", SKY = "#8fd3ff";
-const PINK_SOFT = "#ff9de0", PINK_WARM = "#ffb4e8", LILAC = "#c9a0ff";
-// A woman's voice: the calm and warm states glow pink instead of blue
-const COLOR_F: Partial<Record<Mood, string>> = {
-  neutral: PINK_SOFT, warm: PINK_WARM, curious: PINK_SOFT, bored: LILAC, whisper: PINK_SOFT, encouraging: PINK_WARM,
-  sympathetic: PINK_WARM, strict: LILAC,
-};
+// The LED face glows in the colour of the mood: shades of blue, other colours only for the
+// strong feelings (owners' choice 2026-10-25, the pink happy states are gone)
+const CYAN = "#5fe3ff", SKY = "#8fd3ff", AZURE = "#4fa3ff", ICE = "#b6ecff", RED = "#ff3b3b", YELLOW = "#ffd166", VIOLET = "#a98bff";
 const COLOR: Record<Mood, string> = {
   neutral: CYAN, warm: SKY, curious: CYAN, strict: CYAN, bored: CYAN, whisper: CYAN, encouraging: SKY, sympathetic: SKY,
-  excited: PINK, laughing: PINK, proud: PINK, impressed: PINK, teasing: PINK,
+  excited: AZURE, laughing: AZURE, proud: AZURE, impressed: AZURE, teasing: ICE,
   angry: RED, shocked: YELLOW, dramatic: YELLOW, disappointed: VIOLET,
 };
 
@@ -198,6 +281,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
   const host = useRef<HTMLDivElement>(null);
   const lura = useRef<LuraFace | null>(null);
   const [luraReady, setLuraReady] = useState(false);
+  const pixels = useRef<HTMLCanvasElement>(null);
 
   // The engine's motion follows the site's animation switch
   useEffect(() => {
@@ -206,6 +290,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
 
   // The engine touches the DOM when it loads, so it is only loaded in the browser
   useEffect(() => {
+    if (PIXEL_FACE) return;
     let alive = true;
     let face: LuraFace | null = null;
     import("@/vendor/openlura/face.js").then(({ Face }) => {
@@ -370,9 +455,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
 
       // ---- write the face ----
       const r = refs.current;
-      const female = driver?.female?.() ?? false;
-      const base = female ? PINK_SOFT : CYAN;
-      const glow = mode === "speaking" || mode === "idle" ? (female ? COLOR_F[mood] ?? COLOR[mood] : COLOR[mood]) : base;
+      const glow = mode === "speaking" || mode === "idle" ? COLOR[mood] : CYAN;
       const kc = 1 - Math.exp(-dt * 5);
       for (let i = 0; i < 3; i++) rgb[i] += (parseInt(glow.slice(1 + i * 2, 3 + i * 2), 16) - rgb[i]) * kc;
       const lift = mode === "speaking" ? Math.min(0.35, mouthOpen * 0.4 + pop * 0.15) : 0;
@@ -431,6 +514,15 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
         lastColor = color;
         for (const k of ["eL", "eR", "mouth"]) r[k]?.setAttribute("fill", color);
         for (const k of ["aL", "aR"]) r[k]?.setAttribute("stroke", color);
+        if (pixels.current) pixels.current.style.color = color;
+      }
+      const pctx = pixels.current?.getContext("2d");
+      if (pctx) {
+        const shut = blink * (1 - hv * 0.85);
+        drawPixels(pctx, {
+          openL: openL * shut, openR: openR * shut, happy: hv > 0.5, lid: cur.lid, lidAngle: cur.lidAngle, wide: cur.wide,
+          gx, gy, mouthOpen, talking: speakingNow, mw: cur.mw, mcl: cur.mcl, mcr: cur.mcr, mb: cur.mb, round: ROUND.has(mood), color,
+        });
       }
       const eye = (side: "L" | "R", ex: number, open: number) => {
         const o = Math.max(0.05, open * blink * (1 - hv * 0.85) * (1 + pop * 0.06));
@@ -508,8 +600,9 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
         pos.ty = mode === "hearing" ? 2 : 0; // leans in a little to listen
         pos.at = now;
       } else if (!calm && now > pos.at) {
-        const darting = motion.dart > 0 && Math.random() < 0.6;
-        const range = motion.range * Math.min(1.4, temper);
+        const darting = motion.dart > 0 && Math.random() < 0.5;
+        // half the table's distance: at full range she flew from side to side (owners, 2026-10-24)
+        const range = motion.range * 0.5 * Math.min(1.4, temper);
         pos.tx = (Math.random() * 2 - 1) * range;
         pos.ty = (Math.random() * 2 - 1) * range * 0.35;
         pos.at = now + (darting ? (600 + Math.random() * 900) / motion.dart : 1800 + Math.random() * 2600);
@@ -536,7 +629,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
       const x = calm ? 0 : pos.x + jitter * 1.6;
       const y = cur.lean + (calm ? 0 : pos.y) + bob + hop + talkBounce + nod * 2.4;
       // Leans into the movement, like something with weight
-      const tilt = (talking ? cur.tilt : cur.tilt * 0.3) + (calm ? 0 : Math.max(-14, Math.min(14, pos.vx * 0.12))) + jitter * 1.4;
+      const tilt = (talking ? cur.tilt : cur.tilt * 0.3) + (calm ? 0 : Math.max(-8, Math.min(8, pos.vx * 0.1))) + jitter * 1.4;
       const sq = calm ? 0 : Math.max(-0.12, Math.min(0.12, squash * 0.02));
       const sx = cur.scale * (1 + mouthOpen * 0.02 + pop * 0.035 + (mode === "hearing" ? 0.02 : 0) - sq * 0.7);
       const sy = cur.scale * (1 - mouthOpen * 0.012 + pop * 0.045 + (jump > 0.5 ? 0.05 : 0) + sq);
@@ -584,7 +677,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
       {/* the glass: dark, a warm rim and a gloss on top */}
       <rect x="17" y="59" width="66" height="37" rx="18.5" fill={`url(#g${uid})`} />
       <g clipPath={`url(#${clipVisor})`}>
-        <g filter={`url(#f${uid})`} style={{ display: luraReady ? "none" : undefined }}>
+        <g filter={`url(#f${uid})`} style={{ display: luraReady || PIXEL_FACE ? "none" : undefined }}>
           {(["L", "R"] as const).map((side) => {
             const ex = side === "L" ? 36.5 : 63.5;
             return (
@@ -597,7 +690,7 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
           <path ref={set("mouth")} d={mouthPath(50, 86, 3.8, 0.4, 2.8, 0, 0)} fill={CYAN} />
         </g>
 
-        {!luraReady && (["L", "R"] as const).map((side) => {
+        {!luraReady && !PIXEL_FACE && (["L", "R"] as const).map((side) => {
           const ex = side === "L" ? 36.5 : 63.5;
           return <rect key={side} ref={set(`l${side}`)} x={ex - 9} y="48" width="18" height="0" fill={`url(#g${uid})`} />;
         })}
@@ -607,6 +700,17 @@ export function LexiFace({ driver, live, body, gaze, calm = false }: {
       <rect x="17" y="59" width="66" height="37" rx="18.5" fill="none" stroke="#ff9b5e" strokeOpacity="0.75" strokeWidth="0.9" />
       {!luraReady && <Effects list={fx} calm={calm} />}
     </svg>
+    {/* the 8-bit face: a 32 x 16 LED matrix over the glass, scaled up without smoothing */}
+    {PIXEL_FACE && (
+      <canvas
+        ref={pixels}
+        width={PW}
+        height={PH}
+        className="pointer-events-none absolute"
+        style={{ left: "17%", width: "66%", top: `${((59 + 25) / 145) * 100}%`, height: `${(37 / 145) * 100}%`, imageRendering: "pixelated", color: CYAN, filter: "drop-shadow(0 0 1px currentColor) drop-shadow(0 0 5px currentColor)" }}
+        aria-hidden
+      />
+    )}
     {/* the openlura face, over the glass (x 17..83, y 59..96 of the mascot), glowing in the mood colour */}
     <div
       ref={host}

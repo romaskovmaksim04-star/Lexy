@@ -38,6 +38,10 @@ export const GEMINI_VOICES: GeminiVoice[] = [
 
 export const GEMINI_VOICE_IDS = new Set(GEMINI_VOICES.map((v) => v.id));
 
+/** Lexi's one voice, whatever the character: the face of the site should sound the same every
+ * time (owners' choice 2026-10-24, the voice Maks picked: Iapetus, «Чёткий», a man's voice). */
+export const LEXI_VOICE = "Iapetus";
+
 /** How each reply can sound; the model picks one per line and the speech service plays it. */
 export const MOODS = [
   "neutral", "warm", "excited", "impressed", "laughing", "curious", "sympathetic", "strict",

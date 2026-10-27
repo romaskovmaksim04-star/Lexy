@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import { currentUser } from "@/lib/auth";
 import { signTts } from "@/lib/voice";
 import { PERSONA_LIST } from "@/lib/preppy/personas";
+import { LEXI_VOICE } from "@/lib/voices";
 import { LISTENING } from "@/lib/content/listening";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
@@ -39,7 +40,7 @@ export default async function Home() {
   const signedIn = !!user;
   const personas = PERSONA_LIST.map((p) => ({
     id: p.id, name: p.name, tagline: p.tagline, sample: p.sample,
-    audio: signTts(p.sample, `g:${p.voice}`, { style: p.id, mood: p.id === "roast" ? "dramatic" : "warm" }),
+    audio: signTts(p.sample, `g:${LEXI_VOICE}`, { style: p.id, mood: p.id === "roast" ? "dramatic" : "warm" }),
   }));
   const line = LISTENING[0].script.find((l) => /oh seven nine three one/.test(l.text)) ?? LISTENING[0].script[0];
   const listening = { audio: signTts(line.text, LISTENING[0].speakers[line.speaker].voice), text: line.text };
