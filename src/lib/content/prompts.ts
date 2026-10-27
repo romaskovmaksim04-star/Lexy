@@ -1,3 +1,4 @@
+import { SPEAKING_EXTRA, WRITING_EXTRA } from "./extra.ts";
 // Writing and speaking tasks in the IELTS format, written for Lexy.
 
 export type Chart =
@@ -256,3 +257,6 @@ export function getWriting(id: string) {
 export function getSpeaking(id: string) {
   return SPEAKING.find((s) => s.id === id);
 }
+
+WRITING.push(...WRITING_EXTRA);
+SPEAKING.push(...SPEAKING_EXTRA);

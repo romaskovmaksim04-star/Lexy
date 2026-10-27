@@ -1,3 +1,4 @@
+import { READING_EXTRA } from "./extra.ts";
 // Original practice passages written for Lexy (not taken from Cambridge or IDP books).
 import type { ReadingTest } from "./types";
 
@@ -353,3 +354,5 @@ export const READING: ReadingTest[] = [
 export function getReading(id: string) {
   return READING.find((r) => r.id === id);
 }
+
+READING.push(...READING_EXTRA);

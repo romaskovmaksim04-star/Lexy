@@ -1,3 +1,4 @@
+import { LISTENING_EXTRA } from "./extra.ts";
 // Original listening scripts. The audio is synthesised (Silero on the AI service,
 // or the browser voice as a fallback), so a script is all a new test needs.
 import type { ListeningTest } from "./types";
@@ -186,3 +187,5 @@ export const LISTENING: ListeningTest[] = [
 export function getListening(id: string) {
   return LISTENING.find((l) => l.id === id);
 }
+
+LISTENING.push(...LISTENING_EXTRA);
