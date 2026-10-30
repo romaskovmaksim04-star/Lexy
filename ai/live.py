@@ -39,7 +39,10 @@ from fastapi.responses import JSONResponse
 KEY = os.environ.get("LEXY_AI_KEY", "")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_HOST = "generativelanguage.googleapis.com"
-GEMINI_VIA = os.environ.get("GEMINI_VIA", "138.124.79.247")  # "" = straight to Google
+# Gemini goes through the local WARP relay: TCP to GEMINI_VIA with Google's name.
+# "host" = :443, "host:port" = a local TLS relay (FI nginx :8446 -> dokodemo -> WARP), "" = straight to Google
+GEMINI_VIA = os.environ.get("GEMINI_VIA", "127.0.0.1:8446")
+_GV_HOST, _, _GV_PORT = GEMINI_VIA.partition(":")
 MODEL = os.environ.get("LIVE_MODEL", "models/gemini-3.8-live")
 SILENCE_MS = int(os.environ.get("LIVE_SILENCE_MS", "500"))  # pause that ends the student's turn
 WEB_URL = os.environ.get("WEB_URL", "http://127.0.0.1:3300")
@@ -165,7 +168,7 @@ class Call:
     async def _connect(self):
         kw = {"max_size": None, "ssl": ssl.create_default_context(), "open_timeout": 10, "ping_interval": 20}
         if GEMINI_VIA:
-            kw.update(host=GEMINI_VIA, port=443, server_hostname=GEMINI_HOST)
+            kw.update(host=_GV_HOST, port=int(_GV_PORT or 443), server_hostname=GEMINI_HOST)
         ws = await websockets.connect(URI, **kw)
         setup = {
             "model": MODEL,
