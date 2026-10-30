@@ -442,5 +442,5 @@ document.addEventListener("keydown",function(e){
  setLang(LK.indexOf(l)<0?"ru":l);showBest()})();
 </script>
 
-</body>
+<script>(function(){if(!('wakeLock' in navigator))return;var l=null,rel=false;var a=async function(){if(rel||document.visibilityState!=='visible')return;try{l=await navigator.wakeLock.request('screen');l.addEventListener&&l.addEventListener('release',function(){l=null})}catch(e){}};var v=function(){if(document.visibilityState==='visible')a()};a();document.addEventListener('visibilitychange',v);addEventListener('pagehide',function(){rel=true;v=null;l&&l.release()})})();</script></body>
 </html>

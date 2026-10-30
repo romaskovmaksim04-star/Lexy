@@ -10,6 +10,7 @@ import { TelegramLogo } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "@/components/ui/Mascot";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AppNav } from "@/components/app/AppNav";
+import { WakeLock } from "@/components/fx/WakeLock";
 import { Flame } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = { title: { default: "Мой план", template: "%s · LexiUp" } };
@@ -59,6 +60,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </div>
 
       <AppNav variant="bottom" premium={premium} goal={user.goal} />
+      {/* Phone stays awake during a lesson / Lexi call / game (WakeLock). */}
+      <WakeLock />
     </div>
   );
 }
