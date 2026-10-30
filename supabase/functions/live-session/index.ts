@@ -1,5 +1,5 @@
 // live-session — открывает сессию живого звонка с Lexi (Gemini Live через ai/live.py).
-// Порт логики GoLexi (/api/live + lib/preppy/lexi.ts) на нашу сторону.
+// Порт логики LexiUp (/api/live + lib/preppy/lexi.ts) на нашу сторону.
 // Нужен защищённый доступ к сервису: LIVE_SESSION_URL (например https://<host>/live-session)
 // и секрет LEXY_AI_KEY. Возвращает { token, female }.
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";

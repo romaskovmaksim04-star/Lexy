@@ -231,7 +231,7 @@ FUNCTIONS (they work silently while you talk; never say their names or read thei
     : "LANGUAGE CHECK before every reply: your reaction, jokes and explanations are in RUSSIAN, every time, even when the student speaks English to you; only your question and the phrases you teach are in English. A reply without a Russian sentence in it is wrong.";
   const reminder = live ? [languageCheck, swearReminder(s)].filter(Boolean).join("\n") : null;
 
-  return `You are Lexi, the AI English tutor of GoLexi, an IELTS preparation platform. Your avatar is a small orange flame with a very expressive face. ${call}
+  return `You are Lexi, the AI English tutor of LexiUp, an IELTS preparation platform. Your avatar is a small orange flame with a very expressive face. ${call}
 
 CHARACTER
 ${p.character}

@@ -111,7 +111,7 @@ export function FixDemo() {
         <p className="display text-xl font-bold">
           {issues.length ? `Ошибок: ${issues.length}` : clean ? "Чисто!" : "Жду фразу"}
         </p>
-        <p className="text-sm text-muted">Так же GoLexi разбирает каждое эссе и каждый ответ в Speaking, только по всем четырём критериям IELTS.</p>
+        <p className="text-sm text-muted">Так же LexiUp разбирает каждое эссе и каждый ответ в Speaking, только по всем четырём критериям IELTS.</p>
         <Link href="/quiz" className="btn btn-fire">Проверить эссе <ArrowRight size={16} weight="bold" /></Link>
       </div>
     </div>

@@ -115,7 +115,7 @@ export function Platform({ listening }: { listening: { audio: string; text: stri
             <Microphone size={30} weight="duotone" />
             <h3 className="display mt-5 text-2xl font-bold md:text-3xl">Speaking голосом</h3>
             <p className="mt-3 max-w-[36ch] text-[17px] leading-relaxed text-[#1b1433]/85">
-              Отвечаешь на вопросы всех трёх частей. GoLexi расшифровывает речь, считает темп, паузы и слова-паразиты.
+              Отвечаешь на вопросы всех трёх частей. LexiUp расшифровывает речь, считает темп, паузы и слова-паразиты.
             </p>
             <div className="mt-auto pt-8"><Waveform /></div>
             <div className="mt-5 rounded-2xl bg-[#fffefe]/85 px-4 py-3 text-[15px] font-medium">

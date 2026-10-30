@@ -25,7 +25,7 @@ export function ProfileForm({ user }: { user: U }) {
         <p className="text-xs text-muted">По дате план подбирает темп и показывает, успеваешь ли ты.</p>
       </div>
       <div className="grid gap-2">
-        <label htmlFor="p-goal" className="label">Для чего ты используешь GoLexi</label>
+        <label htmlFor="p-goal" className="label">Для чего ты используешь LexiUp</label>
         <select id="p-goal" name="goal" defaultValue={user.goal} className="field">
           <option value="ielts">Подготовка к IELTS</option>
           <option value="english">Разговорный английский</option>

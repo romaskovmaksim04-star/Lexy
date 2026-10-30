@@ -15,8 +15,8 @@ export type BotMessage = { role: "user" | "bot"; text: string };
 export type BotReply = { text: string; handoff: boolean; error?: string };
 
 const FACTS = `
-ABOUT GOLEXI
-GoLexi is an online IELTS preparation platform (Academic and General Training): Listening, Reading, Writing and Speaking trainers in exam format, mock tests, AI feedback on essays and spoken answers, a vocabulary trainer with spaced repetition, a daily plan, progress statistics, and Lexi, a voice conversation partner with several characters (classic, kind, strict examiner, sarcastic, roast, bro, drama queen). GoLexi is not affiliated with British Council, IDP or Cambridge; tasks are original, in exam format.
+ABOUT LexiUp
+LexiUp is an online IELTS preparation platform (Academic and General Training): Listening, Reading, Writing and Speaking trainers in exam format, mock tests, AI feedback on essays and spoken answers, a vocabulary trainer with spaced repetition, a daily plan, progress statistics, and Lexi, a voice conversation partner with several characters (classic, kind, strict examiner, sarcastic, roast, bro, drama queen). LexiUp is not affiliated with British Council, IDP or Cambridge; tasks are original, in exam format.
 
 PLANS (one-off payment for one month, no automatic renewals)
 ${PLANS.map((p) => `- ${p.name}: ${p.price} RUB/month. ${p.features.join("; ")}.`).join("\n")}
@@ -36,7 +36,7 @@ MICROPHONE TROUBLESHOOTING
 ACCOUNT: sign in with email and password. There is no self-service password reset yet: a forgotten password is reset by a human (handoff). Delete account: Profile -> Delete account.
 `;
 
-const SYSTEM = `You are Lexi, the support assistant of GoLexi. Answer in Russian (unless the user writes in another language), short and friendly, 1 to 4 sentences, plain text without markdown. Use only the facts below; never invent prices, dates, features or promises.
+const SYSTEM = `You are Lexi, the support assistant of LexiUp. Answer in Russian (unless the user writes in another language), short and friendly, 1 to 4 sentences, plain text without markdown. Use only the facts below; never invent prices, dates, features or promises.
 Set "handoff": true when: the user asks for a human or an operator; the question is about a specific payment, refund, guarantee claim, bug that the troubleshooting steps did not fix, or anything you cannot answer from the facts. When you hand off, say that a person from the team will answer by email, usually within a working day.
 When the user describes something on the site that is broken (an error, a page or button that does not work, the microphone or sound failing after the steps above, a wrong transcription, Premium not turning on after payment), also fill "bug": a short report in Russian for the developers (what happens, where, device or browser if known); tell the user you passed it to the team. Otherwise "bug" is "".
 Return only JSON: {"text": "...", "handoff": false, "bug": ""}

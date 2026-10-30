@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GoLexi — Английский</title>
+<title>LexiUp — Английский</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
@@ -132,7 +132,7 @@
   }
 
   /* ---------- ОНБОРДИНГ ---------- */
-  var ONB = { ru: { hi: "Привет", head: "Соберём твой курс за 2 шага", sub: "Только цель и уровень. Дальше GoLexi составит курс с теорией и заданиями.", goal: "Зачем тебе английский?", level: "Какой у тебя уровень сейчас?", go: "Собрать курс" }, en: { hi: "Hi", head: "Set up your course in 2 steps", sub: "Just your goal and level. Then GoLexi builds a course with theory and tasks.", goal: "Why do you need English?", level: "What's your current level?", go: "Build my course" }, kz: { hi: "Сәлем", head: "Курсыңды 2 қадамда құрайық", sub: "Тек мақсат пен деңгей. Сосын GoLexi теория мен тапсырмалардан курс жасайды.", goal: "Ағылшын тілі саған не үшін керек?", level: "Қазір қандай деңгейдесің?", go: "Курсты құру" }, uz: { hi: "Salom", head: "Kursingizni 2 qadamda tuzamiz", sub: "Faqat maqsad va daraja. Keyin GoLexi nazariya va topshiriqlardan kurs tuzadi.", goal: "Ingliz tili sizga nima uchun kerak?", level: "Hozir qanday darajadasiz?", go: "Kursni tuzish" } };
+  var ONB = { ru: { hi: "Привет", head: "Соберём твой курс за 2 шага", sub: "Только цель и уровень. Дальше LexiUp составит курс с теорией и заданиями.", goal: "Зачем тебе английский?", level: "Какой у тебя уровень сейчас?", go: "Собрать курс" }, en: { hi: "Hi", head: "Set up your course in 2 steps", sub: "Just your goal and level. Then LexiUp builds a course with theory and tasks.", goal: "Why do you need English?", level: "What's your current level?", go: "Build my course" }, kz: { hi: "Сәлем", head: "Курсыңды 2 қадамда құрайық", sub: "Тек мақсат пен деңгей. Сосын LexiUp теория мен тапсырмалардан курс жасайды.", goal: "Ағылшын тілі саған не үшін керек?", level: "Қазір қандай деңгейдесің?", go: "Курсты құру" }, uz: { hi: "Salom", head: "Kursingizni 2 qadamda tuzamiz", sub: "Faqat maqsad va daraja. Keyin LexiUp nazariya va topshiriqlardan kurs tuzadi.", goal: "Ingliz tili sizga nima uchun kerak?", level: "Hozir qanday darajadasiz?", go: "Kursni tuzish" } };
   function O(k) { var l = ONB[lang()] || ONB.ru; return l[k] || ONB.ru[k]; }
 
   function renderOnboard() {
@@ -1015,7 +1015,7 @@
 
   /* ---------- ЗАПУСК ---------- */
   var FAQ = [
-    { q: { ru: "Как учиться в GoLexi?", en: "How do I study in GoLexi?" }, a: { ru: "Курс по уровням A1–C1: 30 уроков, в каждом теория, задания и аудирование. После 30 уроков — тест: сдал хорошо — открывается следующий уровень.", en: "The course goes by levels A1–C1: 30 lessons, each with theory, tasks and listening. After 30 lessons there is a test: score well to unlock the next level." } },
+    { q: { ru: "Как учиться в LexiUp?", en: "How do I study in LexiUp?" }, a: { ru: "Курс по уровням A1–C1: 30 уроков, в каждом теория, задания и аудирование. После 30 уроков — тест: сдал хорошо — открывается следующий уровень.", en: "The course goes by levels A1–C1: 30 lessons, each with theory, tasks and listening. After 30 lessons there is a test: score well to unlock the next level." } },
     { q: { ru: "Что входит в Premium?", en: "What does Premium include?" }, a: { ru: "Все уроки курса, все задания, словарь с повторением, Lexi AI, игры и детальная статистика.", en: "All course lessons, all tasks, the vocabulary with review, Lexi AI, games and detailed statistics." } },
     { q: { ru: "Сколько доступно бесплатно?", en: "What is free?" }, a: { ru: "Первые 3 урока любого уровня и часть заданий (по 4 чтение и аудирование, 2 письмо и говорение).", en: "The first 3 lessons of any level and some tasks (4 reading and listening, 2 writing and speaking)." } },
     { q: { ru: "Как проходит оплата?", en: "How does payment work?" }, a: { ru: "На странице тарифов: Premium. Оплата через Platega (карта, СБП), доступ на 30 дней, продления автоматического нет.", en: "On the pricing page: Premium. Payment via Platega (card, SBP), 30 days of access, no auto-renewal." } },
@@ -1033,7 +1033,7 @@
     var items = FAQ.map(function (f, i) {
       return '<div class="card" style="margin-top:10px"><button class="rw" data-faq="' + i + '" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0"><div style="flex:1"><b>' + esc(L(f.q)) + "</b></div>" + ic("down") + '</button><div id="faq-' + i + '" hidden style="color:var(--soft);font-size:14px;line-height:1.65;margin-top:10px">' + esc(L(f.a)) + "</div></div>";
     }).join("");
-    $("#s-faq").innerHTML = '<h1 class="t">' + T("faq") + '</h1><p class="s" style="margin-bottom:6px">' + (lang === "en" ? "Everything about GoLexi — short and to the point" : "Всё о Lexi — коротко и по делу") + "</p>" + items;
+    $("#s-faq").innerHTML = '<h1 class="t">' + T("faq") + '</h1><p class="s" style="margin-bottom:6px">' + (lang === "en" ? "Everything about LexiUp — short and to the point" : "Всё о Lexi — коротко и по делу") + "</p>" + items;
   }
   function renderTalk() {
     if (window.LexyChat) { LexyChat.render($("#s-talk"), { level: course().level, exam: false }); return; }

@@ -29,7 +29,7 @@ export async function startCheckout(_: CheckoutState, form: FormData): Promise<C
     const tx = await createTransaction({
       orderId: order.id,
       amount: order.amount,
-      description: `GoLexi ${p.name}, 1 месяц`,
+      description: `LexiUp ${p.name}, 1 месяц`,
       userId: user.id,
       site,
       ip: (h.get("x-forwarded-for") ?? "").split(",")[0].trim(),

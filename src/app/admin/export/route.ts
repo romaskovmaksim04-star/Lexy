@@ -14,5 +14,5 @@ export async function GET(req: Request) {
     .filter((u) => (f === "premium" ? isPremium(u) : f === "free" ? !isPremium(u) : true))
     .map((u) => [u.email, u.name, u.goal, isPremium(u) ? u.plan : "free", u.premiumUntil?.toISOString().slice(0, 10), u.createdAt.toISOString().slice(0, 10), u.lastActive, u.emailOptIn ? "да" : "нет"].map(cell).join(","));
   const csv = "﻿" + ["email,имя,цель,тариф,premium до,регистрация,активность,рассылка", ...rows].join("\n");
-  return new Response(csv, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="golexi-users.csv"' } });
+  return new Response(csv, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="LexiUp-users.csv"' } });
 }

@@ -1,4 +1,4 @@
-// Types for the parts of the vendored openlura face that GoLexi uses.
+// Types for the parts of the vendored openlura face that LexiUp uses.
 export class Face {
   constructor(host: HTMLElement, options?: { small?: boolean; particles?: boolean; viewBox?: string; idle?: boolean });
   setEmotion(name: string, options?: { intensity?: number; kick?: boolean }): void;

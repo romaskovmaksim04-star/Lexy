@@ -1,5 +1,5 @@
 // ielts-examiner — ИИ-экзаменатор Writing/Speaking по критериям IELTS.
-// Порт GoLexi src/lib/examiner.ts на Polza (OpenAI-совместимый API).
+// Порт LexiUp src/lib/examiner.ts на Polza (OpenAI-совместимый API).
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") || "";
 const POLZA = Deno.env.get("POLZA_API_KEY") || "";

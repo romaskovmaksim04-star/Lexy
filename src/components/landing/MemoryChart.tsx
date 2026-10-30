@@ -51,7 +51,7 @@ export function MemoryChart() {
   return (
     <figure className="w-full">
       <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted" aria-hidden>
-        <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 rounded-full" style={{ background: "var(--chart-1)" }} />С повторами в GoLexi</span>
+        <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 rounded-full" style={{ background: "var(--chart-1)" }} />С повторами в LexiUp</span>
         <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 rounded-full" style={{ background: "var(--chart-2)" }} />Прочитал один раз</span>
       </div>
       <div className="relative">

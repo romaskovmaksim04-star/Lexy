@@ -18,7 +18,7 @@ export const GAMES = [
     tags: ["Writing", "Task 2", "60 сек"],
   },
   {
-    href: "/games/trap", name: "Listening Trap", skill: "Listening", sub: "Ловушки в аудио", icon: Headphones,
+    href: "/arcade/trap.html", name: "Listening Trap", skill: "Listening", sub: "Ловушки в аудио", icon: Headphones,
     bg: "linear-gradient(150deg, #23c483, #0f8a5f)",
     text: "Диктор меняет ответ посреди фразы: «on Monday… actually, Wednesday». Поймай финальный и больше не попадайся на экзамене.",
     tags: ["Listening", "Anti-trap", "15 сек"],

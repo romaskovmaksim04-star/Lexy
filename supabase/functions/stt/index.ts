@@ -1,9 +1,9 @@
-// stt — прокси к Whisper GoLexi (их /stt). Принимает multipart audio от браузера,
+// stt — прокси к Whisper LexiUp (их /stt). Принимает multipart audio от браузера,
 // шлёт на их сервис с X-Lexy-Key (секрет), возвращает их JSON-транскрипт.
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") || "";
 const LEXY_AI_KEY = Deno.env.get("LEXY_AI_KEY") || "";
-const STT_URL = Deno.env.get("GOLEXI_STT_URL") || "https://lexy.ghostlynex.fun/stt";
+const STT_URL = Deno.env.get("LexiUp_STT_URL") || "https://lexy.ghostlynex.fun/stt";
 
 const cors: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",

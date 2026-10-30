@@ -1,5 +1,5 @@
 /* ==========================================================
-   lexy-ielts-runner.js — IELTS-раздел (порт движка GoLexi)
+   lexy-ielts-runner.js — IELTS-раздел (порт движка LexiUp)
    Reading / Listening (tfng, ynng, mcq, gap) + Writing (task1/2,
    модели и графики) + Speaking (таймеры). Данные — LEXY_IELTS
    (lexy-ielts-data.js). Баллы — tables из lib/band.ts.

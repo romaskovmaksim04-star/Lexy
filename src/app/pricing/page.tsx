@@ -7,7 +7,7 @@ import { openBeta } from "@/lib/access";
 
 export const metadata: Metadata = {
   title: "Тарифы",
-  description: "Тарифы GoLexi: Free, Pro и Pro+. Оплата картой или СБП за месяц, без автосписаний.",
+  description: "Тарифы LexiUp: Free, Pro и Pro+. Оплата картой или СБП за месяц, без автосписаний.",
 };
 
 const POINTS = [

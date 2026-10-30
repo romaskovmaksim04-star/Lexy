@@ -11,7 +11,7 @@ export function notifyOwners(html: string): void {
   const token = process.env.TG_NOTIFY_TOKEN;
   const chats = (process.env.TG_NOTIFY_CHATS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (!token || !chats.length) return;
-  const text = `🔥 GoLexi · ${html}`.slice(0, 4000);
+  const text = `🔥 LexiUp · ${html}`.slice(0, 4000);
   for (const chat_id of chats) {
     fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",

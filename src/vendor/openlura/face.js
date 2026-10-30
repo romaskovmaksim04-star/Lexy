@@ -1,5 +1,5 @@
 /* Vendored from https://github.com/openlura/openlura (MIT, see LICENSE next to this file).
- * Modified for GoLexi:
+ * Modified for LexiUp:
  * - speak(text, { durationMs }) stretches or squeezes the syllables to the real length of the
  *   voice clip instead of capping every queue at ~3 s;
  * - silence() stops talking at once (the student interrupted);
@@ -29,7 +29,7 @@ const NS = "http://www.w3.org/2000/svg";
 const N = 72;
 const TAU = Math.PI * 2;
 const DEG = Math.PI / 180;
-// GoLexi: motion follows the site's own switch (src/lib/motion-pref.ts), not the system flag;
+// LexiUp: motion follows the site's own switch (src/lib/motion-pref.ts), not the system flag;
 // on Windows "visual effects: off" turns that flag on and the face would never move its mouth
 let REDUCED = false;
 export function setReduced(on) {
@@ -637,7 +637,7 @@ export class Face {
       return;
     }
     if (durationMs > 0) {
-      // GoLexi: the mouth follows a real voice clip, so the syllables fill its whole length
+      // LexiUp: the mouth follows a real voice clip, so the syllables fill its whole length
       const total = queue.reduce((sum, s) => sum + s.ms, 0);
       const k = durationMs / total;
       for (const s of queue) s.ms = Math.max(22, s.ms * k);
@@ -656,7 +656,7 @@ export class Face {
     this.poke();
   }
 
-  /** GoLexi: stops talking at once. */
+  /** LexiUp: stops talking at once. */
   silence() {
     this.speech = [];
     this.speechT = 0;

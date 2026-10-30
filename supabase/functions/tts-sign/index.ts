@@ -1,10 +1,10 @@
-// tts-sign — подписывает ссылки на TTS GoLexi (их /api/tts) их AUTH_SECRET.
+// tts-sign — подписывает ссылки на TTS LexiUp (их /api/tts) их AUTH_SECRET.
 // Контракт подписи (lib/voice.ts): HMAC-SHA256(secret, "tts|voice|rate|mood|style|text"),
 // base64url, первые 22 символа. Клиент просит готовые audio-URL для строк Listening.
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") || "";
 const AUTH_SECRET = Deno.env.get("AUTH_SECRET") || "";
-const TTS_BASE = Deno.env.get("GOLEXI_TTS_BASE") || "https://lexy.ghostlynex.fun/api/tts";
+const TTS_BASE = Deno.env.get("LexiUp_TTS_BASE") || "https://lexy.ghostlynex.fun/api/tts";
 
 const cors: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",

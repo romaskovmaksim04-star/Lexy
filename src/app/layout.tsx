@@ -19,11 +19,11 @@ const onest = Onest({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
-  title: { default: "GoLexi: нужный балл IELTS с первой попытки", template: "%s · GoLexi" },
+  title: { default: "LexiUp: нужный балл IELTS с первой попытки", template: "%s · LexiUp" },
   description:
     "Подготовка к IELTS Academic и General Training: план на каждый день, тренажёры Listening, Reading, Writing и Speaking с разбором ответов.",
   openGraph: {
-    title: "GoLexi: нужный балл IELTS с первой попытки",
+    title: "LexiUp: нужный балл IELTS с первой попытки",
     description: "План на каждый день и тренажёры всех четырёх секций IELTS с разбором ответов.",
     locale: "ru_RU",
     type: "website",

@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AppNav } from "@/components/app/AppNav";
 import { Flame } from "@phosphor-icons/react/dist/ssr";
 
-export const metadata: Metadata = { title: { default: "Мой план", template: "%s · GoLexi" } };
+export const metadata: Metadata = { title: { default: "Мой план", template: "%s · LexiUp" } };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();

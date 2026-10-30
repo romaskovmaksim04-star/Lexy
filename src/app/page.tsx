@@ -152,7 +152,7 @@ export default async function Home() {
             <div className="relative rounded-[2.5rem] bg-fire-soft px-6 py-16 text-center md:px-16 md:py-24">
               <FireSpirit className="relative mx-auto w-28 md:w-36" talk={false} />
               <h2 className="display relative mx-auto mt-6 max-w-[14ch] text-4xl font-extrabold leading-[1.04] md:text-7xl">Твой план на сегодня уже ждёт</h2>
-              <p className="relative mx-auto mt-6 max-w-[42ch] text-lg text-muted">Ответь на 8 вопросов, и GoLexi соберёт занятия под твой балл и дату экзамена.</p>
+              <p className="relative mx-auto mt-6 max-w-[42ch] text-lg text-muted">Ответь на 8 вопросов, и LexiUp соберёт занятия под твой балл и дату экзамена.</p>
               <Link href={signedIn ? "/app" : "/quiz"} className="btn btn-fire relative mt-10 px-8 py-5 text-lg uppercase tracking-wide">
                 {signedIn ? "Мой план" : "Начать подготовку"} <ArrowRight size={20} weight="bold" />
               </Link>

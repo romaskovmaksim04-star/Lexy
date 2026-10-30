@@ -27,7 +27,7 @@ export default async function Checkout({ searchParams }: { searchParams: Promise
         <div className="card grid gap-5 p-6 md:p-8">
           <div className="flex items-baseline justify-between gap-4">
             <div>
-              <p className="display text-2xl font-bold">GoLexi {p.name}</p>
+              <p className="display text-2xl font-bold">LexiUp {p.name}</p>
               <p className="text-sm text-muted">1 месяц доступа, без автопродления</p>
             </div>
             <div className="text-right">

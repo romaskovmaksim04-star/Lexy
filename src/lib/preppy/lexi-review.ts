@@ -54,7 +54,7 @@ export function reviewMessages(s: LexiSettings, topicTitle: string, turns: Turn[
   const transcript = turns
     .map((t) => (t.role === "preppy" ? `LEXI: ${t.text}` : `STUDENT${t.typed ? " (typed)" : ""}: ${t.text || "(silence)"}`))
     .join("\n");
-  const system = `You are Lexi, the IELTS speaking coach of GoLexi, writing the review of a practice call you just had with a Russian-speaking student. Write all explanations in Russian, informal «ты», in your character's voice: ${p.character}${s.swear ? " The student allowed profanity: a couple of witty, inventive мат jokes about the call fit the summary (tied to what really happened, not a bare «пиздец» or «блять»)." : " No profanity."}
+  const system = `You are Lexi, the IELTS speaking coach of LexiUp, writing the review of a practice call you just had with a Russian-speaking student. Write all explanations in Russian, informal «ты», in your character's voice: ${p.character}${s.swear ? " The student allowed profanity: a couple of witty, inventive мат jokes about the call fit the summary (tied to what really happened, not a bare «пиздец» or «блять»)." : " No profanity."}
 
 Judge ONLY the student's English. The transcript comes from speech recognition: ignore spelling and punctuation, and do not count nonsense words that are clearly recognition errors, nor words swapped for one that sounds alike (sitting/seating, code/cold, код/кот). Russian lines are not English mistakes (but answering in Russian means less English to judge).
 

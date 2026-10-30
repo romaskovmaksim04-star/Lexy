@@ -9,7 +9,7 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-[38ch] text-sm leading-relaxed text-muted">
-            Подготовка к IELTS Academic и General Training. GoLexi не связан с British Council, IDP и Cambridge; задания авторские, в формате экзамена.
+            Подготовка к IELTS Academic и General Training. LexiUp не связан с British Council, IDP и Cambridge; задания авторские, в формате экзамена.
           </p>
         </div>
         <div className="grid content-start gap-3 text-sm">
@@ -21,7 +21,7 @@ export function Footer() {
           <Link href="/quiz" className="text-muted hover:text-ink">Тест на персональный план</Link>
         </div>
         <div className="grid content-start gap-3 text-sm">
-          <p className="font-semibold">GoLexi</p>
+          <p className="font-semibold">LexiUp</p>
           <Link href="/pricing" className="text-muted hover:text-ink">Тарифы</Link>
           <Link href="/guarantee" className="text-muted hover:text-ink">Гарантия результата</Link>
           <Link href="/support" className="text-muted hover:text-ink">Поддержка</Link>
@@ -35,7 +35,7 @@ export function Footer() {
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 pb-10 text-xs text-muted md:px-8">
-        <span>© {new Date().getFullYear()} GoLexi. IELTS является зарегистрированной торговой маркой её владельцев.</span>
+        <span>© {new Date().getFullYear()} LexiUp. IELTS является зарегистрированной торговой маркой её владельцев.</span>
         <MotionToggle />
       </div>
     </footer>
