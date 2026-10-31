@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth";
 import { Logo } from "@/components/ui/Mascot";
-import { LiveMascot } from "@/components/landing/LiveMascot";
+import { FireSpirit } from "@/components/fx/FireSpirit";
 import { safeNext } from "@/lib/safe-next";
 import { LoginForm } from "./LoginForm";
 
@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </div>
       </div>
       <div className="relative hidden overflow-hidden lg:block" style={{ background: "linear-gradient(150deg, #ffb340 0%, #ff6a2b 55%, #f04a12 100%)" }}>
-        <div className="absolute left-1/2 top-[42%] w-64 -translate-x-1/2 -translate-y-1/2"><LiveMascot className="bob" /></div>
+        <div className="absolute left-1/2 top-[42%] w-64 -translate-x-1/2 -translate-y-1/2"><FireSpirit className="w-64" talk={false} /></div>
         <p className="display absolute bottom-12 left-12 right-12 text-3xl font-bold leading-tight text-[#1b1433]">Пятнадцать минут в день лучше, чем пять часов в воскресенье.</p>
       </div>
     </main>

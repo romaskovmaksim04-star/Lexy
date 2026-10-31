@@ -99,7 +99,7 @@ export function LiveMascot({ className = "", mood = "calm", sayOnTap = true }: {
         className="block w-full cursor-pointer rounded-[40%] focus-visible:outline-offset-8"
         aria-label="Огонёк Лекси. Нажми на него"
       >
-        <svg ref={ref} viewBox="0 0 100 120" className="w-full overflow-visible drop-shadow-[0_30px_40px_rgba(255,90,31,0.35)]" aria-hidden>
+        <svg ref={ref} viewBox="0 -25 100 145" className="w-full overflow-visible drop-shadow-[0_30px_40px_rgba(255,90,31,0.35)]" aria-hidden>
           <defs>
             <linearGradient id={`${id}f`} x1="0.2" y1="1" x2="0.8" y2="0">
               <stop offset="0" stopColor={bottom} />
@@ -111,20 +111,20 @@ export function LiveMascot({ className = "", mood = "calm", sayOnTap = true }: {
             </radialGradient>
           </defs>
           <g className={reduce ? undefined : "flicker"}>
-            <path fill={`url(#${id}f)`} d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z" />
-            <path fill={`url(#${id}g)`} d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z" opacity="0.6" />
+            <path fill={`url(#${id}f)`} d="M48-20C58-4 68 12 70 30C73 24 77 20 80 16C82 28 84 38 86 52C89 60 90 70 90 80C90 101 72 116 50 116C28 116 10 101 10 80C10 64 17 54 24 46C22 40 21 36 22 30C26 36 29 40 32 42C38 28 46 10 48-20z" />
+            <path fill={`url(#${id}g)`} d="M48-20C58-4 68 12 70 30C73 24 77 20 80 16C82 28 84 38 86 52C89 60 90 70 90 80C90 101 72 116 50 116C28 116 10 101 10 80C10 64 17 54 24 46C22 40 21 36 22 30C26 36 29 40 32 42C38 28 46 10 48-20z" opacity="0.6" />
           </g>
-          <rect x="17" y="64" width="66" height="30" rx="15" fill="#fff" />
+          <rect x="17" y="59" width="66" height="37" rx="18.5" fill="#fff" />
           <motion.g style={{ x: px, y: py }}>
-            <ellipse className="blink" cx="34" cy="79" rx="4" ry="6" fill="#151515" />
-            <ellipse className="blink" cx="66" cy="79" rx="4" ry="6" fill="#151515" />
-            <circle cx="35.4" cy="76.6" r="1.3" fill="#fff" />
-            <circle cx="67.4" cy="76.6" r="1.3" fill="#fff" />
+            <ellipse className="blink" cx="34" cy="76" rx="4" ry="6" fill="#151515" />
+            <ellipse className="blink" cx="66" cy="76" rx="4" ry="6" fill="#151515" />
+            <circle cx="35.4" cy="73.6" r="1.3" fill="#fff" />
+            <circle cx="67.4" cy="73.6" r="1.3" fill="#fff" />
           </motion.g>
           {mood === "worried" ? (
-            <path d="M44 89c3-3 9-3 12 0" stroke="#151515" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+            <path d="M44 87c3-3 9-3 12 0" stroke="#151515" strokeWidth="2.6" fill="none" strokeLinecap="round" />
           ) : (
-            <path d={mood === "happy" ? "M42 77h16c-.6 7.5-5 12-8 12s-7.4-4.5-8-12z" : "M43.5 78h13c-.5 6-4 10-6.5 10s-6-4-6.5-10z"} fill="#151515" />
+            <path d={mood === "happy" ? "M42 75h16c-.6 7.5-5 12-8 12s-7.4-4.5-8-12z" : "M43.5 76h13c-.5 6-4 10-6.5 10s-6-4-6.5-10z"} fill="#151515" />
           )}
         </svg>
       </motion.button>

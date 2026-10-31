@@ -153,12 +153,12 @@ var IC = {
 };
 function sprite() {
   var s = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lg" x1=".2" y1="1" x2=".8" y2="0"><stop offset="0" stop-color="#FF4E1A"/><stop offset="1" stop-color="#FF9A0A"/></linearGradient></defs>' +
-    '<symbol id="flame" viewBox="0 0 100 120"><path fill="url(#lg)" d="M42 3C54 6 66 15 70 28c2 7 1 14-2 21 5-1 8-7 8-14 7 5 12 14 12 25 7 8 10 18 10 28 0 17-20 28-46 28C21 117 2 105 2 87c0-17 12-31 26-41 10-8 16-17 14-43z"/><rect x="17" y="64" width="66" height="30" rx="15" fill="#fff"/><ellipse cx="34" cy="79" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="79" rx="4" ry="6" fill="#151515"/><path d="M43.500 78h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>';
+    '<symbol id="flame" viewBox="0 -25 100 145"><path fill="url(#lg)" d="M48-20C58-4 68 12 70 30C73 24 77 20 80 16C82 28 84 38 86 52C89 60 90 70 90 80C90 101 72 116 50 116C28 116 10 101 10 80C10 64 17 54 24 46C22 40 21 36 22 30C26 36 29 40 32 42C38 28 46 10 48-20z"/><rect x="17" y="59" width="66" height="37" rx="19" fill="#fff"/><ellipse cx="34" cy="76" rx="4" ry="6" fill="#151515"/><ellipse cx="66" cy="76" rx="4" ry="6" fill="#151515"/><path d="M43.500 76h13c-.5 6-4 10-6.500 10s-6-4-6.500-10z" fill="#151515"/></symbol>';
   for (var k in IC) s += '<symbol id="i-' + k + '" viewBox="0 0 24 24">' + IC[k] + "</symbol>";
   return s + "</svg>";
 }
 function ic(n, c) { return '<svg class="i' + (c ? " " + c : "") + '"><use href="#i-' + n + '"/></svg>'; }
-function fl(h) { return '<svg class="f" viewBox="0 0 100 120" style="width:' + Math.round(h * 0.83) + "px;height:" + h + 'px"><use href="#flame"/></svg>'; }
+function fl(h) { return '<svg class="f" viewBox="0 -25 100 145" style="width:' + Math.round(h * 0.83) + "px;height:" + h + 'px"><use href="#flame"/></svg>'; }
 
 /* ---------- подписи меню (RU / EN / UZ) ---------- */
 var LAB = {
